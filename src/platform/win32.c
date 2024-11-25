@@ -46,6 +46,7 @@ bool bitBltEnabled = true;
 static HANDLE sSaveFile = NULL;
 
 extern void AgbMain(void);
+extern void MainLoop(void);
 extern void DoSoftReset(void);
 
 DWORD WINAPI DoMain(LPVOID lpParam);
@@ -409,6 +410,7 @@ int main(int argc, char **argv)
     QueryPerformanceCounter(&largeint);
     simTime = curGameTime = lastGameTime = largeint.QuadPart;
 
+    #ifdef THREAD_LOOP
     isFrameAvailable = 0;
     vBlankSemaphore = CreateEvent(NULL, TRUE, FALSE, TEXT("vBlankEvent")); 
     if (vBlankSemaphore == NULL) 
@@ -416,6 +418,7 @@ int main(int argc, char **argv)
         DBGPRINTF("Could not create a event!\n");
         return 1;
     }
+    #endif
     
     DBGPRINTF("Event Init done!\n");
 
@@ -423,9 +426,13 @@ int main(int argc, char **argv)
     DBGPRINTF("cgb_audio_init Init done!\n");
     
     VDraw();
+    #ifdef THREAD_LOOP
     int ThreadID;
     CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)DoMain, (LPVOID)&nCmdShow, 0, &ThreadID);
     DBGPRINTF("Thread Init done!\n");
+    #else
+    AgbMain();
+    #endif
 
     double accumulator = 0.0;
 
@@ -460,7 +467,11 @@ int main(int argc, char **argv)
 
             while (accumulator >= dt)
             {
+                #ifndef THREAD_LOOP
+                MainLoop();
+                #else
                 if (isFrameAvailable)
+                #endif
                 {
                     VDraw();
                     isFrameAvailable = 0;
@@ -473,14 +484,16 @@ int main(int argc, char **argv)
                         gIntrTable[4]();
                     REG_DISPSTAT &= ~INTR_FLAG_VBLANK;
 
+                    #ifdef THREAD_LOOP
                     if(!SetEvent(vBlankSemaphore))
                     {
                         DBGPRINTF("Could not set vBlankSemaphore!");
                         return 1;
                     }
+                    #endif
                     accumulator -= dt;
                 }
-                Sleep(0);
+                //Sleep(0);
             }
            if (GetTickCount() > fpsseconds)
            {
@@ -694,9 +707,11 @@ DWORD WINAPI DoMain(LPVOID lpParam)
 
 void VBlankIntrWait(void)
 {
+    #ifdef THREAD_LOOP
     isFrameAvailable = 1;
     WaitForSingleObject(vBlankSemaphore, INFINITE);
     ResetEvent(vBlankSemaphore);
+    #endif
 }
 
 u8 BinToBcd(u8 bin)

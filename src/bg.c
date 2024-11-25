@@ -442,8 +442,7 @@ bool8 IsDma3ManagerBusyWithBgCopy(void)
     int i;
 
 #ifdef PORTABLE
-    // HACK: this is often called in a tight loop, not allowing the VBlank thread to run. Suspend thread for now.
-    VBlankIntrWait();
+    return FALSE;
 #endif
     for (i = 0; i < 0x80; i++)
     {

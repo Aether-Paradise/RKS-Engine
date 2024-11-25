@@ -6,8 +6,8 @@ REVISION    := 0
 MODERN      ?= 1
 KEEP_TEMPS  ?= 0
 PORTABLE    ?= 1
-TARGET_PLATFORM := PLATFORM_SDL2
-TILE_RENDERER   := RENDERER_FAST_DRAW
+TARGET_PLATFORM := PLATFORM_WIN32
+TILE_RENDERER := RENDERER_FAST_DRAW
 
 # `File name`.gba ('_modern' will be appended to the modern builds)
 FILE_NAME := pokeemerald
