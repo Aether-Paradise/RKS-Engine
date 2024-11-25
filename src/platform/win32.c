@@ -42,6 +42,9 @@ char const* savePath = "pokeemerald.sav";
 int frameSkipSet = 1;
 int frameskipCounter = 0;
 bool bitBltEnabled = true;
+bool frameLimitEnabled = true;
+bool gameTickFPSToggle = false;
+bool drawingEnabled = true;
 
 static HANDLE sSaveFile = NULL;
 
@@ -78,6 +81,7 @@ static u16 keys;
 #define IDM_5FPS 8
 #define IDM_3FPS 9
 #define IDM_1FPS 10
+#define IDM_1FPM 60*60
 #define IDM_60FPSTEXT "60 FPS"
 #define IDM_30FPSTEXT "30 FPS"
 #define IDM_20FPSTEXT "20 FPS"
@@ -85,9 +89,16 @@ static u16 keys;
 #define IDM_5FPSTEXT "5 FPS"
 #define IDM_3FPSTEXT "3 FPS"
 #define IDM_1FPSTEXT "1 FPS"
+#define IDM_1FPMTEXT "1 FPM"
 
 #define IDM_TOGGLEBITBLT 11
 #define IDM_TOGGLEBITBLTTEXT "&Toggle bitblt"
+#define IDM_FRAMELIMITTOGGLE 12
+#define IDM_FRAMELIMITTEXT "&Disable frame limit"
+#define IDM_GAMETICKFPSTOGGLE 13
+#define IDM_GAMETICKFPSTEXT "&Calculate game tick FPS instead"
+#define IDM_TOGGLEDRAWING 14
+#define IDM_TOGGLEDRAWINGTEXT "&Toggle drawing"
 
 //no standard library workarounds, these have to be defined
 #ifdef NO_STD_LIB_ENABLED
@@ -119,6 +130,9 @@ void AddMenus(HWND hwnd) {
     AppendMenuA(hMenu, MF_STRING, IDM_RESETGAME, IDM_RESETGAMETEXT);
     AppendMenuA(hMenu, MF_STRING, IDM_PAUSEGAME, IDM_PAUSEGAMETEXT);
     AppendMenuA(hMenu, MF_STRING, IDM_TOGGLEBITBLT, IDM_TOGGLEBITBLTTEXT);
+	AppendMenuA(hMenu, MF_STRING, IDM_FRAMELIMITTOGGLE, IDM_FRAMELIMITTEXT);
+	AppendMenuA(hMenu, MF_STRING, IDM_GAMETICKFPSTOGGLE, IDM_GAMETICKFPSTEXT);
+	AppendMenuA(hMenu, MF_STRING, IDM_TOGGLEDRAWING, IDM_TOGGLEDRAWINGTEXT);
     
     AppendMenuA(hMenuFps, MF_STRING, IDM_60FPS, IDM_60FPSTEXT);
     AppendMenuA(hMenuFps, MF_STRING, IDM_30FPS, IDM_30FPSTEXT);
@@ -127,6 +141,7 @@ void AddMenus(HWND hwnd) {
     AppendMenuA(hMenuFps, MF_STRING, IDM_5FPS, IDM_5FPSTEXT);
     AppendMenuA(hMenuFps, MF_STRING, IDM_3FPS, IDM_3FPSTEXT);
     AppendMenuA(hMenuFps, MF_STRING, IDM_1FPS, IDM_1FPSTEXT);
+    AppendMenuA(hMenuFps, MF_STRING, IDM_1FPM, IDM_1FPMTEXT);
 
 
     AppendMenuA(hMenubar, MF_POPUP, (UINT_PTR) hMenu, "&Debug");
@@ -256,6 +271,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case IDM_TOGGLEBITBLT:
             bitBltEnabled = !bitBltEnabled;
             break;
+        case IDM_FRAMELIMITTOGGLE:
+            frameLimitEnabled = !frameLimitEnabled;
+            break;
+        case IDM_GAMETICKFPSTOGGLE:
+            gameTickFPSToggle = !gameTickFPSToggle;
+            break;
+        case IDM_TOGGLEDRAWING:
+            drawingEnabled = !drawingEnabled;
+            break;
         case IDM_60FPS:
             frameSkipSet = 1;
             frameskipCounter = 0;
@@ -282,6 +306,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
         case IDM_1FPS:
             frameSkipSet = 60;
+            frameskipCounter = 0;
+            break;
+        case IDM_1FPM:
+            frameSkipSet = 60*60;
             frameskipCounter = 0;
             break;
         }
@@ -454,47 +482,87 @@ int main(int argc, char **argv)
         if (!paused)
         {
             double dt = fixedTimestep / timeScale; // TODO: Fix speedup
+			double deltaTime;
 
-            QueryPerformanceCounter(&largeint); //todo error checking
-            curGameTime = largeint.QuadPart;
-            QueryPerformanceFrequency(&largeint);
-            double deltaTime = (double)((curGameTime - lastGameTime) / largeint.QuadPart);
-            if (deltaTime > (dt * 5))
-                deltaTime = dt;
-            lastGameTime = curGameTime;
+			if (frameLimitEnabled)
+			{
+				QueryPerformanceCounter(&largeint); //todo error checking
+				curGameTime = largeint.QuadPart;
+				QueryPerformanceFrequency(&largeint);
+				deltaTime = (double)((curGameTime - lastGameTime) / largeint.QuadPart);
+				if (deltaTime > (dt * 5))
+					deltaTime = dt;
+				lastGameTime = curGameTime;
 
-            accumulator += deltaTime;
+				accumulator += deltaTime;
+			}
 
-            while (accumulator >= dt)
-            {
-                #ifndef THREAD_LOOP
-                MainLoop();
-                #else
-                if (isFrameAvailable)
-                #endif
-                {
-                    VDraw();
-                    isFrameAvailable = 0;
+			if (frameLimitEnabled)
+			{
+				while (accumulator >= dt)
+				{
+					#ifndef THREAD_LOOP
+					MainLoop();
+					#else
+					if (isFrameAvailable)
+					#endif
+					{
+						VDraw();
+						isFrameAvailable = 0;
 
-                    REG_DISPSTAT |= INTR_FLAG_VBLANK;
+						REG_DISPSTAT |= INTR_FLAG_VBLANK;
 
-                    RunDMAs(DMA_HBLANK);
+						RunDMAs(DMA_HBLANK);
 
-                    if (REG_DISPSTAT & DISPSTAT_VBLANK_INTR)
-                        gIntrTable[4]();
-                    REG_DISPSTAT &= ~INTR_FLAG_VBLANK;
+						if (REG_DISPSTAT & DISPSTAT_VBLANK_INTR)
+							gIntrTable[4]();
+						REG_DISPSTAT &= ~INTR_FLAG_VBLANK;
 
-                    #ifdef THREAD_LOOP
-                    if(!SetEvent(vBlankSemaphore))
-                    {
-                        DBGPRINTF("Could not set vBlankSemaphore!");
-                        return 1;
-                    }
-                    #endif
-                    accumulator -= dt;
-                }
-                //Sleep(0);
-            }
+						#ifdef THREAD_LOOP
+						if(!SetEvent(vBlankSemaphore))
+						{
+							DBGPRINTF("Could not set vBlankSemaphore!");
+							return 1;
+						}
+						#endif
+						accumulator -= dt;
+					}
+					#ifdef THREAD_LOOP
+					Sleep(0);
+					#endif
+				}
+			}
+			else
+			{
+				#ifndef THREAD_LOOP
+				MainLoop();
+				#else
+				if (isFrameAvailable)
+				#endif
+				{
+					VDraw();
+					isFrameAvailable = 0;
+
+					REG_DISPSTAT |= INTR_FLAG_VBLANK;
+
+					RunDMAs(DMA_HBLANK);
+
+					if (REG_DISPSTAT & DISPSTAT_VBLANK_INTR)
+						gIntrTable[4]();
+					REG_DISPSTAT &= ~INTR_FLAG_VBLANK;
+
+					#ifdef THREAD_LOOP
+					if(!SetEvent(vBlankSemaphore))
+					{
+						DBGPRINTF("Could not set vBlankSemaphore!");
+						return 1;
+					}
+					#endif
+				}
+				#ifdef THREAD_LOOP
+				Sleep(0);
+				#endif
+			}
            if (GetTickCount() > fpsseconds)
            {
                 char titlebar[128] = {0};
@@ -672,7 +740,7 @@ u16 Platform_GetKeyInput(void)
 
 void VDraw()
 {
-    if (frameskipCounter == 0)
+    if (frameskipCounter == 0 && drawingEnabled == true)
     {
         DrawFrame(lpBitmapBits);
 
@@ -690,11 +758,15 @@ void VDraw()
             BitBlt(window_hdc, 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, hdc_bmp, 0, 0, SRCCOPY);
             InvalidateRect(ghwnd, NULL, FALSE);
         }
-        framesDrawn++;
+		if (!gameTickFPSToggle)
+			framesDrawn++;
     }
     frameskipCounter++;
     if (frameskipCounter == frameSkipSet)
         frameskipCounter = 0;
+	
+	if (gameTickFPSToggle)
+		framesDrawn++;
     
     REG_VCOUNT = 161; // prep for being in VBlank period
 }
