@@ -1,8 +1,18 @@
+# About `RKS-Engine`
+
+**`RKS-Engine`** is NOT a game. It is a ROMHack base forked from [ROM-Hacking Hideout's `pokeemerald-expansion`](https://github.com/rh-hideout/pokeemerald-expansion). Please support their work, they've done amazing things for years now.
+
+The goal of this project is to introduce features and code changes that aren't within the scope of pokeemerald-expansion. I would highly recommend that any PRs for new features and changes should be discussed with the Expansion Senate over at the [ROM Hacking Hideout (RHH) Discord server](https://discord.gg/6CzjAG6GZk) before coming here, as there's the possibility that it may be accepted and then trickle down to this repo. I don't plan to remove any features from Expansion, but some implementations may differ.
+
+Documentation is WIP, since this is a fresh clone. 
+
+<!--
 # About `pokeemerald-expansion`
 
 ![Gif that shows debugging functionality that is unique to pokeemerald-expansion such as rerolling Trainer ID, Cheat Start, PC from Debug Menu, Debug PC Fill, Pokémon Sprite Visualizer, Debug Warp to Map, and Battle Debug Menu](https://github.com/user-attachments/assets/cf9dfbee-4c6b-4bca-8e0a-07f116ef891c) ![Gif that shows overworld functionality that is unique to pokeemerald-expansion such as indoor running, BW2 style map popups, overworld followers, DNA Splicers, Gen 1 style fishing, OW Item descriptions, Quick Run from Battle, Use Last Ball, Wild Double Battles, and Catch from EXP](https://github.com/user-attachments/assets/383af243-0904-4d41-bced-721492fbc48e) ![Gif that shows off a number of modern Pokémon battle mechanics happening in the pokeemerald-expansion engine: 2 vs 1 battles, modern Pokémon, items, moves, abilities, fully customizable opponents and partners, Trainer Slides, and generational gimmicks](https://github.com/user-attachments/assets/50c576bc-415e-4d66-a38f-ad712f3316be)
-
+-->
 <!-- If you want to re-record or change these gifs, here are some notes that I used: https://files.catbox.moe/05001g.md -->
+<!--
 
 **`pokeemerald-expansion`** is a GBA ROM hack base that equips developers with a comprehensive toolkit for creating Pokémon ROM hacks. **`pokeemerald-expansion`** is built on top of [pret's `pokeemerald`](https://github.com/pret/pokeemerald) decompilation project. **It is not a playable Pokémon game on its own.**
 
@@ -51,3 +61,4 @@ If you are looking to [report a bug](CONTRIBUTING.md#Bug-Report), [open a pull r
 [![](https://dcbadge.limes.pink/api/server/6CzjAG6GZk)](https://discord.gg/6CzjAG6GZk)
 
 Our community uses the [ROM Hacking Hideout (RHH) Discord server](https://discord.gg/6CzjAG6GZk) to communicate and organize. Most of our discussions take place there, and we welcome anybody to join us!
+-->
