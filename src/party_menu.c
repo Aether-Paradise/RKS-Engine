@@ -82,7 +82,7 @@
 #include "constants/songs.h"
 #include "config/party_menu.h"
 
-#if !SWSH_PARTY_MENU
+#if (RKSE_PARTY_MENU_DESIGN == PARTY_MENU_DESIGN_EMERALD)
 
 enum {
     MENU_SUMMARY,
