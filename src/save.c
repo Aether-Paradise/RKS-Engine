@@ -53,7 +53,7 @@ static void CopyFromSaveBlock3(u32, struct SaveSector *);
 
 struct
 {
-    u16 offset;
+    u32 offset;
     u16 size;
 } static const sSaveSlotLayout[NUM_SECTORS_PER_SLOT] =
 {
@@ -72,7 +72,21 @@ struct
     SAVEBLOCK_CHUNK(struct PokemonStorage, 5),
     SAVEBLOCK_CHUNK(struct PokemonStorage, 6),
     SAVEBLOCK_CHUNK(struct PokemonStorage, 7),
-    SAVEBLOCK_CHUNK(struct PokemonStorage, 8), // SECTOR_ID_PKMN_STORAGE_END
+    SAVEBLOCK_CHUNK(struct PokemonStorage, 8),
+    SAVEBLOCK_CHUNK(struct PokemonStorage, 9),
+    SAVEBLOCK_CHUNK(struct PokemonStorage, 10),
+    SAVEBLOCK_CHUNK(struct PokemonStorage, 11),
+    SAVEBLOCK_CHUNK(struct PokemonStorage, 12),
+    SAVEBLOCK_CHUNK(struct PokemonStorage, 13),
+    SAVEBLOCK_CHUNK(struct PokemonStorage, 14),
+    SAVEBLOCK_CHUNK(struct PokemonStorage, 15),
+    SAVEBLOCK_CHUNK(struct PokemonStorage, 16),
+    SAVEBLOCK_CHUNK(struct PokemonStorage, 17),
+    SAVEBLOCK_CHUNK(struct PokemonStorage, 18),
+    SAVEBLOCK_CHUNK(struct PokemonStorage, 19),
+    SAVEBLOCK_CHUNK(struct PokemonStorage, 20),
+    SAVEBLOCK_CHUNK(struct PokemonStorage, 21),
+    SAVEBLOCK_CHUNK(struct PokemonStorage, 22), // SECTOR_ID_PKMN_STORAGE_END
 };
 
 // These will produce an error if a save struct is larger than the space
