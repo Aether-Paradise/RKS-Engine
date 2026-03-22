@@ -256,7 +256,7 @@ enum {
 static EWRAM_DATA struct PartyMenuInternal *sPartyMenuInternal = NULL;
 EWRAM_DATA struct PartyMenu gPartyMenu = {0};
 static EWRAM_DATA struct PartyMenuBox *sPartyMenuBoxes = NULL;
-static EWRAM_DATA u8 *sPartyBgGfxTilemap = NULL;
+static EWRAM_DATA u8 *sPartyBgGfxTilemape = NULL;
 static EWRAM_DATA u8 *sPartyBgTilemapBuffer = NULL;
 static EWRAM_DATA u8 *sPartyBg3TilemapBuffer = NULL;
 EWRAM_DATA bool8 gPartyMenuUseExitCallback = 0;
