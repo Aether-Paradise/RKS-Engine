@@ -1,8 +1,8 @@
 # This allows CI to recompile and change specific configs to confirm that they still build.
 
-OVR_RKSE_PARTY_MENU_DESIGN ?=
-ifneq (,$(OVR_RKSE_PARTY_MENU_DESIGN))
-  override CPPFLAGS += -DOVR_RKSE_PARTY_MENU_DESIGN=$(OVR_RKSE_PARTY_MENU_DESIGN)
+CONFIG_OVERRIDE ?=
+ifneq (,$(CONFIG_OVERRIDE))
+  override CPPFLAGS += -DCONFIG_OVERRIDE=$(CONFIG_OVERRIDE)
 endif
 
 touch-config_overrides:
