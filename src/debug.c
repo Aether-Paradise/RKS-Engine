@@ -63,6 +63,7 @@
 #include "constants/items.h"
 #include "constants/map_groups.h"
 #include "constants/rgb.h"
+#include "constants/rks_engine.h"
 #include "constants/script_commands.h"
 #include "constants/songs.h"
 #include "constants/species.h"
@@ -396,6 +397,7 @@ extern const u8 PlayersHouse_2F_EventScript_CheckWallClock[];
 extern const u8 Debug_CheckSaveBlock[];
 extern const u8 Debug_CheckROMSpace[];
 extern const u8 Debug_BoxFilledMessage[];
+extern const u8 Debug_ShowRKSEVersion[];
 extern const u8 Debug_ShowExpansionVersion[];
 extern const u8 Debug_EventScript_EWRAMCounters[];
 extern const u8 Debug_Follower_NPC_Event_Script[];
@@ -685,6 +687,7 @@ static const struct DebugMenuOption sDebugMenu_Actions_ROMInfo2[] =
 {
     { COMPOUND_STRING("Save Block space"),  DebugAction_ExecuteScript, Debug_CheckSaveBlock },
     { COMPOUND_STRING("ROM space"),         DebugAction_ExecuteScript, Debug_CheckROMSpace },
+    { COMPOUND_STRING("RKSE Version"),      DebugAction_ExecuteScript, Debug_ShowRKSEVersion },
     { COMPOUND_STRING("Expansion Version"), DebugAction_ExecuteScript, Debug_ShowExpansionVersion },
     { NULL }
 };
@@ -1783,6 +1786,23 @@ void BufferExpansionVersion(struct ScriptContext *ctx)
     *string++ = CHAR_PERIOD;
     string = ConvertIntToDecimalStringN(string, EXPANSION_VERSION_PATCH, STR_CONV_MODE_LEFT_ALIGN, 3);
     if (EXPANSION_TAGGED_RELEASE)
+        string = StringCopy(string, sText_Released);
+    else
+        string = StringCopy(string, sText_Unreleased);
+}
+
+void BufferRKSEVersion(struct ScriptContext *ctx)
+{
+    static const u8 sText_Released[] = _("\nRelease Build");
+    static const u8 sText_Unreleased[] = _("\nDevelopment Build");
+    u8 *string = gStringVar1;
+    *string++ = CHAR_v;
+    string = ConvertIntToDecimalStringN(string, RKSE_VERSION_MAJOR, STR_CONV_MODE_LEFT_ALIGN, 3);
+    *string++ = CHAR_PERIOD;
+    string = ConvertIntToDecimalStringN(string, RKSE_VERSION_MINOR, STR_CONV_MODE_LEFT_ALIGN, 3);
+    *string++ = CHAR_PERIOD;
+    string = ConvertIntToDecimalStringN(string, RKSE_VERSION_NON_BREAKING, STR_CONV_MODE_LEFT_ALIGN, 3);
+    if (RKSE_TAGGED_RELEASE)
         string = StringCopy(string, sText_Released);
     else
         string = StringCopy(string, sText_Unreleased);
@@ -3853,8 +3873,9 @@ static void DebugAction_PCBag_Fill_PocketBerries(u8 taskId)
 {
     enum Item itemId;
 
-    for (itemId = FIRST_BERRY_INDEX; itemId < LAST_BERRY_INDEX; itemId++)
+    for (enum BerryId berryId = 1; berryId < NUM_BERRIES; berryId++)
     {
+        itemId = BerryTypeToItemId(berryId);
         if (CheckBagHasSpace(itemId, MAX_BAG_ITEM_CAPACITY))
             AddBagItem(itemId, MAX_BAG_ITEM_CAPACITY);
     }

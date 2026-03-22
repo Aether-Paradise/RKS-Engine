@@ -658,6 +658,7 @@ void BattleLoadMonSpriteGfx(struct Pokemon *mon, enum BattlerId battler)
 
     LoadPalette(paletteData, paletteOffset, PLTT_SIZE_4BPP);
     LoadPalette(paletteData, BG_PLTT_ID(8) + BG_PLTT_ID(battler), PLTT_SIZE_4BPP);
+    TimeMixBattleSpritePalette(paletteOffset);
 
     // transform's pink color
     if (gBattleMons[battler].volatiles.transformed)
@@ -694,14 +695,16 @@ void DecompressTrainerFrontPic(u16 frontPicId, enum BattlerId battler)
     enum BattlerPosition position = GetBattlerPosition(battler);
     DecompressPicFromTable(&gTrainerSprites[frontPicId].frontPic,
                            gMonSpritesGfxPtr->spritesGfx[position]);
-    LoadSpritePalette(&gTrainerSprites[frontPicId].palette);
+    u32 palID = LoadSpritePalette(&gTrainerSprites[frontPicId].palette);
+    TimeMixBattleSpritePalette(OBJ_PLTT_ID(palID));
 }
 
 void DecompressTrainerBackPic(enum TrainerPicID backPicId, enum BattlerId battler)
 {
     enum BattlerPosition position = GetBattlerPosition(battler);
     CopyTrainerBackspriteFramesToDest(backPicId, gMonSpritesGfxPtr->spritesGfx[position]);
-    LoadSpritePalette(&gTrainerBacksprites[backPicId].palette);
+    u32 palID = LoadSpritePalette(&gTrainerBacksprites[backPicId].palette);
+    TimeMixBattleSpritePalette(OBJ_PLTT_ID(palID));
 }
 
 void FreeTrainerFrontPicPalette(u16 frontPicId)
@@ -717,6 +720,7 @@ void BattleLoadAllHealthBoxesGfxAtOnce(void)
 
     LoadSpritePalette(&sSpritePalettes_HealthBoxHealthBar[0]);
     LoadSpritePalette(&sSpritePalettes_HealthBoxHealthBar[1]);
+    TimeMixBattleBgPalette(TRUE);
     if (!IsDoubleBattle())
     {
         LoadCompressedSpriteSheet(&sSpriteSheet_SinglesPlayerHealthbox);
@@ -745,6 +749,7 @@ bool8 BattleLoadAllHealthBoxesGfx(u8 state)
         {
             LoadSpritePalette(&sSpritePalettes_HealthBoxHealthBar[0]);
             LoadSpritePalette(&sSpritePalettes_HealthBoxHealthBar[1]);
+            TimeMixBattleBgPalette(TRUE);
             CategoryIcons_LoadSpritesGfx();
         }
         else if (!IsDoubleBattle())
@@ -972,6 +977,7 @@ void HandleSpeciesGfxDataChange(enum BattlerId battlerAtk, enum BattlerId battle
     paletteOffset = OBJ_PLTT_ID(battlerAtk);
     paletteData = GetMonSpritePalFromSpeciesAndPersonality(targetSpecies, isShiny, personalityValue);
     LoadPalette(paletteData, paletteOffset, PLTT_SIZE_4BPP);
+    TimeMixBattleSpritePalette(paletteOffset);
 
     if (changeType == SPECIES_GFX_CHANGE_GHOST_UNVEIL)
     {

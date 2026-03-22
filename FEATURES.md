@@ -13,20 +13,20 @@
 
 ## Configuration files
 A lot of features listed below can be turned off as desired. Check which ones in these files
-- [AI config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/ai.h)
-- [Battle config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/battle.h)
-- [Caps config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/caps.h)
-- [Debug config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/debug.h)
-- [DexNav config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/dexnav.h)
-- [General config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/general.h)
-- [HGSS Pokédex config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/pokedex_plus_hgss.h)
-- [Item config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/item.h)
-- [NPC Follower config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/follower_npc.h)
-- [Overworld config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/overworld.h)
-- [Pokémon config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/pokemon.h)
-- [Save config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/save.h)
-- [Species enabled](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/species_enabled.h)
-- [Summary screen config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/summary_screen.h)
+- [AI config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/ai.h)
+- [Battle config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/battle.h)
+- [Caps config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/caps.h)
+- [Debug config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/debug.h)
+- [DexNav config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/dexnav.h)
+- [General config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/general.h)
+- [HGSS Pokédex config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/pokedex_plus_hgss.h)
+- [Item config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/item.h)
+- [NPC Follower config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/follower_npc.h)
+- [Overworld config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/overworld.h)
+- [Pokémon config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/pokemon.h)
+- [Save config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/save.h)
+- [Species enabled](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/species_enabled.h)
+- [Summary screen config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/summary_screen.h)
 
 ## Upgraded Battle Engine
 - ***Battle gimmicks:*** Mega Evolution, Primal Reversion, Ultra Burst, Z-Moves, Dynamax, Gigantamax and Terastallization.

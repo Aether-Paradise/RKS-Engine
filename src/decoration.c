@@ -523,11 +523,13 @@ void InitDecorationContextItems(void)
     if (sCurDecorationCategory < DECORCAT_COUNT)
         gCurDecorationItems = gDecorationInventories[sCurDecorationCategory].items;
 
+#if FREE_SECRET_BASES == FALSE
     if (sDecorationContext.isPlayerRoom == FALSE)
     {
         sDecorationContext.items = gSaveBlock1Ptr->secretBases[0].decorations;
         sDecorationContext.pos = gSaveBlock1Ptr->secretBases[0].decorationPositions;
     }
+#endif // FREE_SECRET_BASES
 
     if (sDecorationContext.isPlayerRoom == TRUE)
     {
@@ -587,8 +589,10 @@ static void InitDecorationActionsWindow(void)
 void DoSecretBaseDecorationMenu(u8 taskId)
 {
     InitDecorationActionsWindow();
+#if FREE_SECRET_BASES == FALSE
     sDecorationContext.items = gSaveBlock1Ptr->secretBases[0].decorations;
     sDecorationContext.pos = gSaveBlock1Ptr->secretBases[0].decorationPositions;
+#endif //FREE_SECRET_BASES
     sDecorationContext.size = DECOR_MAX_SECRET_BASE;
     sDecorationContext.isPlayerRoom = FALSE;
     gTasks[taskId].func = HandleDecorationActionsMenuInput;
@@ -1082,6 +1086,7 @@ static void IdentifyOwnedDecorationsCurrentlyInUseInternal(u8 taskId)
     memset(sSecretBaseItemsIndicesBuffer, 0, sizeof(sSecretBaseItemsIndicesBuffer));
     memset(sPlayerRoomItemsIndicesBuffer, 0, sizeof(sPlayerRoomItemsIndicesBuffer));
 
+#if FREE_SECRET_BASES == FALSE
     for (i = 0; i < ARRAY_COUNT(sSecretBaseItemsIndicesBuffer); i++)
     {
         if (gSaveBlock1Ptr->secretBases[0].decorations[i] != DECOR_NONE)
@@ -1103,6 +1108,7 @@ static void IdentifyOwnedDecorationsCurrentlyInUseInternal(u8 taskId)
             }
         }
     }
+#endif //FREE_SECRET_BASES
 
     count = 0;
     for (i = 0; i < ARRAY_COUNT(sPlayerRoomItemsIndicesBuffer); i++)

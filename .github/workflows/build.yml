@@ -2,9 +2,6 @@ name: CI
 
 on:
   push:
-    branches:
-      - master
-      - upcoming
   pull_request:
 
 env:
@@ -51,6 +48,14 @@ jobs:
         env:
           GAME_VERSION: EMERALD
         run: make -j$(nproc) -O all
+
+      - name: ROM (Emerald) - Override RKSE_PARTY_MENU_DESIGN (SwSh)
+        env:
+          GAME_VERSION: EMERALD
+          OVR_RKSE_PARTY_MENU_DESIGN: PARTY_MENU_DESIGN_SWSH
+        run: |
+          make touch-config_overrides
+          make -j${nproc} -O all
 
   build-firered:
     if: github.actor != 'allcontributors[bot]'
