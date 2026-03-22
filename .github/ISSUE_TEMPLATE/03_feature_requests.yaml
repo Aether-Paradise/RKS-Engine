@@ -1,6 +1,6 @@
 name: 🙏 Feature Request 🙏
 description: Do you want a feature to be added to the Expansion? Let us know!
-labels: ["feature-request"]
+labels: ["feature request"]
 body:
   - type: markdown
     attributes:
@@ -18,16 +18,6 @@ body:
         Provide as much context as possible.
     validations:
       required: true
-  - type: textarea
-    id: media
-    attributes:
-      label: Images / Video
-      description: |
-        Have other projects or games solved this problem? Do you have images or video to show this happening?
-      placeholder: |
-        Here you can also attach logs, screenshots, gifs or a video.
-    validations:
-      required: false
   - type: input
     id: contact
     attributes:

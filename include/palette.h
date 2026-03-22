@@ -18,6 +18,7 @@
 #define PALETTES_MAP     0x00001FFF
 #define PALETTES_OBJECTS 0xFFFF0000
 #define PALETTES_ALL     (PALETTES_BG | PALETTES_OBJECTS)
+#define PALETTES_BATTLE_BG  (1 << 2 | 1 << 3 | 1 << 4)
 
 #define PLTT_ID(n) ((n) * 16)
 #define BG_PLTT_OFFSET 0x000
@@ -107,7 +108,7 @@ void BlendPalettesUnfaded(u32 selectedPalettes, u8 coeff, u32 color);
 void BlendPalettesGradually(u32 selectedPalettes, s8 delay, u8 coeff, u8 coeffTarget, u16 color, u8 priority, u8 id);
 void TimeBlendPalette(u16 palOffset, u32 coeff, u32 blendColor);
 void TintPalette_RGB_Copy(u16 palOffset, u32 blendColor);
-void TimeMixPalettes(u32 palettes, u16 *src, u16 *dst, struct BlendSettings *blend0, struct BlendSettings *blend1, u16 weight0);
+void TimeMixPalettes(u32 palettes, u16 *src, u16 *dst, struct BlendSettings *blend0, struct BlendSettings *blend1, u16 weight0, u32 spriteBlendWeight);
 void AvgPaletteWeighted(u16 *src0, u16 *src1, u16 *dst, u16 weight0);
 void TintPalette_GrayScale(u16 *palette, u32 count);
 void TintPalette_GrayScale2(u16 *palette, u32 count);
@@ -115,6 +116,8 @@ void TintPalette_SepiaTone(u16 *palette, u32 count);
 void TintPalette_CustomTone(u16 *palette, u32 count, u16 rTone, u16 gTone, u16 bTone);
 bool32 IsBlendPalettesGraduallyTaskActive(u8 id);
 void DestroyBlendPalettesGraduallyTask(void);
+void TimeMixBattleBgPalette(bool8 shadowOnly);
+void TimeMixBattleSpritePalette(u16 paletteOffset);
 
 static inline void SetBackdropFromColor(u32 color)
 {

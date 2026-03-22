@@ -14,7 +14,8 @@
 #define FREE_ENIGMA_BERRY                   FALSE   // Frees up E-Reader Enigma Berry data (52 bytes).
 #define FREE_LINK_BATTLE_RECORDS            FALSE   // Frees up link battle record data (88 bytes).
 #define FREE_MYSTERY_GIFT                   FALSE   // Frees up Mystery Gift data (876 bytes).
-                                            // SaveBlock1 total: 2568 bytes
+#define FREE_SECRET_BASES                   FALSE   // Frees up Secret Base data (3200 bytes).
+                                            // SaveBlock1 total: 5768 bytes
 // SaveBlock2 configs
 #define FREE_BATTLE_TOWER_E_READER          FALSE   // Frees up Battle Tower E-Reader data (188 bytes).
 #define FREE_POKEMON_JUMP                   FALSE   // Frees up Pokémon Jump data (16 bytes).
@@ -23,6 +24,6 @@
 #define FREE_FRONTIER_APPRENTICES           FALSE   // Frees up Battle Frontier Apprentices (396 bytes).
                                             // SaveBlock2 total: 1740 bytes
 
-                                            // Grand Total: 4308 bytes
+                                            // Grand Total: 7508 bytes
 
 #endif // GUARD_CONFIG_SAVE_H
