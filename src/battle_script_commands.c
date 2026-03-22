@@ -2894,8 +2894,8 @@ void SetMoveEffect(enum BattlerId battlerAtk, enum BattlerId effectBattler, enum
         }
         break;
     case MOVE_EFFECT_INCINERATE:
-        if (((gBattleMons[effectBattler].item >= FIRST_BERRY_INDEX && gBattleMons[effectBattler].item <= LAST_BERRY_INDEX)
-          || (B_INCINERATE_GEMS >= GEN_6 && GetBattlerHoldEffect(effectBattler) == HOLD_EFFECT_GEMS))
+        if ((gItemsInfo[gBattleMons[effectBattler].item].pocket == POCKET_BERRIES
+         || (B_INCINERATE_GEMS >= GEN_6 && GetBattlerHoldEffect(effectBattler) == HOLD_EFFECT_GEMS))
          && abilities[effectBattler] != ABILITY_STICKY_HOLD)
         {
             gLastUsedItem = gBattleMons[effectBattler].item;
