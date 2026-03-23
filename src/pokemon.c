@@ -5048,7 +5048,7 @@ enum Species NationalPokedexNumToSpecies(enum NationalDexOrder nationalNum)
 
     species = 1;
 
-    while (species < (NUM_SPECIES) && SpeciesToNationalPokedexNum(species) != nationalNum)
+    while (!IsSpeciesEnabled(species) || (species < (NUM_SPECIES) && SpeciesToNationalPokedexNum(species) != nationalNum))
         species++;
 
     if (species == NUM_SPECIES)
