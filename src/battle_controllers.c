@@ -2458,7 +2458,8 @@ void BtlController_HandleDrawTrainerPic(enum BattlerId battler, enum TrainerPicI
         }
         else
         {
-            DecompressTrainerBackPic(trainerPicId, battler);
+            u32 palID = LoadSpritePalette(&gTrainerBacksprites[trainerPicId].palette);
+            TimeMixBattleSpritePalette(OBJ_PLTT_ID(palID));
             SetMultiuseSpriteTemplateToTrainerBack(trainerPicId, GetBattlerPosition(battler));
             if (subpriority == -1)
                 subpriority = GetBattlerSpriteSubpriority(battler);
@@ -2488,7 +2489,8 @@ void BtlController_HandleTrainerSlide(enum BattlerId battler, enum TrainerPicID 
 {
     if (IsOnPlayerSide(battler))
     {
-        DecompressTrainerBackPic(trainerPicId, battler);
+        u32 palID = LoadSpritePalette(&gTrainerBacksprites[trainerPicId].palette);
+        TimeMixBattleSpritePalette(OBJ_PLTT_ID(palID));
         SetMultiuseSpriteTemplateToTrainerBack(trainerPicId, GetBattlerPosition(battler));
         gBattleStruct->trainerSlideSpriteIds[battler] = CreateSprite(&gMultiuseSpriteTemplate,
                                                          80,
