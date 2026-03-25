@@ -1737,3 +1737,9 @@ EventScript_PalletTown_PlayersHouse_2F_TurnOnPC::
 	.include "data/scripts/dexnav.inc"
 	.include "data/scripts/battle_frontier.inc"
 	.include "data/scripts/apricorn_tree.inc"
+
+	.include "data/maps/DemoTown/scripts.inc"
+	.include "data/maps/DemoTown/text.inc"
+
+	.include "data/maps/DemoRoute/scripts.inc"
+	.include "data/maps/DemoRoute/text.inc"

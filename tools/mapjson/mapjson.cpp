@@ -778,7 +778,7 @@ string generate_layout_headers_text(Json layouts_data) {
         string layout_version = json_to_string(layout, "layout_version", true);
 
         if (layout_version.empty()) {
-            layout_version = "emerald";
+            layout_version = "frlg";
         }
         if ((version == "emerald" && layout_version != "emerald" && !FRLG_INCLUDE_KANTO_MAPS)
          || (version == "firered" && layout_version != "frlg" && !EM_INCLUDE_HOENN_MAPS))
