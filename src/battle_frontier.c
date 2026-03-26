@@ -241,6 +241,7 @@ static void FillTrainerParty(u16 trainerId, enum BattleTrainer trainer, u8 monCo
         }
         return;
     }
+#if FREE_FRONTIER_APPRENTICES == FALSE
     else
     {
         // Apprentice.
@@ -248,6 +249,7 @@ static void FillTrainerParty(u16 trainerId, enum BattleTrainer trainer, u8 monCo
             CreateApprenticeMon(&gParties[trainer][i], &gSaveBlock2Ptr->apprentices[trainerId - TRAINER_RECORD_MIXING_APPRENTICE], i);
         return;
     }
+#endif //FREE_FRONTIER_APPRENTICES
 
     // Regular battle frontier trainer.
     // Attempt to fill the trainer's party with random Pokémon until 3 have been
