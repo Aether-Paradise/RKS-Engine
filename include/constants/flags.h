@@ -45,14 +45,15 @@
 #define TEMP_FLAGS_END   FLAG_TEMP_1F
 #define NUM_TEMP_FLAGS   (TEMP_FLAGS_END - TEMP_FLAGS_START + 1)
 
+#define FLAG_DEMO_HIDE_DEOXYS_TRIANGLE  0x20
+#define FLAG_DEMO_HIDE_DEOXYS           0x21
+
 #if IS_FRLG
 
 #include "constants/flags_frlg.h"
 
 #else
 
-#define FLAG_UNUSED_0x020    0x20 // Unused Flag
-#define FLAG_UNUSED_0x021    0x21 // Unused Flag
 #define FLAG_UNUSED_0x022    0x22 // Unused Flag
 #define FLAG_UNUSED_0x023    0x23 // Unused Flag
 #define FLAG_UNUSED_0x024    0x24 // Unused Flag
@@ -811,7 +812,7 @@
 #define FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_RIVAL_BEDROOM      0x2F8
 #define FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_TRUCK              0x2F9
 #define FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_TRUCK                  0x2FA
-#define FLAG_HIDE_DEOXYS                                            0x2FB
+#define FLAG_UNUSED_0x2FB                                           0x2FB
 #define FLAG_HIDE_BIRTH_ISLAND_DEOXYS_TRIANGLE                      0x2FC
 #define FLAG_HIDE_MAUVILLE_CITY_SCOTT                               0x2FD
 #define FLAG_HIDE_VERDANTURF_TOWN_SCOTT                             0x2FE
@@ -1776,7 +1777,6 @@
 #define FLAG_HIDE_SELPHYS_BUTLER                           0
 #define FLAG_HIDE_FOUR_ISLAND_RIVAL                        0
 #define FLAG_HIDE_SIX_ISLAND_POKECENTER_RIVAL              0
-#define FLAG_HIDE_BIRTH_ISLAND_METEORITE                   0
 #define FLAG_HIDE_POSTGAME_GOSSIPERS                       0
 #define FLAG_HIDE_FAME_CHECKER_ERIKA_JOURNALS              0
 #define FLAG_HIDE_FAME_CHECKER_KOGA_JOURNAL                0

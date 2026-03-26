@@ -595,7 +595,6 @@
     "BattleFrontier_Mart",
     "FarawayIsland_Entrance",
     "FarawayIsland_Interior",
-    "BirthIsland_Exterior",
     "BirthIsland_Harbor",
     "TrainerHill_Entrance",
     "TrainerHill_1F",
@@ -852,7 +851,6 @@
     "NavelRock_BasePath_B11F_Frlg",
     "NavelRock_B1F_Frlg",
     "NavelRock_Fork_Frlg",
-    "BirthIsland_Exterior_Frlg",
     "OneIsland_KindleRoad_EmberSpa_Frlg",
     "BirthIsland_Harbor_Frlg",
     "NavelRock_Harbor_Frlg"
@@ -1164,6 +1162,7 @@
   ],
   "gMapGroup_Demo": [
     "DemoTown",
-    "DemoRoute"
+    "DemoRoute",
+    "DemoDeoxysEvent"
   ]
 }

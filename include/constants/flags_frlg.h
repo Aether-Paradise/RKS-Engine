@@ -2,9 +2,6 @@
 #define GUARD_CONSTANTS_FLAGS_FRLG_H
 
 
-#define FLAG_0x020               0x020
-#define FLAG_0x021               0x021
-#define FLAG_0x022               0x022
 #define FLAG_0x023               0x023
 #define FLAG_0x024               0x024
 #define FLAG_0x025               0x025
@@ -125,8 +122,8 @@
 #define FLAG_HIDE_SELPHYS_BUTLER                           0x096
 #define FLAG_HIDE_FOUR_ISLAND_RIVAL                        0x097
 #define FLAG_HIDE_SIX_ISLAND_POKECENTER_RIVAL              0x098
-#define FLAG_HIDE_DEOXYS                                   0x099
-#define FLAG_HIDE_BIRTH_ISLAND_METEORITE                   0x09A
+#define FLAG_UNUSED_0x099                                  0x099
+#define FLAG_UNUSED_0x09A                                  0x09A
 #define FLAG_HIDE_LUGIA                                    0x09B
 #define FLAG_HIDE_HO_OH                                    0x09C
 #define FLAG_HIDE_POSTGAME_GOSSIPERS                       0x09D

@@ -541,7 +541,6 @@ gStdScripts_End::
 	.include "data/maps/BattleFrontier_Mart/scripts.inc"
 	.include "data/maps/FarawayIsland_Entrance/scripts.inc"
 	.include "data/maps/FarawayIsland_Interior/scripts.inc"
-	.include "data/maps/BirthIsland_Exterior/scripts.inc"
 	.include "data/maps/BirthIsland_Harbor/scripts.inc"
 	.include "data/maps/TrainerHill_Entrance/scripts.inc"
 	.include "data/maps/TrainerHill_1F/scripts.inc"
@@ -782,7 +781,6 @@ gStdScripts_End::
 	.include "data/maps/NavelRock_BasePath_B11F_Frlg/scripts.inc"
 	.include "data/maps/NavelRock_B1F_Frlg/scripts.inc"
 	.include "data/maps/NavelRock_Fork_Frlg/scripts.inc"
-	.include "data/maps/BirthIsland_Exterior_Frlg/scripts.inc"
 	.include "data/maps/OneIsland_KindleRoad_EmberSpa_Frlg/scripts.inc"
 	.include "data/maps/BirthIsland_Harbor_Frlg/scripts.inc"
 	.include "data/maps/NavelRock_Harbor_Frlg/scripts.inc"
@@ -1743,3 +1741,6 @@ EventScript_PalletTown_PlayersHouse_2F_TurnOnPC::
 
 	.include "data/maps/DemoRoute/scripts.inc"
 	.include "data/maps/DemoRoute/text.inc"
+
+	.include "data/maps/DemoDeoxysEvent/scripts.inc"
+	.include "data/maps/DemoDeoxysEvent/text.inc"
