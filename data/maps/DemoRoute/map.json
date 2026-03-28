@@ -28,6 +28,13 @@
       "elevation": 0,
       "dest_map": "MAP_DEMO_DEOXYS_EVENT",
       "dest_warp_id": "0"
+    },
+    {
+      "x": 11,
+      "y": 4,
+      "elevation": 0,
+      "dest_map": "MAP_DEMO_CAVE1F",
+      "dest_warp_id": "0"
     }
   ],
   "coord_events": [],

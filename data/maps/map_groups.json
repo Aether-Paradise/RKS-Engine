@@ -1160,6 +1160,7 @@
   "gMapGroup_Demo": [
     "DemoTown",
     "DemoRoute",
-    "DemoDeoxysEvent"
+    "DemoDeoxysEvent",
+    "DemoCave1F"
   ]
 }

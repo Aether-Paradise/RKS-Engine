@@ -10202,6 +10202,18 @@
       "secondary_tileset": "gTileset_PalletTown",
       "border_filepath": "data/layouts/DemoDeoxysEvent/border.bin",
       "blockdata_filepath": "data/layouts/DemoDeoxysEvent/map.bin"
+    },
+    {
+      "id": "LAYOUT_DEMO_CAVE1F",
+      "name": "DemoCave1F_Layout",
+      "width": 30,
+      "height": 30,
+      "border_width": 2,
+      "border_height": 2,
+      "primary_tileset": "gTileset_General_Frlg",
+      "secondary_tileset": "gTileset_Cave_Frlg",
+      "border_filepath": "data/layouts/DemoCave1F/border.bin",
+      "blockdata_filepath": "data/layouts/DemoCave1F/map.bin"
     }
   ]
 }
