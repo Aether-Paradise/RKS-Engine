@@ -2783,7 +2783,7 @@ bool8 IsFrontierTrainerFemale(u16 trainerId)
     // Search female classes.
     for (i = 0; i < ARRAY_COUNT(gTowerFemaleFacilityClasses); i++)
     {
-        if (gTowerFemaleFacilityClasses[i] == facilityClass)
+        if (gTowerFemaleFacilityClasses[i].class == facilityClass)
             break;
     }
     if (i != ARRAY_COUNT(gTowerFemaleFacilityClasses))
@@ -2913,12 +2913,12 @@ void SetBattleFacilityTrainerGfxId(u16 trainerId, u8 tempVarId)
     // Search male classes.
     for (i = 0; i < ARRAY_COUNT(gTowerMaleFacilityClasses); i++)
     {
-        if (gTowerMaleFacilityClasses[i] == facilityClass)
+        if (gTowerMaleFacilityClasses[i].class == facilityClass)
             break;
     }
     if (i != ARRAY_COUNT(gTowerMaleFacilityClasses))
     {
-        trainerObjectGfxId = gTowerMaleTrainerGfxIds[i];
+        trainerObjectGfxId = gTowerMaleFacilityClasses[i].gfxId;
         switch (tempVarId)
         {
         case 0:
@@ -2937,12 +2937,12 @@ void SetBattleFacilityTrainerGfxId(u16 trainerId, u8 tempVarId)
     // Search female classes.
     for (i = 0; i < ARRAY_COUNT(gTowerFemaleFacilityClasses); i++)
     {
-        if (gTowerFemaleFacilityClasses[i] == facilityClass)
+        if (gTowerFemaleFacilityClasses[i].class == facilityClass)
             break;
     }
     if (i != ARRAY_COUNT(gTowerFemaleFacilityClasses))
     {
-        trainerObjectGfxId = gTowerFemaleTrainerGfxIds[i];
+        trainerObjectGfxId = gTowerFemaleFacilityClasses[i].gfxId;
         switch (tempVarId)
         {
         case 0:
@@ -3005,24 +3005,24 @@ u16 GetBattleFacilityTrainerGfxId(u16 trainerId)
     // Search male classes.
     for (i = 0; i < ARRAY_COUNT(gTowerMaleFacilityClasses); i++)
     {
-        if (gTowerMaleFacilityClasses[i] == facilityClass)
+        if (gTowerMaleFacilityClasses[i].class == facilityClass)
             break;
     }
     if (i != ARRAY_COUNT(gTowerMaleFacilityClasses))
     {
-        trainerObjectGfxId = gTowerMaleTrainerGfxIds[i];
+        trainerObjectGfxId = gTowerMaleFacilityClasses[i].gfxId;
         return trainerObjectGfxId;
     }
 
     // Search female classes.
     for (i = 0; i < ARRAY_COUNT(gTowerFemaleFacilityClasses); i++)
     {
-        if (gTowerFemaleFacilityClasses[i] == facilityClass)
+        if (gTowerFemaleFacilityClasses[i].class == facilityClass)
             break;
     }
     if (i != ARRAY_COUNT(gTowerFemaleFacilityClasses))
     {
-        trainerObjectGfxId = gTowerFemaleTrainerGfxIds[i];
+        trainerObjectGfxId = gTowerFemaleFacilityClasses[i].gfxId;
         return trainerObjectGfxId;
     }
     else
@@ -3329,24 +3329,24 @@ u16 FacilityClassToGraphicsId(u8 facilityClass)
     // Search male classes.
     for (i = 0; i < ARRAY_COUNT(gTowerMaleFacilityClasses); i++)
     {
-        if (gTowerMaleFacilityClasses[i] == facilityClass)
+        if (gTowerMaleFacilityClasses[i].class == facilityClass)
             break;
     }
     if (i != ARRAY_COUNT(gTowerMaleFacilityClasses))
     {
-        trainerObjectGfxId = gTowerMaleTrainerGfxIds[i];
+        trainerObjectGfxId = gTowerMaleFacilityClasses[i].gfxId;
         return trainerObjectGfxId;
     }
 
     // Search female classes.
     for (i = 0; i < ARRAY_COUNT(gTowerFemaleFacilityClasses); i++)
     {
-        if (gTowerFemaleFacilityClasses[i] == facilityClass)
+        if (gTowerFemaleFacilityClasses[i].class == facilityClass)
             break;
     }
     if (i != ARRAY_COUNT(gTowerFemaleFacilityClasses))
     {
-        trainerObjectGfxId = gTowerFemaleTrainerGfxIds[i];
+        trainerObjectGfxId = gTowerFemaleFacilityClasses[i].gfxId;
         return trainerObjectGfxId;
     }
     else
