@@ -162,24 +162,17 @@ u8 GetBattlerYDelta(enum BattlerId battler, enum Species species)
     }
 
     if (IsOnPlayerSide(battler) || IsContest())
-        ret = gSpeciesInfo[species].backPicYOffset;
+        ret = GetSpeciesBackPicYOffset(species);
     else
-        ret = gSpeciesInfo[species].frontPicYOffset;
+        ret = GetSpeciesFrontPicYOffset(species);
     return ret;
 }
 
 u8 GetBattlerElevation(enum BattlerId battler, enum Species species)
 {
-    u8 ret = 0;
-    if (!IsOnPlayerSide(battler))
-    {
-        if (!IsContest())
-        {
-            species = SanitizeSpeciesId(species);
-            ret = gSpeciesInfo[species].enemyMonElevation;
-        }
-    }
-    return ret;
+    if (!IsOnPlayerSide(battler) && !IsContest())
+        return GetSpeciesEnemyElevation(species);
+    return 0;
 }
 
 u8 GetBattlerSpriteFinal_Y(enum BattlerId battler, enum Species species, bool32 a3)
@@ -1880,7 +1873,7 @@ static u16 GetBattlerYDeltaFromSpriteId(u8 spriteId)
             if (IsContest())
             {
                 species = gContestResources->moveAnim->species;
-                return gSpeciesInfo[species].backPicYOffset;
+                return GetSpeciesBackPicYOffset(species);
             }
             else
             {
@@ -1891,9 +1884,9 @@ static u16 GetBattlerYDeltaFromSpriteId(u8 spriteId)
                     species = spriteInfo[battler].transformSpecies;
 
                 if (IsOnPlayerSide(i))
-                    return gSpeciesInfo[species].backPicYOffset;
+                    return GetSpeciesBackPicYOffset(species);
                 else
-                    return gSpeciesInfo[species].frontPicYOffset;
+                    return GetSpeciesFrontPicYOffset(species);
             }
         }
     }
@@ -2071,9 +2064,9 @@ u8 CreateAdditionalMonSpriteForMoveAnim(enum Species species, bool32 isBackpic, 
     FREE_AND_SET_NULL(gMonSpritesGfxPtr->buffer);
 
     if (!isBackpic)
-        spriteId = CreateSprite(&sSpriteTemplates_MoveEffectMons[id], x, y + gSpeciesInfo[species].frontPicYOffset, subpriority);
+        spriteId = CreateSprite(&sSpriteTemplates_MoveEffectMons[id], x, y + GetSpeciesFrontPicYOffset(species), subpriority);
     else
-        spriteId = CreateSprite(&sSpriteTemplates_MoveEffectMons[id], x, y + gSpeciesInfo[species].backPicYOffset, subpriority);
+        spriteId = CreateSprite(&sSpriteTemplates_MoveEffectMons[id], x, y + GetSpeciesBackPicYOffset(species), subpriority);
 
     if (IsContest())
     {
@@ -2112,8 +2105,8 @@ s16 GetBattlerSpriteCoordAttr(enum BattlerId battler, u8 attr)
         species = SanitizeSpeciesId(species);
         if (species == SPECIES_UNOWN)
             species = GetUnownSpeciesId(personality);
-        size = gSpeciesInfo[species].backPicSize;
-        y_offset = gSpeciesInfo[species].backPicYOffset;
+        size = GetSpeciesBackPicSize(species);
+        y_offset = GetSpeciesBackPicYOffset(species);
     }
     else
     {
@@ -2137,25 +2130,21 @@ s16 GetBattlerSpriteCoordAttr(enum BattlerId battler, u8 attr)
 
         if (IsOnPlayerSide(battler))
         {
-        #if P_GENDER_DIFFERENCES
-            if (gSpeciesInfo[species].backPicFemale != NULL && IsPersonalityFemale(species, personality))
-                size = gSpeciesInfo[species].backPicSizeFemale;
+            if (IsPersonalityFemale(species, personality))
+                size = GetSpeciesBackPicSizeFemale(species);
             else
-        #endif
-                size = gSpeciesInfo[species].backPicSize;
+                size = GetSpeciesBackPicSize(species);
 
-            y_offset = gSpeciesInfo[species].backPicYOffset;
+            y_offset = GetSpeciesBackPicYOffset(species);
         }
         else
         {
-        #if P_GENDER_DIFFERENCES
-            if (gSpeciesInfo[species].frontPicFemale != NULL && IsPersonalityFemale(species, personality))
-                size = gSpeciesInfo[species].frontPicSizeFemale;
+            if (IsPersonalityFemale(species, personality))
+                size = GetSpeciesFrontPicSizeFemale(species);
             else
-        #endif
-                size = gSpeciesInfo[species].frontPicSize;
+                size = GetSpeciesFrontPicSize(species);
 
-            y_offset = gSpeciesInfo[species].frontPicYOffset;
+            y_offset = GetSpeciesFrontPicYOffset(species);
         }
     }
 

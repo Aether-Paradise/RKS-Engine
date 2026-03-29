@@ -498,16 +498,6 @@ bool32 IsBattlerTrapped(enum BattlerId battlerAtk, enum BattlerId battlerDef)
     return FALSE;
 }
 
-u32 GetTotalBaseStat(enum Species species)
-{
-    return GetSpeciesBaseHP(species)
-         + GetSpeciesBaseAttack(species)
-         + GetSpeciesBaseDefense(species)
-         + GetSpeciesBaseSpeed(species)
-         + GetSpeciesBaseSpAttack(species)
-         + GetSpeciesBaseSpDefense(species);
-}
-
 bool32 IsTruantMonVulnerable(enum BattlerId battlerAI, enum BattlerId opposingBattler)
 {
     enum Move predictedMoveSpeedCheck = GetIncomingMoveSpeedCheck(battlerAI, opposingBattler, gAiLogicData);

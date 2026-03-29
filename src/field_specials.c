@@ -5590,7 +5590,7 @@ void SampleResortGorgeousMonAndReward(void)
         VarSet(VAR_RESORT_GORGEOUS_REWARD, SampleResortGorgeousReward());
         VarSet(VAR_RESORT_GOREGEOUS_STEP_COUNTER, 0);
     }
-    StringCopy(gStringVar1, gSpeciesInfo[VarGet(VAR_RESORT_GORGEOUS_REQUESTED_MON)].speciesName);
+    StringCopy(gStringVar1, GetSpeciesName(VarGet(VAR_RESORT_GORGEOUS_REQUESTED_MON)));
 }
 
 static enum Species SampleResortGorgeousMon(void)

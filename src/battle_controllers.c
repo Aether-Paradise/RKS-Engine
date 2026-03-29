@@ -3085,7 +3085,7 @@ static u32 ReturnAnimIdForBattler(bool32 wasPlayerSideKnockedOut, u32 specificBa
 {
     enum Species species = GetBattlerVisualSpecies(specificBattler);
     if (wasPlayerSideKnockedOut)
-        return gSpeciesInfo[species].frontAnimId;
+        return GetSpeciesFrontAnimId(species);
     else
         return GetSpeciesBackAnimSet(species);
 }

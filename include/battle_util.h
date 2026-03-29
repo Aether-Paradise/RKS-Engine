@@ -277,7 +277,6 @@ uq4_12_t GetBadgeBoostModifier(void);
 enum DamageCategory GetBattleMoveCategory(enum Move move);
 void SetDynamicMoveCategory(enum BattlerId battlerAtk, enum BattlerId battlerDef, enum Move move);
 bool32 CanFling(enum BattlerId battlerAtk, enum Ability abilityAtk);
-bool32 IsTelekinesisBannedSpecies(enum Species species);
 bool32 IsHealBlockPreventingMove(enum BattlerId battler, enum Move move);
 bool32 IsGravityPreventingMove(enum Move move);
 bool32 IsBelchPreventingMove(enum BattlerId battler, enum Move move);
@@ -412,5 +411,6 @@ void SetOrClearRageVolatile(void);
 enum BattlerId GetTargetBySlot(enum BattlerId battlerAtk, enum BattlerId battlerDef);
 bool32 IsNaturalEnemy(enum Species speciesAttacker, enum Species speciesTarget);
 enum Stat GetDownloadStat(enum BattlerId battler);
+enum Species GetBattlerBaseSpecies(enum BattlerId battler);
 
 #endif // GUARD_BATTLE_UTIL_H

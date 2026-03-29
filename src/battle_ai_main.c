@@ -2863,7 +2863,7 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
          || gBattleMons[battlerDef].volatiles.smackDown
          || gFieldStatuses & STATUS_FIELD_GRAVITY
          || aiData->holdEffects[battlerDef] == HOLD_EFFECT_IRON_BALL
-         || IsTelekinesisBannedSpecies(gBattleMons[battlerDef].species)
+         || IsSpeciesTelekinesisBanned(gBattleMons[battlerDef].species)
          || PartnerMoveIsSameAsAttacker(BATTLE_PARTNER(battlerAtk), battlerDef, move, aiData->partnerMove))
             ADJUST_SCORE(-10);
         break;

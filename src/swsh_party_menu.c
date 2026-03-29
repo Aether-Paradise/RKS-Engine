@@ -7367,8 +7367,9 @@ void ItemUseCB_RareCandy(u8 taskId, TaskFunc task)
             }
             else // Exp Candies
             {
-                u32 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
-                u32 totalExp = gExperienceTables[gSpeciesInfo[species].growthRate][currentLevelCap] - gExperienceTables[gSpeciesInfo[species].growthRate][sInitialLevel];
+                enum Species species = GetMonData(mon, MON_DATA_SPECIES, NULL);
+                enum GrowthRate growthRate = GetSpeciesGrowthRate(species);
+                u32 totalExp = gExperienceTables[growthRate][currentLevelCap] - gExperienceTables[growthRate][sInitialLevel];
                 u16 candyExp = sExpCandyExperienceTable[tHoldEffectParam - 1];
                 u16 candyCount = (totalExp + candyExp - 1) / candyExp;
 
@@ -8996,7 +8997,7 @@ static bool8 GetBattleEntryEligibility(struct Pokemon *mon)
         return TRUE;
     default: // Battle Frontier
         species = GetMonData(mon, MON_DATA_SPECIES);
-        if (gSpeciesInfo[species].isFrontierBanned)
+        if (IsSpeciesFrontierBanned(species))
             return FALSE;
         return TRUE;
     }
