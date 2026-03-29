@@ -241,6 +241,7 @@ static void FillTrainerParty(u16 trainerId, u8 firstMonId, u8 monCount)
         }
         return;
     }
+#if FREE_FRONTIER_APPRENTICES == FALSE
     else
     {
         // Apprentice.
@@ -248,6 +249,7 @@ static void FillTrainerParty(u16 trainerId, u8 firstMonId, u8 monCount)
             CreateApprenticeMon(&gEnemyParty[i], &gSaveBlock2Ptr->apprentices[trainerId - TRAINER_RECORD_MIXING_APPRENTICE], i - firstMonId);
         return;
     }
+#endif //FREE_FRONTIER_APPRENTICES
 
     // Regular battle frontier trainer.
     // Attempt to fill the trainer's party with random Pokémon until 3 have been

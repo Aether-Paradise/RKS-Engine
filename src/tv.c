@@ -1965,7 +1965,6 @@ void AlertTVThatPlayerPlayedRoulette(u16 nCoinsSpent)
 static void SecretBaseVisit_CalculateDecorationData(TVShow *show)
 {
     u8 decorationsBuffer[DECOR_MAX_SECRET_BASE] = {0};
-    u8 decoration;
     u8 n = 0;
 
     for (u32 i = 0; i < DECOR_MAX_SECRET_BASE; i++)
@@ -1975,7 +1974,7 @@ static void SecretBaseVisit_CalculateDecorationData(TVShow *show)
     // Count (and save) the unique decorations in the base
     for (u32 i = 0; i < DECOR_MAX_SECRET_BASE; i++)
     {
-        decoration = gSaveBlock1Ptr->secretBases[0].decorations[i];
+        u8 decoration = gSaveBlock1Ptr->secretBases[0].decorations[i];
         if (decoration != DECOR_NONE)
         {
             // Search for an empty spot to save decoration

@@ -1,3 +1,4 @@
+#if FREE_FRONTIER_APPRENTICES == FALSE
 // data/text/apprentice.inc
 extern const u8 gText_ApprenticePleaseTeach0[];
 extern const u8 gText_ApprenticePleaseTeach1[];
@@ -567,6 +568,7 @@ static const u8 *const sApprenticeChallengeTexts[NUM_APPRENTICES] =
     gText_ApprenticeChallenge14,
     gText_ApprenticeChallenge15,
 };
+#endif //FREE_FRONTIER_APPRENTICES
 
 // The possible questions to ask after the initial 3 WHICH MON questions. Retrieved from here and shuffled
 // WHAT_ITEM has max 3 occurrences, one for each party member
