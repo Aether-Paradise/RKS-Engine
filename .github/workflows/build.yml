@@ -54,7 +54,15 @@ jobs:
           GAME_VERSION: EMERALD
           OVR_RKSE_PARTY_MENU_DESIGN: PARTY_MENU_DESIGN_SWSH
         run: |
-          make touch-config_overrides
+          make touch-config_party_menu
+          make -j${nproc} -O all
+
+      - name: ROM (Emerald) - Override save configs
+        env:
+          GAME_VERSION: EMERALD
+          OVR_RKSE_FREE_SAVE: FALSE
+        run: |
+          make touch-config_save
           make -j${nproc} -O all
 
   build-firered:
@@ -92,6 +100,20 @@ jobs:
       - name: ROM (Firered)
         run: make firered -j$(nproc) -O
 
+      - name: ROM (Firered) - Override RKSE_PARTY_MENU_DESIGN (SwSh)
+        env:
+          OVR_RKSE_PARTY_MENU_DESIGN: PARTY_MENU_DESIGN_SWSH
+        run: |
+          make touch-config_party_menu
+          make firered -j${nproc} -O all
+
+      - name: ROM (Firered) - Override save configs
+        env:
+          OVR_RKSE_FREE_SAVE: FALSE
+        run: |
+          make touch-config_save
+          make firered -j${nproc} -O all
+
   build-leafgreen:
     if: github.actor != 'allcontributors[bot]'
     runs-on: ubuntu-latest
@@ -126,6 +148,20 @@ jobs:
 
       - name: ROM (Leafgreen)
         run: make leafgreen -j$(nproc) -O
+
+      - name: ROM (Leafgreen) - Override RKSE_PARTY_MENU_DESIGN (SwSh)
+        env:
+          OVR_RKSE_PARTY_MENU_DESIGN: PARTY_MENU_DESIGN_SWSH
+        run: |
+          make touch-config_party_menu
+          make leafgreen -j${nproc} -O all
+
+      - name: ROM (Leafgreen) - Override save configs
+        env:
+          OVR_RKSE_FREE_SAVE: FALSE
+        run: |
+          make touch-config_save
+          make leafgreen -j${nproc} -O all
 
   release:
     if: github.actor != 'allcontributors[bot]'

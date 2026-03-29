@@ -282,9 +282,6 @@ struct Pokedex
     /*0x04*/ u32 unownPersonality; // set when you first see Unown
     /*0x08*/ u32 spindaPersonality; // set when you first see Spinda
     /*0x0C*/ u32 unknown3;
-#if FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK2 == FALSE
-    /*0x10*/ u8 filler[0x68]; // Previously Dex Flags, feel free to remove.
-#endif //FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK2
 };
 
 struct PokemonJumpRecords
@@ -1116,9 +1113,6 @@ struct SaveBlock1
     /*0x560 -> 0x848 is bag storage*/
     /*0x560*/ struct Bag bag;
     /*0x848*/ struct Pokeblock pokeblocks[POKEBLOCKS_COUNT];
-#if FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK1 == FALSE
-    /*0x988*/ u8 filler1[0x34]; // Previously Dex Flags, feel free to remove.
-#endif //FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK1
     /*0x9BC*/ u16 berryBlenderRecords[3];
     /*0x9C2*/ u8 unused_9C2[6];
 #if FREE_MATCH_CALL == FALSE
