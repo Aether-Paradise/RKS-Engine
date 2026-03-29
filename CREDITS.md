@@ -1,6 +1,8 @@
 ## RKS-Engine Credits ✨
+- ### ketsuban
+  - [Backup save removal tutorial](https://github.com/pret/pokeemerald/wiki/Remove-the-backup-save-file)
 - ### Montblanc
-  - Sword and Shield Party Menu
+  - [Sword and Shield Party Menu](https://github.com/TeamAquasHideout/Team-Aquas-Asset-Repo/wiki/Feature-Branches#swsh-party-menu)
 
 ## Expansion Credits ✨
 
