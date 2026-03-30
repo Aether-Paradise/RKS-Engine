@@ -5769,12 +5769,12 @@ static bool32 IsEasyChatIndexAndGroupUnlocked(u16 wordIndex, u8 groupId)
 {
     switch (groupId)
     {
-    case EC_GROUP_POKEMON:
-        return GetSetPokedexFlag(SpeciesToNationalPokedexNum(wordIndex), FLAG_GET_SEEN);
     case EC_GROUP_POKEMON_NATIONAL:
-        if (IsRestrictedWordSpecies(wordIndex))
-            GetSetPokedexFlag(SpeciesToNationalPokedexNum(wordIndex), FLAG_GET_SEEN);
-        return TRUE;
+        if (!IsRestrictedWordSpecies(wordIndex))
+            return IsSpeciesEnabled(wordIndex);
+        // fallthrough
+    case EC_GROUP_POKEMON:
+        return IsSpeciesEnabled(wordIndex) && GetSetPokedexFlag(SpeciesToNationalPokedexNum(wordIndex), FLAG_GET_SEEN);
     case EC_GROUP_MOVE_1:
     case EC_GROUP_MOVE_2:
         return TRUE;
