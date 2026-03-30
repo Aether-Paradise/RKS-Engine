@@ -5723,10 +5723,7 @@ static u16 SetSelectedWordGroup_GroupMode(u16 groupId)
         for (i = 0, totalWords = 0; i < numWords; i++)
         {
             if (IsEasyChatIndexAndGroupUnlocked(list[i], groupId))
-            {
                 sWordData->selectedGroupWords[totalWords++] = EC_WORD(groupId, list[i]);
-                DebugPrintf("i:%d, ID:%d, %S", i, list[i], GetSpeciesName(list[i]));
-            }
         }
 
         return totalWords;
