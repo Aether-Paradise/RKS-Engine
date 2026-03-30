@@ -204,8 +204,8 @@ static void PrintKeyboardGroupNames(void);
 static void PrintKeyboardAlphabet(void);
 static void PrintInitialWordSelectText(void);
 static const u8 *GetEasyChatWordGroupName(u8);
-static void PrintWordSelectText(u8, u8);
-static void EraseWordSelectRows(u8, u8);
+static void PrintWordSelectText(u16, u16);
+static void EraseWordSelectRows(u16, u16);
 static void DrawLowerWindowFrame(u8);
 static void BufferLowerWindowFrame(int, int, int, int);
 static void SetRectangleCursorPos_GroupMode(s8, s8);
@@ -2742,7 +2742,7 @@ static void GetWordSelectColAndRow(s8 *column, s8 *row)
     *row = sEasyChatScreen->wordSelectRow;
 }
 
-static u8 GetWordSelectScrollOffset(void)
+static u16 GetWordSelectScrollOffset(void)
 {
     return sEasyChatScreen->wordSelectScrollOffset;
 }
@@ -4244,29 +4244,29 @@ static void PrintInitialWordSelectText(void)
 
 static void PrintWordSelectNextRowDown(void)
 {
-    u8 wordScroll = GetWordSelectScrollOffset() + NUM_WORD_SELECT_ROWS - 1;
+    u16 wordScroll = GetWordSelectScrollOffset() + NUM_WORD_SELECT_ROWS - 1;
     EraseWordSelectRows(wordScroll, 1);
     PrintWordSelectText(wordScroll, 1);
 }
 
 static void PrintWordSelectNextRowUp(void)
 {
-    u8 wordScroll = GetWordSelectScrollOffset();
+    u16 wordScroll = GetWordSelectScrollOffset();
     EraseWordSelectRows(wordScroll, 1);
     PrintWordSelectText(wordScroll, 1);
 }
 
 static void PrintWordSelectRowsPageDown(void)
 {
-    u8 wordScroll = GetWordSelectScrollOffset();
-    u8 maxScroll = wordScroll + NUM_WORD_SELECT_ROWS;
+    u16 wordScroll = GetWordSelectScrollOffset();
+    u16 maxScroll = wordScroll + NUM_WORD_SELECT_ROWS;
     u8 maxRows = GetWordSelectLastRow() + 1;
     if (maxScroll > maxRows)
         maxScroll = maxRows;
 
     if (wordScroll < maxScroll)
     {
-        u8 numRows = maxScroll - wordScroll;
+        u16 numRows = maxScroll - wordScroll;
         EraseWordSelectRows(wordScroll, numRows);
         PrintWordSelectText(wordScroll, numRows);
     }
@@ -4274,11 +4274,11 @@ static void PrintWordSelectRowsPageDown(void)
 
 static void PrintWordSelectRowsPageUp(void)
 {
-    u8 wordScroll = GetWordSelectScrollOffset();
+    u16 wordScroll = GetWordSelectScrollOffset();
     u8 windowScroll = GetLowerWindowScrollOffset();
     if (wordScroll < windowScroll)
     {
-        u8 numRows = windowScroll - wordScroll;
+        u16 numRows = windowScroll - wordScroll;
         EraseWordSelectRows(wordScroll, numRows);
         PrintWordSelectText(wordScroll, numRows);
     }
@@ -4286,7 +4286,7 @@ static void PrintWordSelectRowsPageUp(void)
 
 // Print the easy chat words available for selection in
 // the currently selected group and at the given offset and row
-static void PrintWordSelectText(u8 scrollOffset, u8 numRows)
+static void PrintWordSelectText(u16 scrollOffset, u16 numRows)
 {
     int i, j;
     u16 easyChatWord;
@@ -4317,7 +4317,7 @@ static void PrintWordSelectText(u8 scrollOffset, u8 numRows)
     CopyWindowToVram(WIN_INPUT_SELECT, COPYWIN_GFX);
 }
 
-static void EraseWordSelectRows(u8 scrollOffset, u8 numRows)
+static void EraseWordSelectRows(u16 scrollOffset, u16 numRows)
 {
     int y;
     int var0;
@@ -5714,7 +5714,7 @@ static u16 SetSelectedWordGroup_GroupMode(u16 groupId)
     int totalWords;
     const u16 *list;
     const struct EasyChatWordInfo *wordInfo;
-    u16 numWords = gEasyChatGroups[groupId].numWords;
+    u16 numWords = min(EC_MAX_WORDS_IN_GROUP, gEasyChatGroups[groupId].numWords);
 
     if (groupId == EC_GROUP_POKEMON || groupId == EC_GROUP_POKEMON_NATIONAL
      || groupId == EC_GROUP_MOVE_1  || groupId == EC_GROUP_MOVE_2)
@@ -5723,7 +5723,10 @@ static u16 SetSelectedWordGroup_GroupMode(u16 groupId)
         for (i = 0, totalWords = 0; i < numWords; i++)
         {
             if (IsEasyChatIndexAndGroupUnlocked(list[i], groupId))
+            {
                 sWordData->selectedGroupWords[totalWords++] = EC_WORD(groupId, list[i]);
+                DebugPrintf("i:%d, ID:%d, %S", i, list[i], GetSpeciesName(list[i]));
+            }
         }
 
         return totalWords;
