@@ -703,7 +703,7 @@ static const u16 sBerryMasterWifePhrases[][2] = {
     [PHRASE_CHALLENGE_CONTEST - 1]   = {EC_WORD_CHALLENGE, EC_WORD_CONTEST},
     [PHRASE_OVERWHELMING_LATIAS - 1] = {EC_WORD_OVERWHELMING, EC_POKEMON(LATIAS)},
     [PHRASE_COOL_LATIOS - 1]         = {EC_WORD_COOL, EC_POKEMON(LATIOS)},
-    [PHRASE_SUPER_HUSTLE - 1]        = {EC_WORD_SUPER, EC_WORD_HUSTLE},
+    [PHRASE_SUPER_HUSTLE - 1]        = {EC_WORD_SUPER, EC_ABILITY(HUSTLE)},
 };
 
 static const u16 sTriangleCursor_Pal[] = INCBIN_U16("graphics/easy_chat/triangle_cursor.gbapal");
@@ -5075,7 +5075,6 @@ static bool8 IsEasyChatGroupUnlocked(u8 groupId)
     case EC_GROUP_EVENTS:
     case EC_GROUP_MOVE_1:
     case EC_GROUP_MOVE_2:
-        return FlagGet(FLAG_SYS_GAME_CLEAR);
     case EC_GROUP_POKEMON_NATIONAL:
         return EasyChatIsNationalPokedexEnabled();
     default:
@@ -5116,6 +5115,7 @@ static bool8 IsEasyChatWordInvalid(u16 easyChatWord)
     case EC_GROUP_POKEMON_NATIONAL:
     case EC_GROUP_MOVE_1:
     case EC_GROUP_MOVE_2:
+    case EC_GROUP_ABILITY:
         list = gEasyChatGroups[groupId].wordData.valueList;
         for (i = 0; i < numWords; i++)
         {
@@ -5149,6 +5149,9 @@ bool8 IsBardWordInvalid(u16 easyChatWord)
     case EC_GROUP_MOVE_2:
         numWordsInGroup = gNumBardWords_Moves;
         break;
+    case EC_GROUP_ABILITY:
+        numWordsInGroup = gNumBardWords_Abilities;
+        break;
     default:
         numWordsInGroup = gEasyChatGroups[groupId].numWords;
         break;
@@ -5170,6 +5173,8 @@ static const u8 *GetEasyChatWord(u8 groupId, u16 index)
     case EC_GROUP_MOVE_1:
     case EC_GROUP_MOVE_2:
         return GetMoveName(index);
+    case EC_GROUP_ABILITY:
+        return GetAbilityName(index);
     default:
         return gEasyChatGroups[groupId].wordData.words[index].text;
     }
@@ -5318,7 +5323,8 @@ u16 GetRandomEasyChatWordFromGroup(u16 groupId)
     if (groupId == EC_GROUP_POKEMON
      || groupId == EC_GROUP_POKEMON_NATIONAL
      || groupId == EC_GROUP_MOVE_1
-     || groupId == EC_GROUP_MOVE_2)
+     || groupId == EC_GROUP_MOVE_2
+     || groupId == EC_GROUP_ABILITY)
     {
         index = gEasyChatGroups[groupId].wordData.valueList[index];
     }
@@ -5590,6 +5596,7 @@ static void SetUnlockedEasyChatGroups(void)
         sWordData->unlockedGroupIds[sWordData->numUnlockedGroups++] = EC_GROUP_MOVE_1;
         sWordData->unlockedGroupIds[sWordData->numUnlockedGroups++] = EC_GROUP_MOVE_2;
     }
+    sWordData->unlockedGroupIds[sWordData->numUnlockedGroups++] = EC_GROUP_ABILITY;
 
     if (FlagGet(FLAG_UNLOCKED_TRENDY_SAYINGS))
         sWordData->unlockedGroupIds[sWordData->numUnlockedGroups++] = EC_GROUP_TRENDY_SAYING;
@@ -5717,7 +5724,8 @@ static u16 SetSelectedWordGroup_GroupMode(u16 groupId)
     u16 numWords = min(EC_MAX_WORDS_IN_GROUP, gEasyChatGroups[groupId].numWords);
 
     if (groupId == EC_GROUP_POKEMON || groupId == EC_GROUP_POKEMON_NATIONAL
-     || groupId == EC_GROUP_MOVE_1  || groupId == EC_GROUP_MOVE_2)
+     || groupId == EC_GROUP_MOVE_1  || groupId == EC_GROUP_MOVE_2
+     || groupId == EC_GROUP_ABILITY)
     {
         list = gEasyChatGroups[groupId].wordData.valueList;
         for (i = 0, totalWords = 0; i < numWords; i++)
@@ -5777,6 +5785,7 @@ static bool32 IsEasyChatIndexAndGroupUnlocked(u16 wordIndex, u8 groupId)
         return IsSpeciesEnabled(wordIndex) && GetSetPokedexFlag(SpeciesToNationalPokedexNum(wordIndex), FLAG_GET_SEEN);
     case EC_GROUP_MOVE_1:
     case EC_GROUP_MOVE_2:
+    case EC_GROUP_ABILITY:
         return TRUE;
     case EC_GROUP_TRENDY_SAYING:
         return IsTrendySayingUnlocked(wordIndex);

@@ -29,6 +29,7 @@
 #include "data/bard_music/adjectives.h"
 #include "data/bard_music/events.h"
 #include "data/bard_music/trendysaying.h"
+#include "data/bard_music/abilities.h"
 
 static const struct BardSoundTemplate (*const sBardSoundTemplatesTable[EC_NUM_GROUPS])[MAX_BARD_SOUNDS_PER_WORD] = {
     [EC_GROUP_POKEMON]          = NULL, // Handled by sBardSoundTemplates_Pokemon
@@ -53,6 +54,7 @@ static const struct BardSoundTemplate (*const sBardSoundTemplatesTable[EC_NUM_GR
     [EC_GROUP_MOVE_2]           = NULL, // Handled by sBardSoundTemplates_Moves
     [EC_GROUP_TRENDY_SAYING]    = sBardSoundTemplates_TrendySaying,
     [EC_GROUP_POKEMON_NATIONAL] = NULL, // Handled by sBardSoundTemplates_Pokemon
+    [EC_GROUP_ABILITY]          = NULL, // Handled by sBardSoundTemplates_Abilities
 };
 
 // The pitch tables below will be indexed using the number of BardSoundTemplates per word, so a table is selected
@@ -209,6 +211,9 @@ const struct BardSoundTemplate *GetWordSoundTemplates(u16 easyChatWord)
     case EC_GROUP_MOVE_1:
     case EC_GROUP_MOVE_2:
         ptr = sBardSoundTemplates_Moves;
+        break;
+    case EC_GROUP_ABILITY:
+        ptr = sBardSoundTemplates_Abilities;
         break;
     default:
         ptr = sBardSoundTemplatesTable[category];
