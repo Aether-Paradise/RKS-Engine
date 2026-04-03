@@ -23,6 +23,7 @@
 #include "easy_chat_group_trendy_saying.h"
 #include "easy_chat_group_pokemon2.h"
 #include "easy_chat_group_ability.h"
+#include "easy_chat_group_move_3.h"
 
 const struct EasyChatGroup gEasyChatGroups[EC_NUM_GROUPS] = {
     [EC_GROUP_POKEMON] =
@@ -185,5 +186,12 @@ const struct EasyChatGroup gEasyChatGroups[EC_NUM_GROUPS] = {
         .wordData = {.valueList = gEasyChatGroup_Ability},
         .numWords = ARRAY_COUNT(gEasyChatGroup_Ability),
         .numEnabledWords = ARRAY_COUNT(gEasyChatGroup_Ability),
+    },
+    [EC_GROUP_MOVE_3] =
+    {
+        .name = COMPOUND_STRING("MOVE 3"),
+        .wordData = {.valueList = gEasyChatGroup_Move3},
+        .numWords = ARRAY_COUNT(gEasyChatGroup_Move3),
+        .numEnabledWords = ARRAY_COUNT(gEasyChatGroup_Move3),
     },
 };

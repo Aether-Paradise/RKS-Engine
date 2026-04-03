@@ -51,7 +51,8 @@
 #define EC_GROUP_TRENDY_SAYING    20
 #define EC_GROUP_POKEMON_NATIONAL 21
 #define EC_GROUP_ABILITY          22
-#define EC_NUM_GROUPS             23
+#define EC_GROUP_MOVE_3           23
+#define EC_NUM_GROUPS             24
 
 // TRAINER
 #define EC_WORD_I_CHOOSE_YOU  ((EC_GROUP_TRAINER << EC_MASK_BITS) | 0)
@@ -1048,6 +1049,7 @@
 #define EC_POKEMON_NATIONAL(mon) ((EC_GROUP_POKEMON_NATIONAL << EC_MASK_BITS) | SPECIES_##mon)
 #define EC_MOVE(move) ((EC_GROUP_MOVE_1 << EC_MASK_BITS) | MOVE_##move)
 #define EC_MOVE2(move) ((EC_GROUP_MOVE_2 << EC_MASK_BITS) | MOVE_##move)
+#define EC_MOVE3(move) ((EC_GROUP_MOVE_3 << EC_MASK_BITS) | MOVE_##move)
 #define EC_ABILITY(ability) ((EC_GROUP_ABILITY << EC_MASK_BITS) | ABILITY_##ability)
 
 #define EC_GROUP(word) ((word) >> EC_MASK_BITS)

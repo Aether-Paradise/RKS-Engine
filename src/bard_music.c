@@ -55,6 +55,7 @@ static const struct BardSoundTemplate (*const sBardSoundTemplatesTable[EC_NUM_GR
     [EC_GROUP_TRENDY_SAYING]    = sBardSoundTemplates_TrendySaying,
     [EC_GROUP_POKEMON_NATIONAL] = NULL, // Handled by sBardSoundTemplates_Pokemon
     [EC_GROUP_ABILITY]          = NULL, // Handled by sBardSoundTemplates_Abilities
+    [EC_GROUP_MOVE_3]           = NULL, // Handled by sBardSoundTemplates_Moves
 };
 
 // The pitch tables below will be indexed using the number of BardSoundTemplates per word, so a table is selected
@@ -210,6 +211,7 @@ const struct BardSoundTemplate *GetWordSoundTemplates(u16 easyChatWord)
         break;
     case EC_GROUP_MOVE_1:
     case EC_GROUP_MOVE_2:
+    case EC_GROUP_MOVE_3:
         ptr = sBardSoundTemplates_Moves;
         break;
     case EC_GROUP_ABILITY:
