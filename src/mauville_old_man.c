@@ -70,7 +70,7 @@ static const u8 *const sGiddyQuestions[GIDDY_MAX_QUESTIONS] = {
     GiddyText_SecretBasesAreSoWonderful
 };
 
-static void SetupBard(void)
+void SetupBard(void)
 {
     u16 i;
     struct MauvilleManBard *bard = &gSaveBlock1Ptr->oldMan.bard;

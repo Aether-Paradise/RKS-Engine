@@ -27,6 +27,7 @@
 #include "main.h"
 #include "main_menu.h"
 #include "match_call.h"
+#include "mauville_old_man.h"
 #include "malloc.h"
 #include "map_name_popup.h"
 #include "menu.h"
@@ -352,6 +353,7 @@ static void DebugAction_Sound_SE(u8 taskId);
 static void DebugAction_Sound_SE_SelectId(u8 taskId);
 static void DebugAction_Sound_MUS(u8 taskId);
 static void DebugAction_Sound_MUS_SelectId(u8 taskId);
+static void DebugAction_Sound_PlayBardSong(u8 taskId);
 
 static void DebugAction_BerryFunctions_ClearAll(u8 taskId);
 static void DebugAction_BerryFunctions_Ready(u8 taskId);
@@ -403,6 +405,7 @@ extern const u8 Debug_EventScript_EWRAMCounters[];
 extern const u8 Debug_Follower_NPC_Event_Script[];
 extern const u8 Debug_Follower_NPC_Not_Enabled[];
 extern const u8 Debug_EventScript_Steven_Multi[];
+extern const u8 Debug_EventScript_PlayBardSong[];
 extern const u8 Debug_EventScript_WallyTutorial[];
 extern const u8 Debug_EventScript_PrintTimeOfDay[];
 extern const u8 Debug_EventScript_TellTheTime[];
@@ -678,8 +681,9 @@ static const struct DebugMenuOption sDebugMenu_Actions_Trainers[] =
 
 static const struct DebugMenuOption sDebugMenu_Actions_Sound[] =
 {
-    { COMPOUND_STRING("SFX…"),   DebugAction_Sound_SE },
-    { COMPOUND_STRING("Music…"), DebugAction_Sound_MUS },
+    { COMPOUND_STRING("SFX…"),           DebugAction_Sound_SE },
+    { COMPOUND_STRING("Music…"),         DebugAction_Sound_MUS },
+    { COMPOUND_STRING("Play Bard Song"), DebugAction_Sound_PlayBardSong },
     { NULL }
 };
 
@@ -4040,6 +4044,13 @@ static void DebugAction_Sound_MUS_SelectId(u8 taskId)
     {
         m4aSongNumStop(gTasks[taskId].tCurrentSong);
     }
+}
+
+static void DebugAction_Sound_PlayBardSong(u8 taskId)
+{
+    SetupBard();
+    SetMauvilleOldManObjEventGfx();
+    Debug_DestroyMenu_Full_Script(taskId, Debug_EventScript_PlayBardSong);
 }
 
 static const u32 gDebugFollowerNPCGraphics[] =

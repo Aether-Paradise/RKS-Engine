@@ -104,6 +104,8 @@ EWRAM_DATA u16 gFollowerSteps = 0;
 
 #include "data/abilities.h"
 
+
+
 // Used in an unreferenced function in RS.
 // Unreferenced here and in FRLG.
 struct CombinedMove

@@ -14,7 +14,8 @@
 
 ## New Features in RKS-Engine
 - ***Blank slate:*** Hoenn and Kanto maps have been removed to make room for your new maps!
-- ***More available Saveblock by default:***
+- ***Extended Easy Chat Support***: Added support for Gen4+ Species, Moves and Abilities.
+- ***More available Saveblock space by default:***
   - Most features that utilize SaveBlock space have been disabled by default. Check `include/config/save.h` to reenable them.
 - ***Reordered Species and Item IDs***: Pokémon and Items are now sorted by their introduction order to the series.
 - ***Config cleanup***: Configs has been removed due to redundancy:
