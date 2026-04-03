@@ -1,6 +1,14 @@
 ## RKS-Engine Credits ✨
-- ### Montblanc
+### Director
+- **AsparagusEduardo**
+  - Extended Easy Chat Support
+  - `FREE_SECRET_BASES` config
+  - `FREE_FRONTIER_APPRENTICES` config
+### Feature Devs
+- **Montblanc**
   - Sword and Shield Party Menu
+- **Kasen**
+  - DNS in battles
 
 ## Expansion Credits ✨
 
