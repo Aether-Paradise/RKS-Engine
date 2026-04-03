@@ -2,6 +2,8 @@
 
 **`RKS-Engine`** is NOT a game. It is a ROMHack base forked from [ROM-Hacking Hideout's `pokeemerald-expansion`](https://github.com/rh-hideout/pokeemerald-expansion). Please support their work, they've done amazing things for years now.
 
+***PLEASE NOTE: RKS-Engine is not yet ready for use. Any potential merge conflicts you may get will be your responsability.***
+
 The goal of this project is to introduce features and code changes that aren't within the scope of pokeemerald-expansion. I would highly recommend that any PRs for new features and changes should be discussed with the Expansion Senate over at the [ROM Hacking Hideout (RHH) Discord server](https://discord.gg/6CzjAG6GZk) before coming here, as there's the possibility that it may be accepted and then trickle down to this repo. I don't plan to remove any features from Expansion, but some implementations may differ.
 
 Documentation is WIP, since this is a fresh clone. 
