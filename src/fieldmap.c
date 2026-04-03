@@ -1,6 +1,7 @@
 #include "global.h"
 #include "battle_pyramid.h"
 #include "bg.h"
+#include "event_data.h"
 #include "fieldmap.h"
 #include "fldeff.h"
 #include "fldeff_misc.h"
@@ -1013,27 +1014,45 @@ static void LoadTilesetPalette(struct Tileset const *tileset, u16 destOffset, u1
 {
     if (tileset)
     {
+        const u16 (*palettes)[16] = {0};
+        switch (GetCurrentSeason())
+        {
+        case SEASON_COUNT:
+        case SEASON_SPRING:
+            palettes = tileset->palettes;
+            break;
+        case SEASON_SUMMER:
+            palettes = tileset->palettes_summer != NULL ? tileset->palettes_summer : tileset->palettes;
+            break;
+        case SEASON_AUTUMN:
+            palettes = tileset->palettes_autumn != NULL ? tileset->palettes_autumn : tileset->palettes;
+            break;
+        case SEASON_WINTER:
+            palettes = tileset->palettes_winter != NULL ? tileset->palettes_winter : tileset->palettes;
+            break;
+        }
+
         if (tileset->isSecondary == FALSE)
         {
             if (skipFaded)
-                CpuFastCopy(tileset->palettes, &gPlttBufferUnfaded[destOffset], size); // always word-aligned
+                CpuFastCopy(palettes, &gPlttBufferUnfaded[destOffset], size); // always word-aligned
             else
-                LoadPaletteFast(tileset->palettes, destOffset, size);
+                LoadPaletteFast(palettes, destOffset, size);
             gPlttBufferFaded[destOffset] = gPlttBufferUnfaded[destOffset] = RGB_BLACK;
-            ApplyGlobalTintToPaletteEntries(destOffset + 1, (size - 2) >> 1);
+            ApplyGlobalTintToPaletteEntries(destOffset + 1, (size - PLTT_SIZEOF(1)) >> 1);
         }
         else if (tileset->isSecondary == TRUE)
         {
             // All 'gTilesetPalettes_' arrays should have ALIGNED(4) in them,
             // but we use SmartCopy here just in case they don't
             if (skipFaded)
-                CpuCopy16(tileset->palettes[numPalsInPrimary], &gPlttBufferUnfaded[destOffset], size);
+                CpuCopy16(palettes[numPalsInPrimary], &gPlttBufferUnfaded[destOffset], size);
             else
-                LoadPaletteFast(tileset->palettes[numPalsInPrimary], destOffset, size);
+                LoadPaletteFast(palettes[numPalsInPrimary], destOffset, size);
         }
         else
         {
-            LoadPalette((const u16 *)tileset->palettes, destOffset, size);
+            LoadPalette((const u16 *)palettes, destOffset, size);
             ApplyGlobalTintToPaletteEntries(destOffset, size >> 1);
         }
     }
