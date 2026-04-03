@@ -42,6 +42,7 @@ struct BardSong
 
 extern const enum Species gNumBardWords_Species;
 extern const enum Move gNumBardWords_Moves;
+extern const enum Ability gNumBardWords_Abilities;
 
 const struct BardSoundTemplate *GetWordSoundTemplates(u16 easyChatWord);
 void CalcWordSounds(struct BardSong *song, u16 pitchTableIndex);

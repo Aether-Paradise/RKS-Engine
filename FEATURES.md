@@ -11,6 +11,16 @@
   - [Overworld improvements](#overworld-improvements)
   - [Developer tools](#developer-tools)
 
+## New Features in RKS-Engine
+- ***Blank slate:*** Hoenn and Kanto maps have been removed to make room for your new maps!
+- ***Extended Easy Chat Support***: Added support for Gen4+ Species, Moves and Abilities.
+- ***More available Saveblock space by default:***
+  - Most features that utilize SaveBlock space have been disabled by default. Check `include/config/save.h` to reenable them.
+- ***Reordered Species and Item IDs***: Pokémon and Items are now sorted by their introduction order to the series.
+- ***Config cleanup***: Configs has been removed due to redundancy:
+  - `FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK1`
+  - `FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK2`
+
 ## Configuration files
 A lot of features listed below can be turned off as desired. Check which ones in these files
 - [AI config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/ai.h)

@@ -765,6 +765,11 @@ extern const struct AbilityInfo gAbilitiesInfo[];
 extern const struct NatureInfo gNaturesInfo[];
 extern const struct BehaviorOWE gOWESpeciesBehavior[OWE_SPECIES_BEHAVIOR_COUNT];
 
+static inline const u8 *GetAbilityName(enum Ability ability)
+{
+    return gAbilitiesInfo[ability].name;
+}
+
 void ZeroBoxMonData(struct BoxPokemon *boxMon);
 void ZeroMonData(struct Pokemon *mon);
 void ZeroPartyMons(struct Pokemon *party);

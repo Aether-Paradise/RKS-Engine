@@ -109,8 +109,8 @@ static const u16 sQuizLadyQuestion3[QUIZ_QUESTION_LEN] =
     EC_WORD_QUES,
     EC_EMPTY_WORD,
     EC_WORD_LEVEL,
-    EC_WORD_INSOMNIA,
-    EC_WORD_CUTE_CHARM
+    EC_ABILITY(INSOMNIA),
+    EC_ABILITY(CUTE_CHARM)
 };
 
 static const u16 sQuizLadyQuestion4[QUIZ_QUESTION_LEN] =
@@ -147,9 +147,9 @@ static const u16 sQuizLadyQuestion6[QUIZ_QUESTION_LEN] =
     EC_MOVE2(CONFUSION),
     EC_WORD_QUES,
     EC_EMPTY_WORD,
-    EC_WORD_ILLUMINATE,
-    EC_WORD_OWN_TEMPO,
-    EC_WORD_SWIFT_SWIM
+    EC_ABILITY(ILLUMINATE),
+    EC_ABILITY(OWN_TEMPO),
+    EC_ABILITY(SWIFT_SWIM)
 };
 
 static const u16 sQuizLadyQuestion7[QUIZ_QUESTION_LEN] =
@@ -173,9 +173,9 @@ static const u16 sQuizLadyQuestion8[QUIZ_QUESTION_LEN] =
     EC_WORD_ESCAPE,
     EC_WORD_QUES,
     EC_EMPTY_WORD,
-    EC_WORD_RUN_AWAY,
-    EC_WORD_SHADOW_TAG,
-    EC_WORD_WONDER_GUARD
+    EC_ABILITY(RUN_AWAY),
+    EC_ABILITY(SHADOW_TAG),
+    EC_ABILITY(WONDER_GUARD)
 };
 
 static const u16 sQuizLadyQuestion9[QUIZ_QUESTION_LEN] =
@@ -186,9 +186,9 @@ static const u16 sQuizLadyQuestion9[QUIZ_QUESTION_LEN] =
     EC_WORD_POISON,
     EC_WORD_QUES,
     EC_EMPTY_WORD,
-    EC_WORD_GUTS,
-    EC_WORD_IMMUNITY,
-    EC_WORD_SHED_SKIN
+    EC_ABILITY(GUTS),
+    EC_ABILITY(IMMUNITY),
+    EC_ABILITY(SHED_SKIN)
 };
 
 static const u16 sQuizLadyQuestion10[QUIZ_QUESTION_LEN] =
@@ -289,10 +289,10 @@ static const struct LilycoveQuizLadyQuestions sQuizLadyQuestions[] =
     {.question = sQuizLadyQuestion3,  .answer = EC_WORD_LEVEL,      .prize = ITEM_TROPIC_MAIL},
     {.question = sQuizLadyQuestion4,  .answer = EC_WORD_FLOWERS,    .prize = ITEM_MAX_ETHER},
     {.question = sQuizLadyQuestion5,  .answer = EC_WORD_EGG,        .prize = ITEM_MAX_ETHER},
-    {.question = sQuizLadyQuestion6,  .answer = EC_WORD_OWN_TEMPO,  .prize = ITEM_MAX_ETHER},
+    {.question = sQuizLadyQuestion6,  .answer = EC_ABILITY(OWN_TEMPO),  .prize = ITEM_MAX_ETHER},
     {.question = sQuizLadyQuestion7,  .answer = EC_WORD_ROCK,       .prize = ITEM_WATMEL_BERRY},
-    {.question = sQuizLadyQuestion8,  .answer = EC_WORD_SHADOW_TAG, .prize = ITEM_BELUE_BERRY},
-    {.question = sQuizLadyQuestion9,  .answer = EC_WORD_IMMUNITY,   .prize = ITEM_DURIN_BERRY},
+    {.question = sQuizLadyQuestion8,  .answer = EC_ABILITY(SHADOW_TAG), .prize = ITEM_BELUE_BERRY},
+    {.question = sQuizLadyQuestion9,  .answer = EC_ABILITY(IMMUNITY),   .prize = ITEM_DURIN_BERRY},
     {.question = sQuizLadyQuestion10, .answer = EC_WORD_POKEMON,    .prize = ITEM_LUXURY_BALL},
     {.question = sQuizLadyQuestion11, .answer = EC_WORD_PC,         .prize = ITEM_TM_HYPER_BEAM},
     {.question = sQuizLadyQuestion12, .answer = EC_WORD_TELEVISION, .prize = ITEM_BIG_PEARL},
