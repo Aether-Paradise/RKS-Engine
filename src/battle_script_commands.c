@@ -1273,7 +1273,7 @@ static void Cmd_critcalc(void)
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
-static inline void CalculateAndSetMoveDamage(struct BattleContext *ctx)
+static inline void CalculateAndSetMoveDamage(struct DamageContext *ctx)
 {
     SetDynamicMoveCategory(gBattlerAttacker, ctx->battlerDef, gCurrentMove);
     ctx->isCrit = gSpecialStatuses[ctx->battlerDef].criticalHit;
@@ -1299,7 +1299,7 @@ static void Cmd_damagecalc(void)
         return;
     }
 
-    struct BattleContext ctx = {0};
+    struct DamageContext ctx = {0};
     ctx.battlerAtk = gBattlerAttacker;
     ctx.move = gCurrentMove;
     ctx.chosenMove = gChosenMove;
@@ -1342,7 +1342,7 @@ static void Cmd_typecalc(void)
 {
     CMD_ARGS();
 
-    struct BattleContext ctx = {0};
+    struct DamageContext ctx = {0};
     ctx.battlerAtk = gBattlerAttacker;
     ctx.battlerDef = gBattlerTarget;
     ctx.move = gCurrentMove;
@@ -7511,7 +7511,7 @@ static void Cmd_trysetrest(void)
 bool8 UproarWakeUpCheck(enum BattlerId battler)
 {
     enum BattlerId i;
-    bool32 hasSoundproof = (B_UPROAR_IGNORE_SOUNDPROOF < GEN_5 && GetBattlerAbility(battler) == ABILITY_SOUNDPROOF);
+    bool32 hasSoundproof = (GetConfig(B_UPROAR_IGNORE_SOUNDPROOF) < GEN_5 && GetBattlerAbility(battler) == ABILITY_SOUNDPROOF);
 
     for (i = 0; i < gBattlersCount; i++)
     {
@@ -12859,8 +12859,9 @@ void BS_TryWindRiderPower(void)
 
     enum BattlerId battler = GetBattlerForBattleScript(cmd->battler);
     enum Ability ability = GetBattlerAbility(battler);
-    if (IsBattlerAlly(battler, gBattlerAttacker)
-        && (ability == ABILITY_WIND_RIDER || ability == ABILITY_WIND_POWER))
+    if (IsBattlerAlive(battler)
+     && IsBattlerAlly(battler, gBattlerAttacker)
+     && (ability == ABILITY_WIND_RIDER || ability == ABILITY_WIND_POWER))
     {
         gLastUsedAbility = ability;
         RecordAbilityBattle(battler, gLastUsedAbility);
@@ -14027,16 +14028,18 @@ void BS_RestoreMovePp(void)
 void BS_TryActivateReceiver(void)
 {
     NATIVE_ARGS(u8 battler);
-    enum BattlerId battler = GetBattlerForBattleScript(cmd->battler);
-    gBattlerAbility = BATTLE_PARTNER(battler);
-    enum Ability partnerAbility = GetBattlerAbility(gBattlerAbility);
-    if (IsBattlerAlive(gBattlerAbility)
-        && (partnerAbility == ABILITY_RECEIVER || partnerAbility == ABILITY_POWER_OF_ALCHEMY)
-        && GetBattlerHoldEffectIgnoreAbility(battler) != HOLD_EFFECT_ABILITY_SHIELD
-        && !gAbilitiesInfo[gBattleMons[battler].ability].cantBeCopied)
+    enum BattlerId faintedBattler = GetBattlerForBattleScript(cmd->battler);
+    enum BattlerId receiverBattler = BATTLE_PARTNER(faintedBattler);
+    enum Ability receiverAbility = GetBattlerAbility(receiverBattler);
+
+    if (IsBattlerAlive(receiverBattler)
+     && (receiverAbility == ABILITY_RECEIVER || receiverAbility == ABILITY_POWER_OF_ALCHEMY)
+     && GetBattlerHoldEffectIgnoreAbility(receiverBattler) != HOLD_EFFECT_ABILITY_SHIELD
+     && !gAbilitiesInfo[gBattleMons[faintedBattler].ability].cantBeCopied)
     {
-        gBattleStruct->tracedAbility[gBattlerAbility] = gBattleMons[battler].ability; // re-using the variable for trace
-        gBattleScripting.battler = battler;
+        gBattlerAbility = receiverBattler;
+        gBattleStruct->tracedAbility[receiverBattler] = gBattleMons[faintedBattler].ability; // re-using the variable for trace
+        gBattleScripting.battler = faintedBattler;
         BattleScriptPush(cmd->nextInstr);
         gBattlescriptCurrInstr = BattleScript_ReceiverActivates;
     }
@@ -14971,5 +14974,31 @@ void BS_UndoDynamax(void)
         return;
     }
 
+    gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
+void BS_TryWakeBattlersUproar(void)
+{
+    NATIVE_ARGS();
+
+    while (gBattleScripting.battler < gBattlersCount)
+    {
+        enum BattlerId battler = gBattleScripting.battler++;
+        bool32 hasSoundproof = GetConfig(B_UPROAR_IGNORE_SOUNDPROOF) < GEN_5 && GetBattlerAbility(battler) == ABILITY_SOUNDPROOF;
+
+        if (IsBattlerAlive(battler) && gBattleMons[battler].status1 & STATUS1_SLEEP && !hasSoundproof)
+        {
+            TryDeactivateSleepClause(GetBattlerSide(battler), gBattlerPartyIndexes[battler]);
+            gBattleMons[battler].status1 = 0;
+            gEffectBattler = battler;
+            BtlController_EmitSetMonData(battler, B_COMM_TO_CONTROLLER, REQUEST_STATUS_BATTLE, 0, sizeof(gBattleMons[battler].status1), &gBattleMons[battler].status1);
+            MarkBattlerForControllerExec(battler);
+
+            BattleScriptCall(BattleScript_TargetWokeUp);
+            return;
+        }
+    }
+
+    gBattleScripting.battler = 0;
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
