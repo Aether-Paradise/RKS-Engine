@@ -157,7 +157,8 @@
 #define B_COUNTER_TRY_HIT_PARTNER   GEN_LATEST // In Gen5+, if the user of the last attack is not on the field, it will be redirected to the partner. In Gen4-, Counter/Mirror Coat/Metal Burst would fail.
 #define B_RAGE_BUILDS               GEN_LATEST // In Gen4+, Rage's effect only sets in when it successfully hits. In Gen3, Rage's effect sets in regardless of whether it hits, misses or fails.
 #define B_CHECK_USER_FAILURE        GEN_LATEST // In Gen5+, The user no longer checks it's own failure, e.g. Soundproof will not block it's own Perish Song
-#define B_ABSORB_MESSAGE            GEN_LATEST // In Gen5+, No absorb message is played if user is already at full hp.
+#define B_ABSORB_MESSAGE            GEN_LATEST // In Gen5+, no absorb message is played if user is already at full hp.
+#define B_UPROAR                    GEN_LATEST // In Gen5+, Uproar awakens all battlers on the first turn if successful. In Gens 3-4, Uproar allows every battler to awaken before their action or at the end of a turn.
 
 // Ability settings
 #define B_GALE_WINGS                GEN_LATEST // In Gen7+ requires full HP to trigger.
@@ -424,7 +425,7 @@
 // Battle DNS settings
 // Requires OW_ENABLE_DNS to be set to TRUE in include/config/overworld.h
 #define B_APPLY_DNS_TO_BACKGROUND           TRUE     // Applies the day and night system to the background during battles (assuming the current map is also affected)
-#define B_APPLY_DNS_TO_SPRITES              FALSE    // Applies the day and night system to the Pokémon, trainers, and ball sprites during battles. Not vanilla game behavior
+#define B_APPLY_DNS_TO_SPRITES              TRUE    // Applies the day and night system to the Pokémon, trainers, and ball sprites during battles. Not vanilla game behavior
 #define B_SPRITE_BLEND_LEVEL                100      // How much the DNS blending affects the sprites on a 0-100 scale. 100 is fully applied DNS, 0 is no DNS blending at all
 #define B_BLEND_UI_EDGES                    TRUE     // Blends the edges of the vanilla battle UI to make it look a bit better. Recommended to set to FALSE if not using vanilla UI
 

@@ -1037,7 +1037,7 @@ static void HallOfFame_PrintMonInfo(struct HallofFameMon* currMon, u8 unused1, u
     if (currMon->species != SPECIES_EGG)
     {
         text[0] = CHAR_SLASH;
-        stringPtr = StringCopy(text + 1, gSpeciesInfo[currMon->species].speciesName);
+        stringPtr = StringCopy(text + 1, GetSpeciesName(currMon->species));
 
         if (currMon->species == SPECIES_NIDORAN_M || currMon->species == SPECIES_NIDORAN_F)
             gender = MON_GENDERLESS;
@@ -1076,7 +1076,7 @@ static void HallOfFame_PrintPlayerInfo(u8 unused1, u8 unused2)
     u8 text[20];
     u16 trainerId;
     s32 textWidth = sWindowTemplate.width * 8 - 6;
-    
+
     FillWindowPixelBuffer(1, PIXEL_FILL(1));
     PutWindowTilemap(1);
     DrawStdFrameWithCustomTileAndPalette(1, FALSE, 0x21D, 13);

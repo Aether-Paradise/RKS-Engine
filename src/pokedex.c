@@ -4626,7 +4626,7 @@ bool16 HasAllHoennMons(void)
     for (i = 0; i < HOENN_DEX_COUNT - 1; i++)
     {
         j = HoennToNationalOrder(i + 1);
-        if (!(gSpeciesInfo[j].isMythical && !gSpeciesInfo[j].dexForceRequired) && !GetSetPokedexFlag(j, FLAG_GET_CAUGHT))
+        if (!(IsSpeciesMythical(j) && !IsSpeciesDexForced(j)) && !GetSetPokedexFlag(j, FLAG_GET_CAUGHT))
             return FALSE;
     }
     return TRUE;
@@ -4640,7 +4640,7 @@ bool16 HasAllKantoMons(void)
     for (i = 0; i < KANTO_DEX_COUNT - 1; i++)
     {
         j = KantoToNationalOrder(i + 1);
-        if (!(gSpeciesInfo[j].isMythical && !gSpeciesInfo[j].dexForceRequired) && !GetSetPokedexFlag(j, FLAG_GET_CAUGHT))
+        if (!(IsSpeciesMythical(j) && !IsSpeciesDexForced(j)) && !GetSetPokedexFlag(j, FLAG_GET_CAUGHT))
             return FALSE;
     }
     return TRUE;
@@ -4653,7 +4653,7 @@ bool16 HasAllMons(void)
     for (i = 1; i < NATIONAL_DEX_COUNT + 1; i++)
     {
         j = NationalPokedexNumToSpecies(i);
-        if (!(gSpeciesInfo[j].isMythical && !gSpeciesInfo[j].dexForceRequired) && !GetSetPokedexFlag(j, FLAG_GET_CAUGHT))
+        if (!(IsSpeciesMythical(j) && !IsSpeciesDexForced(j)) && !GetSetPokedexFlag(j, FLAG_GET_CAUGHT))
             return FALSE;
     }
 
@@ -4815,7 +4815,7 @@ void DrawFootprint(u8 windowId, enum Species species)
     u32 i, j, tileIdx = 0;
 
 #if P_FOOTPRINTS
-    footprintGfx = gSpeciesInfo[SanitizeSpeciesId(species)].footprint;
+    footprintGfx = GetSpeciesFootprint(species);
 #else
     return;
 #endif
@@ -4910,26 +4910,22 @@ u16 CreateMonSpriteFromNationalDexNumber(enum NationalDexOrder nationalNum, s16 
 
 static u16 GetPokemonScaleFromNationalDexNumber(u16 nationalNum)
 {
-    nationalNum = NationalPokedexNumToSpecies(nationalNum);
-    return gSpeciesInfo[nationalNum].pokemonScale;
+    return GetSpeciesPokedexScale(NationalPokedexNumToSpecies(nationalNum));
 }
 
 static u16 GetPokemonOffsetFromNationalDexNumber(u16 nationalNum)
 {
-    nationalNum = NationalPokedexNumToSpecies(nationalNum);
-    return gSpeciesInfo[nationalNum].pokemonOffset;
+    return GetSpeciesPokedexOffset(NationalPokedexNumToSpecies(nationalNum));
 }
 
 static u16 GetTrainerScaleFromNationalDexNumber(u16 nationalNum)
 {
-    nationalNum = NationalPokedexNumToSpecies(nationalNum);
-    return gSpeciesInfo[nationalNum].trainerScale;
+    return GetSpeciesPokedexTrainerScale(NationalPokedexNumToSpecies(nationalNum));
 }
 
 static u16 GetTrainerOffsetFromNationalDexNumber(u16 nationalNum)
 {
-    nationalNum = NationalPokedexNumToSpecies(nationalNum);
-    return gSpeciesInfo[nationalNum].trainerOffset;
+    return GetSpeciesPokedexTrainerOffset(NationalPokedexNumToSpecies(nationalNum));
 }
 
 static u16 CreateSizeScreenTrainerPic(u16 species, s16 x, s16 y, s8 paletteSlot)
@@ -4981,7 +4977,7 @@ static int DoPokedexSearch(u8 dexMode, u8 order, u8 abcGroup, enum BodyColor bod
         {
             species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
 
-            if (bodyColor == gSpeciesInfo[species].bodyColor)
+            if (bodyColor == GetSpeciesBodyColor(species))
             {
                 sPokedexView->pokedexList[resultsCount] = sPokedexView->pokedexList[i];
                 resultsCount++;

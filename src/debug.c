@@ -27,6 +27,7 @@
 #include "main.h"
 #include "main_menu.h"
 #include "match_call.h"
+#include "mauville_old_man.h"
 #include "malloc.h"
 #include "map_name_popup.h"
 #include "menu.h"
@@ -352,6 +353,7 @@ static void DebugAction_Sound_SE(u8 taskId);
 static void DebugAction_Sound_SE_SelectId(u8 taskId);
 static void DebugAction_Sound_MUS(u8 taskId);
 static void DebugAction_Sound_MUS_SelectId(u8 taskId);
+static void DebugAction_Sound_PlayBardSong(u8 taskId);
 
 static void DebugAction_BerryFunctions_ClearAll(u8 taskId);
 static void DebugAction_BerryFunctions_Ready(u8 taskId);
@@ -403,6 +405,7 @@ extern const u8 Debug_EventScript_EWRAMCounters[];
 extern const u8 Debug_Follower_NPC_Event_Script[];
 extern const u8 Debug_Follower_NPC_Not_Enabled[];
 extern const u8 Debug_EventScript_Steven_Multi[];
+extern const u8 Debug_EventScript_PlayBardSong[];
 extern const u8 Debug_EventScript_WallyTutorial[];
 extern const u8 Debug_EventScript_PrintTimeOfDay[];
 extern const u8 Debug_EventScript_TellTheTime[];
@@ -678,8 +681,9 @@ static const struct DebugMenuOption sDebugMenu_Actions_Trainers[] =
 
 static const struct DebugMenuOption sDebugMenu_Actions_Sound[] =
 {
-    { COMPOUND_STRING("SFX…"),   DebugAction_Sound_SE },
-    { COMPOUND_STRING("Music…"), DebugAction_Sound_MUS },
+    { COMPOUND_STRING("SFX…"),           DebugAction_Sound_SE },
+    { COMPOUND_STRING("Music…"),         DebugAction_Sound_MUS },
+    { COMPOUND_STRING("Play Bard Song"), DebugAction_Sound_PlayBardSong },
     { NULL }
 };
 
@@ -1186,6 +1190,9 @@ static u8 Debug_CheckToggleFlags(u8 id)
         result = TRUE;
         for (u32 i = 0; i < ARRAY_COUNT(sLocationFlags); i++)
         {
+            if (sLocationFlags[i] == 0) // Location flags for Frlg are set to flag 0 in Emerald and vice versa
+                continue;
+
             if (!FlagGet(sLocationFlags[i]))
             {
                 result = FALSE;
@@ -2535,7 +2542,8 @@ static void DebugAction_FlagsVars_RunningShoes(u8 taskId)
 
 static void DebugAction_FlagsVars_ToggleFlyFlags(u8 taskId)
 {
-    if (FlagGet(sLocationFlags[ARRAY_COUNT(sLocationFlags) - 1]))
+    u32 checkedFlag = sLocationFlags[0] == 0 ? sLocationFlags[ARRAY_COUNT(sLocationFlags) - 1] : sLocationFlags[0];
+    if (FlagGet(checkedFlag))
     {
         PlaySE(SE_PC_OFF);
         for (u32 i = 0; i < ARRAY_COUNT(sLocationFlags); i++)
@@ -4040,6 +4048,13 @@ static void DebugAction_Sound_MUS_SelectId(u8 taskId)
     {
         m4aSongNumStop(gTasks[taskId].tCurrentSong);
     }
+}
+
+static void DebugAction_Sound_PlayBardSong(u8 taskId)
+{
+    SetupBard();
+    SetMauvilleOldManObjEventGfx();
+    Debug_DestroyMenu_Full_Script(taskId, Debug_EventScript_PlayBardSong);
 }
 
 static const u32 gDebugFollowerNPCGraphics[] =

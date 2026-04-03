@@ -42,6 +42,7 @@ struct BardSong
 
 extern const u16 gNumBardWords_Species;
 extern const u16 gNumBardWords_Moves;
+extern const u16 gNumBardWords_Abilities;
 
 const struct BardSoundTemplate *GetWordSoundTemplates(u16 easyChatWord);
 void CalcWordSounds(struct BardSong *song, u16 pitchTableIndex);

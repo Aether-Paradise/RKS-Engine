@@ -6,7 +6,6 @@ extern const struct SpritePalette gMonIconPaletteTable[];
 const u8 *GetMonIconTiles(enum Species species, u32 personality);
 const u8 *GetMonIconTilesIsEgg(enum Species species, u32 personality, bool32 isEgg);
 void TryLoadAllMonIconPalettesAtOffset(u16 offset);
-u8 GetValidMonIconPalIndex(enum Species species);
 const u8 *GetMonIconPtr(enum Species species, u32 personality);
 const u8 *GetMonIconPtrIsEgg(enum Species species, u32 personality, bool32 isEgg);
 const u16 *GetValidMonIconPalettePtr(enum Species species);
@@ -27,7 +26,5 @@ void LoadMonIconPalette(enum Species species);
 void LoadMonIconPalettePersonality(enum Species species, u32 personality);
 void SpriteCB_MonIcon(struct Sprite *sprite);
 void SetPartyHPBarSprite(struct Sprite *sprite, u8 animNum);
-u8 GetMonIconPaletteIndexFromSpecies(enum Species species);
-void SafeFreeMonIconPalette(enum Species species);
 
 #endif // GUARD_POKEMON_ICON_H

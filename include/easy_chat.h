@@ -22,21 +22,21 @@ struct EasyChatScreen
     /*0x00*/ u8 type;
     /*0x01*/ u8 templateId;
     /*0x02*/ u8 numColumns;
-    /*0x03*/ u8 numRows;
+    /*0x03*/ u16 numRows;
     /*0x04*/ u8 inputState;
     /*0x05*/ s8 mainCursorColumn;
-    /*0x06*/ s8 mainCursorRow;
+    /*0x06*/ s16 mainCursorRow;
     /*0x07*/ u8 maxWords;
     /*0x08*/ u8 inputStateBackup;
     /*0x09*/ bool8 inAlphabetMode;
     /*0x0A*/ s8 keyboardColumn;
     /*0x0B*/ s8 keyboardRow;
     /*0x0C*/ u8 keyboardScrollOffset;
-    /*0x0D*/ u8 keyboardLastRow;
-    /*0x0E*/ u8 wordSelectScrollOffset;
-    /*0x0F*/ u8 wordSelectLastRow;
+    /*0x0D*/ u16 keyboardLastRow;
+    /*0x0E*/ u16 wordSelectScrollOffset;
+    /*0x0F*/ s16 wordSelectLastRow;
     /*0x10*/ s8 wordSelectColumn;
-    /*0x11*/ s8 wordSelectRow;
+    /*0x11*/ s16 wordSelectRow;
     /*0x12*/ u8 displayedPersonType;
     /*0x13*/ u8 unused; // Set to 0, never read
     /*0x14*/ u8 quizTitle[32];
