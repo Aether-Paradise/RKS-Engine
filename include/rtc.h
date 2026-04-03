@@ -41,5 +41,6 @@ enum Weekday GetDayOfWeek(void);
 enum TimeOfDay GenConfigTimeOfDay(enum TimeOfDay timeOfDay);
 enum TimeOfDay TryIncrementTimeOfDay(enum TimeOfDay timeOfDay);
 enum TimeOfDay TryDecrementTimeOfDay(enum TimeOfDay timeOfDay);
+enum Season GetCurrentSeason(void);
 
 #endif // GUARD_RTC_UTIL_H
