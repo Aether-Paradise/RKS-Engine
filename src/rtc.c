@@ -2,6 +2,7 @@
 #include "battle_pike.h"
 #include "battle_pyramid.h"
 #include "datetime.h"
+#include "event_data.h"
 #include "rtc.h"
 #include "string_util.h"
 #include "strings.h"
