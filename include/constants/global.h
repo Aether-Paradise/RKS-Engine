@@ -231,4 +231,13 @@ enum Connection
 #include "config/test.h"
 #endif
 
+enum __attribute__((packed)) Season
+{
+    SEASON_SPRING,
+    SEASON_SUMMER,
+    SEASON_AUTUMN,
+    SEASON_WINTER,
+    SEASON_COUNT
+};
+
 #endif // GUARD_CONSTANTS_GLOBAL_H

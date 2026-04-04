@@ -2,6 +2,7 @@
 #include "battle_pike.h"
 #include "battle_pyramid.h"
 #include "datetime.h"
+#include "event_data.h"
 #include "rtc.h"
 #include "string_util.h"
 #include "strings.h"
@@ -491,4 +492,34 @@ enum TimeOfDay TryDecrementTimeOfDay(enum TimeOfDay timeOfDay)
 {
     timeOfDay = timeOfDay == TIME_FIRST ? TIME_LAST : timeOfDay - 1;
     return GenConfigTimeOfDay(timeOfDay);
+}
+
+// TODO: Change time offset to support month
+#define VAR_CURRENT_SEASON VAR_UNUSED_0x404E
+enum Season GetCurrentSeason(void)
+{
+    return VarGet(VAR_CURRENT_SEASON);
+    /*
+    switch (GetMonth())
+    {
+    default:
+        return OW_SEASON_FALLBACK;
+    case MONTH_JAN:
+    case MONTH_MAY:
+    case MONTH_SEP:
+        return SEASON_SPRING;
+    case MONTH_FEB:
+    case MONTH_JUN:
+    case MONTH_OCT:
+        return SEASON_SUMMER;
+    case MONTH_MAR:
+    case MONTH_JUL:
+    case MONTH_NOV:
+        return SEASON_AUTUMN;
+    case MONTH_APR:
+    case MONTH_AUG:
+    case MONTH_DEC:
+        return SEASON_WINTER;
+    }
+    */
 }
