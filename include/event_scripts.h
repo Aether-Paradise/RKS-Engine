@@ -411,6 +411,7 @@ extern const u8 EventScript_UseDefog[];
 
 //player pc
 extern const u8 EventScript_PalletTown_PlayersHouse_2F_ShutDownPC[];
+extern const u8 EventScript_DemoTown_StartHouse_2F_ShutDownPC[];
 extern const u8 LittlerootTown_BrendansHouse_2F_EventScript_TurnOffPlayerPC[];
 extern const u8 LittlerootTown_MaysHouse_2F_EventScript_TurnOffPlayerPC[];
 
@@ -547,6 +548,7 @@ extern const u8 MauvilleCity_PokemonCenter_1F_Text_HotSpringsStory[];
 extern const u8 LittlerootTown_BrendansHouse_2F_EventScript_PC[];
 extern const u8 LittlerootTown_MaysHouse_2F_EventScript_PC[];
 extern const u8 EventScript_PalletTown_PlayersHouse_2F_TurnOnPC[];
+extern const u8 EventScript_DemoTown_StartHouse_2F_TurnOnPC[];
 extern const u8 EventScript_PC[];
 extern const u8 EventScript_AccessPokemonBoxLink[];
 extern const u8 EventScript_TestSignpostMsg[];

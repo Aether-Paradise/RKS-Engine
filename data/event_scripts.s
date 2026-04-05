@@ -1744,3 +1744,9 @@ EventScript_PalletTown_PlayersHouse_2F_TurnOnPC::
 
 	.include "data/maps/DemoCave1F/scripts.inc"
 	.include "data/maps/DemoCave1F/text.inc"
+
+	.include "data/maps/DemoTown_StartHouse_1F/scripts.inc"
+	.include "data/maps/DemoTown_StartHouse_1F/text.inc"
+
+	.include "data/maps/DemoTown_StartHouse_2F/scripts.inc"
+	.include "data/maps/DemoTown_StartHouse_2F/text.inc"

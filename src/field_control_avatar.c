@@ -292,6 +292,7 @@ static bool8 TryStartInteractionScript(struct MapPosition *position, u16 metatil
     if (script != LittlerootTown_BrendansHouse_2F_EventScript_PC
      && script != LittlerootTown_MaysHouse_2F_EventScript_PC
      && script != EventScript_PalletTown_PlayersHouse_2F_TurnOnPC
+     && script != EventScript_DemoTown_StartHouse_2F_TurnOnPC
      && script != SecretBase_EventScript_PC
      && script != SecretBase_EventScript_RecordMixingPC
      && script != SecretBase_EventScript_DollInteract

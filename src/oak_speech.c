@@ -20,6 +20,7 @@
 #include "text_window.h"
 #include "util.h"
 #include "constants/rgb.h"
+#include "constants/rks_engine.h"
 #include "constants/songs.h"
 
 #if IS_FRLG
@@ -800,11 +801,21 @@ static void Task_NewGameScene(u8 taskId)
 
 static void ControlsGuide_LoadPage1(void)
 {
+    static const u8 sText_Unreleased[] = _(", Alpha Version");
     HofPCTopBar_PrintPair(gText_Controls, gText_Next, FALSE, 0, TRUE);
     sOakSpeechResources->windowIds[0] = AddWindow(sControlsGuide_WindowTemplates[sOakSpeechResources->currentPage]);
     PutWindowTilemap(sOakSpeechResources->windowIds[0]);
     FillWindowPixelBuffer(sOakSpeechResources->windowIds[0], PIXEL_FILL(0));
-    AddTextPrinterParameterized4(sOakSpeechResources->windowIds[0], FONT_NORMAL, 2, 0, 1, 1, sTextColor_White, 0, gControlsGuide_Text_Intro);
+    u8 *string = gStringVar1;
+    string = ConvertIntToDecimalStringN(string, RKSE_VERSION_MAJOR, STR_CONV_MODE_LEFT_ALIGN, 3);
+    *string++ = CHAR_PERIOD;
+    string = ConvertIntToDecimalStringN(string, RKSE_VERSION_MINOR, STR_CONV_MODE_LEFT_ALIGN, 3);
+    *string++ = CHAR_PERIOD;
+    string = ConvertIntToDecimalStringN(string, RKSE_VERSION_NON_BREAKING, STR_CONV_MODE_LEFT_ALIGN, 3);
+    if (!RKSE_TAGGED_RELEASE)
+        string = StringCopy(string, sText_Unreleased);
+    StringExpandPlaceholders(gStringVar4, gControlsGuide_Text_Intro);
+    AddTextPrinterParameterized4(sOakSpeechResources->windowIds[0], FONT_NORMAL, 2, 0, 1, 1, sTextColor_White, 0, gStringVar4);
     CopyWindowToVram(sOakSpeechResources->windowIds[0], COPYWIN_FULL);
     FillBgTilemapBufferRect_Palette0(1, 0x3000, 1, 3, 5, 16);
     CopyBgTilemapBufferToVram(1);

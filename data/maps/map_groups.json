@@ -1161,6 +1161,8 @@
     "DemoTown",
     "DemoRoute",
     "DemoDeoxysEvent",
-    "DemoCave1F"
+    "DemoCave1F",
+    "DemoTown_StartHouse_1F",
+    "DemoTown_StartHouse_2F"
   ]
 }

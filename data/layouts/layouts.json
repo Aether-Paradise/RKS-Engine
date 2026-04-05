@@ -10175,7 +10175,7 @@
       "border_width": 2,
       "border_height": 2,
       "primary_tileset": "gTileset_General_Frlg",
-      "secondary_tileset": "gTileset_CinnabarIsland",
+      "secondary_tileset": "gTileset_PalletTown",
       "border_filepath": "data/layouts/DemoTown/border.bin",
       "blockdata_filepath": "data/layouts/DemoTown/map.bin"
     },
@@ -10214,6 +10214,32 @@
       "secondary_tileset": "gTileset_Cave_Frlg",
       "border_filepath": "data/layouts/DemoCave1F/border.bin",
       "blockdata_filepath": "data/layouts/DemoCave1F/map.bin"
+    },
+    {
+      "id": "LAYOUT_DEMO_TOWN_START_HOUSE_1F",
+      "name": "DemoTown_StartHouse_1F_Layout",
+      "width": 13,
+      "height": 10,
+      "border_width": 2,
+      "border_height": 2,
+      "primary_tileset": "gTileset_BuildingFrlg",
+      "secondary_tileset": "gTileset_GenericBuilding1",
+      "border_filepath": "data/layouts/DemoTown_StartHouse_1F/border.bin",
+      "blockdata_filepath": "data/layouts/DemoTown_StartHouse_1F/map.bin",
+      "layout_version": "frlg"
+    },
+    {
+      "id": "LAYOUT_DEMO_TOWN_START_HOUSE_2F",
+      "name": "DemoTown_StartHouse_2F_Layout",
+      "width": 12,
+      "height": 9,
+      "border_width": 2,
+      "border_height": 2,
+      "primary_tileset": "gTileset_BuildingFrlg",
+      "secondary_tileset": "gTileset_GenericBuilding1",
+      "border_filepath": "data/layouts/DemoTown_StartHouse_2F/border.bin",
+      "blockdata_filepath": "data/layouts/DemoTown_StartHouse_2F/map.bin",
+      "layout_version": "frlg"
     }
   ]
 }

@@ -23,11 +23,11 @@
   "object_events": [],
   "warp_events": [
     {
-      "x": 9,
-      "y": 10,
+      "x": 3,
+      "y": 6,
       "elevation": 0,
-      "dest_map": "MAP_DEMO_TOWN",
-      "dest_warp_id": "0"
+      "dest_map": "MAP_DEMO_TOWN_START_HOUSE_1F",
+      "dest_warp_id": "1"
     }
   ],
   "coord_events": [],
