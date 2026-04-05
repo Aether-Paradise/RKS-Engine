@@ -843,8 +843,6 @@ gStdScripts_End::
 	.include "data/maps/SevenIsland_SevaultCanyon_Entrance_Frlg/scripts.inc"
 	.include "data/maps/SevenIsland_SevaultCanyon_Frlg/scripts.inc"
 	.include "data/maps/SevenIsland_TanobyRuins_Frlg/scripts.inc"
-	.include "data/maps/PalletTown_PlayersHouse_1F_Frlg/scripts.inc"
-	.include "data/maps/PalletTown_PlayersHouse_2F_Frlg/scripts.inc"
 	.include "data/maps/PalletTown_RivalsHouse_Frlg/scripts.inc"
 	.include "data/maps/PalletTown_ProfessorOaksLab_Frlg/scripts.inc"
 	.include "data/maps/ViridianCity_House_Frlg/scripts.inc"
@@ -1659,14 +1657,14 @@ EventScript_BrailleCursorWaitButton::
 	special BrailleCursorToggle
 	return
 
-EventScript_PalletTown_PlayersHouse_2F_ShutDownPC::
+EventScript_DemoTown_StartHouse_2F_ShutDownPC::
 	setvar VAR_0x8004, PC_LOCATION_PLAYER_HOUSE_FRLG
 	playse SE_PC_OFF
 	special DoPCTurnOffEffect
 	releaseall
 	end
 
-EventScript_PalletTown_PlayersHouse_2F_TurnOnPC::
+EventScript_DemoTown_StartHouse_2F_TurnOnPC::
 	lockall
 	setvar VAR_0x8004, PC_LOCATION_PLAYER_HOUSE_FRLG
 	special DoPCTurnOnEffect
