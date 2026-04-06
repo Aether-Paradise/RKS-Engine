@@ -4,7 +4,7 @@
 SINGLE_BATTLE_TEST("Mental Herb cures infatuation")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_MENTAL_HERB].holdEffect == HOLD_EFFECT_MENTAL_HERB);
+        ASSUME(GetItemHoldEffect(ITEM_MENTAL_HERB) == HOLD_EFFECT_MENTAL_HERB);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_MENTAL_HERB); Gender(MON_MALE); }
         OPPONENT(SPECIES_WOBBUFFET) { Gender(MON_FEMALE); }
     } WHEN {
@@ -23,7 +23,7 @@ SINGLE_BATTLE_TEST("Mental Herb cures Torment volatile status (Gen 5+)")
 {
     GIVEN {
         WITH_CONFIG(B_MENTAL_HERB, GEN_5);
-        ASSUME(gItemsInfo[ITEM_MENTAL_HERB].holdEffect == HOLD_EFFECT_MENTAL_HERB);
+        ASSUME(GetItemHoldEffect(ITEM_MENTAL_HERB) == HOLD_EFFECT_MENTAL_HERB);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_MENTAL_HERB); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -42,7 +42,7 @@ SINGLE_BATTLE_TEST("Mental Herb cures Disable volatile status (Gen 5+)")
 {
     GIVEN {
         WITH_CONFIG(B_MENTAL_HERB, GEN_5);
-        ASSUME(gItemsInfo[ITEM_MENTAL_HERB].holdEffect == HOLD_EFFECT_MENTAL_HERB);
+        ASSUME(GetItemHoldEffect(ITEM_MENTAL_HERB) == HOLD_EFFECT_MENTAL_HERB);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_MENTAL_HERB); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -66,7 +66,7 @@ SINGLE_BATTLE_TEST("Mental Herb cures Heal Block volatile status (Gen 5+)")
 
     GIVEN {
         WITH_CONFIG(B_MENTAL_HERB, GEN_5);
-        ASSUME(gItemsInfo[ITEM_MENTAL_HERB].holdEffect == HOLD_EFFECT_MENTAL_HERB);
+        ASSUME(GetItemHoldEffect(ITEM_MENTAL_HERB) == HOLD_EFFECT_MENTAL_HERB);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_MENTAL_HERB); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -89,7 +89,7 @@ SINGLE_BATTLE_TEST("Mental Herb cures Encore volatile status (Gen 5+)")
 {
     GIVEN {
         WITH_CONFIG(B_MENTAL_HERB, GEN_5);
-        ASSUME(gItemsInfo[ITEM_MENTAL_HERB].holdEffect == HOLD_EFFECT_MENTAL_HERB);
+        ASSUME(GetItemHoldEffect(ITEM_MENTAL_HERB) == HOLD_EFFECT_MENTAL_HERB);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_MENTAL_HERB); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -109,7 +109,7 @@ SINGLE_BATTLE_TEST("Mental Herb cures Taunt volatile status (Gen 5+)")
 {
     GIVEN {
         WITH_CONFIG(B_MENTAL_HERB, GEN_5);
-        ASSUME(gItemsInfo[ITEM_MENTAL_HERB].holdEffect == HOLD_EFFECT_MENTAL_HERB);
+        ASSUME(GetItemHoldEffect(ITEM_MENTAL_HERB) == HOLD_EFFECT_MENTAL_HERB);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_MENTAL_HERB); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -129,7 +129,7 @@ DOUBLE_BATTLE_TEST("Mental Herb cures volatile statuses in the following order -
 {
     GIVEN {
         WITH_CONFIG(B_MENTAL_HERB, GEN_5);
-        ASSUME(gItemsInfo[ITEM_MENTAL_HERB].holdEffect == HOLD_EFFECT_MENTAL_HERB);
+        ASSUME(GetItemHoldEffect(ITEM_MENTAL_HERB) == HOLD_EFFECT_MENTAL_HERB);
         PLAYER(SPECIES_WOBBUFFET) { Gender(MON_MALE); }
         PLAYER(SPECIES_WYNAUT);
         OPPONENT(SPECIES_WOBBUFFET) { Gender(MON_FEMALE); }

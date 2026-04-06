@@ -135,7 +135,7 @@ SINGLE_BATTLE_TEST("Ice Heal heals a battler from being frozen")
 SINGLE_BATTLE_TEST("Ice Heal heals a battler from frostbite")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_ICE_HEAL].battleUsage == EFFECT_ITEM_CURE_STATUS);
+        ASSUME(GetItemBattleUsage(ITEM_ICE_HEAL) == EFFECT_ITEM_CURE_STATUS);
         PLAYER(SPECIES_WOBBUFFET) { Status1(STATUS1_FROSTBITE); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
