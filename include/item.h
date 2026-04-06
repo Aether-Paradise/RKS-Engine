@@ -289,5 +289,6 @@ const void *GetItemIconPic(enum Item itemId);
 const u16 *GetItemIconPalette(enum Item itemId);
 bool32 ItemIsTMHM(enum Item itemId);
 bool32 ItemIsBerry(enum Item itemId);
+bool32 ItemIsMail(enum Item itemId);
 
 #endif // GUARD_ITEM_H
