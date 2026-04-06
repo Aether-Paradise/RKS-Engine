@@ -172,7 +172,7 @@ SINGLE_BATTLE_TEST("Future Sight breaks Focus Sash and doesn't make the holder e
 {
     GIVEN {
         ASSUME(GetMovePower(MOVE_PSYCHIC) > 0);
-        ASSUME(gItemsInfo[ITEM_FOCUS_SASH].holdEffect == HOLD_EFFECT_FOCUS_SASH);
+        ASSUME(GetItemHoldEffect(ITEM_FOCUS_SASH) == HOLD_EFFECT_FOCUS_SASH);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_PIDGEY) { Level(1); Item(ITEM_FOCUS_SASH); }
     } WHEN {

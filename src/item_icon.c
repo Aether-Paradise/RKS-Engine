@@ -156,31 +156,3 @@ u8 AddCustomItemIconSprite(const struct SpriteTemplate *customSpriteTemplate, u1
         return spriteId;
     }
 }
-
-const void *GetItemIconPic(enum Item itemId)
-{
-    if (itemId == ITEM_LIST_END)
-        return gItemIcon_ReturnToFieldArrow; // Use last icon, the "return to field" arrow
-    if (itemId >= ITEMS_COUNT)
-        return gItemsInfo[0].iconPic;
-    if (gItemsInfo[itemId].pocket == POCKET_TM_HM)
-    {
-        if (GetItemTMHMIndex(itemId) > NUM_TECHNICAL_MACHINES)
-            return gItemIcon_HM;
-        return gItemIcon_TM;
-    }
-
-    return gItemsInfo[itemId].iconPic;
-}
-
-const u16 *GetItemIconPalette(enum Item itemId)
-{
-    if (itemId == ITEM_LIST_END)
-        return gItemIconPalette_ReturnToFieldArrow;
-    if (itemId >= ITEMS_COUNT)
-        return gItemsInfo[0].iconPalette;
-    if (gItemsInfo[itemId].pocket == POCKET_TM_HM)
-        return gTypesInfo[GetMoveType(GetItemTMHMMoveId(itemId))].paletteTMHM;
-
-    return gItemsInfo[itemId].iconPalette;
-}

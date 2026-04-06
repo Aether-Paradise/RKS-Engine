@@ -19,8 +19,10 @@
   - Most features that utilize SaveBlock space have been disabled by default. Check `include/config/save.h` to reenable them.
 - ***Reordered Species and Item IDs***: Pokémon and Items are now sorted by their introduction order to the series.
 - ***Config cleanup***: Configs has been removed due to redundancy:
-  - `FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK1`
-  - `FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK2`
+  - Always `TRUE`:
+    - `FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK1`
+    - `FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK2`
+    - `EXPANSION_INTRO`
 
 ## Configuration files
 A lot of features listed below can be turned off as desired. Check which ones in these files

@@ -9,7 +9,7 @@ SINGLE_BATTLE_TEST("Unnerve prevents opposing Pokémon from eating their own ber
     PARAMETRIZE { mon = SPECIES_JOLTIK, ability = ABILITY_UNNERVE; }
     PARAMETRIZE { mon = SPECIES_CALYREX_ICE, ability = ABILITY_AS_ONE_ICE_RIDER; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_RAWST_BERRY].holdEffect == HOLD_EFFECT_CURE_BRN);
+        ASSUME(GetItemHoldEffect(ITEM_RAWST_BERRY) == HOLD_EFFECT_CURE_BRN);
         PLAYER(mon) { Ability(ability); }
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_RAWST_BERRY); Status1(STATUS1_BURN); }
     } WHEN {
@@ -107,8 +107,8 @@ DOUBLE_BATTLE_TEST("Unnerve stops applying on death but applies on revive")
     PARAMETRIZE { mon = SPECIES_JOLTIK, ability = ABILITY_UNNERVE; }
     PARAMETRIZE { mon = SPECIES_CALYREX_ICE, ability = ABILITY_AS_ONE_ICE_RIDER; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_RAWST_BERRY].holdEffect == HOLD_EFFECT_CURE_BRN);
-        ASSUME(gItemsInfo[ITEM_REVIVE].battleUsage == EFFECT_ITEM_REVIVE);
+        ASSUME(GetItemHoldEffect(ITEM_RAWST_BERRY) == HOLD_EFFECT_CURE_BRN);
+        ASSUME(GetItemBattleUsage(ITEM_REVIVE) == EFFECT_ITEM_REVIVE);
         PLAYER(SPECIES_WOBBUFFET);
         PLAYER(mon) { Ability(ability); HP(1); }
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_RAWST_BERRY); Status1(STATUS1_BURN); }

@@ -2895,7 +2895,7 @@ void SetMoveEffect(enum BattlerId battlerAtk, enum BattlerId effectBattler, enum
         }
         break;
     case MOVE_EFFECT_INCINERATE:
-        if ((gItemsInfo[gBattleMons[effectBattler].item].pocket == POCKET_BERRIES
+        if ((ItemIsBerry(gBattleMons[effectBattler].item)
          || (B_INCINERATE_GEMS >= GEN_6 && GetBattlerHoldEffect(effectBattler) == HOLD_EFFECT_GEMS))
          && abilities[effectBattler] != ABILITY_STICKY_HOLD)
         {
@@ -2915,7 +2915,7 @@ void SetMoveEffect(enum BattlerId battlerAtk, enum BattlerId effectBattler, enum
             // jaboca berry triggers instead of being stolen
             gBattlescriptCurrInstr = battleScript;
         }
-        else if (GetItemPocket(gBattleMons[effectBattler].item) == POCKET_BERRIES
+        else if (ItemIsBerry(gBattleMons[effectBattler].item)
             && abilities[effectBattler] != ABILITY_STICKY_HOLD)
         {
             // target loses their berry
@@ -3194,7 +3194,7 @@ void SetMoveEffect(enum BattlerId battlerAtk, enum BattlerId effectBattler, enum
 
             enum HoldEffect holdEffect = GetItemHoldEffect(item);
 
-            if (GetItemPocket(item) == POCKET_BERRIES)
+            if (ItemIsBerry(item))
             {
                 BattleScriptPush(battleScript);
                 gBattlescriptCurrInstr = BattleScript_EffectFlingConsumeBerry;
@@ -6557,7 +6557,7 @@ static void Cmd_setgravity(void)
 
 static bool32 TryCheekPouch(enum BattlerId battler, enum Item itemId, const u8 *nextInstr)
 {
-    if (GetItemPocket(itemId) == POCKET_BERRIES
+    if (ItemIsBerry(itemId)
         && GetBattlerAbility(battler) == ABILITY_CHEEK_POUCH
         && !gBattleMons[battler].volatiles.healBlock
         && GetBattlerPartyState(battler)->ateBerry
@@ -11119,7 +11119,7 @@ static void Cmd_givecaughtmon(void)
         if (B_RESTORE_HELD_BATTLE_ITEMS >= GEN_9)
         {
             u16 lostItem = gBattleStruct->itemLost[B_SIDE_OPPONENT][gBattlerPartyIndexes[GetCatchingBattler()]].originalItem;
-            if (lostItem != ITEM_NONE && GetItemPocket(lostItem) != POCKET_BERRIES)
+            if (lostItem != ITEM_NONE && !ItemIsBerry(lostItem))
                 SetMonData(caughtMon, MON_DATA_HELD_ITEM, &lostItem);  // Restore non-berry items
         }
 
@@ -11190,7 +11190,11 @@ static void Cmd_trysetcaughtmondexflags(void)
     else
     {
         HandleSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_SET_CAUGHT, personality);
-        gBattlescriptCurrInstr = cmd->nextInstr;
+        // Skip showing dex info if the Pokédex is not obtained
+        if (!FlagGet(FLAG_SYS_POKEDEX_GET))
+            gBattlescriptCurrInstr = cmd->failInstr;
+        else
+            gBattlescriptCurrInstr = cmd->nextInstr;
     }
 }
 
@@ -12822,7 +12826,7 @@ void BS_JumpIfNoBerry(void)
     NATIVE_ARGS(u8 battler, const u8 *jumpInstr);
 
     enum BattlerId battler = GetBattlerForBattleScript(cmd->battler);
-    if (GetItemPocket(gBattleMons[battler].item) == POCKET_BERRIES)
+    if (ItemIsBerry(gBattleMons[battler].item))
         gBattlescriptCurrInstr = cmd->nextInstr;
     else
         gBattlescriptCurrInstr = cmd->jumpInstr;
@@ -12830,7 +12834,7 @@ void BS_JumpIfNoBerry(void)
 
 static bool32 IsTeatimeAffected(enum BattlerId battler)
 {
-    if (GetItemPocket(gBattleMons[battler].item) != POCKET_BERRIES)
+    if (!ItemIsBerry(gBattleMons[battler].item))
         return FALSE;   // Only berries
     if (IsSemiInvulnerable(battler, CHECK_ALL))
         return FALSE;   // Teatime doesn't affected semi-invulnerable battlers
@@ -13288,8 +13292,7 @@ void BS_TryRecycleBerry(void)
 {
     NATIVE_ARGS(const u8 *failInstr);
     u16 *usedHeldItem = &GetBattlerPartyState(gBattlerTarget)->usedHeldItem;
-    if (gBattleMons[gBattlerTarget].item == ITEM_NONE
-        && GetItemPocket(*usedHeldItem) == POCKET_BERRIES)
+    if (gBattleMons[gBattlerTarget].item == ITEM_NONE && ItemIsBerry(*usedHeldItem))
     {
         gLastUsedItem = *usedHeldItem;
         *usedHeldItem = ITEM_NONE;
@@ -13635,7 +13638,7 @@ void BS_UpdateNick(void)
 void BS_JumpIfNotBerry(void)
 {
     NATIVE_ARGS(u8 battler, const u8 *jumpInstr);
-    if (GetItemPocket(gBattleMons[GetBattlerForBattleScript(cmd->battler)].item) == POCKET_BERRIES)
+    if (ItemIsBerry(gBattleMons[GetBattlerForBattleScript(cmd->battler)].item))
         gBattlescriptCurrInstr = cmd->nextInstr;
     else
         gBattlescriptCurrInstr = cmd->jumpInstr;
@@ -14776,7 +14779,7 @@ void BS_ConsumeBerry(void)
         gBattlescriptCurrInstr = cmd->nextInstr;
         return;
     }
-    if (GetItemPocket(gLastUsedItem) != POCKET_BERRIES)
+    if (!ItemIsBerry(gLastUsedItem))
     {
         gBattleScripting.overrideBerryRequirements = 0;
         gBattlescriptCurrInstr = cmd->nextInstr;

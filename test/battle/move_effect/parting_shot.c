@@ -111,7 +111,7 @@ SINGLE_BATTLE_TEST("Parting Shot: Mirror Armor switches the user even if reflect
     PARAMETRIZE { species = SPECIES_LUCARIO;   ability = ABILITY_INNER_FOCUS;     item = ITEM_CLEAR_AMULET; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_CLEAR_AMULET].holdEffect == HOLD_EFFECT_CLEAR_AMULET);
+        ASSUME(GetItemHoldEffect(ITEM_CLEAR_AMULET) == HOLD_EFFECT_CLEAR_AMULET);
         PLAYER(species) { Ability(ability); Item(item); Moves(MOVE_PARTING_SHOT); }
         PLAYER(SPECIES_WYNAUT);
         OPPONENT(SPECIES_CORVIKNIGHT) { Ability(ABILITY_MIRROR_ARMOR); }
@@ -214,7 +214,7 @@ SINGLE_BATTLE_TEST("Parting Shot: Stat drop prevention by abilities/items does n
 
     GIVEN {
         WITH_CONFIG(B_PARTING_SHOT_SWITCH, GEN_7);
-        ASSUME(gItemsInfo[ITEM_CLEAR_AMULET].holdEffect == HOLD_EFFECT_CLEAR_AMULET);
+        ASSUME(GetItemHoldEffect(ITEM_CLEAR_AMULET) == HOLD_EFFECT_CLEAR_AMULET);
         PLAYER(SPECIES_WOBBUFFET) { Moves(MOVE_PARTING_SHOT); }
         PLAYER(SPECIES_WYNAUT);
         OPPONENT(species) { Ability(ability); Item(item); }
@@ -326,7 +326,7 @@ SINGLE_BATTLE_TEST("Parting Shot: Stat drop prevention by abilities/items switch
 
     GIVEN {
         WITH_CONFIG(B_PARTING_SHOT_SWITCH, GEN_6);
-        ASSUME(gItemsInfo[ITEM_CLEAR_AMULET].holdEffect == HOLD_EFFECT_CLEAR_AMULET);
+        ASSUME(GetItemHoldEffect(ITEM_CLEAR_AMULET) == HOLD_EFFECT_CLEAR_AMULET);
         PLAYER(SPECIES_WOBBUFFET) { Moves(MOVE_PARTING_SHOT); }
         PLAYER(SPECIES_WYNAUT);
         OPPONENT(species) { Ability(ability); Item(item); }

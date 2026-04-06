@@ -152,8 +152,8 @@ AI_DOUBLE_BATTLE_TEST("AI considers status orbs and abilities for Trick/Bestow")
     PARAMETRIZE { move = MOVE_TRICK;  item = ITEM_FLAME_ORB; status = STATUS1_BURN;   species = SPECIES_RATTATA; ability = ABILITY_GUTS;        turnToTrick = 1; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_TOXIC_ORB].holdEffect == HOLD_EFFECT_TOXIC_ORB);
-        ASSUME(gItemsInfo[ITEM_FLAME_ORB].holdEffect == HOLD_EFFECT_FLAME_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_TOXIC_ORB) == HOLD_EFFECT_TOXIC_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_FLAME_ORB) == HOLD_EFFECT_FLAME_ORB);
         AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT);
         PLAYER(SPECIES_WOBBUFFET);
         PLAYER(SPECIES_WOBBUFFET);
@@ -193,7 +193,7 @@ AI_DOUBLE_BATTLE_TEST("AI gifts Utility Umbrella only when it removes the foe's 
     PARAMETRIZE { weatherSpecies = SPECIES_POLITOED; weatherAbility = ABILITY_DRIZZLE; targetSpecies = SPECIES_WINGULL;   targetAbility = ABILITY_HYDRATION;        attackerSpecies = SPECIES_WAILMER; attackerAbility = ABILITY_PRESSURE; expectTrick = TRUE; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_UTILITY_UMBRELLA].holdEffect == HOLD_EFFECT_UTILITY_UMBRELLA);
+        ASSUME(GetItemHoldEffect(ITEM_UTILITY_UMBRELLA) == HOLD_EFFECT_UTILITY_UMBRELLA);
         AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT | AI_FLAG_OMNISCIENT);
         PLAYER(targetSpecies) { Ability(targetAbility); }
         PLAYER(weatherSpecies) { Ability(weatherAbility); }
@@ -226,7 +226,7 @@ AI_DOUBLE_BATTLE_TEST("AI steals Utility Umbrella to handle sun and Dry Skin but
     PARAMETRIZE { weatherSpecies = SPECIES_POLITOED; weatherAbility = ABILITY_DRIZZLE; targetSpecies = SPECIES_WAILMER; targetAbility = ABILITY_PRESSURE; attackerSpecies = SPECIES_PARAS;     attackerAbility = ABILITY_DRY_SKIN;         expectTrick = FALSE; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_UTILITY_UMBRELLA].holdEffect == HOLD_EFFECT_UTILITY_UMBRELLA);
+        ASSUME(GetItemHoldEffect(ITEM_UTILITY_UMBRELLA) == HOLD_EFFECT_UTILITY_UMBRELLA);
         AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT | AI_FLAG_OMNISCIENT);
         PLAYER(targetSpecies) { Ability(targetAbility); Item(ITEM_UTILITY_UMBRELLA); }
         PLAYER(weatherSpecies) { Ability(weatherAbility); }
@@ -249,8 +249,8 @@ AI_DOUBLE_BATTLE_TEST("AI treats Harvest as a sun benefit only when a berry is i
     PARAMETRIZE { targetItem = ITEM_LEFTOVERS;  expectTrick = FALSE; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_UTILITY_UMBRELLA].holdEffect == HOLD_EFFECT_UTILITY_UMBRELLA);
-        ASSUME(GetItemPocket(ITEM_ORAN_BERRY) == POCKET_BERRIES);
+        ASSUME(GetItemHoldEffect(ITEM_UTILITY_UMBRELLA) == HOLD_EFFECT_UTILITY_UMBRELLA);
+        ASSUME(ItemIsBerry(ITEM_ORAN_BERRY));
         AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT | AI_FLAG_OMNISCIENT);
         PLAYER(SPECIES_EXEGGCUTE) { Ability(ABILITY_HARVEST); Item(targetItem); }
         PLAYER(SPECIES_TORKOAL) { Ability(ABILITY_DROUGHT); }
@@ -601,7 +601,7 @@ AI_DOUBLE_BATTLE_TEST("AI will choose Earthquake if it kills both opposing mons"
 
 AI_DOUBLE_BATTLE_TEST("AI will trigger its ally's Weakness Policy")
 {
-    ASSUME(gItemsInfo[ITEM_WEAKNESS_POLICY].holdEffect == HOLD_EFFECT_WEAKNESS_POLICY);
+    ASSUME(GetItemHoldEffect(ITEM_WEAKNESS_POLICY) == HOLD_EFFECT_WEAKNESS_POLICY);
     ASSUME(GetMoveTarget(MOVE_EARTHQUAKE) == TARGET_FOES_AND_ALLY);
     ASSUME(GetMoveType(MOVE_EARTHQUAKE) == TYPE_GROUND);
 

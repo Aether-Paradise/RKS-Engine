@@ -1640,11 +1640,11 @@ static u32 GetSwitchinSingleUseItemHealing(enum BattlerId battler, enum BattlerI
     enum Item aiItem = gAiLogicData->items[battler];
     u32 maxHP = gBattleMons[battler].maxHP;
     s32 itemHeal = 0;
-    
+
     // Check if we're at a single use healing item threshold
-    if (currentHP <= 0 
+    if (currentHP <= 0
      || gAiLogicData->abilities[battler] == ABILITY_KLUTZ
-     || (gAiLogicData->abilities[opposingBattler] == ABILITY_UNNERVE && GetItemPocket(aiItem) == POCKET_BERRIES))
+     || (gAiLogicData->abilities[opposingBattler] == ABILITY_UNNERVE && ItemIsBerry(aiItem)))
         return itemHeal;
 
     switch (GetItemHoldEffect(aiItem))
@@ -2792,7 +2792,7 @@ static void SetBattlerStatusForSwitchin(enum BattlerId battler)
             gBattleMons[battler].status1 = STATUS1_TOXIC_POISON;
             gBattleMons[battler].status1 += STATUS1_TOXIC_TURN(1);
         }
-    } 
+    }
 }
 
 static void SetBattlerStatStagesForSwitchin(enum BattlerId battler, enum BattlerId opposingBattler, u32 fieldStatus)

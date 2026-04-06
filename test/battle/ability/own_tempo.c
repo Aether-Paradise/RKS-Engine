@@ -132,7 +132,7 @@ SINGLE_BATTLE_TEST("Own Tempo cures confusion if it's obtained via Skill Swap")
 SINGLE_BATTLE_TEST("Own Tempo prevents confusion from items")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_BERSERK_GENE].holdEffect == HOLD_EFFECT_BERSERK_GENE);
+        ASSUME(GetItemHoldEffect(ITEM_BERSERK_GENE) == HOLD_EFFECT_BERSERK_GENE);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_SLOWPOKE) { Ability(ABILITY_OWN_TEMPO); Item(ITEM_BERSERK_GENE); }
     } WHEN {

@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_BERSERK_GENE].holdEffect == HOLD_EFFECT_BERSERK_GENE);
+    ASSUME(GetItemHoldEffect(ITEM_BERSERK_GENE) == HOLD_EFFECT_BERSERK_GENE);
 }
 
 SINGLE_BATTLE_TEST("Berserk Gene sharply raises attack at the start of a single battle", s16 damage)
@@ -268,7 +268,7 @@ SINGLE_BATTLE_TEST("Berserker Gene confusion can be healed with bag items")
     PARAMETRIZE { item = ITEM_BIG_MALASADA; }
     PARAMETRIZE { item = ITEM_JUBILIFE_MUFFIN; }
     GIVEN {
-        ASSUME(gItemsInfo[item].battleUsage == EFFECT_ITEM_CURE_STATUS);
+        ASSUME(GetItemBattleUsage(item) == EFFECT_ITEM_CURE_STATUS);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_BERSERK_GENE); }
         OPPONENT(SPECIES_GENGAR);
     } WHEN {
@@ -289,7 +289,7 @@ SINGLE_BATTLE_TEST("Berserker Gene confusion can be healed with used held items"
     PARAMETRIZE { item = ITEM_LUM_BERRY; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_PERSIM_BERRY].holdEffect == HOLD_EFFECT_CURE_CONFUSION);
+        ASSUME(GetItemHoldEffect(ITEM_PERSIM_BERRY) == HOLD_EFFECT_CURE_CONFUSION);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_BERSERK_GENE); }
         OPPONENT(SPECIES_WOBBUFFET) { Item(item); }
     } WHEN {

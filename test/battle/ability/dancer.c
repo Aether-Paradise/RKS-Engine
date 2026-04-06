@@ -38,7 +38,7 @@ DOUBLE_BATTLE_TEST("Dancer can copy Teeter Dance and confuse both opposing targe
 {
     GIVEN {
         ASSUME(IsDanceMove(MOVE_TEETER_DANCE));
-        ASSUME(gItemsInfo[ITEM_LUM_BERRY].holdEffect == HOLD_EFFECT_CURE_STATUS);
+        ASSUME(GetItemHoldEffect(ITEM_LUM_BERRY) == HOLD_EFFECT_CURE_STATUS);
         PLAYER(SPECIES_WOBBUFFET);
         PLAYER(SPECIES_WYNAUT) { Item(ITEM_LUM_BERRY); }
         OPPONENT(SPECIES_ORICORIO) { Ability(ABILITY_DANCER); Item(ITEM_LUM_BERRY); }
@@ -111,7 +111,7 @@ DOUBLE_BATTLE_TEST("Dancer triggering ignores Lagging Tail")
 {
     GIVEN {
         ASSUME(IsDanceMove(MOVE_DRAGON_DANCE));
-        ASSUME(gItemsInfo[ITEM_LAGGING_TAIL].holdEffect == HOLD_EFFECT_LAGGING_TAIL);
+        ASSUME(GetItemHoldEffect(ITEM_LAGGING_TAIL) == HOLD_EFFECT_LAGGING_TAIL);
         PLAYER(SPECIES_ORICORIO) { Ability(ABILITY_DANCER); Speed(10); Item(ITEM_LAGGING_TAIL); }
         PLAYER(SPECIES_WOBBUFFET) { Speed(30); }
         OPPONENT(SPECIES_ORICORIO) { Ability(ABILITY_DANCER); Speed(5); }

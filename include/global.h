@@ -608,7 +608,9 @@ struct SaveBlock2
     /*0xB0*/ struct PlayersApprentice playerApprentice;
     /*0xDC*/ struct Apprentice apprentices[APPRENTICE_COUNT];
 #endif //FREE_FRONTIER_APPRENTICES
+#if FREE_BERRY_CRUSH == FALSE
     /*0x1EC*/ struct BerryCrush berryCrush;
+#endif //FREE_BERRY_CRUSH
 #if FREE_POKEMON_JUMP == FALSE
     /*0x1FC*/ struct PokemonJumpRecords pokeJump;
 #endif //FREE_POKEMON_JUMP

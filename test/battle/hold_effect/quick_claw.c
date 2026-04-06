@@ -3,8 +3,8 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_QUICK_CLAW].holdEffect == HOLD_EFFECT_QUICK_CLAW);
-    ASSUME(gItemsInfo[ITEM_QUICK_CLAW].holdEffectParam == 20);
+    ASSUME(GetItemHoldEffect(ITEM_QUICK_CLAW) == HOLD_EFFECT_QUICK_CLAW);
+    ASSUME(GetItemHoldEffectParam(ITEM_QUICK_CLAW) == 20);
 }
 
 SINGLE_BATTLE_TEST("Quick Claw activates 20% of the time")

@@ -95,6 +95,7 @@ struct GFRomHeader
 };
 
 #undef gSpeciesInfo // Allowed to be called from here
+#undef gItemsInfo // Allowed to be called from here
 
 // This seems to need to be in the text section for some reason.
 // To avoid a changed section attributes warning it's put in a special .text.header_gf section.
