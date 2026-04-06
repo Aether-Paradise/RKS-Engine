@@ -31,6 +31,8 @@
 #define FREE_FRONTIER_APPRENTICES           FALSE
 #undef FREE_BERRY_CRUSH
 #define FREE_BERRY_CRUSH                    FALSE
+#undef FREE_DODRIO_BERRY_PICKUP
+#define FREE_DODRIO_BERRY_PICKUP           FALSE
 #endif
 
 #endif // GUARD_CONFIG_SAVE_OVERRIDE_H

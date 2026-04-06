@@ -21,9 +21,10 @@
 #define FREE_RECORD_MIXING_HALL_RECORDS     TRUE   // Frees up hall records for record mixing (1032 bytes).
 #define FREE_FRONTIER_APPRENTICES           TRUE   // Frees up Battle Frontier Apprentices (396 bytes).
 #define FREE_BERRY_CRUSH                    TRUE   // Frees up Berry Crush data (16 bytes).
-                                            // SaveBlock2 total: 1648 bytes
+#define FREE_DODRIO_BERRY_PICKUP            TRUE   // Frees up Dodrio Berry Pickup data (16 bytes).
+                                            // SaveBlock2 total: 1664 bytes
 
-                                            // Grand Total: 7364 bytes
+                                            // Grand Total: 7380 bytes
 
 // CI config override
 #include "config/override/save.h"

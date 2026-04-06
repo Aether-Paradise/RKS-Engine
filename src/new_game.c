@@ -241,7 +241,9 @@ static void ResetMiniGamesRecords(void)
     SetBerryPowder(&gSaveBlock2Ptr->berryCrush.berryPowderAmount, 0);
 #endif //FREE_BERRY_CRUSH
     ResetPokemonJumpRecords();
+#if FREE_DODRIO_BERRY_PICKUP == FALSE
     CpuFill16(0, &gSaveBlock2Ptr->berryPick, sizeof(struct BerryPickingResults));
+#endif //FREE_DODRIO_BERRY_PICKUP
 }
 
 static void ResetItemFlags(void)
