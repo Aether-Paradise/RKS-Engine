@@ -10,14 +10,14 @@ TEST("TMs and HMs are sorted correctly in the bag")
 {
     struct BagPocket *pocket = &gBagPockets[POCKET_TM_HM];
 
-    ASSUME(GetItemPocket(ITEM_HM07) == POCKET_TM_HM);
-    ASSUME(GetItemPocket(ITEM_TM25) == POCKET_TM_HM);
-    ASSUME(GetItemPocket(ITEM_TM14) == POCKET_TM_HM);
-    ASSUME(GetItemPocket(ITEM_TM42) == POCKET_TM_HM);
-    ASSUME(GetItemPocket(ITEM_HM05) == POCKET_TM_HM);
-    ASSUME(GetItemPocket(ITEM_TM05) == POCKET_TM_HM);
-    ASSUME(GetItemPocket(ITEM_TM01) == POCKET_TM_HM);
-    ASSUME(GetItemPocket(ITEM_HM02) == POCKET_TM_HM);
+    ASSUME(ItemIsTMHM(ITEM_HM07));
+    ASSUME(ItemIsTMHM(ITEM_TM25));
+    ASSUME(ItemIsTMHM(ITEM_TM14));
+    ASSUME(ItemIsTMHM(ITEM_TM42));
+    ASSUME(ItemIsTMHM(ITEM_HM05));
+    ASSUME(ItemIsTMHM(ITEM_TM05));
+    ASSUME(ItemIsTMHM(ITEM_TM01));
+    ASSUME(ItemIsTMHM(ITEM_HM02));
 
     /*
      * Note: I would add a test to make sure that TMs are sorted correctly by move name,

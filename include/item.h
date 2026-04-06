@@ -287,5 +287,6 @@ bool32 IsItemShopCriteriaFulfilled(u32 itemId);
 enum ItemSortType GetItemSortType(enum Item itemId);
 const void *GetItemIconPic(enum Item itemId);
 const u16 *GetItemIconPalette(enum Item itemId);
+bool32 ItemIsTMHM(enum Item itemId);
 
 #endif // GUARD_ITEM_H
