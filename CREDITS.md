@@ -4,6 +4,7 @@
   - Extended Easy Chat Support
   - `FREE_SECRET_BASES` config
   - `FREE_FRONTIER_APPRENTICES` config
+  - `FREE_DODRIO_BERRY_PICKUP` config
 ### Feature Devs
 - **Montblanc**
   - Sword and Shield Party Menu
