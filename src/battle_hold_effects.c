@@ -1207,7 +1207,7 @@ enum ItemEffect ItemBattleEffects(enum BattlerId itemBattler, enum BattlerId bat
     {
         gLastUsedItem = item;
         gBattleScripting.battler = gPotentialItemEffectBattler = itemBattler;
-        if (gItemsInfo[item].pocket == POCKET_BERRIES)
+        if (GetItemPocket(item) == POCKET_BERRIES)
             GetBattlerPartyState(itemBattler)->ateBerry = TRUE;
     }
 

@@ -4,7 +4,7 @@
 SINGLE_BATTLE_TEST("Revive restores a fainted battler's HP to half")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_REVIVE].battleUsage == EFFECT_ITEM_REVIVE);
+        ASSUME(GetItemBattleUsage(ITEM_REVIVE) == EFFECT_ITEM_REVIVE);
         PLAYER(SPECIES_WYNAUT) { HP(1); MaxHP(200); }
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET);
@@ -22,7 +22,7 @@ SINGLE_BATTLE_TEST("Revive restores a fainted battler's HP to half")
 SINGLE_BATTLE_TEST("Max Revive restores a fainted battler's HP fully")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_MAX_REVIVE].battleUsage == EFFECT_ITEM_REVIVE);
+        ASSUME(GetItemBattleUsage(ITEM_MAX_REVIVE) == EFFECT_ITEM_REVIVE);
         PLAYER(SPECIES_WYNAUT) { HP(1); MaxHP(200); }
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET);
@@ -40,7 +40,7 @@ SINGLE_BATTLE_TEST("Max Revive restores a fainted battler's HP fully")
 SINGLE_BATTLE_TEST("Revival Herb restores a fainted battler's HP fully")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_REVIVAL_HERB].battleUsage == EFFECT_ITEM_REVIVE);
+        ASSUME(GetItemBattleUsage(ITEM_REVIVAL_HERB) == EFFECT_ITEM_REVIVE);
         PLAYER(SPECIES_WYNAUT) { HP(1); MaxHP(200); }
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET);
@@ -58,7 +58,7 @@ SINGLE_BATTLE_TEST("Revival Herb restores a fainted battler's HP fully")
 SINGLE_BATTLE_TEST("Max Honey restores a fainted battler's HP fully")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_MAX_HONEY].battleUsage == EFFECT_ITEM_REVIVE);
+        ASSUME(GetItemBattleUsage(ITEM_MAX_HONEY) == EFFECT_ITEM_REVIVE);
         PLAYER(SPECIES_WYNAUT) { HP(1); MaxHP(200); }
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET);
@@ -77,7 +77,7 @@ SINGLE_BATTLE_TEST("Max Honey restores a fainted battler's HP fully")
 DOUBLE_BATTLE_TEST("Revive works for a partner in a double battle")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_REVIVE].battleUsage == EFFECT_ITEM_REVIVE);
+        ASSUME(GetItemBattleUsage(ITEM_REVIVE) == EFFECT_ITEM_REVIVE);
         PLAYER(SPECIES_WYNAUT) { HP(1); MaxHP(200); Moves(MOVE_IRON_DEFENSE, MOVE_CELEBRATE); Speed(5); }
         PLAYER(SPECIES_WOBBUFFET) { HP(1); Speed(4); }
         OPPONENT(SPECIES_ABRA) { Speed(3); Moves(MOVE_SCRATCH, MOVE_PSYCHIC, MOVE_CELEBRATE); }

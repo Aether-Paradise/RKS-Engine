@@ -16,11 +16,15 @@
 #include "battle_pyramid_bag.h"
 #include "graphics.h"
 #include "shop_criteria.h"
+#include "data.h"
+#include "move.h"
 #include "constants/battle.h"
 #include "constants/items.h"
 #include "constants/moves.h"
 #include "constants/item_effects.h"
 #include "constants/hold_effects.h"
+
+extern const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES];
 
 #define DUMMY_PC_BAG_POCKET                 \
 {                                           \
@@ -779,6 +783,8 @@ bool32 RemovePyramidBagItem(enum Item itemId, u16 count)
     }
 }
 
+#undef gItemsInfo
+
 static u16 SanitizeItemId(enum Item itemId)
 {
     assertf(itemId < ITEMS_COUNT, "invalid item: %d", itemId)
@@ -966,4 +972,37 @@ bool32 IsItemShopCriteriaFulfilled(u32 itemId)
         return TRUE;
 
     return func(SanitizeItemId(itemId));
+}
+
+enum ItemSortType GetItemSortType(enum Item itemId)
+{
+    return gItemsInfo[SanitizeItemId(itemId)].sortType;
+}
+
+const void *GetItemIconPic(enum Item itemId)
+{
+    if (itemId == ITEM_LIST_END)
+        return gItemIcon_ReturnToFieldArrow; // Use last icon, the "return to field" arrow
+    if (itemId >= ITEMS_COUNT)
+        return gItemsInfo[0].iconPic;
+    if (GetItemPocket(itemId) == POCKET_TM_HM)
+    {
+        if (GetItemTMHMIndex(itemId) > NUM_TECHNICAL_MACHINES)
+            return gItemIcon_HM;
+        return gItemIcon_TM;
+    }
+
+    return gItemsInfo[itemId].iconPic;
+}
+
+const u16 *GetItemIconPalette(enum Item itemId)
+{
+    if (itemId == ITEM_LIST_END)
+        return gItemIconPalette_ReturnToFieldArrow;
+    if (itemId >= ITEMS_COUNT)
+        return gItemsInfo[0].iconPalette;
+    if (GetItemPocket(itemId) == POCKET_TM_HM)
+        return gTypesInfo[GetMoveType(GetItemTMHMMoveId(itemId))].paletteTMHM;
+
+    return gItemsInfo[itemId].iconPalette;
 }

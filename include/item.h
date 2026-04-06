@@ -104,6 +104,9 @@ struct TmHmIndexKey
 
 extern const u8 gQuestionMarksItemName[];
 extern const struct ItemInfo gItemsInfo[];
+#define gItemsInfo \
+_Pragma("GCC error \"Use getters instead of accessing gItemsInfo directly.\"") \
+gItemsInfo
 extern struct BagPocket gBagPockets[];
 extern const struct TmHmIndexKey gTMHMItemMoveIds[];
 
@@ -281,5 +284,8 @@ u32 GetItemSellPrice(enum Item itemId);
 bool32 IsHoldEffectChoice(enum HoldEffect holdEffect);
 ShopCriteriaFunc GetItemShopCriteriaFunc(u32 itemId);
 bool32 IsItemShopCriteriaFulfilled(u32 itemId);
+enum ItemSortType GetItemSortType(enum Item itemId);
+const void *GetItemIconPic(enum Item itemId);
+const u16 *GetItemIconPalette(enum Item itemId);
 
 #endif // GUARD_ITEM_H

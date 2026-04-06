@@ -1741,7 +1741,7 @@ u16 GetMysteryGiftCardStat(void)
 
 bool8 BufferTMHMMoveName(void)
 {
-    if (gItemsInfo[gSpecialVar_0x8004].pocket == POCKET_TM_HM)
+    if (GetItemPocket(gSpecialVar_0x8004) == POCKET_TM_HM)
     {
         StringCopy(gStringVar2, GetMoveName(ItemIdToBattleMoveId(gSpecialVar_0x8004)));
         return TRUE;

@@ -30,8 +30,8 @@ SINGLE_BATTLE_TEST("Acrobatics still doubles in power when Flying Gem is consume
     PARAMETRIZE { heldItem = ITEM_NONE; }
     PARAMETRIZE { heldItem = ITEM_FLYING_GEM; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_FLYING_GEM].holdEffect == HOLD_EFFECT_GEMS);
-        ASSUME(gItemsInfo[ITEM_FLYING_GEM].secondaryId == TYPE_FLYING);
+        ASSUME(GetItemHoldEffect(ITEM_FLYING_GEM) == HOLD_EFFECT_GEMS);
+        ASSUME(GetItemSecondaryId(ITEM_FLYING_GEM) == TYPE_FLYING);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET) { Item(heldItem); }
     } WHEN {
