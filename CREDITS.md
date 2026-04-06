@@ -4,6 +4,7 @@
   - Extended Easy Chat Support
   - `FREE_SECRET_BASES` config
   - `FREE_FRONTIER_APPRENTICES` config
+  - `FREE_BERRY_CRUSH` config
 ### Feature Devs
 - **Kasen**
   - DNS in battles
