@@ -902,12 +902,8 @@ static void CB2_WaitFadeBeforeSetUpIntro(void)
 {
     if (!UpdatePaletteFade())
     {
-#if EXPANSION_INTRO == TRUE
         SetMainCallback2(CB2_ExpansionIntro);
         CreateTask(Task_HandleExpansionIntro, 0);
-#else
-        SetMainCallback2(CB2_SetUpIntroFrlg);
-#endif
     }
 }
 
