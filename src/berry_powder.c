@@ -125,10 +125,12 @@ static const struct WindowTemplate UNUSED sBerryPowderWindowTemplates[] =
     },
 };
 
+#if FREE_BERRY_CRUSH == FALSE
 static u32 DecryptBerryPowder(u32 *powder)
 {
     return *powder ^ gSaveBlock2Ptr->encryptionKey;
 }
+#endif //FREE_BERRY_CRUSH
 
 void SetBerryPowder(u32 *powder, u32 amount)
 {
@@ -143,17 +145,16 @@ void ApplyNewEncryptionKeyToBerryPowder(u32 encryptionKey)
 #endif //FREE_BERRY_CRUSH
 }
 
+#if FREE_BERRY_CRUSH == FALSE
 static bool8 HasEnoughBerryPowder_(u32 cost)
 {
-#if FREE_BERRY_CRUSH == FALSE
     u32 *powder = &gSaveBlock2Ptr->berryCrush.berryPowderAmount;
     if (DecryptBerryPowder(powder) < cost)
         return FALSE;
     else
         return TRUE;
-#endif //FREE_BERRY_CRUSH
-    return FALSE;
 }
+#endif //FREE_BERRY_CRUSH
 
 bool8 HasEnoughBerryPowder(void)
 {
