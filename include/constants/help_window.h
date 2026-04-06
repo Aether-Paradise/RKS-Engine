@@ -1,0 +1,8 @@
+// Add new IDs here
+enum {
+    HELP_START_MENU,
+    HELP_MEGA_EVOLUTION,
+    HELP_MASTER_BALL,
+    HELP_GIMMIGHOUL_COINS,
+    HELP_COUNT
+};
