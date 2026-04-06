@@ -25,7 +25,7 @@ bool32 IsLifeOrbShellBellActivation(enum HoldEffect holdEffect)    { return gHol
 bool32 IsLeftoversActivation(enum HoldEffect holdEffect)           { return gHoldEffectsInfo[holdEffect].leftovers; }
 bool32 IsOrbsActivation(enum HoldEffect holdEffect)                { return gHoldEffectsInfo[holdEffect].orbs; }
 bool32 IsOnEffectActivation(enum HoldEffect holdEffect)            { return gHoldEffectsInfo[holdEffect].onEffect; }
-bool32 IsOnBerryActivation(enum HoldEffect holdEffect)             { return GetItemPocket(gLastUsedItem) == POCKET_BERRIES; }
+bool32 IsOnBerryActivation(enum HoldEffect holdEffect)             { return ItemIsBerry(gLastUsedItem); }
 bool32 IsOnFlingActivation(enum HoldEffect holdEffect)             { return gHoldEffectsInfo[holdEffect].onFling; }
 bool32 IsBoosterEnergyActivation(enum HoldEffect holdEffect)       { return gHoldEffectsInfo[holdEffect].boosterEnergy; }
 
@@ -820,7 +820,7 @@ static u32 ItemHealHp(enum BattlerId battler, enum Item itemId, enum HealAmount 
         else
             healAmount = GetItemHoldEffectParam(itemId);
 
-        if (ability == ABILITY_RIPEN && GetItemPocket(itemId) == POCKET_BERRIES)
+        if (ability == ABILITY_RIPEN && ItemIsBerry(itemId))
             healAmount *= 2;
 
         SetHealAmount(battler, healAmount);
@@ -1207,7 +1207,7 @@ enum ItemEffect ItemBattleEffects(enum BattlerId itemBattler, enum BattlerId bat
     {
         gLastUsedItem = item;
         gBattleScripting.battler = gPotentialItemEffectBattler = itemBattler;
-        if (GetItemPocket(item) == POCKET_BERRIES)
+        if (ItemIsBerry(item))
             GetBattlerPartyState(itemBattler)->ateBerry = TRUE;
     }
 

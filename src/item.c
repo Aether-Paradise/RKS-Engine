@@ -1011,3 +1011,8 @@ bool32 ItemIsTMHM(enum Item itemId)
 {
     return GetItemPocket(itemId) == POCKET_TM_HM;
 }
+
+bool32 ItemIsBerry(enum Item itemId)
+{
+    return GetItemPocket(itemId) == POCKET_BERRIES;
+}

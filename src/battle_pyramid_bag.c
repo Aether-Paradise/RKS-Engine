@@ -617,7 +617,7 @@ static void SetBagItemsListTemplate(void)
 
 static void CopyBagItemName(u8 *dst, enum Item itemId)
 {
-    if (GetItemPocket(itemId) == POCKET_BERRIES)
+    if (ItemIsBerry(itemId))
     {
         ConvertIntToDecimalStringN(gStringVar1, ItemIdToBerryType(itemId), STR_CONV_MODE_LEADING_ZEROS, MAX_PYRAMID_ITEM_DIGITS);
         CopyItemName(itemId, gStringVar2);

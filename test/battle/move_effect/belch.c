@@ -7,8 +7,8 @@ ASSUMPTIONS
     ASSUME(GetMoveType(MOVE_MUD_SHOT) == TYPE_GROUND);
     ASSUME(GetItemHoldEffect(ITEM_SHUCA_BERRY) == HOLD_EFFECT_RESIST_BERRY);
     ASSUME(GetItemHoldEffectParam(ITEM_SHUCA_BERRY) == TYPE_GROUND);
-    ASSUME(GetItemPocket(ITEM_SHUCA_BERRY) == POCKET_BERRIES);
-    ASSUME(GetItemPocket(ITEM_ORAN_BERRY) == POCKET_BERRIES);
+    ASSUME(ItemIsBerry(ITEM_SHUCA_BERRY));
+    ASSUME(ItemIsBerry(ITEM_ORAN_BERRY));
 }
 
 AI_SINGLE_BATTLE_TEST("AI: Belch has nonzero score after eating a berry")
