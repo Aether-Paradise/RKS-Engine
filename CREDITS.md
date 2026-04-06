@@ -5,10 +5,12 @@
   - `FREE_SECRET_BASES` config
   - `FREE_FRONTIER_APPRENTICES` config
 ### Feature Devs
-- **Montblanc**
-  - Sword and Shield Party Menu
 - **Kasen**
   - DNS in battles
+- **LinathanZel**
+  - Help Windows
+- **Montblanc**
+  - Sword and Shield Party Menu
 
 ## Expansion Credits ✨
 
