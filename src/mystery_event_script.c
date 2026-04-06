@@ -3,6 +3,7 @@
 #include "battle_special.h"
 #include "easy_chat.h"
 #include "event_data.h"
+#include "item.h"
 #include "mail.h"
 #include "mystery_event_script.h"
 #include "pokedex.h"

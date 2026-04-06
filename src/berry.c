@@ -49,7 +49,7 @@ static void AddTreeBonus(struct BerryTree *tree, u8 bonus);
 #error "OW_BERRY_DRAIN_RATE must be GEN_5, GEN_6_XY or GEN_6_ORAS!"
 #endif
 
-#if OW_BERRY_COLORS != GEN_6_XY && OW_BERRY_COLORS != GEN_6_ORAS 
+#if OW_BERRY_COLORS != GEN_6_XY && OW_BERRY_COLORS != GEN_6_ORAS
 #error "OW_BERRY_COLORS must be GEN_6_XY or GEN_6_ORAS!"
 #endif
 
@@ -2828,7 +2828,7 @@ void ObjectEventInteractionApplyMulch(void)
     u8 mulch = ITEM_TO_MULCH(gSpecialVar_ItemId);
 
     gSaveBlock1Ptr->berryTrees[GetObjectEventBerryTreeId(gSelectedObjectEvent)].mulch = mulch;
-    StringExpandPlaceholders(gStringVar1, gItemsInfo[gSpecialVar_ItemId].name);
+    StringExpandPlaceholders(gStringVar1, GetItemName(gSpecialVar_ItemId));
 }
 
 void ObjectEventInteractionPickBerryTree(void)

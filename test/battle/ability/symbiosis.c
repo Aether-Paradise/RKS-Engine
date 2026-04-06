@@ -4,7 +4,7 @@
 DOUBLE_BATTLE_TEST("Symbiosis transfers its item to an ally after it consumes an item")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_ROOM_SERVICE].holdEffect == HOLD_EFFECT_ROOM_SERVICE);
+        ASSUME(GetItemHoldEffect(ITEM_ROOM_SERVICE) == HOLD_EFFECT_ROOM_SERVICE);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_ROOM_SERVICE); }
         PLAYER(SPECIES_ORANGURU) { Ability(ABILITY_SYMBIOSIS); Item(ITEM_TOXIC_ORB); }
         OPPONENT(SPECIES_KIRLIA);
@@ -32,7 +32,7 @@ DOUBLE_BATTLE_TEST("Symbiosis transfers its item to an ally after it consumes an
 DOUBLE_BATTLE_TEST("Symbiosis triggers after partners berry eaten from bug bite")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_LIECHI_BERRY].holdEffect == HOLD_EFFECT_ATTACK_UP);
+        ASSUME(GetItemHoldEffect(ITEM_LIECHI_BERRY) == HOLD_EFFECT_ATTACK_UP);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_LIECHI_BERRY); }
         PLAYER(SPECIES_ORANGURU) { Ability(ABILITY_SYMBIOSIS); Item(ITEM_TOXIC_ORB); }
         OPPONENT(SPECIES_STARAVIA);
@@ -115,7 +115,7 @@ DOUBLE_BATTLE_TEST("Symbiosis triggers after partner flings its item")
 DOUBLE_BATTLE_TEST("Symbiosis transfers its item to an ally after it consumes a weakness berry")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_CHILAN_BERRY].holdEffect == HOLD_EFFECT_RESIST_BERRY);
+        ASSUME(GetItemHoldEffect(ITEM_CHILAN_BERRY) == HOLD_EFFECT_RESIST_BERRY);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_CHILAN_BERRY); }
         PLAYER(SPECIES_ORANGURU) { Ability(ABILITY_SYMBIOSIS); Item(ITEM_TOXIC_ORB); }
         OPPONENT(SPECIES_WOBBUFFET);

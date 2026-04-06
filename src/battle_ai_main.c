@@ -1513,7 +1513,7 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
             ADJUST_SCORE(-10);
         break;
     case EFFECT_STUFF_CHEEKS:
-        if (GetItemPocket(gBattleMons[battlerAtk].item) != POCKET_BERRIES)
+        if (!ItemIsBerry(gBattleMons[battlerAtk].item))
             return 0;   // cannot even select
         //fallthrough
     case EFFECT_DEFENSE_UP:
@@ -2744,7 +2744,7 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
         }
         break;
     case EFFECT_NATURAL_GIFT:
-        if (!IsBattlerItemEnabled(battlerAtk) || GetItemPocket(gBattleMons[battlerAtk].item) != POCKET_BERRIES)
+        if (!IsBattlerItemEnabled(battlerAtk) || !ItemIsBerry(gBattleMons[battlerAtk].item))
             ADJUST_SCORE(-10);
         break;
     case EFFECT_GRASSY_TERRAIN:
@@ -4025,8 +4025,8 @@ static bool32 DoesAbilityBenefitFromSunOrRain(enum BattlerId battler, enum Abili
     case ABILITY_SWIFT_SWIM:
         return (weather & B_WEATHER_RAIN);
     case ABILITY_HARVEST:
-        if (GetItemPocket(gAiLogicData->items[battler]) != POCKET_BERRIES
-            && GetItemPocket(GetBattlerPartyState(battler)->usedHeldItem) != POCKET_BERRIES)
+        if (!ItemIsBerry(gAiLogicData->items[battler])
+         && !ItemIsBerry(GetBattlerPartyState(battler)->usedHeldItem))
         {
             return FALSE;
         }
@@ -6233,13 +6233,13 @@ static s32 AI_CalcAdditionalEffectScore(enum BattlerId battlerAtk, enum BattlerI
             case MOVE_EFFECT_BUG_BITE:   // And pluck
                 if (gBattleMons[battlerDef].volatiles.substitute || aiData->abilities[battlerDef] == ABILITY_STICKY_HOLD)
                     break;
-                else if (GetItemPocket(aiData->items[battlerDef]) == POCKET_BERRIES)
+                else if (ItemIsBerry(aiData->items[battlerDef]))
                     ADJUST_SCORE(DECENT_EFFECT);
                 break;
             case MOVE_EFFECT_INCINERATE:
                 if (gBattleMons[battlerDef].volatiles.substitute || aiData->abilities[battlerDef] == ABILITY_STICKY_HOLD)
                     break;
-                else if (GetItemPocket(aiData->items[battlerDef]) == POCKET_BERRIES || aiData->holdEffects[battlerDef] == HOLD_EFFECT_GEMS)
+                else if (ItemIsBerry(aiData->items[battlerDef]) || aiData->holdEffects[battlerDef] == HOLD_EFFECT_GEMS)
                     ADJUST_SCORE(DECENT_EFFECT);
                 break;
             case MOVE_EFFECT_STEALTH_ROCK:

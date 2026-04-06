@@ -10,9 +10,9 @@ DOUBLE_BATTLE_TEST("Restore HP Item effects do not miss timing")
     PARAMETRIZE { item = ITEM_SITRUS_BERRY; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffect == HOLD_EFFECT_RESTORE_HP);
-        ASSUME(gItemsInfo[ITEM_BERRY_JUICE].holdEffect == HOLD_EFFECT_RESTORE_HP);
-        ASSUME(gItemsInfo[ITEM_SITRUS_BERRY].holdEffect == HOLD_EFFECT_RESTORE_PCT_HP);
+        ASSUME(GetItemHoldEffect(ITEM_ORAN_BERRY) == HOLD_EFFECT_RESTORE_HP);
+        ASSUME(GetItemHoldEffect(ITEM_BERRY_JUICE) == HOLD_EFFECT_RESTORE_HP);
+        ASSUME(GetItemHoldEffect(ITEM_SITRUS_BERRY) == HOLD_EFFECT_RESTORE_PCT_HP);
         PLAYER(SPECIES_WOBBUFFET);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WYNAUT) { MaxHP(100); HP(51); Item(item); }
@@ -38,9 +38,9 @@ DOUBLE_BATTLE_TEST("Restore HP Item effects do not miss timing after a recoil mo
 
     GIVEN {
         ASSUME(GetMoveRecoil(MOVE_TAKE_DOWN) == 25);
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffect == HOLD_EFFECT_RESTORE_HP);
-        ASSUME(gItemsInfo[ITEM_BERRY_JUICE].holdEffect == HOLD_EFFECT_RESTORE_HP);
-        ASSUME(gItemsInfo[ITEM_SITRUS_BERRY].holdEffect == HOLD_EFFECT_RESTORE_PCT_HP);
+        ASSUME(GetItemHoldEffect(ITEM_ORAN_BERRY) == HOLD_EFFECT_RESTORE_HP);
+        ASSUME(GetItemHoldEffect(ITEM_BERRY_JUICE) == HOLD_EFFECT_RESTORE_HP);
+        ASSUME(GetItemHoldEffect(ITEM_SITRUS_BERRY) == HOLD_EFFECT_RESTORE_PCT_HP);
         PLAYER(SPECIES_WOBBUFFET);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WYNAUT) { MaxHP(100); HP(51); Item(item); }
@@ -68,7 +68,7 @@ SINGLE_BATTLE_TEST("Sitrus Berry restores HP immediately after Leech Seed damage
 {
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_LEECH_SEED) == EFFECT_LEECH_SEED);
-        ASSUME(gItemsInfo[ITEM_SITRUS_BERRY].holdEffect == HOLD_EFFECT_RESTORE_PCT_HP);
+        ASSUME(GetItemHoldEffect(ITEM_SITRUS_BERRY) == HOLD_EFFECT_RESTORE_PCT_HP);
         PLAYER(SPECIES_WOBBUFFET) { MaxHP(80); HP(41); Item(ITEM_SITRUS_BERRY); }
         OPPONENT(SPECIES_WYNAUT);
     } WHEN {

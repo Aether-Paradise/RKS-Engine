@@ -37,7 +37,7 @@ SINGLE_BATTLE_TEST("Crit Chance: Raising critical hit rate to 3 guarantees a cri
     GIVEN {
         WITH_CONFIG(B_CRIT_CHANCE, genConfig);
         ASSUME(GetMoveCriticalHitStage(MOVE_SLASH) == 1);
-        ASSUME(gItemsInfo[ITEM_SCOPE_LENS].holdEffect == HOLD_EFFECT_SCOPE_LENS);
+        ASSUME(GetItemHoldEffect(ITEM_SCOPE_LENS) == HOLD_EFFECT_SCOPE_LENS);
         PLAYER(SPECIES_TOGEKISS) { Ability(ABILITY_SUPER_LUCK); Item(ITEM_SCOPE_LENS); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {

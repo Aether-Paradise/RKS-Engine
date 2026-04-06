@@ -106,12 +106,12 @@ SINGLE_BATTLE_TEST("Pixilate doesn't affect Judgment / Techno Blast / Multi-Atta
         ASSUME(GetMoveEffect(MOVE_JUDGMENT) == EFFECT_CHANGE_TYPE_ON_ITEM);
         ASSUME(GetMoveEffect(MOVE_TECHNO_BLAST) == EFFECT_CHANGE_TYPE_ON_ITEM);
         ASSUME(GetMoveEffect(MOVE_MULTI_ATTACK) == EFFECT_CHANGE_TYPE_ON_ITEM);
-        ASSUME(gItemsInfo[ITEM_ZAP_PLATE].holdEffect == HOLD_EFFECT_PLATE);
-        ASSUME(gItemsInfo[ITEM_ZAP_PLATE].secondaryId == TYPE_ELECTRIC);
-        ASSUME(gItemsInfo[ITEM_SHOCK_DRIVE].holdEffect == HOLD_EFFECT_DRIVE);
-        ASSUME(gItemsInfo[ITEM_SHOCK_DRIVE].secondaryId == TYPE_ELECTRIC);
-        ASSUME(gItemsInfo[ITEM_ELECTRIC_MEMORY].holdEffect == HOLD_EFFECT_MEMORY);
-        ASSUME(gItemsInfo[ITEM_ELECTRIC_MEMORY].secondaryId == TYPE_ELECTRIC);
+        ASSUME(GetItemHoldEffect(ITEM_ZAP_PLATE) == HOLD_EFFECT_PLATE);
+        ASSUME(GetItemSecondaryId(ITEM_ZAP_PLATE) == TYPE_ELECTRIC);
+        ASSUME(GetItemHoldEffect(ITEM_SHOCK_DRIVE) == HOLD_EFFECT_DRIVE);
+        ASSUME(GetItemSecondaryId(ITEM_SHOCK_DRIVE) == TYPE_ELECTRIC);
+        ASSUME(GetItemHoldEffect(ITEM_ELECTRIC_MEMORY) == HOLD_EFFECT_MEMORY);
+        ASSUME(GetItemSecondaryId(ITEM_ELECTRIC_MEMORY) == TYPE_ELECTRIC);
         ASSUME(GetSpeciesType(SPECIES_DIGLETT, 0) == TYPE_GROUND);
         PLAYER(SPECIES_SYLVEON) { Ability(ABILITY_PIXILATE); Item(item); }
         OPPONENT(SPECIES_DIGLETT);

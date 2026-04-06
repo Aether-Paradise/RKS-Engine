@@ -4,7 +4,7 @@
 // Please add Utility Umbrella interactions with move, item and ability effects on their respective files.
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_UTILITY_UMBRELLA].holdEffect == HOLD_EFFECT_UTILITY_UMBRELLA);
+    ASSUME(GetItemHoldEffect(ITEM_UTILITY_UMBRELLA) == HOLD_EFFECT_UTILITY_UMBRELLA);
     ASSUME(GetMoveType(MOVE_EMBER) == TYPE_FIRE);
     ASSUME(GetMoveType(MOVE_WATER_GUN) == TYPE_WATER);
 }

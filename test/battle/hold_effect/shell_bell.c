@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_SHELL_BELL].holdEffect == HOLD_EFFECT_SHELL_BELL);
+    ASSUME(GetItemHoldEffect(ITEM_SHELL_BELL) == HOLD_EFFECT_SHELL_BELL);
 }
 
 #define HITS 5

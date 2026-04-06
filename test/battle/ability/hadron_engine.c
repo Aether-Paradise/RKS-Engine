@@ -24,7 +24,7 @@ SINGLE_BATTLE_TEST("Hadron Engine boosts the Pokemon's Special Attack on Electri
     PARAMETRIZE { airBalloon = TRUE;  overrideTerrain = FALSE; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_AIR_BALLOON].holdEffect == HOLD_EFFECT_AIR_BALLOON);
+        ASSUME(GetItemHoldEffect(ITEM_AIR_BALLOON) == HOLD_EFFECT_AIR_BALLOON);
         ASSUME(GetMoveEffect(MOVE_GRASSY_TERRAIN) == EFFECT_GRASSY_TERRAIN);
         ASSUME(GetMoveCategory(MOVE_POWER_GEM) == DAMAGE_CATEGORY_SPECIAL);
         PLAYER(SPECIES_MIRAIDON) { Ability(ABILITY_HADRON_ENGINE); Moves(MOVE_POWER_GEM, MOVE_CELEBRATE); Item(airBalloon ? ITEM_AIR_BALLOON : ITEM_NONE); Speed(1); }

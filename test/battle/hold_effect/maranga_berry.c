@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_MARANGA_BERRY].holdEffect == HOLD_EFFECT_MARANGA_BERRY);
+    ASSUME(GetItemHoldEffect(ITEM_MARANGA_BERRY) == HOLD_EFFECT_MARANGA_BERRY);
 }
 
 SINGLE_BATTLE_TEST("Maranga Berry raises the holder's Sp. Def by one stage when hit by a special move")

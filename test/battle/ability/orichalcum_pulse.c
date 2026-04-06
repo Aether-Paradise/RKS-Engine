@@ -76,7 +76,7 @@ SINGLE_BATTLE_TEST("Orichalcum Pulse boost applies even if the target holds Util
     PARAMETRIZE { targetItem = ITEM_UTILITY_UMBRELLA; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_UTILITY_UMBRELLA].holdEffect == HOLD_EFFECT_UTILITY_UMBRELLA);
+        ASSUME(GetItemHoldEffect(ITEM_UTILITY_UMBRELLA) == HOLD_EFFECT_UTILITY_UMBRELLA);
         ASSUME(GetMoveCategory(MOVE_SCRATCH) == DAMAGE_CATEGORY_PHYSICAL);
         PLAYER(SPECIES_KORAIDON) { Ability(ABILITY_ORICHALCUM_PULSE); Moves(MOVE_SCRATCH); Speed(5); }
         OPPONENT(SPECIES_WOBBUFFET) { Moves(MOVE_CELEBRATE); Speed(10); Item(targetItem); }
@@ -97,7 +97,7 @@ SINGLE_BATTLE_TEST("Orichalcum Pulse does not boost physical moves if holder has
     PARAMETRIZE { holdItem = ITEM_UTILITY_UMBRELLA; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_UTILITY_UMBRELLA].holdEffect == HOLD_EFFECT_UTILITY_UMBRELLA);
+        ASSUME(GetItemHoldEffect(ITEM_UTILITY_UMBRELLA) == HOLD_EFFECT_UTILITY_UMBRELLA);
         ASSUME(GetMoveCategory(MOVE_SCRATCH) == DAMAGE_CATEGORY_PHYSICAL);
         PLAYER(SPECIES_KORAIDON) { Ability(ABILITY_ORICHALCUM_PULSE); Moves(MOVE_SCRATCH); Speed(5); Item(holdItem); }
         OPPONENT(SPECIES_WOBBUFFET) { Moves(MOVE_CELEBRATE); Speed(10); }

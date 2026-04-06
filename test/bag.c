@@ -10,14 +10,14 @@ TEST("TMs and HMs are sorted correctly in the bag")
 {
     struct BagPocket *pocket = &gBagPockets[POCKET_TM_HM];
 
-    ASSUME(GetItemPocket(ITEM_HM07) == POCKET_TM_HM);
-    ASSUME(GetItemPocket(ITEM_TM25) == POCKET_TM_HM);
-    ASSUME(GetItemPocket(ITEM_TM14) == POCKET_TM_HM);
-    ASSUME(GetItemPocket(ITEM_TM42) == POCKET_TM_HM);
-    ASSUME(GetItemPocket(ITEM_HM05) == POCKET_TM_HM);
-    ASSUME(GetItemPocket(ITEM_TM05) == POCKET_TM_HM);
-    ASSUME(GetItemPocket(ITEM_TM01) == POCKET_TM_HM);
-    ASSUME(GetItemPocket(ITEM_HM02) == POCKET_TM_HM);
+    ASSUME(ItemIsTMHM(ITEM_HM07));
+    ASSUME(ItemIsTMHM(ITEM_TM25));
+    ASSUME(ItemIsTMHM(ITEM_TM14));
+    ASSUME(ItemIsTMHM(ITEM_TM42));
+    ASSUME(ItemIsTMHM(ITEM_HM05));
+    ASSUME(ItemIsTMHM(ITEM_TM05));
+    ASSUME(ItemIsTMHM(ITEM_TM01));
+    ASSUME(ItemIsTMHM(ITEM_HM02));
 
     /*
      * Note: I would add a test to make sure that TMs are sorted correctly by move name,
@@ -52,14 +52,14 @@ TEST("Berries are sorted correctly in the bag")
 {
     struct BagPocket *pocket = &gBagPockets[POCKET_BERRIES];
 
-    ASSUME(GetItemPocket(ITEM_POMEG_BERRY) == POCKET_BERRIES);
-    ASSUME(GetItemPocket(ITEM_MAGOST_BERRY) == POCKET_BERRIES);
-    ASSUME(GetItemPocket(ITEM_KELPSY_BERRY) == POCKET_BERRIES);
-    ASSUME(GetItemPocket(ITEM_MICLE_BERRY) == POCKET_BERRIES);
-    ASSUME(GetItemPocket(ITEM_CHARTI_BERRY) == POCKET_BERRIES);
-    ASSUME(GetItemPocket(ITEM_GANLON_BERRY) == POCKET_BERRIES);
-    ASSUME(GetItemPocket(ITEM_ORAN_BERRY) == POCKET_BERRIES);
-    ASSUME(GetItemPocket(ITEM_CHERI_BERRY) == POCKET_BERRIES);
+    ASSUME(ItemIsBerry(ITEM_POMEG_BERRY));
+    ASSUME(ItemIsBerry(ITEM_MAGOST_BERRY));
+    ASSUME(ItemIsBerry(ITEM_KELPSY_BERRY));
+    ASSUME(ItemIsBerry(ITEM_MICLE_BERRY));
+    ASSUME(ItemIsBerry(ITEM_CHARTI_BERRY));
+    ASSUME(ItemIsBerry(ITEM_GANLON_BERRY));
+    ASSUME(ItemIsBerry(ITEM_ORAN_BERRY));
+    ASSUME(ItemIsBerry(ITEM_CHERI_BERRY));
 
     RUN_OVERWORLD_SCRIPT(
         additem ITEM_POMEG_BERRY;
