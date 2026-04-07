@@ -616,6 +616,7 @@ gSongTable::
 	song ph_nurse_blend, MUSIC_PLAYER_SE2, 2
 	song ph_nurse_held, MUSIC_PLAYER_SE2, 2
 	song ph_nurse_solo, MUSIC_PLAYER_SE2, 2
+.if SND_DS_MUSIC
 	song mus_dp_twinleaf_day, MUSIC_PLAYER_BGM, 0
 	song mus_dp_sandgem_day, MUSIC_PLAYER_BGM, 0
 	song mus_dp_floaroma_day, MUSIC_PLAYER_BGM, 0
@@ -1173,6 +1174,7 @@ gSongTable::
 	song mus_bw_relic_song, MUSIC_PLAYER_BGM, 0
 	song mus_bw_vs_wcs_champion, MUSIC_PLAYER_BGM, 0
 	song mus_bw_obtain_berry, MUSIC_PLAYER_SE2, 2
+.endif
 
 	.align 2
 dummy_song_header:

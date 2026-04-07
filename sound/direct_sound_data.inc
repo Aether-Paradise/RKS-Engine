@@ -622,7 +622,7 @@ Cry_RaichuMegaX::
 .if TESTING == FALSE
 	.incbin "sound/direct_sound_samples/cries/raichu_mega_x.bin"
 .endif
-	
+
 	.align 2
 Cry_RaichuMegaY::
 .if TESTING == FALSE
@@ -2469,7 +2469,7 @@ Cry_Ursaluna::
 .if TESTING == FALSE
 	.incbin "sound/direct_sound_samples/cries/ursaluna.bin"
 .endif
-	
+
 	.align 2
 Cry_UrsalunaBloodmoon::
 .if TESTING == FALSE
@@ -7416,7 +7416,7 @@ Cry_Cramorant::
 .if TESTING == FALSE
 	.incbin "sound/direct_sound_samples/cries/cramorant.bin"
 .endif
-	
+
 	.align 2
 Cry_CramorantGulping::
 .if TESTING == FALSE
@@ -9042,6 +9042,7 @@ DirectSoundWaveData_sd90_classical_whistle::
 DirectSoundWaveData_sd90_enhanced_delay_shaku::
 	.incbin "sound/direct_sound_samples/sd90_enhanced_delay_shaku.bin"
 
+.if SND_DS_MUSIC
 	.align 2
 DirectSoundWaveData_puresquare_12::
 	.incbin "sound/direct_sound_samples/puresquare_12.bin"
@@ -10337,3 +10338,4 @@ DirectSoundWaveData_hg_hoohclap::
 	.align 2
 DirectSoundWaveData_hg_choirc5::
 	.incbin "sound/direct_sound_samples/hg_choirc5.bin"
+.endif @SND_DS_MUSIC

@@ -202,6 +202,7 @@
 .include "sound/voicegroups/rg_sevii_67.inc"
 .include "sound/voicegroups/drumsets/rg_credits.inc"
 
+.if SND_DS_MUSIC
 @ Start DPPt HGSS voicegroups
 .include "sound/voicegroups/dppt_main.inc"                                            @ .include "sound/voicegroups/voicegroup199.inc" @ [Main] DPPt
 .include "sound/voicegroups/drumsets/allkeysplit_dppt_drum_1.inc"                     @ .include "sound/voicegroups/voicegroup192.inc"
@@ -301,3 +302,4 @@
 .include "sound/voicegroups/drumsets/allkeysplit_bw_drum_4.inc"                       @ .include "sound/voicegroups/voicegroup284.inc"
 .include "sound/voicegroups/drumsets/allkeysplit_bw_drum_5.inc"                       @ .include "sound/voicegroups/voicegroup285.inc"
 .include "sound/voicegroups/drumsets/allkeysplit_bw_drum_6.inc"                       @ .include "sound/voicegroups/voicegroup286.inc"
+.endif @SND_DS_MUSIC

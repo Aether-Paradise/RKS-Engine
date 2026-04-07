@@ -1,6 +1,8 @@
 #ifndef GUARD_CONSTANTS_SONGS_H
 #define GUARD_CONSTANTS_SONGS_H
 
+#include "config/sound.h"
+
 // Original JP names listed on right, along with any additional notes
 
 #define MUS_DUMMY                   0 // MUS_DUMMY
@@ -1107,7 +1109,11 @@
 #define MUS_BW_VS_WCS_CHAMPION 1165
 #define MUS_BW_OBTAIN_BERRY 1166
 
+#if SND_DS_MUSIC
 #define END_MUS                     MUS_BW_OBTAIN_BERRY
+#else
+#define END_MUS                     MUS_RG_TEACHY_TV_MENU
+#endif
 
 #define MUS_ROUTE118                0x7FFF  // Map is split into 2 music sections. controlled by GetCurrLocationDefaultMusic().
 

@@ -34,6 +34,7 @@ keysplit french_horn, 36
 	split 0, 66
 	split 1, 108
 
+.if SND_DS_MUSIC
 keysplit dp_piano_1, 0             @ .set KeySplitTable6, . - 0    @ | 43 | 57 | 64 | 71 | 76 | 83 | 88
     split 0, 43
     split 1, 57
@@ -344,3 +345,4 @@ keysplit tuba_custom, 0            @ .set KeySplitTableGBATubaCustom, . - 0
 keysplit french_horn_custom, 0     @ .set KeySplitTableGBAFrenchHornCustom, . - 0
 	split 0, 66
 	split 1, 127
+.endif @SND_DS_MUSIC
