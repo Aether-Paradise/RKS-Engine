@@ -23,6 +23,7 @@
 #include "data.h"
 #include "palette.h"
 #include "contest.h"
+#include "trainer.h"
 #include "trainer_pokemon_sprites.h"
 #include "constants/songs.h"
 #include "constants/rgb.h"
@@ -690,18 +691,17 @@ void BattleGfxSfxDummy2(enum Species species)
 {
 }
 
-void DecompressTrainerFrontPic(u16 frontPicId, enum BattlerId battler)
+void DecompressTrainerFrontPic(enum TrainerPicID trainerPicId, enum BattlerId battler)
 {
     enum BattlerPosition position = GetBattlerPosition(battler);
-    DecompressPicFromTable(&gTrainerSprites[frontPicId].frontPic,
-                           gMonSpritesGfxPtr->spritesGfx[position]);
-    u32 palID = LoadSpritePalette(&gTrainerSprites[frontPicId].palette);
+    DecompressDataWithHeaderWram(GetTrainerFrontPicData(trainerPicId), gMonSpritesGfxPtr->spritesGfx[position]);
+    u32 palID = LoadSpritePaletteWithTag(GetTrainerFrontPicPalette(trainerPicId), GetTrainerPicTag(trainerPicId, TRUE));
     TimeMixBattleSpritePalette(OBJ_PLTT_ID(palID));
 }
 
-void FreeTrainerFrontPicPalette(u16 frontPicId)
+void FreeTrainerFrontPicPalette(enum TrainerPicID trainerPicId)
 {
-    FreeSpritePaletteByTag(gTrainerSprites[frontPicId].palette.tag);
+    FreeSpritePaletteByTag(GetTrainerPicTag(trainerPicId, TRUE));
 }
 
 // Unused.
