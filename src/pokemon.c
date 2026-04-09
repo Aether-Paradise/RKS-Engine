@@ -636,7 +636,7 @@ static const enum NationalDexOrder sHoennToNationalOrder[HOENN_DEX_COUNT - 1] =
 };
 
 // Assigns all Hoenn Dex Indexes to a National Dex Index
-static const enum NationalDexOrder sNationalToSpeciesOrder[NATIONAL_DEX_COUNT] =
+static const enum Species sNationalToSpeciesOrder[NATIONAL_DEX_COUNT] =
 {
     // Kanto
     NATIONAL_TO_SPECIES(BULBASAUR),
@@ -1672,14 +1672,6 @@ static const enum NationalDexOrder sNationalToSpeciesOrder[NATIONAL_DEX_COUNT] =
     NATIONAL_TO_SPECIES(IRON_CROWN),
     NATIONAL_TO_SPECIES(TERAPAGOS),
     NATIONAL_TO_SPECIES(PECHARUNT),
-};
-
-const struct SpindaSpot gSpindaSpotGraphics[] =
-{
-    {.x = 16, .y =  7, .image = INCBIN_U16("graphics/pokemon/spinda/spots/spot_0.1bpp")},
-    {.x = 40, .y =  8, .image = INCBIN_U16("graphics/pokemon/spinda/spots/spot_1.1bpp")},
-    {.x = 22, .y = 25, .image = INCBIN_U16("graphics/pokemon/spinda/spots/spot_2.1bpp")},
-    {.x = 34, .y = 26, .image = INCBIN_U16("graphics/pokemon/spinda/spots/spot_3.1bpp")}
 };
 
 // In Battle Palace, moves are chosen based on the pokemons nature rather than by the player
@@ -7093,7 +7085,7 @@ enum TrainerPicID PlayerGenderToFrontTrainerPicId(enum Gender playerGender)
         return FacilityClassToPicIndex(IS_FRLG ? FACILITY_CLASS_RED : FACILITY_CLASS_BRENDAN);
 }
 
-void HandleSetPokedexFlag(u32 species, u8 caseId, u32 personality)
+void HandleSetPokedexFlag(enum Species species, u8 caseId, u32 personality)
 {
     u8 getFlagCaseId = (caseId == FLAG_SET_SEEN) ? FLAG_GET_SEEN : FLAG_GET_CAUGHT;
     if (!GetSetPokedexFlag(species, getFlagCaseId)) // don't set if it's already set

@@ -4527,6 +4527,11 @@ s8 GetSetPokedexFlag(enum Species species, u8 caseID)
     if (!IsSpeciesEnabled(species))
         return retVal;
 
+    species--;
+    index = species / 8;
+    bit = species % 8;
+    mask = 1 << bit;
+
     switch (caseID)
     {
     case FLAG_GET_SEEN:
@@ -4585,11 +4590,11 @@ u16 GetHoennPokedexCount(u8 caseID)
         switch (caseID)
         {
         case FLAG_GET_SEEN:
-            if (GetSetPokedexFlag(HoennToNationalOrder(NationalPokedexNumToSpecies(i + 1)), FLAG_GET_SEEN))
+            if (GetSetPokedexFlag(NationalPokedexNumToSpecies(HoennToNationalOrder(i + 1)), FLAG_GET_SEEN))
                 count++;
             break;
         case FLAG_GET_CAUGHT:
-            if (GetSetPokedexFlag(HoennToNationalOrder(NationalPokedexNumToSpecies(i + 1)), FLAG_GET_CAUGHT))
+            if (GetSetPokedexFlag(NationalPokedexNumToSpecies(HoennToNationalOrder(i + 1)), FLAG_GET_CAUGHT))
                 count++;
             break;
         }
@@ -4607,11 +4612,11 @@ u16 GetKantoPokedexCount(u8 caseID)
         switch (caseID)
         {
         case FLAG_GET_SEEN:
-            if (GetSetPokedexFlag(KantoToNationalOrder(NationalPokedexNumToSpecies(i + 1)), FLAG_GET_SEEN))
+            if (GetSetPokedexFlag(NationalPokedexNumToSpecies(KantoToNationalOrder(i + 1)), FLAG_GET_SEEN))
                 count++;
             break;
         case FLAG_GET_CAUGHT:
-            if (GetSetPokedexFlag(KantoToNationalOrder(NationalPokedexNumToSpecies(i + 1)), FLAG_GET_CAUGHT))
+            if (GetSetPokedexFlag(NationalPokedexNumToSpecies(KantoToNationalOrder(i + 1)), FLAG_GET_CAUGHT))
                 count++;
             break;
         }
