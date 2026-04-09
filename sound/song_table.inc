@@ -1,3 +1,5 @@
+	.include "include/config/sound.h"
+
 	.equiv MUSIC_PLAYER_BGM,0
 	.equiv MUSIC_PLAYER_SE1,1
 	.equiv MUSIC_PLAYER_SE2,2

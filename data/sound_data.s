@@ -7,7 +7,6 @@
 	.include "asm/macros/music_voice.inc"
 	.include "include/config/general.h"
 	.include "include/config/pokemon.h"
-	.include "include/config/sound.h"
 	.include "sound/voice_groups.inc"
 	.include "sound/keysplit_tables.inc"
 	.include "sound/programmable_wave_data.inc"
