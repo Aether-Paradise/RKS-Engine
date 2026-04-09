@@ -370,7 +370,14 @@ static inline enum PokemonCry GetSpeciesCryId(enum Species species)
 
 static inline enum NationalDexOrder SpeciesToNationalPokedexNum(enum Species species)
 {
-    return gSpeciesInfo[SanitizeSpeciesId(species)].natDexNum;
+    if (!IsSpeciesEnabled(species))
+        return NATIONAL_DEX_NONE;
+
+    species = SanitizeSpeciesId(species);
+    if (!species)
+        return NATIONAL_DEX_NONE;
+
+    return gSpeciesInfo[species].natDexNum;
 }
 
 static inline u32 GetSpeciesHeight(enum Species species)

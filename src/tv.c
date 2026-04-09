@@ -3055,7 +3055,7 @@ static enum Species GetRandomDifferentSpeciesSeenByPlayer(enum Species excludedS
     enum Species species = Random() % (NUM_SPECIES - 1) + 1;
     enum Species initSpecies = species;
 
-    while (GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_SEEN) != TRUE || species == excludedSpecies)
+    while (GetSetPokedexFlag(species, FLAG_GET_SEEN) != TRUE || species == excludedSpecies)
     {
         if (species == SPECIES_NONE + 1)
             species = NUM_SPECIES - 1;
@@ -3737,7 +3737,7 @@ static void DeactivateShow(u8 showIdx)
 
 static void DeactivateShowIfNotSeenSpecies(enum Species species, u8 showIdx)
 {
-    if (!GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_SEEN))
+    if (!GetSetPokedexFlag(species, FLAG_GET_SEEN))
         gSaveBlock1Ptr->tvShows[showIdx].common.active = FALSE;
 }
 
