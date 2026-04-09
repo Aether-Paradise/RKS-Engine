@@ -10,5 +10,6 @@ void SanitizeMauvilleOldManForRuby(union OldMan *oldMan);
 void SanitizeReceivedRubyOldMan(union OldMan *oldMan, enum GameVersion version, enum Language language);
 void SanitizeReceivedEmeraldOldMan(union OldMan *oldMan, enum Language language);
 void ResetMauvilleOldManFlag(void);
+void SetupBard(void);
 
 #endif // GUARD_MAUVILLE_OLD_MAN_H

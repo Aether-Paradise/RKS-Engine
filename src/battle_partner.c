@@ -89,15 +89,13 @@ void FillPartnerParty(u16 trainerId)
             }
             if (partyData[i].ability != ABILITY_NONE)
             {
-                const struct SpeciesInfo *speciesInfo = &gSpeciesInfo[partyData[i].species];
-                u32 maxAbilities = ARRAY_COUNT(speciesInfo->abilities);
-                for (j = 0; j < maxAbilities; j++)
+                for (j = 0; j < NUM_ABILITY_SLOTS; j++)
                 {
-                    if (speciesInfo->abilities[j] == partyData[i].ability)
+                    if (GetSpeciesAbility(partyData[i].species, j) == partyData[i].ability)
                         break;
                 }
-                if (j < maxAbilities)
-                    SetMonData(&gPlayerParty[i + 3], MON_DATA_ABILITY_NUM, &j);
+                assertf(j < NUM_ABILITY_SLOTS, "illegal ability %S for %S", gAbilitiesInfo[partyData[i].ability], GetSpeciesName(partyData[i].species));
+                SetMonData(&gPlayerParty[i + 3], MON_DATA_ABILITY_NUM, &j);
             }
             SetMonData(&gPlayerParty[i + 3], MON_DATA_FRIENDSHIP, &(partyData[i].friendship));
             if (partyData[i].ball < POKEBALL_COUNT)
@@ -166,6 +164,7 @@ void FillPartnerParty(u16 trainerId)
             SetMonData(&gPlayerParty[MULTI_PARTY_SIZE + i], MON_DATA_OT_GENDER, &j);
         }
     }
+#if FREE_FRONTIER_APPRENTICES == FALSE
     else
     {
         trainerId -= TRAINER_RECORD_MIXING_APPRENTICE;
@@ -176,4 +175,5 @@ void FillPartnerParty(u16 trainerId)
             SetMonData(&gPlayerParty[MULTI_PARTY_SIZE + i], MON_DATA_OT_GENDER, &j);
         }
     }
+#endif //FREE_FRONTIER_APPRENTICES
 }

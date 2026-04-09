@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_KINGS_ROCK].holdEffect == HOLD_EFFECT_FLINCH);
+    ASSUME(GetItemHoldEffect(ITEM_KINGS_ROCK) == HOLD_EFFECT_FLINCH);
 }
 
 SINGLE_BATTLE_TEST("Kings Rock holder will flinch the target 10% of the time")

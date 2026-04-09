@@ -1741,7 +1741,7 @@ u16 GetMysteryGiftCardStat(void)
 
 bool8 BufferTMHMMoveName(void)
 {
-    if (gItemsInfo[gSpecialVar_0x8004].pocket == POCKET_TM_HM)
+    if (ItemIsTMHM(gSpecialVar_0x8004))
     {
         StringCopy(gStringVar2, GetMoveName(ItemIdToBattleMoveId(gSpecialVar_0x8004)));
         return TRUE;
@@ -4502,6 +4502,7 @@ static void UIEndTask(u8 taskId)
 #define tState         data[0]
 #define tPartyIndex    data[1]
 #define tMove          data[2]
+#define tRecoverPp     data[3]
 
 static void UIShowMoveList(u8 taskId)
 {
@@ -4540,6 +4541,7 @@ void CanTeachMoveBoxMon(void)
     gTasks[taskId].tState = GetLearnMoveStartState();
     gTasks[taskId].tPartyIndex = gSpecialVar_0x8004;
     gTasks[taskId].tMove = gSpecialVar_0x8005;
+    gTasks[taskId].tRecoverPp = TRUE;
 }
 
 static void FieldCB_ContinueLearningMove(void)
@@ -5399,8 +5401,8 @@ void ForcePlayerOntoBike(void)
 {
     if (gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_ON_FOOT)
         SetPlayerAvatarTransitionFlags(PLAYER_AVATAR_FLAG_ACRO_BIKE);
-    Overworld_SetSavedMusic(MUS_CYCLING);
-    Overworld_ChangeMusicTo(MUS_CYCLING);
+    Overworld_SetSavedMusic(IS_FRLG ? MUS_RG_CYCLING : MUS_CYCLING);
+    Overworld_ChangeMusicTo(IS_FRLG ? MUS_RG_CYCLING : MUS_CYCLING);
 }
 
 bool8 IsPlayerNotInTrainerTowerLobby(void)
@@ -5590,7 +5592,7 @@ void SampleResortGorgeousMonAndReward(void)
         VarSet(VAR_RESORT_GORGEOUS_REWARD, SampleResortGorgeousReward());
         VarSet(VAR_RESORT_GOREGEOUS_STEP_COUNTER, 0);
     }
-    StringCopy(gStringVar1, gSpeciesInfo[VarGet(VAR_RESORT_GORGEOUS_REQUESTED_MON)].speciesName);
+    StringCopy(gStringVar1, GetSpeciesName(VarGet(VAR_RESORT_GORGEOUS_REQUESTED_MON)));
 }
 
 static enum Species SampleResortGorgeousMon(void)

@@ -1965,16 +1965,16 @@ void AlertTVThatPlayerPlayedRoulette(u16 nCoinsSpent)
 static void SecretBaseVisit_CalculateDecorationData(TVShow *show)
 {
     u8 decorationsBuffer[DECOR_MAX_SECRET_BASE] = {0};
-    u8 decoration;
     u8 n = 0;
 
     for (u32 i = 0; i < DECOR_MAX_SECRET_BASE; i++)
         decorationsBuffer[i] = DECOR_NONE;
 
+#if FREE_SECRET_BASES == FALSE
     // Count (and save) the unique decorations in the base
     for (u32 i = 0; i < DECOR_MAX_SECRET_BASE; i++)
     {
-        decoration = gSaveBlock1Ptr->secretBases[0].decorations[i];
+        u8 decoration = gSaveBlock1Ptr->secretBases[0].decorations[i];
         if (decoration != DECOR_NONE)
         {
             // Search for an empty spot to save decoration
@@ -1994,6 +1994,7 @@ static void SecretBaseVisit_CalculateDecorationData(TVShow *show)
             }
         }
     }
+#endif //FREE_SECRET_BASES
 
     // Cap the number of unique decorations to the number the TV show will talk about
     if (n > ARRAY_COUNT(show->secretBaseVisit.decorations))
@@ -2418,10 +2419,12 @@ void TryPutSecretBaseSecretsOnAir(void)
             show->secretBaseSecrets.flags = VarGet(VAR_SECRET_BASE_LOW_TV_FLAGS) + (VarGet(VAR_SECRET_BASE_HIGH_TV_FLAGS) << 16);
             StorePlayerIdInRecordMixShow(show);
             show->secretBaseSecrets.language = gGameLanguage;
+        #if FREE_SECRET_BASES == FALSE
             if (show->secretBaseSecrets.language == LANGUAGE_JAPANESE || gSaveBlock1Ptr->secretBases[VarGet(VAR_CURRENT_SECRET_BASE)].language == LANGUAGE_JAPANESE)
                 show->secretBaseSecrets.baseOwnersNameLanguage = LANGUAGE_JAPANESE;
             else
                 show->secretBaseSecrets.baseOwnersNameLanguage = gSaveBlock1Ptr->secretBases[VarGet(VAR_CURRENT_SECRET_BASE)].language;
+        #endif //FREE_SECRET_BASES
         }
     }
 }

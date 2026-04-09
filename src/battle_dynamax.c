@@ -90,9 +90,10 @@ bool32 CanDynamax(enum BattlerId battler)
     }
 
     // Check if species isn't allowed to Dynamax.
-    if (GET_BASE_SPECIES_ID(species) == SPECIES_ZACIAN
-        || GET_BASE_SPECIES_ID(species) == SPECIES_ZAMAZENTA
-        || GET_BASE_SPECIES_ID(species) == SPECIES_ETERNATUS)
+    enum Species baseSpecies = GetBaseSpeciesId(species);
+    if (baseSpecies == SPECIES_ZACIAN
+        || baseSpecies == SPECIES_ZAMAZENTA
+        || baseSpecies == SPECIES_ETERNATUS)
         return FALSE;
 
     // Check if Trainer has already Dynamaxed.
@@ -123,7 +124,7 @@ bool32 CanDynamax(enum BattlerId battler)
 bool32 IsGigantamaxed(enum BattlerId battler)
 {
     struct Pokemon *mon = GetBattlerMon(battler);
-    if ((gSpeciesInfo[gBattleMons[battler].species].isGigantamax) && GetMonData(mon, MON_DATA_GIGANTAMAX_FACTOR))
+    if (IsSpeciesGigantamax(gBattleMons[battler].species) && GetMonData(mon, MON_DATA_GIGANTAMAX_FACTOR))
         return TRUE;
     return FALSE;
 }
@@ -248,13 +249,13 @@ static enum Move GetTypeBasedMaxMove(enum BattlerId battler, enum Type type)
     enum Species targetSpecies = species;
     enum Ability ability = GetBattlerAbility(battler);
 
-    if (!gSpeciesInfo[species].isGigantamax)
+    if (!IsSpeciesGigantamax(species))
         targetSpecies = GetBattleFormChangeTargetSpecies(battler, FORM_CHANGE_BATTLE_GIGANTAMAX, ability);
 
     if (targetSpecies != species)
         species = targetSpecies;
 
-    if (gSpeciesInfo[species].isGigantamax)
+    if (IsSpeciesGigantamax(species))
     {
         for (i = 0; i < ARRAY_COUNT(sGMaxMoveTable); i++)
         {

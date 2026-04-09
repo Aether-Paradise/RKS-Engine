@@ -1826,8 +1826,10 @@ void CopyFrontierTrainerText(u8 whichText, u16 trainerId)
         {
             if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
                 FrontierSpeechToString(GetRecordedBattleEasyChatSpeech());
+        #if FREE_FRONTIER_APPRENTICES == FALSE
             else
                 FrontierSpeechToString(gSaveBlock2Ptr->apprentices[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].speechWon);
+        #endif //FREE_FRONTIER_APPRENTICES
         }
         break;
     case FRONTIER_PLAYER_WON_TEXT:
@@ -1852,6 +1854,7 @@ void CopyFrontierTrainerText(u8 whichText, u16 trainerId)
             else
                 FrontierSpeechToString(gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].speechLost);
         }
+    #if FREE_FRONTIER_APPRENTICES == FALSE
         else
         {
             if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
@@ -1865,6 +1868,7 @@ void CopyFrontierTrainerText(u8 whichText, u16 trainerId)
                 FrontierSpeechToString(gApprentices[trainerId].speechLost);
             }
         }
+    #endif //FREE_FRONTIER_APPRENTICES
         break;
     }
 }
@@ -2049,7 +2053,7 @@ static void AppendIfValid(enum Species species, u16 heldItem, u16 hp, enum Front
 
     if (species == SPECIES_EGG || species == SPECIES_NONE)
         return;
-    if (gSpeciesInfo[species].isFrontierBanned)
+    if (IsSpeciesFrontierBanned(species))
         return;
     if (lvlMode == FRONTIER_LVL_50 && monLevel > FRONTIER_MAX_LEVEL_50)
         return;
@@ -2145,8 +2149,8 @@ static void CheckPartyIneligibility(void)
         {
             if (!IsSpeciesEnabled(i))
                 continue;
-            baseSpecies = GET_BASE_SPECIES_ID(i);
-            if (baseSpecies == i && gSpeciesInfo[baseSpecies].isFrontierBanned)
+            baseSpecies = GetBaseSpeciesId(i);
+            if (baseSpecies == i && IsSpeciesFrontierBanned(baseSpecies))
             {
                 if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(baseSpecies), FLAG_GET_CAUGHT))
                     totalCaughtBanned++;
@@ -2158,7 +2162,7 @@ static void CheckPartyIneligibility(void)
             enum Species species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG);
             if (species == SPECIES_EGG || species == SPECIES_NONE)
                 continue;
-            if (gSpeciesInfo[GET_BASE_SPECIES_ID(species)].isFrontierBanned)
+            if (IsSpeciesFrontierBanned(GetBaseSpeciesId(species)))
             {
                 bool32 addToList = TRUE;
                 for (j = 0; j < totalPartyBanned; j++)
@@ -2747,18 +2751,17 @@ void ClearEnemyPartyAfterChallenge()
 bool8 IsFrontierTrainerFemale(u16 trainerId)
 {
     u32 i;
-    u8 facilityClass;
+    u8 facilityClass = 0;
 
     SetFacilityPtrsGetLevel();
+#if FREE_BATTLE_TOWER_E_READER == FALSE
     if (trainerId == TRAINER_EREADER)
     {
-    #if FREE_BATTLE_TOWER_E_READER == FALSE
         facilityClass = gSaveBlock2Ptr->frontier.ereaderTrainer.facilityClass;
-    #else
-        facilityClass = 0;
-    #endif //FREE_BATTLE_TOWER_E_READER
     }
-    else if (trainerId == TRAINER_FRONTIER_BRAIN)
+    else
+#endif //FREE_BATTLE_TOWER_E_READER
+    if (trainerId == TRAINER_FRONTIER_BRAIN)
     {
         return IsFrontierBrainFemale();
     }
@@ -2770,10 +2773,12 @@ bool8 IsFrontierTrainerFemale(u16 trainerId)
     {
         facilityClass = gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].facilityClass;
     }
+#if FREE_FRONTIER_APPRENTICES == FALSE
     else
     {
         facilityClass = gApprentices[gSaveBlock2Ptr->apprentices[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].id].facilityClass;
     }
+#endif //FREE_FRONTIER_APPRENTICES
 
     // Search female classes.
     for (i = 0; i < ARRAY_COUNT(gTowerFemaleFacilityClasses); i++)
@@ -2874,7 +2879,7 @@ static void UNUSED GetRandomScaledFrontierTrainerIdRange(u8 challengeNum, u8 bat
 void SetBattleFacilityTrainerGfxId(u16 trainerId, u8 tempVarId)
 {
     u32 i;
-    u8 facilityClass;
+    u8 facilityClass = 0;
     u8 trainerObjectGfxId;
 
     SetFacilityPtrsGetLevel();
@@ -2883,10 +2888,9 @@ void SetBattleFacilityTrainerGfxId(u16 trainerId, u8 tempVarId)
     {
         facilityClass = gSaveBlock2Ptr->frontier.ereaderTrainer.facilityClass;
     }
-    else if (trainerId == TRAINER_FRONTIER_BRAIN)
-#else
-    if (trainerId == TRAINER_FRONTIER_BRAIN)
+    else
 #endif //FREE_BATTLE_TOWER_E_READER
+    if (trainerId == TRAINER_FRONTIER_BRAIN)
     {
         SetFrontierBrainObjEventGfx_2();
         return;
@@ -2899,10 +2903,12 @@ void SetBattleFacilityTrainerGfxId(u16 trainerId, u8 tempVarId)
     {
         facilityClass = gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].facilityClass;
     }
+#if FREE_FRONTIER_APPRENTICES == FALSE
     else
     {
         facilityClass = gApprentices[gSaveBlock2Ptr->apprentices[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].id].facilityClass;
     }
+#endif //FREE_FRONTIER_APPRENTICES
 
     // Search male classes.
     for (i = 0; i < ARRAY_COUNT(gTowerMaleFacilityClasses); i++)
@@ -2970,7 +2976,7 @@ void SetBattleFacilityTrainerGfxId(u16 trainerId, u8 tempVarId)
 u16 GetBattleFacilityTrainerGfxId(u16 trainerId)
 {
     u32 i;
-    u8 facilityClass;
+    u8 facilityClass = 0;
     u16 trainerObjectGfxId;
 
     SetFacilityPtrsGetLevel();
@@ -2979,10 +2985,9 @@ u16 GetBattleFacilityTrainerGfxId(u16 trainerId)
     {
         facilityClass = gSaveBlock2Ptr->frontier.ereaderTrainer.facilityClass;
     }
-    else if (trainerId < FRONTIER_TRAINERS_COUNT)
-#else
-    if (trainerId < FRONTIER_TRAINERS_COUNT)
+    else
 #endif //FREE_BATTLE_TOWER_E_READER
+    if (trainerId < FRONTIER_TRAINERS_COUNT)
     {
         facilityClass = gFacilityTrainers[trainerId].facilityClass;
     }
@@ -2990,10 +2995,12 @@ u16 GetBattleFacilityTrainerGfxId(u16 trainerId)
     {
         facilityClass = gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].facilityClass;
     }
+#if FREE_FRONTIER_APPRENTICES == FALSE
     else
     {
         facilityClass = gApprentices[gSaveBlock2Ptr->apprentices[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].id].facilityClass;
     }
+#endif //FREE_FRONTIER_APPRENTICES
 
     // Search male classes.
     for (i = 0; i < ARRAY_COUNT(gTowerMaleFacilityClasses); i++)
@@ -3053,10 +3060,14 @@ u8 GetFrontierTrainerFrontSpriteId(u16 trainerId)
     }
     else
     {
+    #if FREE_FRONTIER_APPRENTICES == FALSE
         if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
             return gFacilityClassToPicIndex[gApprentices[GetRecordedBattleApprenticeId()].facilityClass];
         else
             return gFacilityClassToPicIndex[gApprentices[gSaveBlock2Ptr->apprentices[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].id].facilityClass];
+    #else
+        return 0;
+    #endif //FREE_FRONTIER_APPRENTICES
     }
 }
 
@@ -3071,10 +3082,9 @@ enum TrainerClassID GetFrontierOpponentClass(u16 trainerId)
     {
         trainerClass = gFacilityClassToTrainerClass[gSaveBlock2Ptr->frontier.ereaderTrainer.facilityClass];
     }
-    else if (trainerId == TRAINER_FRONTIER_BRAIN)
-#else
-    if (trainerId == TRAINER_FRONTIER_BRAIN)
+    else
 #endif //FREE_BATTLE_TOWER_E_READER
+    if (trainerId == TRAINER_FRONTIER_BRAIN)
     {
         return GetFrontierBrainTrainerClass();
     }
@@ -3097,6 +3107,7 @@ enum TrainerClassID GetFrontierOpponentClass(u16 trainerId)
             trainerClass = gFacilityClassToTrainerClass[gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].facilityClass];
         }
     }
+#if FREE_FRONTIER_APPRENTICES == FALSE
     else
     {
         if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
@@ -3108,24 +3119,24 @@ enum TrainerClassID GetFrontierOpponentClass(u16 trainerId)
             trainerClass = gFacilityClassToTrainerClass[gApprentices[gSaveBlock2Ptr->apprentices[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].id].facilityClass];
         }
     }
+#endif //FREE_FRONTIER_APPRENTICES
 
     return trainerClass;
 }
 
 u8 GetFrontierTrainerFacilityClass(u16 trainerId)
 {
-    u8 facilityClass;
+    u8 facilityClass = 0;
     SetFacilityPtrsGetLevel();
 
+#if FREE_BATTLE_TOWER_E_READER == FALSE
     if (trainerId == TRAINER_EREADER)
     {
-    #if FREE_BATTLE_TOWER_E_READER == FALSE
         facilityClass = gSaveBlock2Ptr->frontier.ereaderTrainer.facilityClass;
-    #else
-        facilityClass = 0;
-    #endif //FREE_BATTLE_TOWER_E_READER
     }
-    else if (trainerId < FRONTIER_TRAINERS_COUNT)
+    else
+#endif //FREE_BATTLE_TOWER_E_READER
+    if (trainerId < FRONTIER_TRAINERS_COUNT)
     {
         facilityClass = gFacilityTrainers[trainerId].facilityClass;
     }
@@ -3136,6 +3147,7 @@ u8 GetFrontierTrainerFacilityClass(u16 trainerId)
         else
             facilityClass = gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].facilityClass;
     }
+#if FREE_FRONTIER_APPRENTICES == FALSE
     else
     {
         if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
@@ -3143,6 +3155,7 @@ u8 GetFrontierTrainerFacilityClass(u16 trainerId)
         else
             facilityClass = gApprentices[gSaveBlock2Ptr->apprentices[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].id].facilityClass;
     }
+#endif //FREE_FRONTIER_APPRENTICES
 
     return facilityClass;
 }
@@ -3191,19 +3204,21 @@ void GetFrontierTrainerName(u8 *dst, u16 trainerId)
     }
     else
     {
-        u8 id, language;
+        u8 id = 0, language = 0;
 
         if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
         {
             id = GetRecordedBattleApprenticeId();
             language = GetRecordedBattleApprenticeLanguage();
         }
+    #if FREE_FRONTIER_APPRENTICES == FALSE
         else
         {
             struct Apprentice *apprentice = &gSaveBlock2Ptr->apprentices[trainerId - TRAINER_RECORD_MIXING_APPRENTICE];
             id = apprentice->id;
             language = apprentice->language;
         }
+    #endif //FREE_FRONTIER_APPRENTICES
         TVShowConvertInternationalString(dst, GetApprenticeNameInLanguage(id, language), language);
         return;
     }
@@ -3355,8 +3370,8 @@ static u16 *MakeCaughtBannesSpeciesList(u32 totalBannedSpecies)
         if (!IsSpeciesEnabled(i))
             continue;
 
-        enum Species baseSpecies = GET_BASE_SPECIES_ID(i);
-        if (baseSpecies == i && gSpeciesInfo[baseSpecies].isFrontierBanned)
+        enum Species baseSpecies = GetBaseSpeciesId(i);
+        if (baseSpecies == i && IsSpeciesFrontierBanned(baseSpecies))
         {
             if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(baseSpecies), FLAG_GET_CAUGHT))
             {

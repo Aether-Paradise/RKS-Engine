@@ -63,7 +63,7 @@ bool32 CanTerastallize(enum BattlerId battler)
 {
     enum HoldEffect holdEffect = GetBattlerHoldEffectIgnoreNegation(battler);
 
-    if (gBattleMons[battler].volatiles.transformed && GET_BASE_SPECIES_ID(gBattleMons[battler].species) == SPECIES_TERAPAGOS)
+    if (gBattleMons[battler].volatiles.transformed && GetBattlerBaseSpecies(battler) == SPECIES_TERAPAGOS)
         return FALSE;
 
     // Prevents Zigzagoon from terastalizing in vanilla.
@@ -131,7 +131,7 @@ bool32 IsTypeStellarBoosted(enum BattlerId battler, enum Type type)
 
 // Returns the STAB power multiplier to use when Terastallized.
 // Power multipliers from Smogon Research thread.
-uq4_12_t GetTeraMultiplier(struct BattleContext *ctx)
+uq4_12_t GetTeraMultiplier(struct DamageContext *ctx)
 {
     enum Type teraType = GetBattlerTeraType(ctx->battlerAtk);
 

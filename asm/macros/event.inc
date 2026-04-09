@@ -1247,7 +1247,7 @@
 
 	@ Opens the Pokemart system, offering the specified products for sale.
 	@ Products should be a list of .2byte item values preceded by an .align 2
-	.macro pokemart products:req
+	.macro pokemart products=Pokemart_DefaultItemList
 	.byte SCR_OP_POKEMART
 	.4byte \products
 	.endm
@@ -2652,7 +2652,7 @@
 	callnative DoFacilityTrainerBattle
 	.byte \facility
 	.endm
-	
+
 	.macro ingame_trade tradeId:req wantTradeMsg:req, declineTradeJump:req, wrongMonJump:req, tradeCompleteMsg:req
 	setvar VAR_0x8005, \tradeId
 	specialvar VAR_0x8009, GetInGameTradeSpeciesInfo
@@ -2819,18 +2819,6 @@
 	.2byte \state
 	.endm
 
-	@ Retrieves the move relearner state and stores it in the specified var
-	.macro getmoverelearnerstate varId:req
-	callnative ScrCmd_getmoverelearnerstate, requests_effects=1
-	.4byte \varId
-	.endm
-
-	@ Execute script if bag has TMs and/or HMs
-	.macro istmrelearneractive destination:req
-	callnative ScrCmd_istmrelearneractive, requests_effects=1
-	.4byte \destination
-	.endm
-
 	@ Sets a starting status for the next battle. Can be stacked.
 	.macro setstartingstatus status:req
 	callnative ScrCmd_setstartingstatus
@@ -2875,4 +2863,23 @@
 	braillemessage \text
 	getbraillestringwidth \text
 	call EventScript_BrailleCursorWaitButton
+	.endm
+
+	@ Shows the message box containing the help window and its header and description.
+	.macro showhelpwindow id:req
+	callnative ShowHelpInfoWindow, requests_effects=1
+	.2byte \id
+	.endm
+
+	@ Destroys the help window.
+	.macro hidehelpwindow
+	callnative HideHelpInfoWindow
+	.endm
+
+	@ Creates a help window.
+	.macro helpwindow id:req
+	showhelpwindow \id
+	waitbuttonpress
+	hidehelpwindow
+	closemessage
 	.endm

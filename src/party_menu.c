@@ -80,6 +80,9 @@
 #include "constants/party_menu.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
+#include "config/party_menu.h"
+
+#if (RKSE_PARTY_MENU_DESIGN == PARTY_MENU_DESIGN_EMERALD)
 
 enum {
     MENU_SUMMARY,
@@ -1104,7 +1107,9 @@ static void DisplayPartyPokemonDataForContest(u8 slot)
 
 static void DisplayPartyPokemonDataForRelearner(u8 slot)
 {
-    bool32 hasMoves = CanBoxMonRelearnMoves(&gPlayerParty[slot].box, gMoveRelearnerState);
+    bool32 hasMoves = FALSE;
+    if (!GetBoxMonData(&gPlayerParty[slot].box, MON_DATA_IS_EGG) && HasMoveToRelearn(&gPlayerParty[slot].box, gMoveRelearnerState))
+        hasMoves = TRUE;
     u32 desc = (hasMoves ? PARTYBOX_DESC_ABLE_2 : PARTYBOX_DESC_NOT_ABLE_2);
     DisplayPartyPokemonDescriptionData(slot, desc);
 }
@@ -4632,7 +4637,7 @@ void CB2_ShowPartyMenuForItemUse(void)
     }
     else
     {
-        if (GetItemPocket(gSpecialVar_ItemId) == POCKET_TM_HM)
+        if (ItemIsTMHM(gSpecialVar_ItemId))
             msgId = PARTY_MSG_TEACH_WHICH_MON;
         else
             msgId = PARTY_MSG_USE_ON_WHICH_MON;
@@ -4809,7 +4814,7 @@ void ItemUseCB_Medicine(u8 taskId, TaskFunc task)
             if (hp == GetMonData(mon, MON_DATA_MAX_HP))
                 canHeal = FALSE;
         }
-        cannotUse = ExecuteTableBasedItemEffect(mon, item, gPartyMenu.slotId, 0);
+        cannotUse = ExecuteTableBasedItemEffect(mon, item, gPartyMenu.slotId, 0, 0, 1);
     }
 
     if (cannotUse != FALSE)
@@ -5172,7 +5177,7 @@ void ItemUseCB_ResetEVs(u8 taskId, TaskFunc task)
 {
     struct Pokemon *mon = &gPlayerParty[gPartyMenu.slotId];
     enum Item item = gSpecialVar_ItemId;
-    bool8 cannotUseEffect = ExecuteTableBasedItemEffect(mon, item, gPartyMenu.slotId, 0);
+    bool8 cannotUseEffect = ExecuteTableBasedItemEffect(mon, item, gPartyMenu.slotId, 0, 1, 1);
 
     if (cannotUseEffect)
     {
@@ -5202,7 +5207,7 @@ void ItemUseCB_ReduceEV(u8 taskId, TaskFunc task)
     enum ItemEffectType effectType = GetItemEffectType(item);
     u16 friendship = GetMonData(mon, MON_DATA_FRIENDSHIP);
     u16 ev = ItemEffectToMonEv(mon, effectType);
-    bool8 cannotUseEffect = ExecuteTableBasedItemEffect(mon, item, gPartyMenu.slotId, 0);
+    bool8 cannotUseEffect = ExecuteTableBasedItemEffect(mon, item, gPartyMenu.slotId, 0, 1, 1);
     u16 newFriendship = GetMonData(mon, MON_DATA_FRIENDSHIP);
     u16 newEv = ItemEffectToMonEv(mon, effectType);
 
@@ -5388,7 +5393,7 @@ static void TryUseItemOnMove(u8 taskId)
         s16 *moveSlot = &gPartyMenu.data1;
         enum Item item = gSpecialVar_ItemId;
 
-        if (ExecuteTableBasedItemEffect(mon, item, ptr->slotId, *moveSlot))
+        if (ExecuteTableBasedItemEffect(mon, item, ptr->slotId, *moveSlot, 1, 1))
         {
             gPartyMenuUseExitCallback = FALSE;
             PlaySE(SE_SELECT);
@@ -5421,7 +5426,7 @@ void ItemUseCB_PPUp(u8 taskId, TaskFunc task)
 
 enum Move ItemIdToBattleMoveId(enum Item item)
 {
-    return (GetItemPocket(item) == POCKET_TM_HM) ? GetItemTMHMMoveId(item) : MOVE_NONE;
+    return (ItemIsTMHM(item)) ? GetItemTMHMMoveId(item) : MOVE_NONE;
 }
 
 bool8 MonKnowsMove(struct Pokemon *mon, enum Move move)
@@ -5732,7 +5737,7 @@ void ItemUseCB_RareCandy(u8 taskId, TaskFunc task)
     if (!(B_RARE_CANDY_CAP && sInitialLevel >= GetCurrentLevelCap()))
     {
         BufferMonStatsToTaskData(mon, arrayPtr);
-        cannotUseEffect = ExecuteTableBasedItemEffect(mon, *itemPtr, gPartyMenu.slotId, 0);
+        cannotUseEffect = ExecuteTableBasedItemEffect(mon, *itemPtr, gPartyMenu.slotId, 0, 0, 1);
         BufferMonStatsToTaskData(mon, &ptr->data[NUM_STATS]);
     }
     else
@@ -6083,7 +6088,7 @@ static void UseSacredAsh(u8 taskId)
     }
 
     hp = GetMonData(mon, MON_DATA_HP);
-    if (ExecuteTableBasedItemEffect(mon, gSpecialVar_ItemId, gPartyMenu.slotId, 0))
+    if (ExecuteTableBasedItemEffect(mon, gSpecialVar_ItemId, gPartyMenu.slotId, 0, 0, 1))
     {
         gTasks[taskId].func = Task_SacredAshLoop;
         return;
@@ -6150,7 +6155,7 @@ void ItemUseCB_EvolutionStone(u8 taskId, TaskFunc task)
 {
     PlaySE(SE_SELECT);
     gCB2_AfterEvolution = gPartyMenu.exitCallback;
-    if (ExecuteTableBasedItemEffect(&gPlayerParty[gPartyMenu.slotId], gSpecialVar_ItemId, gPartyMenu.slotId, 0))
+    if (ExecuteTableBasedItemEffect(&gPlayerParty[gPartyMenu.slotId], gSpecialVar_ItemId, gPartyMenu.slotId, 0, 1, 1))
     {
         gPartyMenuUseExitCallback = FALSE;
         DisplayPartyMenuMessage(gText_WontHaveEffect, TRUE);
@@ -7225,7 +7230,7 @@ static bool8 GetBattleEntryEligibility(struct Pokemon *mon)
         return TRUE;
     default: // Battle Frontier
         species = GetMonData(mon, MON_DATA_SPECIES);
-        if (gSpeciesInfo[species].isFrontierBanned)
+        if (IsSpeciesFrontierBanned(species))
             return FALSE;
         return TRUE;
     }
@@ -8065,48 +8070,38 @@ void IsLastMonThatKnowsSurf(void)
     }
 }
 
-static void CursorCb_ChangeLevelUpMoves(u8 taskId)
+static void OpenMoveRelearner(u8 taskId)
 {
     PlaySE(SE_SELECT);
-    gMoveRelearnerState = MOVE_RELEARNER_LEVEL_UP_MOVES;
     gRelearnMode = RELEARN_MODE_PARTY_MENU;
     gLastViewedMonIndex = gPartyMenu.slotId;
     gSpecialVar_0x8004 = gLastViewedMonIndex;
-    TeachMoveRelearnerMove();
+    sPartyMenuInternal->exitCallback = CB2_InitLearnMove;
     Task_ClosePartyMenu(taskId);
+}
+
+static void CursorCb_ChangeLevelUpMoves(u8 taskId)
+{
+    gMoveRelearnerState = MOVE_RELEARNER_LEVEL_UP_MOVES;
+    OpenMoveRelearner(taskId);
 }
 
 static void CursorCb_ChangeEggMoves(u8 taskId)
 {
-    PlaySE(SE_SELECT);
     gMoveRelearnerState = MOVE_RELEARNER_EGG_MOVES;
-    gRelearnMode = RELEARN_MODE_PARTY_MENU;
-    gLastViewedMonIndex = gPartyMenu.slotId;
-    gSpecialVar_0x8004 = gLastViewedMonIndex;
-    TeachMoveRelearnerMove();
-    Task_ClosePartyMenu(taskId);
+    OpenMoveRelearner(taskId);
 }
 
 static void CursorCb_ChangeTMMoves(u8 taskId)
 {
-    PlaySE(SE_SELECT);
     gMoveRelearnerState = MOVE_RELEARNER_TM_MOVES;
-    gRelearnMode = RELEARN_MODE_PARTY_MENU;
-    gLastViewedMonIndex = gPartyMenu.slotId;
-    gSpecialVar_0x8004 = gLastViewedMonIndex;
-    TeachMoveRelearnerMove();
-    Task_ClosePartyMenu(taskId);
+    OpenMoveRelearner(taskId);
 }
 
 static void CursorCb_ChangeTutorMoves(u8 taskId)
 {
-    PlaySE(SE_SELECT);
     gMoveRelearnerState = MOVE_RELEARNER_TUTOR_MOVES;
-    gRelearnMode = RELEARN_MODE_PARTY_MENU;
-    gLastViewedMonIndex = gPartyMenu.slotId;
-    gSpecialVar_0x8004 = gLastViewedMonIndex;
-    TeachMoveRelearnerMove();
-    Task_ClosePartyMenu(taskId);
+    OpenMoveRelearner(taskId);
 }
 
 static void CursorCb_LearnMovesSubMenu(u8 taskId)
@@ -8343,3 +8338,4 @@ static void Task_FirstBattleEnterParty_WaitFadeNormal(u8 taskId)
         gTasks[taskId].func = Task_HandleChooseMonInput;
     }
 }
+#endif

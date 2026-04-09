@@ -1877,13 +1877,13 @@ void ModifyPersonalityForNature(u32 *personality, u32 newNature)
 
 u32 GeneratePersonalityForGender(u32 gender, enum Species species)
 {
-    const struct SpeciesInfo *speciesInfo = &gSpeciesInfo[species];
+    u8 genderRatio = GetSpeciesGenderRatio(species);
     if (gender == MON_GENDERLESS)
         return 0;
     else if (gender == MON_MALE)
-        return ((255 - speciesInfo->genderRatio) / 2) + speciesInfo->genderRatio;
+        return ((255 - genderRatio) / 2) + genderRatio;
     else
-        return speciesInfo->genderRatio / 2;
+        return genderRatio / 2;
 }
 
 void CustomTrainerPartyAssignMoves(struct Pokemon *mon, const struct TrainerMon *partyEntry)
@@ -1983,20 +1983,17 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
             }
             if (partyData[monIndex].ability != ABILITY_NONE)
             {
-                const struct SpeciesInfo *speciesInfo = &gSpeciesInfo[partyData[monIndex].species];
-                u32 maxAbilityNum = ARRAY_COUNT(speciesInfo->abilities);
-                for (abilityNum = 0; abilityNum < maxAbilityNum; ++abilityNum)
+                for (abilityNum = 0; abilityNum < NUM_ABILITY_SLOTS; ++abilityNum)
                 {
-                    if (speciesInfo->abilities[abilityNum] == partyData[monIndex].ability)
+                    if (GetSpeciesAbility(partyData[monIndex].species, abilityNum) == partyData[monIndex].ability)
                         break;
                 }
-                assertf(abilityNum < maxAbilityNum, "illegal ability %S for %S", gAbilitiesInfo[partyData[monIndex].ability].name, speciesInfo->speciesName);
+                assertf(abilityNum < NUM_ABILITY_SLOTS, "illegal ability %S for %S", gAbilitiesInfo[partyData[monIndex].ability].name, GetSpeciesName(partyData[monIndex].species));
             }
             else if (B_TRAINER_MON_RANDOM_ABILITY)
             {
-                const struct SpeciesInfo *speciesInfo = &gSpeciesInfo[partyData[monIndex].species];
-                abilityNum = personalityHash % 3;
-                while (speciesInfo->abilities[abilityNum] == ABILITY_NONE)
+                abilityNum = personalityHash % NUM_ABILITY_SLOTS;
+                while (GetSpeciesAbility(partyData[monIndex].species, abilityNum) == ABILITY_NONE)
                 {
                     abilityNum--;
                 }
@@ -2741,7 +2738,7 @@ void SpriteCB_FaintOpponentMon(struct Sprite *sprite)
     species = SanitizeSpeciesId(species);
     if (species == SPECIES_UNOWN)
         species = GetUnownSpeciesId(personality);
-    yOffset = gSpeciesInfo[species].frontPicYOffset;
+    yOffset = GetSpeciesFrontPicYOffset(species);
 
     sprite->data[3] = 8 - yOffset / 8;
     sprite->data[4] = 1;
@@ -3113,7 +3110,7 @@ static void BattleStartClearSetData(void)
     gBattleStruct->runTries = 0;
     gBattleStruct->safariGoNearCounter = 0;
     gBattleStruct->safariPkblThrowCounter = 0;
-    gBattleStruct->safariCatchFactor = gSpeciesInfo[GetMonData(&gEnemyParty[0], MON_DATA_SPECIES)].catchRate * 100 / 1275;
+    gBattleStruct->safariCatchFactor = GetSpeciesCatchRate(GetMonData(&gEnemyParty[0], MON_DATA_SPECIES)) * 100 / 1275;
     gBattleStruct->safariEscapeFactor = 3;
     gBattleStruct->wildVictorySong = 0;
     gBattleStruct->moneyMultiplier = 1;
@@ -3358,11 +3355,14 @@ void FaintClearSetData(enum BattlerId battler)
         enum BattlerId partner = BATTLE_PARTNER(battler);
         // Clear commander state immediately so a replacement doesn't inherit it.
         gBattleStruct->battlerState[battler].commanderSpecies = SPECIES_NONE;
-        gBattleMons[partner].volatiles.semiInvulnerable = STATE_NONE;
-        if (IsBattlerAlive(partner))
+        if (gBattleMons[partner].volatiles.semiInvulnerable == STATE_COMMANDER)
         {
-            BtlController_EmitSpriteInvisibility(partner, B_COMM_TO_CONTROLLER, FALSE);
-            MarkBattlerForControllerExec(partner);
+            gBattleMons[partner].volatiles.semiInvulnerable = STATE_NONE;
+            if (IsBattlerAlive(partner))
+            {
+                BtlController_EmitSpriteInvisibility(partner, B_COMM_TO_CONTROLLER, FALSE);
+                MarkBattlerForControllerExec(partner);
+            }
         }
     }
 
@@ -3844,6 +3844,8 @@ static void TryDoEventsBeforeFirstTurn(void)
         memset(&gSpecialStatuses, 0, sizeof(gSpecialStatuses));
         BattlePutTextOnWindow(gText_EmptyString3, B_WIN_MSG);
         AssignUsableGimmicks();
+        SetShellSideArmCategory();
+        SetAiLogicDataForTurn(gAiLogicData); // get assumed abilities, hold effects, etc of all battlers
         gBattleMainFunc = HandleTurnActionSelectionState;
         ResetSentPokesToOpponentValue();
 
@@ -3857,8 +3859,6 @@ static void TryDoEventsBeforeFirstTurn(void)
         gBattleStruct->eventState.endTurn = 0;
 
         memset(gQueuedStatBoosts, 0, sizeof(gQueuedStatBoosts));
-        SetShellSideArmCategory();
-        SetAiLogicDataForTurn(gAiLogicData); // get assumed abilities, hold effects, etc of all battlers
 
         if (gBattleTypeFlags & BATTLE_TYPE_ARENA)
         {
@@ -3890,20 +3890,27 @@ static void HandleEndTurn_ContinueBattle(void)
     }
 }
 
+void SetBattleCallback(void (*func)(void))
+{
+    if (gBattleResources->battleCallbackStack->size != 0)
+        gBattleResources->battleCallbackStack->function[gBattleResources->battleCallbackStack->size - 1] = func;
+    else
+        gBattleMainFunc = func;
+}
+
 void BattleTurnPassed(void)
 {
-    s32 i;
+    BattleScriptExecute(BattleScript_EndTurnEvents);
+}
 
+bool32 EndTurnEvents(void) // Called from Battle Script
+{
     gBattleStruct->speedTieBreaks = RandomUniform(RNG_SPEED_TIE, 0, Factorial(MAX_BATTLERS_COUNT) - 1);
 
     TurnValuesCleanUp(TRUE);
 
-    if (gBattleOutcome == 0 && DoEndTurnEffects())
-        return;
-    if (BattleArenaTurnEnd())
-        return;
-    if (HandleFaintedMonActions())
-        return;
+    if (DoEndTurnEffects())
+        return TRUE;
 
     gBattleStruct->eventState.faintedAction = 0;
 
@@ -3913,14 +3920,14 @@ void BattleTurnPassed(void)
     gBattleScripting.animTargetsHit = 0;
     gBattleScripting.moveendState = 0;
 
-    for (i = 0; i < 5; i++)
+    for (u32 i = 0; i < 5; i++)
         gBattleCommunication[i] = 0;
 
     if (gBattleOutcome != 0)
     {
         gCurrentActionFuncId = B_ACTION_FINISHED;
-        gBattleMainFunc = RunTurnActionsFunctions;
-        return;
+        SetBattleCallback(RunTurnActionsFunctions);
+        return FALSE;
     }
 
     if (gBattleResults.battleTurnCounter < 0xFF)
@@ -3940,7 +3947,7 @@ void BattleTurnPassed(void)
         TryReduceStompingTantrumTimer(battler);
     }
 
-    for (i = 0; i < NUM_BATTLE_SIDES; i++)
+    for (u32 i = 0; i < NUM_BATTLE_SIDES; i++)
     {
         if (gSideTimers[i].retaliateTimer > 0)
             gSideTimers[i].retaliateTimer--;
@@ -3952,12 +3959,9 @@ void BattleTurnPassed(void)
     AssignUsableGimmicks();
     SetShellSideArmCategory();
     SetAiLogicDataForTurn(gAiLogicData); // get assumed abilities, hold effects, etc of all battlers
-    gBattleMainFunc = HandleTurnActionSelectionState;
+    SetBattleCallback(HandleTurnActionSelectionState);
 
-    if (gBattleTypeFlags & BATTLE_TYPE_PALACE)
-        BattleScriptExecute(BattleScript_PalacePrintFlavorText);
-    else if (gBattleTypeFlags & BATTLE_TYPE_ARENA && gBattleStruct->eventState.arenaTurn == 0)
-        BattleScriptExecute(BattleScript_ArenaTurnBeginning);
+    return FALSE;
 }
 
 u8 IsRunningFromBattleImpossible(enum BattlerId battler)
@@ -4080,16 +4084,23 @@ static void HandleTurnActionSelectionState(void)
 {
     s32 i;
 
+    bool32 reverseBattlerLogicOrder = RandomPercentage(RNG_AI_REVERSE_BATTLER_LOGIC_ORDER, GetConfig(AI_REVERSE_BATTLER_LOGIC_ORDER_CHANCE)) && IsDoubleBattle();
+
     gBattleCommunication[ACTIONS_CONFIRMED_COUNT] = 0;
-    for (enum BattlerId battler = 0; battler < gBattlersCount; battler++)
+    for (enum BattlerId battlerIndex = 0; battlerIndex < gBattlersCount; battlerIndex++)
     {
+        enum BattlerId battler = reverseBattlerLogicOrder ? BATTLE_PARTNER(battlerIndex) : battlerIndex;
         enum BattlerPosition position = GetBattlerPosition(battler);
         switch (gBattleCommunication[battler])
         {
         case STATE_TURN_START_RECORD: // Recorded battle related action on start of every turn.
             RecordedBattle_CopyBattlerMoves(battler);
             gBattleCommunication[battler] = STATE_BEFORE_ACTION_CHOSEN;
-            ComputeBattlerDecisions(battler); // Do AI score computations here so we can use them in AI_TrySwitchOrUseItem
+            bool32 isAiBattler = (gBattleTypeFlags & BATTLE_TYPE_HAS_AI || IsWildMonSmart()) && (BattlerHasAi(battler) && !(gBattleTypeFlags & BATTLE_TYPE_PALACE));
+            if (isAiBattler)
+            {
+                ComputeAiBattlerDecisions(battler); // Do AI score computations here so we can use them in AI_TrySwitchOrUseItem
+            }
             // fallthrough
         case STATE_BEFORE_ACTION_CHOSEN: // Choose an action.
             gBattleStruct->monToSwitchIntoId[battler] = PARTY_SIZE;
@@ -5933,7 +5944,7 @@ enum Type GetDynamicMoveType(struct Pokemon *mon, enum Move move, enum BattlerId
         }
         break;
     case EFFECT_NATURAL_GIFT:
-        if (GetItemPocket(heldItem) == POCKET_BERRIES)
+        if (ItemIsBerry(heldItem))
             return gBerries[ItemIdToBerryType(heldItem)].naturalGiftType;
         else
             return moveType;

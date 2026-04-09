@@ -4,14 +4,14 @@ GAME_CODE    ?= BPEE
 BUILD_NAME   ?= emerald
 MAP_VERSION  ?= emerald
 
-ifeq (firered,$(MAKECMDGOALS))
+ifeq (firered, $(or $(BUILD), $(MAKECMDGOALS)))
   	GAME_VERSION 	:= FIRERED
 	TITLE       	:= POKEMON FIRE
 	GAME_CODE   	:= BPRE
 	BUILD_NAME  	:= firered
 	MAP_VERSION 	:= firered
 else
-ifeq (leafgreen,$(MAKECMDGOALS))
+ifeq (leafgreen, $(or $(BUILD), $(MAKECMDGOALS)))
 	GAME_VERSION 	:= LEAFGREEN
 	TITLE       	:= POKEMON LEAF
 	GAME_CODE   	:= BPGE
@@ -26,7 +26,7 @@ REVISION    := 0
 KEEP_TEMPS  ?= 0
 
 # `File name`.gba
-FILE_NAME := poke$(BUILD_NAME)
+FILE_NAME := rks$(BUILD_NAME)
 BUILD_DIR := build
 
 # Compares the ROM to a checksum of the original - only makes sense using when non-modern
@@ -35,9 +35,9 @@ COMPARE     ?= 0
 TEST         ?= 0
 # Enables -fanalyzer C flag to analyze in depth potential UBs
 ANALYZE      ?= 0
-# Count unused warnings as errors. Used by RH-Hideout's repo
+# Count unused warnings as errors. Used by RKS-Engine's repo
 UNUSED_ERROR ?= 0
-# Count deprecated warnings as errors. Used by RH-Hideout's repo
+# Count deprecated warnings as errors. Used by RKS-Engine's repo
 DEPRECATED_ERROR ?= 0
 # Adds -Og and -g flags, which optimize the build for debugging and include debug info respectively
 DEBUG        ?= 0
@@ -132,14 +132,12 @@ C_SUBDIR = src
 ASM_SUBDIR = asm
 DATA_SRC_SUBDIR = src/data
 DATA_ASM_SUBDIR = data
-SONG_SUBDIR = sound/songs
 MID_SUBDIR = sound/songs/midi
 TEST_SUBDIR = test
 
 C_BUILDDIR = $(OBJ_DIR)/$(C_SUBDIR)
 ASM_BUILDDIR = $(OBJ_DIR)/$(ASM_SUBDIR)
 DATA_ASM_BUILDDIR = $(OBJ_DIR)/$(DATA_ASM_SUBDIR)
-SONG_BUILDDIR = $(OBJ_DIR)/$(SONG_SUBDIR)
 MID_BUILDDIR = $(OBJ_DIR)/$(MID_SUBDIR)
 TEST_BUILDDIR = $(OBJ_DIR)/$(TEST_SUBDIR)
 
@@ -167,6 +165,8 @@ endif
 ARMCC := $(PREFIX)gcc
 PATH_ARMCC := PATH="$(PATH)" $(ARMCC)
 CC1 := $(shell $(PATH_ARMCC) --print-prog-name=cc1) -quiet
+
+include override_config.mk
 
 override CFLAGS += -mthumb -mthumb-interwork -O$(O_LEVEL) -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -Wno-pointer-to-int-cast -std=gnu17 -Werror -Wall -Wno-strict-aliasing -Wno-attribute-alias -Woverride-init -Wnonnull -Wenum-conversion
 
@@ -325,13 +325,10 @@ REGULAR_DATA_ASM_SRCS := $(filter-out $(DATA_ASM_SUBDIR)/maps.s $(DATA_ASM_SUBDI
 DATA_ASM_SRCS := $(wildcard $(DATA_ASM_SUBDIR)/*.s)
 DATA_ASM_OBJS := $(patsubst $(DATA_ASM_SUBDIR)/%.s,$(DATA_ASM_BUILDDIR)/%.o,$(DATA_ASM_SRCS))
 
-SONG_SRCS := $(wildcard $(SONG_SUBDIR)/*.s)
-SONG_OBJS := $(patsubst $(SONG_SUBDIR)/%.s,$(SONG_BUILDDIR)/%.o,$(SONG_SRCS))
-
 MID_SRCS := $(wildcard $(MID_SUBDIR)/*.mid)
 MID_OBJS := $(patsubst $(MID_SUBDIR)/%.mid,$(MID_BUILDDIR)/%.o,$(MID_SRCS))
 
-OBJS     := $(C_OBJS) $(C_ASM_OBJS) $(ASM_OBJS) $(DATA_ASM_OBJS) $(SONG_OBJS) $(MID_OBJS)
+OBJS     := $(C_OBJS) $(C_ASM_OBJS) $(ASM_OBJS) $(DATA_ASM_OBJS) $(MID_OBJS)
 OBJS_REL := $(patsubst $(OBJ_DIR)/%,%,$(OBJS))
 
 SUBDIRS  := $(sort $(dir $(OBJS) $(dir $(TEST_OBJS))))
@@ -344,10 +341,6 @@ debug: all
 release: all
 # Uncomment the next line, and then comment the 4 lines after it to reenable agbcc.
 #agbcc: all
-agbcc:
-	@echo "'make agbcc' is deprecated as of pokeemerald-expansion 1.9 and will be removed in 1.10."
-	@echo "Search for 'agbcc: all' in Makefile to reenable agbcc."
-	@exit 1
 
 LD_SCRIPT_TEST := ld_script_test.ld
 

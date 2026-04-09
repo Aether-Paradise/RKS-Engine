@@ -40,6 +40,7 @@
 #include "constants/item.h"
 #include "constants/items.h"
 #include "constants/heal_locations.h"
+#include "constants/help_window.h"
 #include "constants/layouts.h"
 #include "constants/lilycove_lady.h"
 #include "constants/map_scripts.h"
@@ -595,7 +596,7 @@ gStdScripts_End::
 	.include "data/maps/Route119_House/scripts.inc"
 	.include "data/maps/Route124_DivingTreasureHuntersHouse/scripts.inc"
 
-.if IS_FRLG
+.if IS_FRLG || FRLG_INCLUDE_KANTO_MAPS
 
 @ FRLG scripts
 	.include "data/maps/BattleColosseum_2P_Frlg/scripts.inc"
@@ -1042,7 +1043,7 @@ gStdScripts_End::
 	.include "data/scripts/flavor_text.inc"
 	.include "data/scripts/pkmn_center_nurse_frlg.inc"
 
-.endif
+.endif @ IS_FRLG || FRLG_INCLUDE_KANTO_MAPS
 
 	.include "data/scripts/std_msgbox.inc"
 	.include "data/scripts/trainer_battle.inc"
@@ -1347,10 +1348,10 @@ Common_EventScript_PlayerHandedOverTheItem::
 	.include "data/scripts/elite_four.inc"
 	.include "data/scripts/movement.inc"
 	.include "data/scripts/check_furniture.inc"
+	.include "data/scripts/mart_clerk.inc"
 	.include "data/text/record_mix.inc"
 	.include "data/text/pc.inc"
 	.include "data/text/pkmn_center_nurse.inc"
-	.include "data/text/mart_clerk.inc"
 	.include "data/text/obtain_item.inc"
 	.include "data/text/move_relearner.inc"
 

@@ -4,7 +4,7 @@ Lines to those can be found under each heading.
 This file only contains a short introduction to each supported system.
 If you run into trouble, ask for help on Discord (see [README.md](README.md)).
 
-After completing the install instructions for your OS, proceed to [Building pokeemerald-expansion](#building-pokeemerald-expansion).
+After completing the install instructions for your OS, proceed to [Building RKS-Engine](#building-rks-engine).
 
 ## Windows
 **Windows needs one of the systems to build the project**
@@ -46,18 +46,18 @@ Only tested on x86_64 based systems.
 
 [Chrome OS instructions](docs/install/chromeos/CHROME_OS.md)
 
-# Building pokeemerald-expansion
-Follow these steps to build `pokeemerald-expansion`.
+# Building RKS-Engine
+Follow these steps to build `RKS-Engine`.
 1. Navigate to the directory you want to keep the project in, be aware of any system specific limitations.
-2. Download `pokeemerald-expansion` with `git`
+2. Download `RKS-Engine` with `git`
 
     ```console
-    git clone https://github.com/rh-hideout/pokeemerald-expansion
+    git clone https://github.com/Aether-Paradise/RKS-Engine
     ```
 3. Navigate to the newly downloaded project.
 
     ```console
-    cd pokeemerald-expansion
+    cd RKS-Engine
     ```
 4. Build the project.
 
@@ -67,17 +67,17 @@ Follow these steps to build `pokeemerald-expansion`.
 5. If everything worked correctly, something very similar to this should be seen.
 
     ```console
-    arm-none-eabi-ld: warning: ../../pokeemerald.elf has a LOAD segment with RWX permissions
+    arm-none-eabi-ld: warning: ../../rksemerald.elf has a LOAD segment with RWX permissions
     Memory region         Used Size  Region Size  %age Used
                EWRAM:      243354 B       256 KB     92.83%
                IWRAM:       30492 B        32 KB     93.05%
                  ROM:    26072244 B        32 MB     77.70%
-    cd build/modern && arm-none-eabi-ld  -T ../../ld_script_modern.ld --print-memory-usage -o ../../pokeemerald.elf <objs> <libs> | cat
-    tools/gbafix/gbafix pokeemerald.elf -t"POKEMON EMER" -cBPEE -m01 -r0 --silent
-    arm-none-eabi-objcopy -O binary pokeemerald.elf pokeemerald.gba
-    tools/gbafix/gbafix pokeemerald.gba -p --silent
+    cd build/modern && arm-none-eabi-ld  -T ../../ld_script_modern.ld --print-memory-usage -o ../../rksemerald.elf <objs> <libs> | cat
+    tools/gbafix/gbafix rksemerald.elf -t"POKEMON EMER" -cBPEE -m01 -r0 --silent
+    arm-none-eabi-objcopy -O binary rksemerald.elf rksemerald.gba
+    tools/gbafix/gbafix rksemerald.gba -p --silent
     ```
-    And the build ROM will be in the directory as `pokeemerald.gba`.
+    And the build ROM will be in the directory as `rksemerald.gba`.
 
 # Building guidance
 
@@ -134,7 +134,7 @@ The bugfixes on `master` are occasionally merged into `upcoming`, but there is n
 
 1. Set RHH as a git remote
 ```console
-git remote add RHH https://github.com/rh-hideout/pokeemerald-expansion
+git remote add RKSE https://github.com/rh-hideout/RKS-Engine
 ```
 
 2. Pull your desired branch
@@ -145,7 +145,7 @@ git pull RHH master # if you've chosen to use the upcoming branch, replace the w
 # If you've chosen Latest Patch, replace the word master with expansion/1.11.0 where 1.11.0 is replaced with whatever the latest released version is.
 ```
 
-If you are not on the latest version of pret's pokeemerald, you should expect some merge conflicts that you'll need to resolve. Once complete, you'll be using **pokeemerald-expansion**.
+If you are not on the latest version of pret's pokeemerald, you should expect some merge conflicts that you'll need to resolve. Once complete, you'll be using **RKS-Engine**.
 
 # Updating pokeemerald-expansion
 

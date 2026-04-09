@@ -145,15 +145,19 @@ static s32 (*const sBattleAiFuncTable[])(enum BattlerId, enum BattlerId, enum Mo
 void AIDebugTimerStart()
 {
     // Set delay timer to count how long it takes for AI to choose action/move
-    gBattleStruct->aiDelayTimer = gMain.vblankCounter1;
-    CycleCountStart();
+    if ((TESTING && gBattleTurnCounter == 0) || DEBUG_AI_DELAY_TIMER)
+        gBattleStruct->aiDelayTimer = gMain.vblankCounter1;
+    if (!TESTING && DEBUG_AI_DELAY_TIMER)
+        CycleCountStart();
 }
 
 void AIDebugTimerEnd()
 {
     // We add to existing to compound multiple calls
-    gBattleStruct->aiDelayFrames += gMain.vblankCounter1 - gBattleStruct->aiDelayTimer;
-    gBattleStruct->aiDelayCycles += CycleCountEnd();
+    if ((TESTING && gBattleTurnCounter == 0) || DEBUG_AI_DELAY_TIMER)
+        gBattleStruct->aiDelayFrames += gMain.vblankCounter1 - gBattleStruct->aiDelayTimer;
+    if (!TESTING && DEBUG_AI_DELAY_TIMER)
+        gBattleStruct->aiDelayCycles += CycleCountEnd();
 }
 
 void BattleAI_SetupAIData(u8 defaultScoreMoves, enum BattlerId battler)
@@ -360,61 +364,59 @@ bool32 BattlerChooseNonMoveAction(void)
 
 void SetupAIPredictionData(enum BattlerId battler, enum SwitchType switchType)
 {
-    s32 opposingBattler = GetOppositeBattler(battler);
     gAiLogicData->aiPredictionInProgress = TRUE;
 
     // Switch prediction
-    if ((gAiThinkingStruct->aiFlags[battler] & AI_FLAG_PREDICT_SWITCH))
+    if (IsAiFlagPresent(AI_FLAG_PREDICT_SWITCH))
     {
-        gAiLogicData->mostSuitableMonId[opposingBattler] = GetMostSuitableMonToSwitchInto(opposingBattler, switchType);
-        if (ShouldSwitch(opposingBattler))
-            gAiLogicData->shouldSwitch |= (1u << opposingBattler);
-        gBattleStruct->prevTurnSpecies[opposingBattler] = gBattleMons[opposingBattler].species;
+        gAiLogicData->mostSuitableMonId[battler] = GetMostSuitableMonToSwitchInto(battler, switchType);
+        if (ShouldSwitch(battler))
+            gAiLogicData->shouldSwitch |= (1u << battler);
+        gBattleStruct->prevTurnSpecies[battler] = gBattleMons[battler].species;
     }
 
-    // Determine whether AI will use predictions this turn
-    gAiLogicData->predictingSwitch = RandomPercentage(RNG_AI_PREDICT_SWITCH, PREDICT_SWITCH_CHANCE);
+    // Move prediction
+    if (IsAiFlagPresent(AI_FLAG_PREDICT_MOVE))
+    {
+        gAiBattleData->chosenMoveIndex[battler] = BattleAI_ChooseMoveIndex(battler);
+        gAiLogicData->predictedMove[battler] = gBattleMons[battler].moves[gAiBattleData->chosenMoveIndex[battler]];
+        ModifySwitchAfterMoveScoring(battler);
+    }
 
     gAiLogicData->aiPredictionInProgress = FALSE;
 }
 
-void ComputeBattlerDecisions(enum BattlerId battler)
+void ComputeAiBattlerDecisions(enum BattlerId battler)
 {
-    bool32 isAiBattler = (gBattleTypeFlags & BATTLE_TYPE_HAS_AI || IsWildMonSmart()) && (BattlerHasAi(battler) && !(gBattleTypeFlags & BATTLE_TYPE_PALACE));
-    if (isAiBattler || CanAiPredictMove(battler))
-    {
-        // Risky AI switches aggressively even mid battle
-        enum SwitchType switchType = (gAiThinkingStruct->aiFlags[battler] & AI_FLAG_RISKY) ? SWITCH_AFTER_KO : SWITCH_MID_BATTLE_OPTIONAL;
+    // Risky AI switches aggressively even mid battle
+    enum SwitchType switchType = (gAiThinkingStruct->aiFlags[battler] & AI_FLAG_RISKY) ? SWITCH_AFTER_KO : SWITCH_MID_BATTLE_OPTIONAL;
 
-        gAiLogicData->aiCalcInProgress = TRUE;
+    gAiLogicData->aiCalcInProgress = TRUE;
 
-        if (DEBUG_AI_DELAY_TIMER)
-            AIDebugTimerStart();
+        AIDebugTimerStart();
 
-        // Setup battler and prediction data
-        BattleAI_SetupAIData(0xF, battler);
-        SetupAIPredictionData(battler, SWITCH_MID_BATTLE_OPTIONAL);
+    // Setup battler data
+    BattleAI_SetupAIData(0xF, battler);
 
-        // AI's own switching data
-        if (isAiBattler)
-        {
-            gAiLogicData->mostSuitableMonId[battler] = GetMostSuitableMonToSwitchInto(battler, switchType);
-            if (ShouldSwitch(battler))
-                gAiLogicData->shouldSwitch |= (1u << battler);
-            gBattleStruct->prevTurnSpecies[battler] = gBattleMons[battler].species;
-        }
+    // Determine whether AI will use predictions this turn
 
-        // AI's move scoring
-        gAiBattleData->chosenMoveIndex[battler] = BattleAI_ChooseMoveIndex(battler); // Calculate score and chose move index
-        if (isAiBattler)
-            BattlerChooseNonMoveAction();
-        ModifySwitchAfterMoveScoring(battler);
+    gAiLogicData->predictingSwitch = (gAiThinkingStruct->aiFlags[battler] & AI_FLAG_PREDICT_SWITCH) ? RandomPercentage(RNG_AI_PREDICT_SWITCH, PREDICT_SWITCH_CHANCE) : FALSE;
+    gAiLogicData->predictingMove = (gAiThinkingStruct->aiFlags[battler] & AI_FLAG_PREDICT_MOVE) ? RandomPercentage(RNG_AI_PREDICT_MOVE, PREDICT_MOVE_CHANCE) : FALSE;
 
-        if (DEBUG_AI_DELAY_TIMER)
-            AIDebugTimerEnd();
+    // AI's switching data
+    gAiLogicData->mostSuitableMonId[battler] = GetMostSuitableMonToSwitchInto(battler, switchType);
+    if (ShouldSwitch(battler))
+        gAiLogicData->shouldSwitch |= (1u << battler);
+    gBattleStruct->prevTurnSpecies[battler] = gBattleMons[battler].species;
 
-        gAiLogicData->aiCalcInProgress = FALSE;
-    }
+    // AI's move scoring
+    gAiBattleData->chosenMoveIndex[battler] = BattleAI_ChooseMoveIndex(battler); // Calculate score and chose move index
+    BattlerChooseNonMoveAction();
+    ModifySwitchAfterMoveScoring(battler);
+
+        AIDebugTimerEnd();
+
+    gAiLogicData->aiCalcInProgress = FALSE;
 }
 
 void ReconsiderGimmick(enum BattlerId battlerAtk, enum BattlerId battlerDef, enum Move move)
@@ -748,9 +750,8 @@ void SetAiLogicDataForTurn(struct AiLogicData *aiData)
         return;
 
        gAiLogicData->aiCalcInProgress = TRUE;
-
-    if (DEBUG_AI_DELAY_TIMER)
-        AIDebugTimerStart();
+    
+    AIDebugTimerStart();
 
     aiData->weatherHasEffect = HasWeatherEffect();
     u32 weather = AI_GetWeather();
@@ -770,30 +771,26 @@ void SetAiLogicDataForTurn(struct AiLogicData *aiData)
         aiData->turnOrder[battler] = battler;
     SetBattlerTurnOrder(aiData->turnOrder);
 
-    for (enum BattlerId battlerAtk = 0; battlerAtk < battlersCount; battlerAtk++)
+    for (enum BattlerId battler = 0; battler < battlersCount; battler++)
     {
-        if (!IsBattlerAlive(battlerAtk))
+        if (!IsBattlerAlive(battler))
             continue;
 
-        SetBattlerAiMovesData(aiData, battlerAtk, battlersCount, weather);
+        SetBattlerAiMovesData(aiData, battler, battlersCount, weather);
     }
 
     for (enum BattlerId battler = 0; battler < battlersCount; battler++)
     {
         // Prediction limited to player side but can be expanded to read partners move in the future
-        if (!IsOnPlayerSide(battler) || !CanAiPredictMove(battler))
+        if (!IsOnPlayerSide(battler))
             continue;
 
-        // This can potentially be cleaned up more
         BattleAI_SetupAIData(0xF, battler);
-        u32 chosenMoveIndex = ChooseMoveOrAction(battler);
-        gAiLogicData->predictedMove[battler] = gBattleMons[battler].moves[chosenMoveIndex];
-        aiData->predictingMove = RandomPercentage(RNG_AI_PREDICT_MOVE, PREDICT_MOVE_CHANCE);
+        SetupAIPredictionData(battler, SWITCH_MID_BATTLE_OPTIONAL);
     }
 
-    if (DEBUG_AI_DELAY_TIMER)
-        AIDebugTimerEnd();
-
+    AIDebugTimerEnd();
+        
     gAiLogicData->aiCalcInProgress = FALSE;
 }
 
@@ -813,7 +810,7 @@ static u32 PpStallReduction(enum Move move, enum BattlerId battlerAtk)
     u32 totalStallValue = 0;
     u32 returnValue = 0;
     struct BattlePokemon backupBattleMon;
-    struct BattleContext ctx = {0};
+    struct DamageContext ctx = {0};
     ctx.battlerAtk = battlerAtk;
     ctx.abilityAtk = gAiLogicData->abilities[battlerAtk];
     ctx.move = ctx.chosenMove = move;
@@ -1300,7 +1297,7 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
         if (Ai_IsPriorityBlocked(battlerAtk, battlerDef, move, aiData))
             RETURN_SCORE_MINUS(20);
 
-        struct BattleContext ctx = {0};
+        struct DamageContext ctx = {0};
         ctx.battlerAtk = battlerAtk;
         ctx.battlerDef = battlerDef;
         ctx.move = ctx.chosenMove = move;
@@ -1514,7 +1511,7 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
             ADJUST_SCORE(-10);
         break;
     case EFFECT_STUFF_CHEEKS:
-        if (GetItemPocket(gBattleMons[battlerAtk].item) != POCKET_BERRIES)
+        if (!ItemIsBerry(gBattleMons[battlerAtk].item))
             return 0;   // cannot even select
         //fallthrough
     case EFFECT_DEFENSE_UP:
@@ -2632,6 +2629,9 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
     case EFFECT_YAWN:
         if (gBattleMons[battlerDef].volatiles.yawn)
             ADJUST_SCORE(-10);
+        else if ((aiData->holdEffects[battlerDef] == HOLD_EFFECT_FLAME_ORB && CanBeBurned(battlerDef, battlerDef, abilityDef))
+              || (aiData->holdEffects[battlerDef] == HOLD_EFFECT_TOXIC_ORB && CanBePoisoned(battlerDef, battlerDef, abilityDef, abilityDef)))
+            ADJUST_SCORE(-10);
         else if (!AI_CanPutToSleep(battlerAtk, battlerDef, aiData->abilities[battlerDef], move, aiData->partnerMove))
             ADJUST_SCORE(-10);
         if (PartnerMoveActivatesSleepClause(aiData->partnerMove))
@@ -2742,7 +2742,7 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
         }
         break;
     case EFFECT_NATURAL_GIFT:
-        if (!IsBattlerItemEnabled(battlerAtk) || GetItemPocket(gBattleMons[battlerAtk].item) != POCKET_BERRIES)
+        if (!IsBattlerItemEnabled(battlerAtk) || !ItemIsBerry(gBattleMons[battlerAtk].item))
             ADJUST_SCORE(-10);
         break;
     case EFFECT_GRASSY_TERRAIN:
@@ -2864,7 +2864,7 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
          || gBattleMons[battlerDef].volatiles.smackDown
          || gFieldStatuses & STATUS_FIELD_GRAVITY
          || aiData->holdEffects[battlerDef] == HOLD_EFFECT_IRON_BALL
-         || IsTelekinesisBannedSpecies(gBattleMons[battlerDef].species)
+         || IsSpeciesTelekinesisBanned(gBattleMons[battlerDef].species)
          || PartnerMoveIsSameAsAttacker(BATTLE_PARTNER(battlerAtk), battlerDef, move, aiData->partnerMove))
             ADJUST_SCORE(-10);
         break;
@@ -4023,8 +4023,8 @@ static bool32 DoesAbilityBenefitFromSunOrRain(enum BattlerId battler, enum Abili
     case ABILITY_SWIFT_SWIM:
         return (weather & B_WEATHER_RAIN);
     case ABILITY_HARVEST:
-        if (GetItemPocket(gAiLogicData->items[battler]) != POCKET_BERRIES
-            && GetItemPocket(GetBattlerPartyState(battler)->usedHeldItem) != POCKET_BERRIES)
+        if (!ItemIsBerry(gAiLogicData->items[battler])
+         && !ItemIsBerry(GetBattlerPartyState(battler)->usedHeldItem))
         {
             return FALSE;
         }
@@ -6231,13 +6231,13 @@ static s32 AI_CalcAdditionalEffectScore(enum BattlerId battlerAtk, enum BattlerI
             case MOVE_EFFECT_BUG_BITE:   // And pluck
                 if (gBattleMons[battlerDef].volatiles.substitute || aiData->abilities[battlerDef] == ABILITY_STICKY_HOLD)
                     break;
-                else if (GetItemPocket(aiData->items[battlerDef]) == POCKET_BERRIES)
+                else if (ItemIsBerry(aiData->items[battlerDef]))
                     ADJUST_SCORE(DECENT_EFFECT);
                 break;
             case MOVE_EFFECT_INCINERATE:
                 if (gBattleMons[battlerDef].volatiles.substitute || aiData->abilities[battlerDef] == ABILITY_STICKY_HOLD)
                     break;
-                else if (GetItemPocket(aiData->items[battlerDef]) == POCKET_BERRIES || aiData->holdEffects[battlerDef] == HOLD_EFFECT_GEMS)
+                else if (ItemIsBerry(aiData->items[battlerDef]) || aiData->holdEffects[battlerDef] == HOLD_EFFECT_GEMS)
                     ADJUST_SCORE(DECENT_EFFECT);
                 break;
             case MOVE_EFFECT_STEALTH_ROCK:

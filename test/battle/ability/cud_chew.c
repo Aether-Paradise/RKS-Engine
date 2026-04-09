@@ -4,7 +4,7 @@
 SINGLE_BATTLE_TEST("Cud Chew will activate Kee Berry effect again on the next turn")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_KEE_BERRY].holdEffect == HOLD_EFFECT_KEE_BERRY);
+        ASSUME(GetItemHoldEffect(ITEM_KEE_BERRY) == HOLD_EFFECT_KEE_BERRY);
         ASSUME(GetMoveCategory(MOVE_SCRATCH) == DAMAGE_CATEGORY_PHYSICAL);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_TAUROS_PALDEA_COMBAT) { Ability(ABILITY_CUD_CHEW); Item(ITEM_KEE_BERRY); }
@@ -26,8 +26,8 @@ SINGLE_BATTLE_TEST("Cud Chew will activate Kee Berry effect again on the next tu
 SINGLE_BATTLE_TEST("Cud Chew will activate Oran Berry effect again on the next turn")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffect == HOLD_EFFECT_RESTORE_HP);
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffectParam == 10);
+        ASSUME(GetItemHoldEffect(ITEM_ORAN_BERRY) == HOLD_EFFECT_RESTORE_HP);
+        ASSUME(GetItemHoldEffectParam(ITEM_ORAN_BERRY) == 10);
         ASSUME(GetMoveEffect(MOVE_DRAGON_RAGE) == EFFECT_FIXED_HP_DAMAGE);
         ASSUME(GetMoveFixedHPDamage(MOVE_DRAGON_RAGE) == 40);
         PLAYER(SPECIES_WOBBUFFET);
@@ -51,7 +51,7 @@ SINGLE_BATTLE_TEST("Cud Chew will activate Oran Berry effect again on the next t
 SINGLE_BATTLE_TEST("Cud Chew will activate Lum Berry effect again on the next turn")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_LUM_BERRY].holdEffect == HOLD_EFFECT_CURE_STATUS);
+        ASSUME(GetItemHoldEffect(ITEM_LUM_BERRY) == HOLD_EFFECT_CURE_STATUS);
         ASSUME(GetMoveEffect(MOVE_THUNDER_WAVE) == EFFECT_NON_VOLATILE_STATUS);
         ASSUME(GetMoveNonVolatileStatus(MOVE_THUNDER_WAVE) == MOVE_EFFECT_PARALYSIS);
         PLAYER(SPECIES_WOBBUFFET);

@@ -2,6 +2,7 @@
 ## Table of Contents
 - [What features are included?](#what-features-are-included)
   - [Table of Contents](#table-of-contents)
+  - [New Features in RKS-Engine](#new-features-in-rks-engine)
   - [Configuration files](#configuration-files)
   - [Upgraded Battle Engine](#upgraded-battle-engine)
   - [Full Trainer customization](#full-trainer-customization)
@@ -11,22 +12,34 @@
   - [Overworld improvements](#overworld-improvements)
   - [Developer tools](#developer-tools)
 
+## New Features in RKS-Engine
+- ***Blank slate:*** Hoenn and Kanto maps have been removed to make room for your new maps!
+- ***Extended Easy Chat Support***: Added support for Gen4+ Species, Moves and Abilities.
+- ***More available Saveblock space by default:***
+  - Most features that utilize SaveBlock space have been disabled by default. Check `include/config/save.h` to reenable them.
+- ***Reordered Species and Item IDs***: Pokémon and Items are now sorted by their introduction order to the series.
+- ***Config cleanup***: Configs has been removed due to redundancy:
+  - Always `TRUE`:
+    - `FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK1`
+    - `FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK2`
+    - `EXPANSION_INTRO`
+
 ## Configuration files
 A lot of features listed below can be turned off as desired. Check which ones in these files
-- [AI config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/ai.h)
-- [Battle config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/battle.h)
-- [Caps config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/caps.h)
-- [Debug config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/debug.h)
-- [DexNav config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/dexnav.h)
-- [General config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/general.h)
-- [HGSS Pokédex config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/pokedex_plus_hgss.h)
-- [Item config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/item.h)
-- [NPC Follower config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/follower_npc.h)
-- [Overworld config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/overworld.h)
-- [Pokémon config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/pokemon.h)
-- [Save config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/save.h)
-- [Species enabled](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/species_enabled.h)
-- [Summary screen config](https://github.com/rh-hideout/pokeemerald-expansion/blob/master/include/config/summary_screen.h)
+- [AI config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/ai.h)
+- [Battle config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/battle.h)
+- [Caps config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/caps.h)
+- [Debug config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/debug.h)
+- [DexNav config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/dexnav.h)
+- [General config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/general.h)
+- [HGSS Pokédex config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/pokedex_plus_hgss.h)
+- [Item config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/item.h)
+- [NPC Follower config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/follower_npc.h)
+- [Overworld config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/overworld.h)
+- [Pokémon config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/pokemon.h)
+- [Save config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/save.h)
+- [Species enabled](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/species_enabled.h)
+- [Summary screen config](https://github.com/Aether-Paradise/RKS-Engine/blob/main/include/config/summary_screen.h)
 
 ## Upgraded Battle Engine
 - ***Battle gimmicks:*** Mega Evolution, Primal Reversion, Ultra Burst, Z-Moves, Dynamax, Gigantamax and Terastallization.

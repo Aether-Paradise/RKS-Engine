@@ -282,9 +282,6 @@ struct Pokedex
     /*0x04*/ u32 unownPersonality; // set when you first see Unown
     /*0x08*/ u32 spindaPersonality; // set when you first see Spinda
     /*0x0C*/ u32 unknown3;
-#if FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK2 == FALSE
-    /*0x10*/ u8 filler[0x68]; // Previously Dex Flags, feel free to remove.
-#endif //FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK2
 };
 
 struct PokemonJumpRecords
@@ -607,13 +604,19 @@ struct SaveBlock2
     /*0xA0*/ struct Time lastBerryTreeUpdate;
     /*0xA8*/ u32 gcnLinkFlags; // Read by Pokémon Colosseum/XD
     /*0xAC*/ u32 encryptionKey;
+#if FREE_FRONTIER_APPRENTICES == FALSE
     /*0xB0*/ struct PlayersApprentice playerApprentice;
     /*0xDC*/ struct Apprentice apprentices[APPRENTICE_COUNT];
+#endif //FREE_FRONTIER_APPRENTICES
+#if FREE_BERRY_CRUSH == FALSE
     /*0x1EC*/ struct BerryCrush berryCrush;
+#endif //FREE_BERRY_CRUSH
 #if FREE_POKEMON_JUMP == FALSE
     /*0x1FC*/ struct PokemonJumpRecords pokeJump;
 #endif //FREE_POKEMON_JUMP
+#if FREE_DODRIO_BERRY_PICKUP == FALSE
     /*0x20C*/ struct BerryPickingResults berryPick;
+#endif //FREE_DODRIO_BERRY_PICKUP
 #if FREE_RECORD_MIXING_HALL_RECORDS == FALSE
     /*0x21C*/ struct RankingHall1P hallRecords1P[HALL_FACILITIES_COUNT][FRONTIER_LVL_MODE_COUNT][HALL_RECORDS_COUNT]; // From record mixing.
     /*0x57C*/ struct RankingHall2P hallRecords2P[FRONTIER_LVL_MODE_COUNT][HALL_RECORDS_COUNT]; // From record mixing.
@@ -1114,9 +1117,6 @@ struct SaveBlock1
     /*0x560 -> 0x848 is bag storage*/
     /*0x560*/ struct Bag bag;
     /*0x848*/ struct Pokeblock pokeblocks[POKEBLOCKS_COUNT];
-#if FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK1 == FALSE
-    /*0x988*/ u8 filler1[0x34]; // Previously Dex Flags, feel free to remove.
-#endif //FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK1
     /*0x9BC*/ u16 berryBlenderRecords[3];
     /*0x9C2*/ u8 unused_9C2[6];
 #if FREE_MATCH_CALL == FALSE
@@ -1130,7 +1130,9 @@ struct SaveBlock1
     /*0x139C*/ u16 vars[VARS_COUNT];
     /*0x159C*/ u32 gameStats[NUM_GAME_STATS];
     /*0x169C*/ struct BerryTree berryTrees[BERRY_TREES_COUNT];
+#if FREE_SECRET_BASES == FALSE
     /*0x1A9C*/ struct SecretBase secretBases[SECRET_BASES_COUNT];
+#endif //FREE_SECRET_BASES
     /*0x271C*/ u8 playerRoomDecorations[DECOR_MAX_PLAYERS_HOUSE];
     /*0x2728*/ u8 playerRoomDecorationPositions[DECOR_MAX_PLAYERS_HOUSE];
     /*0x2734*/ u8 decorationDesks[10];

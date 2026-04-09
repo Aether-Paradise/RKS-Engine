@@ -9,7 +9,7 @@ ASSUMPTIONS
 SINGLE_BATTLE_TEST("Embargo blocks the effect of an affected Pokémon's held item")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_FOCUS_SASH].holdEffect == HOLD_EFFECT_FOCUS_SASH);
+        ASSUME(GetItemHoldEffect(ITEM_FOCUS_SASH) == HOLD_EFFECT_FOCUS_SASH);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_FOCUS_SASH); }
     } WHEN {
@@ -31,7 +31,7 @@ SINGLE_BATTLE_TEST("Embargo blocks an affected Pokémon's trainer from using ite
     // in the action of an NPC using an item in battle.
     KNOWN_FAILING;
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_POTION].battleUsage == EFFECT_ITEM_RESTORE_HP);
+        ASSUME(GetItemBattleUsage(ITEM_POTION) == EFFECT_ITEM_RESTORE_HP);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET) { HP(1); }
     } WHEN {
@@ -55,7 +55,7 @@ WILD_BATTLE_TEST("Embargo doesn't block held item effects that affect experience
     GIVEN {
         PLAYER(SPECIES_WOBBUFFET) { Level(20); Item(item); }
         OPPONENT(SPECIES_CATERPIE) { Level(10); HP(1); }
-        ASSUME(gItemsInfo[ITEM_LUCKY_EGG].holdEffect == HOLD_EFFECT_LUCKY_EGG);
+        ASSUME(GetItemHoldEffect(ITEM_LUCKY_EGG) == HOLD_EFFECT_LUCKY_EGG);
     } WHEN {
         TURN { MOVE(opponent, MOVE_EMBARGO); MOVE(player, MOVE_SCRATCH); }
     } SCENE {
@@ -76,10 +76,10 @@ WILD_BATTLE_TEST("Embargo doesn't block held item effects that affect effort val
     GIVEN {
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_POWER_WEIGHT); }
         OPPONENT(SPECIES_CATERPIE) { HP(1); }
-        ASSUME(gItemsInfo[ITEM_POWER_WEIGHT].holdEffect == HOLD_EFFECT_POWER_ITEM);
-        ASSUME(gItemsInfo[ITEM_POWER_WEIGHT].holdEffectParam != 0);
-        ASSUME(gItemsInfo[ITEM_POWER_WEIGHT].secondaryId == STAT_HP);
-        ASSUME(gSpeciesInfo[SPECIES_CATERPIE].evYield_HP == 1);
+        ASSUME(GetItemHoldEffect(ITEM_POWER_WEIGHT) == HOLD_EFFECT_POWER_ITEM);
+        ASSUME(GetItemHoldEffectParam(ITEM_POWER_WEIGHT) != 0);
+        ASSUME(GetItemSecondaryId(ITEM_POWER_WEIGHT) == STAT_HP);
+        ASSUME(GetSpeciesEVYieldHP(SPECIES_CATERPIE) == 1);
     } WHEN {
         TURN { MOVE(opponent, MOVE_EMBARGO); MOVE(player, MOVE_SCRATCH); }
     } SCENE {
@@ -90,7 +90,7 @@ WILD_BATTLE_TEST("Embargo doesn't block held item effects that affect effort val
         MESSAGE("Wobbuffet used Scratch!");
         MESSAGE("The wild Caterpie fainted!");
     } THEN {
-        finalHPEVAmount = (GetMonData(&PLAYER_PARTY[0], MON_DATA_HP_EV) + gItemsInfo[ITEM_POWER_WEIGHT].holdEffectParam + gSpeciesInfo[SPECIES_CATERPIE].evYield_HP);
+        finalHPEVAmount = (GetMonData(&PLAYER_PARTY[0], MON_DATA_HP_EV) + GetItemHoldEffectParam(ITEM_POWER_WEIGHT) + GetSpeciesEVYieldHP(SPECIES_CATERPIE));
         EXPECT_EQ(GetMonData(&gPlayerParty[0], MON_DATA_HP_EV), finalHPEVAmount);
     }
 }
@@ -100,7 +100,7 @@ SINGLE_BATTLE_TEST("Embargo negates a held item's Speed reduction")
     GIVEN {
         PLAYER(SPECIES_WOBBUFFET) { Speed(19); }
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_MACHO_BRACE); Speed(20); }
-        ASSUME(gItemsInfo[ITEM_MACHO_BRACE].holdEffect == HOLD_EFFECT_MACHO_BRACE);
+        ASSUME(GetItemHoldEffect(ITEM_MACHO_BRACE) == HOLD_EFFECT_MACHO_BRACE);
     } WHEN {
         TURN { MOVE(player, MOVE_EMBARGO); }
         TURN { MOVE(player, MOVE_SCRATCH); MOVE(opponent, MOVE_SCRATCH); }
@@ -125,7 +125,7 @@ SINGLE_BATTLE_TEST("Embargo negates a held item's Speed reduction")
 
 //     KNOWN_FAILING; // Pokémon are currently not obtaining Friendship for using items in battle.
 //     GIVEN {
-//         ASSUME(gItemsInfo[ITEM_X_ACCURACY].battleUsage == EFFECT_ITEM_INCREASE_STAT);
+//         ASSUME(GetItemBattleUsage(ITEM_X_ACCURACY) == EFFECT_ITEM_INCREASE_STAT);
 //         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_SOOTHE_BELL); }
 //         OPPONENT(SPECIES_WOBBUFFET);
 //     } WHEN {
@@ -150,9 +150,9 @@ SINGLE_BATTLE_TEST("Embargo doesn't block a held item's form-changing effect, bu
     GIVEN {
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_ARCEUS_GRASS) { Item(heldItem); }
-        ASSUME(gItemsInfo[ITEM_MEADOW_PLATE].holdEffect == HOLD_EFFECT_PLATE);
-        ASSUME(gItemsInfo[ITEM_MEADOW_PLATE].holdEffectParam == 20);
-        ASSUME(gItemsInfo[ITEM_MEADOW_PLATE].secondaryId == TYPE_GRASS);
+        ASSUME(GetItemHoldEffect(ITEM_MEADOW_PLATE) == HOLD_EFFECT_PLATE);
+        ASSUME(GetItemHoldEffectParam(ITEM_MEADOW_PLATE) == 20);
+        ASSUME(GetItemSecondaryId(ITEM_MEADOW_PLATE) == TYPE_GRASS);
     } WHEN {
         TURN { MOVE(player, MOVE_EMBARGO); MOVE(opponent, MOVE_RAZOR_LEAF); }
     } SCENE {

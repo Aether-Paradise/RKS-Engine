@@ -44,7 +44,7 @@ SINGLE_BATTLE_TEST("Aqua Ring restores 30% more HP when holding Big Root")
     PARAMETRIZE { item = ITEM_BIG_ROOT; expectedHp = 60; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_BIG_ROOT].holdEffect == HOLD_EFFECT_BIG_ROOT);
+        ASSUME(GetItemHoldEffect(ITEM_BIG_ROOT) == HOLD_EFFECT_BIG_ROOT);
         PLAYER(SPECIES_WOBBUFFET) { HP(50); MaxHP(128); Item(item); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {

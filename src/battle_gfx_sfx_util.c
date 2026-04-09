@@ -23,6 +23,7 @@
 #include "data.h"
 #include "palette.h"
 #include "contest.h"
+#include "trainer.h"
 #include "trainer_pokemon_sprites.h"
 #include "constants/songs.h"
 #include "constants/rgb.h"
@@ -627,21 +628,21 @@ void BattleLoadMonSpriteGfx(struct Pokemon *mon, enum BattlerId battler)
         return;
 
     isShiny = GetMonData(mon, MON_DATA_IS_SHINY);
+    species = GetMonData(mon, MON_DATA_SPECIES);
+    personalityValue = GetMonData(mon, MON_DATA_PERSONALITY);
 
-    if (gBattleSpritesDataPtr->battlerData[battler].transformSpecies == SPECIES_NONE)
-    {
-        species = GetMonData(mon, MON_DATA_SPECIES);
-        personalityValue = GetMonData(mon, MON_DATA_PERSONALITY);
-    }
-    else
+    if (gBattleSpritesDataPtr->battlerData[battler].transformSpecies != SPECIES_NONE)
     {
         species = gBattleSpritesDataPtr->battlerData[battler].transformSpecies;
         // If battler has Gigantamax factor, try convert gfx to G-Max version
         if (GetActiveGimmick(battler) == GIMMICK_DYNAMAX && GetMonData(mon, MON_DATA_GIGANTAMAX_FACTOR))
             gBattleSpritesDataPtr->battlerData[battler].transformSpecies = species = GetGMaxTargetSpecies(species);
 
-        personalityValue = gTransformedPersonalities[battler];
-        isShiny = gTransformedShininess[battler];
+        if (gBattleMons[battler].volatiles.transformed)
+        {
+            personalityValue = gTransformedPersonalities[battler];
+            isShiny = gTransformedShininess[battler];
+        }
     }
 
     position = GetBattlerPosition(battler);
@@ -658,6 +659,7 @@ void BattleLoadMonSpriteGfx(struct Pokemon *mon, enum BattlerId battler)
 
     LoadPalette(paletteData, paletteOffset, PLTT_SIZE_4BPP);
     LoadPalette(paletteData, BG_PLTT_ID(8) + BG_PLTT_ID(battler), PLTT_SIZE_4BPP);
+    TimeMixBattleSpritePalette(paletteOffset);
 
     // transform's pink color
     if (gBattleMons[battler].volatiles.transformed)
@@ -670,7 +672,7 @@ void BattleLoadMonSpriteGfx(struct Pokemon *mon, enum BattlerId battler)
     if (GetActiveGimmick(battler) == GIMMICK_DYNAMAX)
     {
         // Calyrex and its forms have a blue dynamax aura instead of red.
-        if (GET_BASE_SPECIES_ID(species) == SPECIES_CALYREX)
+        if (GetBaseSpeciesId(species) == SPECIES_CALYREX)
             BlendPalette(paletteOffset, 16, 4, RGB(12, 0, 31));
         else
             BlendPalette(paletteOffset, 16, 4, RGB(31, 0, 12));
@@ -689,17 +691,17 @@ void BattleGfxSfxDummy2(enum Species species)
 {
 }
 
-void DecompressTrainerFrontPic(u16 frontPicId, enum BattlerId battler)
+void DecompressTrainerFrontPic(enum TrainerPicID trainerPicId, enum BattlerId battler)
 {
     enum BattlerPosition position = GetBattlerPosition(battler);
-    DecompressPicFromTable(&gTrainerSprites[frontPicId].frontPic,
-                           gMonSpritesGfxPtr->spritesGfx[position]);
-    LoadSpritePalette(&gTrainerSprites[frontPicId].palette);
+    DecompressDataWithHeaderWram(GetTrainerFrontPicData(trainerPicId), gMonSpritesGfxPtr->spritesGfx[position]);
+    u32 palID = LoadSpritePaletteWithTag(GetTrainerFrontPicPalette(trainerPicId), GetTrainerPicTag(trainerPicId, TRUE));
+    TimeMixBattleSpritePalette(OBJ_PLTT_ID(palID));
 }
 
-void FreeTrainerFrontPicPalette(u16 frontPicId)
+void FreeTrainerFrontPicPalette(enum TrainerPicID trainerPicId)
 {
-    FreeSpritePaletteByTag(gTrainerSprites[frontPicId].palette.tag);
+    FreeSpritePaletteByTag(GetTrainerPicTag(trainerPicId, TRUE));
 }
 
 // Unused.
@@ -710,6 +712,7 @@ void BattleLoadAllHealthBoxesGfxAtOnce(void)
 
     LoadSpritePalette(&sSpritePalettes_HealthBoxHealthBar[0]);
     LoadSpritePalette(&sSpritePalettes_HealthBoxHealthBar[1]);
+    TimeMixBattleBgPalette(TRUE);
     if (!IsDoubleBattle())
     {
         LoadCompressedSpriteSheet(&sSpriteSheet_SinglesPlayerHealthbox);
@@ -738,6 +741,7 @@ bool8 BattleLoadAllHealthBoxesGfx(u8 state)
         {
             LoadSpritePalette(&sSpritePalettes_HealthBoxHealthBar[0]);
             LoadSpritePalette(&sSpritePalettes_HealthBoxHealthBar[1]);
+            TimeMixBattleBgPalette(TRUE);
             CategoryIcons_LoadSpritesGfx();
         }
         else if (!IsDoubleBattle())
@@ -965,10 +969,11 @@ void HandleSpeciesGfxDataChange(enum BattlerId battlerAtk, enum BattlerId battle
     paletteOffset = OBJ_PLTT_ID(battlerAtk);
     paletteData = GetMonSpritePalFromSpeciesAndPersonality(targetSpecies, isShiny, personalityValue);
     LoadPalette(paletteData, paletteOffset, PLTT_SIZE_4BPP);
+    TimeMixBattleSpritePalette(paletteOffset);
 
     if (changeType == SPECIES_GFX_CHANGE_GHOST_UNVEIL)
     {
-        SetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_NICKNAME, gSpeciesInfo[targetSpecies].speciesName);
+        SetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_NICKNAME, GetSpeciesName(targetSpecies));
         UpdateNickInHealthbox(gHealthboxSpriteIds[battlerAtk], &gEnemyParty[gBattlerPartyIndexes[battlerAtk]]);
         TryAddPokeballIconToHealthbox(gHealthboxSpriteIds[battlerAtk], TRUE);
     }
@@ -982,7 +987,7 @@ void HandleSpeciesGfxDataChange(enum BattlerId battlerAtk, enum BattlerId battle
     if (GetActiveGimmick(battlerAtk) == GIMMICK_DYNAMAX)
     {
         // Calyrex and its forms have a blue dynamax aura instead of red.
-        if (GET_BASE_SPECIES_ID(targetSpecies) == SPECIES_CALYREX)
+        if (GetBaseSpeciesId(targetSpecies) == SPECIES_CALYREX)
             BlendPalette(paletteOffset, 16, 4, RGB(12, 0, 31));
         else
             BlendPalette(paletteOffset, 16, 4, RGB(31, 0, 12));
@@ -1154,7 +1159,7 @@ void CreateEnemyShadowSprite(enum BattlerId battler)
     if (B_ENEMY_MON_SHADOW_STYLE >= GEN_4 && P_GBA_STYLE_SPECIES_GFX == FALSE)
     {
         enum Species species = GetBattlerVisualSpecies(battler);
-        u8 size = gSpeciesInfo[species].enemyShadowSize;
+        u8 size = GetSpeciesEnemyShadowSize(species);
 
         gBattleSpritesDataPtr->healthBoxesData[battler].shadowSpriteIdPrimary = CreateSprite(&gSpriteTemplate_EnemyShadow,
                                                                                              GetBattlerSpriteCoord(battler, BATTLER_COORD_X),
@@ -1263,23 +1268,23 @@ void SpriteCB_EnemyShadow(struct Sprite *shadowSprite)
     }
     else if (transformSpecies != SPECIES_NONE)
     {
-        xOffset = gSpeciesInfo[transformSpecies].enemyShadowXOffset;
-        yOffset = gSpeciesInfo[transformSpecies].enemyShadowYOffset + 16;
-        size = gSpeciesInfo[transformSpecies].enemyShadowSize;
+        xOffset = GetSpeciesEnemyShadowXOffset(transformSpecies);
+        yOffset = GetSpeciesEnemyShadowYOffset(transformSpecies) + 16;
+        size = GetSpeciesEnemyShadowSize(transformSpecies);
 
         if (B_ENEMY_MON_SHADOW_STYLE >= GEN_4)
             xOffset += (shadowSprite->tSpriteSide == SPRITE_SIDE_LEFT ? -16 : 16);
 
         invisible = (B_ENEMY_MON_SHADOW_STYLE >= GEN_4 && P_GBA_STYLE_SPECIES_GFX == FALSE)
-                  ? gSpeciesInfo[transformSpecies].suppressEnemyShadow
-                  : gSpeciesInfo[transformSpecies].enemyMonElevation == 0;
+                  ? IsSpeciesEnemyShadowSuppressed(transformSpecies)
+                  : GetSpeciesEnemyElevation(transformSpecies) == 0;
     }
     else if (B_ENEMY_MON_SHADOW_STYLE >= GEN_4 && P_GBA_STYLE_SPECIES_GFX == FALSE)
     {
         enum Species species = GetBattlerVisualSpecies(battler);
-        xOffset = gSpeciesInfo[species].enemyShadowXOffset + (shadowSprite->tSpriteSide == SPRITE_SIDE_LEFT ? -16 : 16);
-        yOffset = gSpeciesInfo[species].enemyShadowYOffset + 16;
-        size = gSpeciesInfo[species].enemyShadowSize;
+        xOffset = GetSpeciesEnemyShadowXOffset(species) + (shadowSprite->tSpriteSide == SPRITE_SIDE_LEFT ? -16 : 16);
+        yOffset = GetSpeciesEnemyShadowYOffset(species) + 16;
+        size = GetSpeciesEnemyShadowSize(species);
     }
 
     if (gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
@@ -1321,7 +1326,7 @@ void SetBattlerShadowSpriteCallback(enum BattlerId battler, enum Species species
         if (gBattleSpritesDataPtr->battlerData[battler].transformSpecies != SPECIES_NONE)
             species = gBattleSpritesDataPtr->battlerData[battler].transformSpecies;
 
-        if (gSpeciesInfo[SanitizeSpeciesId(species)].suppressEnemyShadow == FALSE)
+        if (IsSpeciesEnemyShadowSuppressed(species) == FALSE)
         {
             gSprites[gBattleSpritesDataPtr->healthBoxesData[battler].shadowSpriteIdPrimary].callback = SpriteCB_EnemyShadow;
             gSprites[gBattleSpritesDataPtr->healthBoxesData[battler].shadowSpriteIdSecondary].callback = SpriteCB_EnemyShadow;
@@ -1346,7 +1351,7 @@ void SetBattlerShadowSpriteCallback(enum BattlerId battler, enum Species species
         if (gBattleSpritesDataPtr->battlerData[battler].transformSpecies != SPECIES_NONE)
             species = gBattleSpritesDataPtr->battlerData[battler].transformSpecies;
 
-        if (gSpeciesInfo[SanitizeSpeciesId(species)].enemyMonElevation != 0)
+        if (GetSpeciesEnemyElevation(species) != 0)
             gSprites[gBattleSpritesDataPtr->healthBoxesData[battler].shadowSpriteIdPrimary].callback = SpriteCB_EnemyShadow;
         else
             gSprites[gBattleSpritesDataPtr->healthBoxesData[battler].shadowSpriteIdPrimary].callback = SpriteCB_SetInvisible;

@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_BOOSTER_ENERGY].holdEffect == HOLD_EFFECT_BOOSTER_ENERGY);
+    ASSUME(GetItemHoldEffect(ITEM_BOOSTER_ENERGY) == HOLD_EFFECT_BOOSTER_ENERGY);
 }
 
 SINGLE_BATTLE_TEST("Booster Energy will activate Quark Drive after Electric Terrain ends")
@@ -233,7 +233,7 @@ SINGLE_BATTLE_TEST("Booster Energy increases special defense by 30% if it is the
 SINGLE_BATTLE_TEST("Booster Energy can't be tricked if a Paradox species is involved")
 {
     GIVEN {
-        ASSUME(gSpeciesInfo[SPECIES_IRON_MOTH].isParadox == TRUE);
+        ASSUME(IsSpeciesParadox(SPECIES_IRON_MOTH));
         PLAYER(SPECIES_IRON_MOTH) { Item(ITEM_BERRY_JUICE); }
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_BOOSTER_ENERGY); }
     } WHEN {

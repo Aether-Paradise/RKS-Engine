@@ -1394,7 +1394,6 @@ static bool32 CheckBattlePyramidEvoRequirement(enum Species species, const u16 *
     return FALSE;
 }
 
-extern u32 GetTotalBaseStat(enum Species species);
 void GenerateBattlePyramidWildMon(void)
 {
     u8 name[POKEMON_NAME_LENGTH + 1];
@@ -1426,7 +1425,7 @@ void GenerateBattlePyramidWildMon(void)
         species = Random() % NUM_SPECIES;
 
         // check if base species
-        if (GET_BASE_SPECIES_ID(species) != species)
+        if (GetBaseSpeciesId(species) != species)
             continue;
 
         // check type
@@ -1434,7 +1433,7 @@ void GenerateBattlePyramidWildMon(void)
             continue;
 
         // check base stat total
-        if (GetTotalBaseStat(species) > bstLim)
+        if (GetSpeciesBaseStatTotal(species) > bstLim)
             continue;
 
         // check moves
@@ -1600,7 +1599,7 @@ void GenerateBattlePyramidWildMon(void)
     }
     SetMonData(&gEnemyParty[0],
                MON_DATA_EXP,
-               &gExperienceTables[gSpeciesInfo[wildMons[id].species].growthRate][lvl]);
+               &gExperienceTables[GetSpeciesGrowthRate(wildMons[id].species)][lvl]);
 
     switch (wildMons[id].abilityNum)
     {

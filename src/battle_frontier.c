@@ -32,7 +32,7 @@ COMMON_DATA u16 gFrontierTempParty[MAX_FRONTIER_PARTY_SIZE] = {0};
 static void HandleFacilityTrainerBattleEnd(void)
 {
     u8 facility = gBattleScripting.specialTrainerBattleType;
-    switch (facility) 
+    switch (facility)
     {
     case FACILITY_BATTLE_TOWER:
     case FACILITY_BATTLE_DOME:
@@ -74,7 +74,7 @@ static void Task_StartBattleAfterTransition(u8 taskId)
 static void DoFacilityTrainerBattleInternal(u8 facility)
 {
     gBattleScripting.specialTrainerBattleType = facility;
-    
+
     switch (facility)
     {
     case FACILITY_BATTLE_TOWER:
@@ -241,6 +241,7 @@ static void FillTrainerParty(u16 trainerId, u8 firstMonId, u8 monCount)
         }
         return;
     }
+#if FREE_FRONTIER_APPRENTICES == FALSE
     else
     {
         // Apprentice.
@@ -248,6 +249,7 @@ static void FillTrainerParty(u16 trainerId, u8 firstMonId, u8 monCount)
             CreateApprenticeMon(&gEnemyParty[i], &gSaveBlock2Ptr->apprentices[trainerId - TRAINER_RECORD_MIXING_APPRENTICE], i - firstMonId);
         return;
     }
+#endif //FREE_FRONTIER_APPRENTICES
 
     // Regular battle frontier trainer.
     // Attempt to fill the trainer's party with random Pokémon until 3 have been
@@ -343,15 +345,12 @@ void CreateFacilityMon(const struct TrainerMon *fmon, u16 level, u8 fixedIV, u32
     // try to set ability. Otherwise, random of non-hidden as per vanilla
     if (fmon->ability != ABILITY_NONE)
     {
-        const struct SpeciesInfo *speciesInfo = &gSpeciesInfo[fmon->species];
-        u32 maxAbilities = ARRAY_COUNT(speciesInfo->abilities);
-        for (ability = 0; ability < maxAbilities; ++ability)
+        for (ability = 0; ability < NUM_ABILITY_SLOTS; ++ability)
         {
-            if (speciesInfo->abilities[ability] == fmon->ability)
+            if (GetSpeciesAbility(fmon->species, ability) == fmon->ability)
                 break;
         }
-        if (ability >= maxAbilities)
-            ability = 0;
+        assertf(ability < NUM_ABILITY_SLOTS, "illegal ability %S for %S", gAbilitiesInfo[fmon->ability], GetSpeciesName(fmon->species));
         SetMonData(dst, MON_DATA_ABILITY_NUM, &ability);
     }
 

@@ -4,6 +4,7 @@
 #include "decompress.h"
 #include "decompress_error_handler.h"
 #include "pokemon.h"
+#include "pokemon_spots.h"
 #include "pokemon_sprite_visualizer.h"
 #include "text.h"
 #include "menu.h"
@@ -242,11 +243,6 @@ u32 LoadCompressedSpriteSheetByTemplate(const struct SpriteTemplate *template, s
     }
     return LoadSpriteSheetByTemplate(template, 0, offset);
 
-}
-
-void DecompressPicFromTable(const struct CompressedSpriteSheet *src, void *buffer)
-{
-    DecompressDataWithHeaderWram(src->data, buffer);
 }
 
 void HandleLoadSpecialPokePic(bool32 isFrontPic, void *dest, enum Species species, u32 personality)
@@ -1142,40 +1138,29 @@ void LoadSpecialPokePicIsEgg(void *dest, enum Species species, u32 personality, 
 
     if (isEgg)
     {
-        if (gSpeciesInfo[species].eggId != EGG_ID_NONE)
-            DecompressDataWithHeaderWram(gEggDatas[gSpeciesInfo[species].eggId].eggSprite, dest);
+        if (GetSpeciesEggId(species) != EGG_ID_NONE)
+            DecompressDataWithHeaderWram(gEggDatas[GetSpeciesEggId(species)].eggSprite, dest);
         else
-            DecompressDataWithHeaderWram(gSpeciesInfo[SPECIES_EGG].frontPic, dest);
+            DecompressDataWithHeaderWram(GetSpeciesFrontPic(SPECIES_EGG), dest);
     }
     else if (isFrontPic)
     {
-    #if P_GENDER_DIFFERENCES
-        if (gSpeciesInfo[species].frontPicFemale != NULL && IsPersonalityFemale(species, personality))
-            DecompressDataWithHeaderWram(gSpeciesInfo[species].frontPicFemale, dest);
+        if (IsPersonalityFemale(species, personality))
+            DecompressDataWithHeaderWram(GetSpeciesFrontPicFemale(species), dest);
         else
-    #endif
-        if (gSpeciesInfo[species].frontPic != NULL)
-            DecompressDataWithHeaderWram(gSpeciesInfo[species].frontPic, dest);
-        else
-            DecompressDataWithHeaderWram(gSpeciesInfo[SPECIES_NONE].frontPic, dest);
+            DecompressDataWithHeaderWram(GetSpeciesFrontPic(species), dest);
     }
     else
     {
-    #if P_GENDER_DIFFERENCES
-        if (gSpeciesInfo[species].backPicFemale != NULL && IsPersonalityFemale(species, personality))
-            DecompressDataWithHeaderWram(gSpeciesInfo[species].backPicFemale, dest);
+        if (IsPersonalityFemale(species, personality))
+            DecompressDataWithHeaderWram(GetSpeciesBackPicFemale(species), dest);
         else
-    #endif
-        if (gSpeciesInfo[species].backPic != NULL)
-            DecompressDataWithHeaderWram(gSpeciesInfo[species].backPic, dest);
-        else
-            DecompressDataWithHeaderWram(gSpeciesInfo[SPECIES_NONE].backPic, dest);
+            DecompressDataWithHeaderWram(GetSpeciesBackPic(species), dest);
     }
 
-    if (species == SPECIES_SPINDA && isFrontPic)
+    if (ShouldDrawSpotsOnSpecies(species) && isFrontPic)
     {
-        DrawSpindaSpots(personality, dest, FALSE);
-        DrawSpindaSpots(personality, dest, TRUE);
+        DrawPokemonSpotsBothFrames(personality, species, dest);
     }
 }
 

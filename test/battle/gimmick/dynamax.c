@@ -240,7 +240,7 @@ SINGLE_BATTLE_TEST("Dynamax: Dynamaxed Pokemon are affected by Grudge")
         MESSAGE("The opposing Wobbuffet used Grudge!");
         MESSAGE("Wobbuffet used Max Strike!");
         MESSAGE("The opposing Wobbuffet fainted!");
-        MESSAGE("Wobbuffet's Scratch lost all its PP due to the grudge!");
+        MESSAGE("Wobbuffet lost all of Scratch's PP due to the grudge!");
     }
 }
 
@@ -287,7 +287,7 @@ SINGLE_BATTLE_TEST("Dynamax: Dynamaxed Pokemon are not affected by phazing moves
 SINGLE_BATTLE_TEST("Dynamax: Dynamaxed Pokemon can be switched out by Eject Button")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_EJECT_BUTTON].holdEffect == HOLD_EFFECT_EJECT_BUTTON);
+        ASSUME(GetItemHoldEffect(ITEM_EJECT_BUTTON) == HOLD_EFFECT_EJECT_BUTTON);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_EJECT_BUTTON); }
         PLAYER(SPECIES_WYNAUT);
         OPPONENT(SPECIES_WOBBUFFET);
@@ -538,7 +538,7 @@ SINGLE_BATTLE_TEST("Dynamax: Dynamaxed Pokemon are not affected by Choice items"
     PARAMETRIZE { item = ITEM_CHOICE_BAND; }
     PARAMETRIZE { item = ITEM_NONE; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_CHOICE_BAND].holdEffect == HOLD_EFFECT_CHOICE_BAND);
+        ASSUME(GetItemHoldEffect(ITEM_CHOICE_BAND) == HOLD_EFFECT_CHOICE_BAND);
         PLAYER(SPECIES_WOBBUFFET) { Item(item); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -556,7 +556,7 @@ SINGLE_BATTLE_TEST("Dynamax: Dynamaxed Pokemon are not affected by Choice items"
 SINGLE_BATTLE_TEST("Dynamax: Dynamaxed Pokemon cannot use Max Guard while holding Assault Vest")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_ASSAULT_VEST].holdEffect == HOLD_EFFECT_ASSAULT_VEST);
+        ASSUME(GetItemHoldEffect(ITEM_ASSAULT_VEST) == HOLD_EFFECT_ASSAULT_VEST);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_ASSAULT_VEST); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -638,7 +638,7 @@ SINGLE_BATTLE_TEST("Dynamax: Sitrus Berries heal based on a Pokemon's non-Dynama
     PARAMETRIZE { dynamax = GIMMICK_DYNAMAX; }
     GIVEN {
         ASSUME(I_SITRUS_BERRY_HEAL >= GEN_4);
-        ASSUME(gItemsInfo[ITEM_SITRUS_BERRY].holdEffect == HOLD_EFFECT_RESTORE_PCT_HP);
+        ASSUME(GetItemHoldEffect(ITEM_SITRUS_BERRY) == HOLD_EFFECT_RESTORE_PCT_HP);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_SITRUS_BERRY); }
     } WHEN {
@@ -1324,10 +1324,10 @@ DOUBLE_BATTLE_TEST("Dynamax: G-Max Replenish recycles allies' berries 50\% of th
     } SCENE {
         // turn 1
 
-        MESSAGE("Using Apicot Berry, the Sp. Def of Snorlax rose!");
-        MESSAGE("Using Apicot Berry, the Sp. Def of Munchlax rose!");
-        MESSAGE("Using Apicot Berry, the Sp. Def of the opposing Wobbuffet rose!");
-        MESSAGE("Using Apicot Berry, the Sp. Def of the opposing Wobbuffet rose!");
+        MESSAGE("The Apicot Berry boosted Snorlax's Sp. Def!");
+        MESSAGE("The Apicot Berry boosted Munchlax's Sp. Def!");
+        MESSAGE("The Apicot Berry boosted the opposing Wobbuffet's Sp. Def!");
+        MESSAGE("The Apicot Berry boosted the opposing Wobbuffet's Sp. Def!");
         // turn 2
         MESSAGE("Snorlax used G-Max Replenish!");
         ANIMATION(ANIM_TYPE_MOVE, MOVE_G_MAX_REPLENISH, playerLeft);
@@ -1760,8 +1760,8 @@ DOUBLE_BATTLE_TEST("Dynamax: G-Max Replenish recycles allies' berries 50\% of th
         TURN { MOVE(playerLeft, MOVE_SCRATCH, target: opponentLeft, gimmick: GIMMICK_DYNAMAX); SEND_OUT(opponentLeft, 2);}
     } SCENE {
         // turn 1
-        MESSAGE("Using Apicot Berry, the Sp. Def of Snorlax rose!");
-        MESSAGE("Using Apicot Berry, the Sp. Def of Munchlax rose!");
+        MESSAGE("The Apicot Berry boosted Snorlax's Sp. Def!");
+        MESSAGE("The Apicot Berry boosted Munchlax's Sp. Def!");
         // turn 2
         MESSAGE("Snorlax used G-Max Replenish!");
         ANIMATION(ANIM_TYPE_MOVE, MOVE_G_MAX_REPLENISH, playerLeft);
@@ -1776,7 +1776,7 @@ DOUBLE_BATTLE_TEST("Dynamax: G-Max Volt Crash paralyzes other opponent even if i
         ASSUME(MoveHasAdditionalEffect(MOVE_G_MAX_VOLT_CRASH, MOVE_EFFECT_PARALYZE_SIDE));
         PLAYER(SPECIES_PIKACHU) { GigantamaxFactor(TRUE); }
         PLAYER(SPECIES_PICHU);
-        OPPONENT(SPECIES_WOBBUFFET) { HP(1); } 
+        OPPONENT(SPECIES_WOBBUFFET) { HP(1); }
         OPPONENT(SPECIES_WYNAUT);
         OPPONENT(SPECIES_WYNAUT);
     } WHEN {

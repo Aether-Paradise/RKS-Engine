@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_STARF_BERRY].holdEffect == HOLD_EFFECT_RANDOM_STAT_UP);
+    ASSUME(GetItemHoldEffect(ITEM_STARF_BERRY) == HOLD_EFFECT_RANDOM_STAT_UP);
 }
 
 SINGLE_BATTLE_TEST("Starf Berry randomly raises the holder's Attack, Defense, Sp. Atk, Sp. Def, or Speed by two stages")
@@ -17,7 +17,7 @@ SINGLE_BATTLE_TEST("Starf Berry randomly raises the holder's Attack, Defense, Sp
     } SCENE {
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, player);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_STATS_CHANGE, player);
-        MESSAGE("Using Starf Berry, the Attack of Wobbuffet sharply rose!");
+        MESSAGE("The Starf Berry sharply boosted Wobbuffet's Attack!");
     } THEN {
         EXPECT_EQ(player->statStages[STAT_ATK], DEFAULT_STAT_STAGE + 2);
     }

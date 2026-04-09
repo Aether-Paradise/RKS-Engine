@@ -1,5 +1,6 @@
 #include "global.h"
 #include "mail.h"
+#include "item.h"
 #include "constants/items.h"
 #include "pokemon.h"
 #include "pokemon_icon.h"
@@ -80,7 +81,7 @@ u8 GiveMailToMonByItemId(struct Pokemon *mon, enum Item itemId)
     return MAIL_NONE;
 }
 
-u16 SpeciesToMailSpecies(enum Species species, u32 personality)
+enum Species SpeciesToMailSpecies(enum Species species, u32 personality)
 {
     if (species == SPECIES_UNOWN)
     {
@@ -91,7 +92,7 @@ u16 SpeciesToMailSpecies(enum Species species, u32 personality)
     return species;
 }
 
-u16 MailSpeciesToSpecies(u16 mailSpecies, u16 *buffer)
+enum Species MailSpeciesToSpecies(enum Species mailSpecies, u16 *buffer)
 {
     u16 result;
 
@@ -186,26 +187,4 @@ u8 TakeMailFromMonAndSave(struct Pokemon *mon)
         SetMonData(mon, MON_DATA_HELD_ITEM, &heldItem);
     }
     return newMailId;
-}
-
-bool8 ItemIsMail(enum Item itemId)
-{
-    switch (itemId)
-    {
-    case ITEM_ORANGE_MAIL:
-    case ITEM_HARBOR_MAIL:
-    case ITEM_GLITTER_MAIL:
-    case ITEM_MECH_MAIL:
-    case ITEM_WOOD_MAIL:
-    case ITEM_WAVE_MAIL:
-    case ITEM_BEAD_MAIL:
-    case ITEM_SHADOW_MAIL:
-    case ITEM_TROPIC_MAIL:
-    case ITEM_DREAM_MAIL:
-    case ITEM_FAB_MAIL:
-    case ITEM_RETRO_MAIL:
-        return TRUE;
-    default:
-        return FALSE;
-    }
 }

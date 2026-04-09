@@ -15,11 +15,16 @@
 #include "battle_pyramid.h"
 #include "battle_pyramid_bag.h"
 #include "graphics.h"
+#include "shop_criteria.h"
+#include "data.h"
+#include "move.h"
 #include "constants/battle.h"
 #include "constants/items.h"
 #include "constants/moves.h"
 #include "constants/item_effects.h"
 #include "constants/hold_effects.h"
+
+extern const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES];
 
 #define DUMMY_PC_BAG_POCKET                 \
 {                                           \
@@ -778,6 +783,8 @@ bool32 RemovePyramidBagItem(enum Item itemId, u16 count)
     }
 }
 
+#undef gItemsInfo
+
 static u16 SanitizeItemId(enum Item itemId)
 {
     assertf(itemId < ITEMS_COUNT, "invalid item: %d", itemId)
@@ -950,4 +957,84 @@ bool32 IsHoldEffectChoice(enum HoldEffect holdEffect)
     return holdEffect == HOLD_EFFECT_CHOICE_BAND
         || holdEffect == HOLD_EFFECT_CHOICE_SCARF
         || holdEffect == HOLD_EFFECT_CHOICE_SPECS;
+}
+
+ShopCriteriaFunc GetItemShopCriteriaFunc(u32 itemId)
+{
+    return gItemsInfo[SanitizeItemId(itemId)].shopCriteriaFunc;
+}
+
+bool32 IsItemShopCriteriaFulfilled(u32 itemId)
+{
+    ShopCriteriaFunc func = GetItemShopCriteriaFunc(itemId);
+
+    if (!func)
+        return TRUE;
+
+    return func(SanitizeItemId(itemId));
+}
+
+enum ItemSortType GetItemSortType(enum Item itemId)
+{
+    return gItemsInfo[SanitizeItemId(itemId)].sortType;
+}
+
+const void *GetItemIconPic(enum Item itemId)
+{
+    if (itemId == ITEM_LIST_END)
+        return gItemIcon_ReturnToFieldArrow; // Use last icon, the "return to field" arrow
+    if (itemId >= ITEMS_COUNT)
+        return gItemsInfo[0].iconPic;
+    if (ItemIsTMHM(itemId))
+    {
+        if (GetItemTMHMIndex(itemId) > NUM_TECHNICAL_MACHINES)
+            return gItemIcon_HM;
+        return gItemIcon_TM;
+    }
+
+    return gItemsInfo[itemId].iconPic;
+}
+
+const u16 *GetItemIconPalette(enum Item itemId)
+{
+    if (itemId == ITEM_LIST_END)
+        return gItemIconPalette_ReturnToFieldArrow;
+    if (itemId >= ITEMS_COUNT)
+        return gItemsInfo[0].iconPalette;
+    if (ItemIsTMHM(itemId))
+        return gTypesInfo[GetMoveType(GetItemTMHMMoveId(itemId))].paletteTMHM;
+
+    return gItemsInfo[itemId].iconPalette;
+}
+
+bool32 ItemIsTMHM(enum Item itemId)
+{
+    return GetItemPocket(itemId) == POCKET_TM_HM;
+}
+
+bool32 ItemIsBerry(enum Item itemId)
+{
+    return GetItemPocket(itemId) == POCKET_BERRIES;
+}
+
+bool32 ItemIsMail(enum Item itemId)
+{
+    switch (itemId)
+    {
+    case ITEM_ORANGE_MAIL:
+    case ITEM_HARBOR_MAIL:
+    case ITEM_GLITTER_MAIL:
+    case ITEM_MECH_MAIL:
+    case ITEM_WOOD_MAIL:
+    case ITEM_WAVE_MAIL:
+    case ITEM_BEAD_MAIL:
+    case ITEM_SHADOW_MAIL:
+    case ITEM_TROPIC_MAIL:
+    case ITEM_DREAM_MAIL:
+    case ITEM_FAB_MAIL:
+    case ITEM_RETRO_MAIL:
+        return TRUE;
+    default:
+        return FALSE;
+    }
 }

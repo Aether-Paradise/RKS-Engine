@@ -175,7 +175,7 @@ static u32 PickMonFromPool(const struct Trainer *trainer, u8 *poolIndexArray, u3
     u32 chosenTags = trainer->party[monIndex].tags;
     enum Species chosenSpecies = trainer->party[monIndex].species;
     enum Item chosenItem = trainer->party[monIndex].heldItem;
-    enum NationalDexOrder chosenNatDex = gSpeciesInfo[chosenSpecies].natDexNum;
+    enum NationalDexOrder chosenNatDex = SpeciesToNationalPokedexNum(chosenSpecies);
     //  If tag was required, change pool rule to account for the required tag already being picked
     u32 tagsToEliminate = 0;
     for (u32 currTag = 0; currTag < POOL_NUM_TAGS; currTag++)
@@ -203,7 +203,7 @@ static u32 PickMonFromPool(const struct Trainer *trainer, u8 *poolIndexArray, u3
             u32 currentTags = trainer->party[poolIndexArray[currIndex]].tags;
             enum Species currentSpecies = trainer->party[poolIndexArray[currIndex]].species;
             enum Item currentItem = trainer->party[poolIndexArray[currIndex]].heldItem;
-            enum NationalDexOrder currentNatDex = gSpeciesInfo[currentSpecies].natDexNum;
+            enum NationalDexOrder currentNatDex = SpeciesToNationalPokedexNum(currentSpecies);
             if (currentTags & tagsToEliminate)
             {
                 poolIndexArray[currIndex] = POOL_SLOT_DISABLED;
@@ -233,9 +233,9 @@ static u32 PickMonFromPool(const struct Trainer *trainer, u8 *poolIndexArray, u3
                     poolIndexArray[currIndex] = POOL_SLOT_DISABLED;
                 }
             }
-            if (rules->megaStoneClause && gItemsInfo[currentItem].sortType == ITEM_TYPE_MEGA_STONE && gItemsInfo[chosenItem].sortType == ITEM_TYPE_MEGA_STONE)
+            if (rules->megaStoneClause && GetItemSortType(currentItem) == ITEM_TYPE_MEGA_STONE && GetItemSortType(chosenItem) == ITEM_TYPE_MEGA_STONE)
                 poolIndexArray[currIndex] = POOL_SLOT_DISABLED;
-            if (rules->zCrystalClause && gItemsInfo[currentItem].sortType == ITEM_TYPE_Z_CRYSTAL && gItemsInfo[chosenItem].sortType == ITEM_TYPE_Z_CRYSTAL)
+            if (rules->zCrystalClause && GetItemSortType(currentItem) == ITEM_TYPE_Z_CRYSTAL && GetItemSortType(chosenItem) == ITEM_TYPE_Z_CRYSTAL)
                 poolIndexArray[currIndex] = POOL_SLOT_DISABLED;
         }
     }

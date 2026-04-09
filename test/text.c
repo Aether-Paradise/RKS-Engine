@@ -110,13 +110,13 @@ TEST("Item names fit on Bag Screen (list)")
     enum Item item = ITEM_NONE;
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        PARAMETRIZE_LABEL("%S", gItemsInfo[i].name) { item = i; }
+        PARAMETRIZE_LABEL("%S", GetItemName(i)) { item = i; }
     }
-    //DebugPrintf("Item %d: %S", GetStringWidth(fontId, gItemsInfo[item].name, 0), gItemsInfo[item].name);
-    if (gItemsInfo[item].pocket == POCKET_TM_HM || gItemsInfo[item].pocket == POCKET_BERRIES)
-        EXPECT_LE(GetStringWidth(fontId, gItemsInfo[item].name, 0), tmHmBerryWidthPx);
+    //DebugPrintf("Item %d: %S", GetStringWidth(fontId, GetItemName(item), 0), GetItemName(item));
+    if (ItemIsTMHM(item) || ItemIsBerry(item))
+        EXPECT_LE(GetStringWidth(fontId, GetItemName(item), 0), tmHmBerryWidthPx);
     else
-        EXPECT_LE(GetStringWidth(fontId, gItemsInfo[item].name, 0), restWidthPx);
+        EXPECT_LE(GetStringWidth(fontId, GetItemName(item), 0), restWidthPx);
 }
 
 TEST("Item plural names fit on Bag Screen (left box)")
@@ -128,7 +128,7 @@ TEST("Item plural names fit on Bag Screen (left box)")
     u8 pluralName[ITEM_NAME_PLURAL_LENGTH + 1];
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        PARAMETRIZE_LABEL("%S", gItemsInfo[i].name) { item = i; }
+        PARAMETRIZE_LABEL("%S", GetItemName(i)) { item = i; }
     }
     CopyItemNameHandlePlural(item, pluralName, 2);
     EXPECT_LE(GetStringWidth(fontId, pluralName, 0), widthPx);
@@ -141,9 +141,9 @@ TEST("Item names fit on PC Storage (list)")
     enum Item item = ITEM_NONE;
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        PARAMETRIZE_LABEL("%S", gItemsInfo[i].name) { item = i; }
+        PARAMETRIZE_LABEL("%S", GetItemName(i)) { item = i; }
     }
-    EXPECT_LE(GetStringWidth(fontId, gItemsInfo[item].name, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetItemName(item), 0), widthPx);
 }
 
 TEST("Item plural names fit on PC storage (left box)")
@@ -155,7 +155,7 @@ TEST("Item plural names fit on PC storage (left box)")
     u8 pluralName[ITEM_NAME_PLURAL_LENGTH + 1];
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        PARAMETRIZE_LABEL("%S", gItemsInfo[i].name) { item = i; }
+        PARAMETRIZE_LABEL("%S", GetItemName(i)) { item = i; }
     }
     CopyItemNameHandlePlural(item, pluralName, 2);
     EXPECT_LE(GetStringWidth(fontId, pluralName, 0), widthPx);
@@ -168,8 +168,8 @@ TEST("Item names fit on Pokemon Storage System")
     enum Item item = ITEM_NONE;
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        if (gItemsInfo[i].importance) continue;
-        PARAMETRIZE_LABEL("%S", gItemsInfo[i].name) { item = i; }
+        if (GetItemImportance(i)) continue;
+        PARAMETRIZE_LABEL("%S", GetItemName(i)) { item = i; }
     }
     // All items explicitly listed here are too big to fit.
     switch (item)
@@ -180,10 +180,10 @@ TEST("Item names fit on Pokemon Storage System")
     case ITEM_UNREMARKABLE_TEACUP:
     case ITEM_MASTERPIECE_TEACUP:
     case ITEM_TWICE_SPICED_RADISH:
-        EXPECT_GT(GetStringWidth(fontId, gItemsInfo[item].name, 0), widthPx);
+        EXPECT_GT(GetStringWidth(fontId, GetItemName(item), 0), widthPx);
         break;
     default:
-        EXPECT_LE(GetStringWidth(fontId, gItemsInfo[item].name, 0), widthPx);
+        EXPECT_LE(GetStringWidth(fontId, GetItemName(item), 0), widthPx);
         break;
     }
 }
@@ -195,17 +195,17 @@ TEST("Item names fit on Pokemon Summary Screen")
     enum Item item = ITEM_NONE;
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        if (gItemsInfo[i].importance) continue;
-        PARAMETRIZE_LABEL("%S", gItemsInfo[i].name) { item = i; }
+        if (GetItemImportance(i)) continue;
+        PARAMETRIZE_LABEL("%S", GetItemName(i)) { item = i; }
     }
     // All items explicitly listed here are too big to fit.
     switch (item)
     {
     case ITEM_UNREMARKABLE_TEACUP:
-        EXPECT_GT(GetStringWidth(fontId, gItemsInfo[item].name, 0), widthPx);
+        EXPECT_GT(GetStringWidth(fontId, GetItemName(item), 0), widthPx);
         break;
     default:
-        EXPECT_LE(GetStringWidth(fontId, gItemsInfo[item].name, 0), widthPx);
+        EXPECT_LE(GetStringWidth(fontId, GetItemName(item), 0), widthPx);
         break;
     }
 }
@@ -217,9 +217,9 @@ TEST("Item names fit on Shop Screen")
     enum Item item = ITEM_NONE;
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        PARAMETRIZE_LABEL("%S", gItemsInfo[i].name) { item = i; }
+        PARAMETRIZE_LABEL("%S", GetItemName(i)) { item = i; }
     }
-    EXPECT_LE(GetStringWidth(fontId, gItemsInfo[item].name, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetItemName(item), 0), widthPx);
 }
 
 TEST("Item descriptions fit on Bag and Shop Screen")
@@ -229,9 +229,9 @@ TEST("Item descriptions fit on Bag and Shop Screen")
     enum Item item = ITEM_NONE;
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        PARAMETRIZE_LABEL("%S", gItemsInfo[i].description) { item = i; }
+        PARAMETRIZE_LABEL("%S", GetItemDescription(i)) { item = i; }
     }
-    EXPECT_LE(GetStringWidth(fontId, gItemsInfo[item].description, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetItemDescription(item), 0), widthPx);
 }
 
 TEST("Species names fit on Battle Screen HP box")
@@ -244,13 +244,13 @@ TEST("Species names fit on Battle Screen HP box")
     {
         if (IsSpeciesEnabled(i))
         {
-            PARAMETRIZE_LABEL("%S", gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("%S", GetSpeciesName(i)) { species = i; }
         }
     }
-    if (gSpeciesInfo[i].genderRatio != MON_GENDERLESS)
-        EXPECT_LE(GetStringWidth(fontId, gSpeciesInfo[species].speciesName, 0) - genderWidthPx, widthPx);
+    if (GetSpeciesGenderRatio(i) != MON_GENDERLESS)
+        EXPECT_LE(GetStringWidth(fontId, GetSpeciesName(species), 0) - genderWidthPx, widthPx);
     else
-        EXPECT_LE(GetStringWidth(fontId, gSpeciesInfo[species].speciesName, 0), widthPx);
+        EXPECT_LE(GetStringWidth(fontId, GetSpeciesName(species), 0), widthPx);
 }
 
 TEST("Species names fit on Party Screen")
@@ -262,10 +262,10 @@ TEST("Species names fit on Party Screen")
     {
         if (IsSpeciesEnabled(i))
         {
-            PARAMETRIZE_LABEL("%S", gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("%S", GetSpeciesName(i)) { species = i; }
         }
     }
-    EXPECT_LE(GetStringWidth(fontId, gSpeciesInfo[species].speciesName, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetSpeciesName(species), 0), widthPx);
 }
 
 TEST("Species names fit on Pokemon Summary Screen")
@@ -277,10 +277,10 @@ TEST("Species names fit on Pokemon Summary Screen")
     {
         if (IsSpeciesEnabled(i))
         {
-            PARAMETRIZE_LABEL("%S", gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("%S", GetSpeciesName(i)) { species = i; }
         }
     }
-    EXPECT_LE(GetStringWidth(fontId, gSpeciesInfo[species].speciesName, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetSpeciesName(species), 0), widthPx);
 }
 
 TEST("Species names fit on Pokedex Screen")
@@ -292,10 +292,10 @@ TEST("Species names fit on Pokedex Screen")
     {
         if (IsSpeciesEnabled(i))
         {
-            PARAMETRIZE_LABEL("%S", gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("%S", GetSpeciesName(i)) { species = i; }
         }
     }
-    EXPECT_LE(GetStringWidth(fontId, gSpeciesInfo[species].speciesName, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetSpeciesName(species), 0), widthPx);
 }
 
 TEST("Species names fit on Pokedex Screen - Cries")
@@ -307,10 +307,10 @@ TEST("Species names fit on Pokedex Screen - Cries")
     {
         if (IsSpeciesEnabled(i))
         {
-            PARAMETRIZE_LABEL("%S", gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("%S", GetSpeciesName(i)) { species = i; }
         }
     }
-    EXPECT_LE(GetStringWidth(fontId, gSpeciesInfo[species].speciesName, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetSpeciesName(species), 0), widthPx);
 }
 
 TEST("Species names fit on Pokemon Storage System")
@@ -321,11 +321,11 @@ TEST("Species names fit on Pokemon Storage System")
     {
         if (IsSpeciesEnabled(i))
         {
-            PARAMETRIZE_LABEL("%S", gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("%S", GetSpeciesName(i)) { species = i; }
         }
     }
-    EXPECT_LE(GetStringWidth(FONT_NARROWER, gSpeciesInfo[species].speciesName, 0), 66);
-    EXPECT_LE(GetStringWidth(FONT_SHORT_NARROWER, gSpeciesInfo[species].speciesName, 0), 60);
+    EXPECT_LE(GetStringWidth(FONT_NARROWER, GetSpeciesName(species), 0), 66);
+    EXPECT_LE(GetStringWidth(FONT_SHORT_NARROWER, GetSpeciesName(species), 0), 60);
 }
 
 TEST("Species names fit on Contest Screen")
@@ -337,10 +337,10 @@ TEST("Species names fit on Contest Screen")
     {
         if (IsSpeciesEnabled(i))
         {
-            PARAMETRIZE_LABEL("%S", gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("%S", GetSpeciesName(i)) { species = i; }
         }
     }
-    EXPECT_LE(GetStringWidth(fontId, gSpeciesInfo[species].speciesName, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetSpeciesName(species), 0), widthPx);
 }
 
 TEST("Species names fit on Contest Screen - Rankings")
@@ -352,10 +352,10 @@ TEST("Species names fit on Contest Screen - Rankings")
     {
         if (IsSpeciesEnabled(i))
         {
-            PARAMETRIZE_LABEL("%S", gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("%S", GetSpeciesName(i)) { species = i; }
         }
     }
-    EXPECT_LE(GetStringWidth(fontId, gSpeciesInfo[species].speciesName, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetSpeciesName(species), 0), widthPx);
 }
 
 TEST("Species names fit on Battle Dome Screen")
@@ -367,10 +367,10 @@ TEST("Species names fit on Battle Dome Screen")
     {
         if (IsSpeciesEnabled(i))
         {
-            PARAMETRIZE_LABEL("%S", gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("%S", GetSpeciesName(i)) { species = i; }
         }
     }
-    EXPECT_LE(GetStringWidth(fontId, gSpeciesInfo[species].speciesName, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetSpeciesName(species), 0), widthPx);
 }
 
 TEST("Species names fit on Hall of Fame")
@@ -382,10 +382,10 @@ TEST("Species names fit on Hall of Fame")
     {
         if (IsSpeciesEnabled(i))
         {
-            PARAMETRIZE_LABEL("%S", gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("%S", GetSpeciesName(i)) { species = i; }
         }
     }
-    EXPECT_LE(GetStringWidth(fontId, gSpeciesInfo[species].speciesName, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetSpeciesName(species), 0), widthPx);
 }
 
 TEST("Species names fit on Naming Screen")
@@ -397,10 +397,10 @@ TEST("Species names fit on Naming Screen")
     {
         if (IsSpeciesEnabled(i))
         {
-            PARAMETRIZE_LABEL("%S", gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("%S", GetSpeciesName(i)) { species = i; }
         }
     }
-    EXPECT_LE(GetStringWidth(fontId, gSpeciesInfo[species].speciesName, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetSpeciesName(species), 0), widthPx);
 }
 
 TEST("Species names fit on PokeNav Condition Screen")
@@ -412,10 +412,10 @@ TEST("Species names fit on PokeNav Condition Screen")
     {
         if (IsSpeciesEnabled(i))
         {
-            PARAMETRIZE_LABEL("%S", gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("%S", GetSpeciesName(i)) { species = i; }
         }
     }
-    EXPECT_LE(GetStringWidth(fontId, gSpeciesInfo[species].speciesName, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetSpeciesName(species), 0), widthPx);
 }
 
 TEST("Species names fit on PokeNav Condition Search Screen")
@@ -427,10 +427,10 @@ TEST("Species names fit on PokeNav Condition Search Screen")
     {
         if (IsSpeciesEnabled(i))
         {
-            PARAMETRIZE_LABEL("%S", gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("%S", GetSpeciesName(i)) { species = i; }
         }
     }
-    EXPECT_LE(GetStringWidth(fontId, gSpeciesInfo[species].speciesName, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetSpeciesName(species), 0), widthPx);
 }
 
 TEST("Species names fit on PokeNav Ribbon Screen")
@@ -442,10 +442,10 @@ TEST("Species names fit on PokeNav Ribbon Screen")
     {
         if (IsSpeciesEnabled(i))
         {
-            PARAMETRIZE_LABEL("%S", gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("%S", GetSpeciesName(i)) { species = i; }
         }
     }
-    EXPECT_LE(GetStringWidth(fontId, gSpeciesInfo[species].speciesName, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetSpeciesName(species), 0), widthPx);
 }
 
 TEST("Species names fit on PokeNav Ribbon List Screen")
@@ -457,10 +457,10 @@ TEST("Species names fit on PokeNav Ribbon List Screen")
     {
         if (IsSpeciesEnabled(i))
         {
-            PARAMETRIZE_LABEL("%S", gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("%S", GetSpeciesName(i)) { species = i; }
         }
     }
-    EXPECT_LE(GetStringWidth(fontId, gSpeciesInfo[species].speciesName, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetSpeciesName(species), 0), widthPx);
 }
 
 TEST("Species names fit on Battle Screen HP box for vanilla mons with the default font")
@@ -473,13 +473,13 @@ TEST("Species names fit on Battle Screen HP box for vanilla mons with the defaul
     {
         if (IsSpeciesEnabled(i))
         {
-            PARAMETRIZE_LABEL("%S", gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("%S", GetSpeciesName(i)) { species = i; }
         }
     }
-    if (gSpeciesInfo[i].genderRatio != MON_GENDERLESS)
-        EXPECT_LE(GetStringWidth(fontId, gSpeciesInfo[species].speciesName, 0) - genderWidthPx, widthPx);
+    if (GetSpeciesGenderRatio(i) != MON_GENDERLESS)
+        EXPECT_LE(GetStringWidth(fontId, GetSpeciesName(species), 0) - genderWidthPx, widthPx);
     else
-        EXPECT_LE(GetStringWidth(fontId, gSpeciesInfo[species].speciesName, 0), widthPx);
+        EXPECT_LE(GetStringWidth(fontId, GetSpeciesName(species), 0), widthPx);
 }
 
 TEST("Species dex entries fit on Pokedex Screen")
@@ -491,10 +491,10 @@ TEST("Species dex entries fit on Pokedex Screen")
     {
         if (IsSpeciesEnabled(i))
         {
-            PARAMETRIZE_LABEL("%S", gSpeciesInfo[i].description) { species = i; }
+            PARAMETRIZE_LABEL("%S", GetSpeciesPokedexDescription(i)) { species = i; }
         }
     }
-    EXPECT_LE(GetStringWidth(fontId, gSpeciesInfo[species].description, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetSpeciesPokedexDescription(species), 0), widthPx);
 }
 
 TEST("Ability names fit on Pokemon Summary Screen")
@@ -774,7 +774,7 @@ TEST("Battle strings fit on the battle message window")
         PREPARE_MON_NICK_WITH_PREFIX_LOWER_BUFFER(gBattleTextBuff1, 1, 0);
         PREPARE_ABILITY_BUFFER(gBattleTextBuff2, longAbilityID);
         break;
-    // Buffer Stat name to B_BUFF1, "drastically rose" to B_BUFF2
+    // Buffer Stat name to B_BUFF1, "rose drastically" to B_BUFF2
     case STRINGID_ATTACKERSSTATROSE:
     case STRINGID_DEFENDERSSTATROSE:
     case STRINGID_USINGITEMSTATOFPKMNROSE:

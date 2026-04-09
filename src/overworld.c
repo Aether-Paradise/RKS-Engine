@@ -1293,7 +1293,7 @@ void Overworld_PlaySpecialMapMusic(void)
         else if (GetCurrentMapType() == MAP_TYPE_UNDERWATER)
             music = MUS_UNDERWATER;
         else if (TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_SURFING))
-            music = MUS_SURF;
+            music = (IS_FRLG ? MUS_RG_SURF : MUS_SURF);
     }
 
     if (music != GetCurrentMapMusic())
@@ -1326,10 +1326,10 @@ static void TransitionMapMusic(void)
         u16 currentMusic = GetCurrentMapMusic();
         if (newMusic != MUS_ABNORMAL_WEATHER && newMusic != MUS_NONE)
         {
-            if (currentMusic == MUS_UNDERWATER || currentMusic == MUS_SURF)
+            if (currentMusic == MUS_UNDERWATER || currentMusic == (IS_FRLG ? MUS_RG_SURF : MUS_SURF))
                 return;
             if (TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_SURFING))
-                newMusic = MUS_SURF;
+                newMusic = (IS_FRLG ? MUS_RG_SURF : MUS_SURF);
         }
         if (newMusic != currentMusic)
         {
@@ -1783,14 +1783,14 @@ void UpdatePalettesWithTime(u32 palettes)
     palettes &= PALETTES_MAP | PALETTES_OBJECTS; // Don't blend UI pals
     if (!palettes)
         return;
-    TimeMixPalettes(palettes, gPlttBufferUnfaded, gPlttBufferFaded, &gTimeBlend.startBlend, &gTimeBlend.endBlend, gTimeBlend.weight);
+    TimeMixPalettes(palettes, gPlttBufferUnfaded, gPlttBufferFaded, &gTimeBlend.startBlend, &gTimeBlend.endBlend, gTimeBlend.weight, 256);
 }
 
 u8 UpdateSpritePaletteWithTime(u8 paletteNum)
 {
     if (MapHasNaturalLight(gMapHeader.mapType)
      && !IS_BLEND_IMMUNE_TAG(GetSpritePaletteTagByPaletteNum(paletteNum)))
-        TimeMixPalettes(1, &gPlttBufferUnfaded[OBJ_PLTT_ID(paletteNum)], &gPlttBufferFaded[OBJ_PLTT_ID(paletteNum)], &gTimeBlend.startBlend, &gTimeBlend.endBlend, gTimeBlend.weight);
+        TimeMixPalettes(1, &gPlttBufferUnfaded[OBJ_PLTT_ID(paletteNum)], &gPlttBufferFaded[OBJ_PLTT_ID(paletteNum)], &gTimeBlend.startBlend, &gTimeBlend.endBlend, gTimeBlend.weight, 256);
     return paletteNum;
 }
 

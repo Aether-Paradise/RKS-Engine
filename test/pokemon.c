@@ -232,12 +232,12 @@ TEST("givemon respects perfectIVCount")
     ZeroPlayerPartyMons();
     u32 perfectIVs[6] = {0};
 
-    ASSUME(gSpeciesInfo[SPECIES_MEW].perfectIVCount == 3);
-    ASSUME(gSpeciesInfo[SPECIES_CELEBI].perfectIVCount == 3);
-    ASSUME(gSpeciesInfo[SPECIES_JIRACHI].perfectIVCount == 3);
-    ASSUME(gSpeciesInfo[SPECIES_MANAPHY].perfectIVCount == 3);
-    ASSUME(gSpeciesInfo[SPECIES_VICTINI].perfectIVCount == 3);
-    ASSUME(gSpeciesInfo[SPECIES_DIANCIE].perfectIVCount == 3);
+    ASSUME(GetSpeciesPerfectIVCount(SPECIES_MEW) == 3);
+    ASSUME(GetSpeciesPerfectIVCount(SPECIES_CELEBI) == 3);
+    ASSUME(GetSpeciesPerfectIVCount(SPECIES_JIRACHI) == 3);
+    ASSUME(GetSpeciesPerfectIVCount(SPECIES_MANAPHY) == 3);
+    ASSUME(GetSpeciesPerfectIVCount(SPECIES_VICTINI) == 3);
+    ASSUME(GetSpeciesPerfectIVCount(SPECIES_DIANCIE) == 3);
 
     RUN_OVERWORLD_SCRIPT(
         givemon SPECIES_MEW, 100;
@@ -275,7 +275,7 @@ TEST("givemon respects perfectIVCount but does overwrite fixed IVs (1)")
 {
     ZeroPlayerPartyMons();
 
-    ASSUME(gSpeciesInfo[SPECIES_MEW].perfectIVCount == 3);
+    ASSUME(GetSpeciesPerfectIVCount(SPECIES_MEW) == 3);
     RUN_OVERWORLD_SCRIPT(
         givemon SPECIES_MEW, 100, hpIv=7, atkIv=8, defIv=9, speedIv=10, spAtkIv=11, spDefIv=12
     );
@@ -292,7 +292,7 @@ TEST("givemon respects perfectIVCount but does overwrite fixed IVs (2)")
 {
     ZeroPlayerPartyMons();
 
-    ASSUME(gSpeciesInfo[SPECIES_MEW].perfectIVCount == 3);
+    ASSUME(GetSpeciesPerfectIVCount(SPECIES_MEW) == 3);
     RUN_OVERWORLD_SCRIPT(
         givemon SPECIES_MEW, 100, hpIv=7, atkIv=8, defIv=9
     );
@@ -558,6 +558,9 @@ TEST("CalculateMonStats")
 
 TEST("BoxPokemon encryption works")
 {
+    // This test exists to ensure that expansion has not broken anything with regards to how BoxPokemon encryption works.
+    // If users make changes to the definitions of BoxPokemon, Pokemon, or any of their members, it is expected that this test will fail. To avoid the failing test from blocking CI, users can uncomment the KNOWN_FAILING declaration.
+    // KNOWN_FAILING;
     u32 raw[20] =
     {
         990384375,
@@ -567,7 +570,7 @@ TEST("BoxPokemon encryption works")
         35316705,
         3907508686,
         64742109,
-        718729,
+        718754,
         3102307966,
         2160206402,
         49956971,
@@ -577,7 +580,7 @@ TEST("BoxPokemon encryption works")
         2371630199,
         2708871082,
         3059937332,
-        2529190026,
+        2529190253,
         2290634828,
         2870614922
     };

@@ -27,6 +27,7 @@
 #include "main.h"
 #include "main_menu.h"
 #include "match_call.h"
+#include "mauville_old_man.h"
 #include "malloc.h"
 #include "map_name_popup.h"
 #include "menu.h"
@@ -63,6 +64,7 @@
 #include "constants/items.h"
 #include "constants/map_groups.h"
 #include "constants/rgb.h"
+#include "constants/rks_engine.h"
 #include "constants/script_commands.h"
 #include "constants/songs.h"
 #include "constants/species.h"
@@ -351,6 +353,7 @@ static void DebugAction_Sound_SE(u8 taskId);
 static void DebugAction_Sound_SE_SelectId(u8 taskId);
 static void DebugAction_Sound_MUS(u8 taskId);
 static void DebugAction_Sound_MUS_SelectId(u8 taskId);
+static void DebugAction_Sound_PlayBardSong(u8 taskId);
 
 static void DebugAction_BerryFunctions_ClearAll(u8 taskId);
 static void DebugAction_BerryFunctions_Ready(u8 taskId);
@@ -397,11 +400,13 @@ extern const u8 Debug_CheckSaveBlock[];
 extern const u8 Debug_CheckROMSpace[];
 extern const u8 Debug_CheckBattleStruct[];
 extern const u8 Debug_BoxFilledMessage[];
+extern const u8 Debug_ShowRKSEVersion[];
 extern const u8 Debug_ShowExpansionVersion[];
 extern const u8 Debug_EventScript_EWRAMCounters[];
 extern const u8 Debug_Follower_NPC_Event_Script[];
 extern const u8 Debug_Follower_NPC_Not_Enabled[];
 extern const u8 Debug_EventScript_Steven_Multi[];
+extern const u8 Debug_EventScript_PlayBardSong[];
 extern const u8 Debug_EventScript_WallyTutorial[];
 extern const u8 Debug_EventScript_PrintTimeOfDay[];
 extern const u8 Debug_EventScript_TellTheTime[];
@@ -677,8 +682,9 @@ static const struct DebugMenuOption sDebugMenu_Actions_Trainers[] =
 
 static const struct DebugMenuOption sDebugMenu_Actions_Sound[] =
 {
-    { COMPOUND_STRING("SFX…"),   DebugAction_Sound_SE },
-    { COMPOUND_STRING("Music…"), DebugAction_Sound_MUS },
+    { COMPOUND_STRING("SFX…"),           DebugAction_Sound_SE },
+    { COMPOUND_STRING("Music…"),         DebugAction_Sound_MUS },
+    { COMPOUND_STRING("Play Bard Song"), DebugAction_Sound_PlayBardSong },
     { NULL }
 };
 
@@ -687,6 +693,7 @@ static const struct DebugMenuOption sDebugMenu_Actions_ROMInfo2[] =
     { COMPOUND_STRING("Save Block space"),  DebugAction_ExecuteScript, Debug_CheckSaveBlock },
     { COMPOUND_STRING("ROM space"),         DebugAction_ExecuteScript, Debug_CheckROMSpace },
     { COMPOUND_STRING("BattleStruct size"), DebugAction_ExecuteScript, Debug_CheckBattleStruct },
+    { COMPOUND_STRING("RKSE Version"),      DebugAction_ExecuteScript, Debug_ShowRKSEVersion },
     { COMPOUND_STRING("Expansion Version"), DebugAction_ExecuteScript, Debug_ShowExpansionVersion },
     { NULL }
 };
@@ -719,6 +726,7 @@ static const u8 *const sDebugMenu_Actions_BagUse_Options[] =
     COMPOUND_STRING("No Bag: {STR_VAR_1}Inactive"),
     COMPOUND_STRING("No Bag: {STR_VAR_1}VS Trainers"),
     COMPOUND_STRING("No Bag: {STR_VAR_1}Active"),
+    COMPOUND_STRING("No Bag: {STR_VAR_1}Invalid value"),
 };
 
 static const struct DebugMenuOption sDebugMenu_Actions_Main[] =
@@ -1160,9 +1168,9 @@ static const u16 sLocationFlags[] =
     FLAG_WORLD_MAP_ROUTE10_POKEMON_CENTER_1F,
 };
 
-static u8 Debug_CheckToggleFlags(u8 id)
+static u32 Debug_CheckToggleFlags(u8 id)
 {
-    bool32 result = FALSE;
+    u32 result = FALSE;
 
     switch (id)
     {
@@ -1185,6 +1193,9 @@ static u8 Debug_CheckToggleFlags(u8 id)
         result = TRUE;
         for (u32 i = 0; i < ARRAY_COUNT(sLocationFlags); i++)
         {
+            if (sLocationFlags[i] == 0) // Location flags for Frlg are set to flag 0 in Emerald and vice versa
+                continue;
+
             if (!FlagGet(sLocationFlags[i]))
             {
                 result = FALSE;
@@ -1231,6 +1242,8 @@ static u8 Debug_CheckToggleFlags(u8 id)
     #endif
     case DEBUG_FLAGVAR_MENU_ITEM_TOGGLE_BAG_USE:
         result = VarGet(B_VAR_NO_BAG_USE);
+        if (result >= NO_BAG_INVALID_VALUE)
+            result = NO_BAG_INVALID_VALUE;
         break;
     default:
         result = 0xFF;
@@ -1263,6 +1276,9 @@ static u8 Debug_GenerateListMenuNames(void)
             else
                 name = sDebugMenu_Actions_Flags[i].text;
         }
+
+        if (i == DEBUG_FLAGVAR_MENU_ITEM_TOGGLE_BAG_USE && flagResult == NO_BAG_INVALID_VALUE)
+            flagResult = FALSE;
 
         if (flagResult == 0xFF)
         {
@@ -1577,6 +1593,7 @@ static void DebugAction_Util_Warp_SelectWarp(u8 taskId)
         DoWarp();
         ResetInitialPlayerAvatarState();
         DebugAction_DestroyExtraWindow(taskId);
+        ScriptContext_Stop();
     }
     else if (JOY_NEW(B_BUTTON))
     {
@@ -1785,6 +1802,23 @@ void BufferExpansionVersion(struct ScriptContext *ctx)
     *string++ = CHAR_PERIOD;
     string = ConvertIntToDecimalStringN(string, EXPANSION_VERSION_PATCH, STR_CONV_MODE_LEFT_ALIGN, 3);
     if (EXPANSION_TAGGED_RELEASE)
+        string = StringCopy(string, sText_Released);
+    else
+        string = StringCopy(string, sText_Unreleased);
+}
+
+void BufferRKSEVersion(struct ScriptContext *ctx)
+{
+    static const u8 sText_Released[] = _("\nRelease Build");
+    static const u8 sText_Unreleased[] = _("\nDevelopment Build");
+    u8 *string = gStringVar1;
+    *string++ = CHAR_v;
+    string = ConvertIntToDecimalStringN(string, RKSE_VERSION_MAJOR, STR_CONV_MODE_LEFT_ALIGN, 3);
+    *string++ = CHAR_PERIOD;
+    string = ConvertIntToDecimalStringN(string, RKSE_VERSION_MINOR, STR_CONV_MODE_LEFT_ALIGN, 3);
+    *string++ = CHAR_PERIOD;
+    string = ConvertIntToDecimalStringN(string, RKSE_VERSION_NON_BREAKING, STR_CONV_MODE_LEFT_ALIGN, 3);
+    if (RKSE_TAGGED_RELEASE)
         string = StringCopy(string, sText_Released);
     else
         string = StringCopy(string, sText_Unreleased);
@@ -2517,7 +2551,8 @@ static void DebugAction_FlagsVars_RunningShoes(u8 taskId)
 
 static void DebugAction_FlagsVars_ToggleFlyFlags(u8 taskId)
 {
-    if (FlagGet(sLocationFlags[ARRAY_COUNT(sLocationFlags) - 1]))
+    u32 checkedFlag = sLocationFlags[0] == 0 ? sLocationFlags[ARRAY_COUNT(sLocationFlags) - 1] : sLocationFlags[0];
+    if (FlagGet(checkedFlag))
     {
         PlaySE(SE_PC_OFF);
         for (u32 i = 0; i < ARRAY_COUNT(sLocationFlags); i++)
@@ -4022,6 +4057,13 @@ static void DebugAction_Sound_MUS_SelectId(u8 taskId)
     {
         m4aSongNumStop(gTasks[taskId].tCurrentSong);
     }
+}
+
+static void DebugAction_Sound_PlayBardSong(u8 taskId)
+{
+    SetupBard();
+    SetMauvilleOldManObjEventGfx();
+    Debug_DestroyMenu_Full_Script(taskId, Debug_EventScript_PlayBardSong);
 }
 
 static const u32 gDebugFollowerNPCGraphics[] =

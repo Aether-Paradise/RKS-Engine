@@ -333,11 +333,20 @@ DebugText_DaycareOnePokemon:
 DebugText_DaycarePokemonNotCompatible:
 	.string "Your Pokémon at Daycare can't\nhave babies together!$"
 
+Debug_ShowRKSEVersion::
+	callnative BufferRKSEVersion
+	msgbox Debug_RKSEVersion, MSGBOX_DEFAULT
+	release
+	end
+
 Debug_ShowExpansionVersion::
 	callnative BufferExpansionVersion
 	msgbox Debug_ExpansionVersion, MSGBOX_DEFAULT
 	release
 	end
+
+Debug_RKSEVersion:
+	.string "RKS-Engine {STR_VAR_1}$"
 
 Debug_ExpansionVersion:
 	.string "pokeemerald-expansion {STR_VAR_1}$"
@@ -845,3 +854,10 @@ Debug_EventScript_TellTheTime_Text_0:
 
 DebugEventScript_PrintWeekday_Text_0:
 	.string "Time of day: {STR_VAR_1}$"
+
+Debug_EventScript_PlayBardSong::
+	setvar VAR_0x8004, FALSE  @ Play his current song
+	special PlayBardSong
+	delay 60
+	release
+	end

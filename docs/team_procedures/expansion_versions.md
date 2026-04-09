@@ -26,7 +26,7 @@ If the changelog you're making is for a minor version (Eg. 1.3.0), make sure to 
 - You should now have a text that only contains PRs made to `upcoming`.
 
 ## 2.- Sorting PRs in the changelog
-- Copy the `docs/changelogs/template.md` file into a new file with the corresponding version for file and folder. Eg, for 1.2.3, you copy the file into `docs/changelogs/1.2.x/1.2.3.md`.
+- Copy the `docs/changelogs/expansion/template.md` file into a new file with the corresponding version for file and folder. Eg, for 1.2.3, you copy the file into `docs/changelogs/expansion/1.2.x/1.2.3.md`.
 - Use the following Regex to adapt all PR links into the format currently used:
     - Search
         ```

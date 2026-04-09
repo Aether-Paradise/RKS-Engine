@@ -704,7 +704,7 @@ void ConditionGraph_CalcPositions(u8 *conditions, struct UCoords16 *positions)
 // Move relearner
 //----------------
 
-void InitMoveRelearnerWindows(bool8 useContestWindow)
+void InitMoveRelearnerWindows(bool32 useContestWindow)
 {
     u8 i;
 
@@ -717,15 +717,10 @@ void InitMoveRelearnerWindows(bool8 useContestWindow)
         FillWindowPixelBuffer(i, PIXEL_FILL(1));
 
     if (!useContestWindow)
-    {
-        PutWindowTilemap(RELEARNERWIN_DESC_BATTLE);
         DrawStdFrameWithCustomTileAndPalette(RELEARNERWIN_DESC_BATTLE, FALSE, 0x1, 0xE);
-    }
     else
-    {
-        PutWindowTilemap(RELEARNERWIN_DESC_CONTEST);
         DrawStdFrameWithCustomTileAndPalette(RELEARNERWIN_DESC_CONTEST, FALSE, 1, 0xE);
-    }
+
     PutWindowTilemap(RELEARNERWIN_MOVE_LIST);
     PutWindowTilemap(RELEARNERWIN_MSG);
     DrawStdFrameWithCustomTileAndPalette(RELEARNERWIN_MOVE_LIST, FALSE, 1, 0xE);
@@ -864,12 +859,6 @@ void MoveRelearnerPrintMessage(u8 *str)
     gTextFlags.canABSpeedUpPrint = TRUE;
     speed = GetPlayerTextSpeedDelay();
     AddTextPrinterParameterized2(RELEARNERWIN_MSG, FONT_NORMAL, str, speed, NULL, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_WHITE, 3);
-}
-
-bool16 MoveRelearnerRunTextPrinters(void)
-{
-    RunTextPrinters();
-    return IsTextPrinterActiveOnWindow(RELEARNERWIN_MSG);
 }
 
 void MoveRelearnerCreateYesNoMenu(void)
@@ -1509,7 +1498,7 @@ static const u8 *const sLvlUpStatStrings[NUM_STATS] =
 
 void DrawLevelUpWindowPg1(u16 windowId, u16 *statsBefore, u16 *statsAfter, u8 bgClr, u8 fgClr, u8 shadowClr)
 {
-    u16 i, x;
+    u16 i, x, numDigits;
     s16 statsDiff[NUM_STATS];
     u8 text[12];
     u8 color[3];
@@ -1547,11 +1536,22 @@ void DrawLevelUpWindowPg1(u16 windowId, u16 *statsBefore, u16 *statsAfter, u8 bg
                                      TEXT_SKIP_DRAW,
                                      text);
         if (abs(statsDiff[i]) <= 9)
+        {
+            numDigits = 1;
             x = 18;
+        }
+        else if (abs(statsDiff[i]) > 99)
+        {
+            numDigits = 3;
+            x = 6;
+        }
         else
+        {
+            numDigits = 2;
             x = 12;
+        }
 
-        ConvertIntToDecimalStringN(text, abs(statsDiff[i]), STR_CONV_MODE_LEFT_ALIGN, 2);
+        ConvertIntToDecimalStringN(text, abs(statsDiff[i]), STR_CONV_MODE_LEFT_ALIGN, numDigits);
         AddTextPrinterParameterized3(windowId,
                                      FONT_NORMAL,
                                      56 + x,

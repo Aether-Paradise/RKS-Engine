@@ -1333,9 +1333,9 @@ static const struct TrainerHillFloor sFloors_Normal[] =
             {
                 .name = _("KRISTINA"),
                 .facilityClass = FACILITY_CLASS_AROMA_LADY,
-                .speechBefore = {EC_WORD_IT_S, EC_WORD_HOT, EC_WORD_ELLIPSIS, EC_WORD_WHAT, EC_WORD_A, EC_WORD_STENCH},
-                .speechWin = {EC_WORD_I, EC_WORD_REALLY, EC_WORD_LIKE, EC_WORD_AN, EC_WORD_OFFENSIVE, EC_WORD_STENCH},
-                .speechLose = {EC_WORD_I, EC_MOVE2(COVET), EC_WORD_ANY, EC_WORD_STRONG, EC_WORD_STENCH, EC_EMPTY_WORD},
+                .speechBefore = {EC_WORD_IT_S, EC_WORD_HOT, EC_WORD_ELLIPSIS, EC_WORD_WHAT, EC_WORD_A, EC_ABILITY(STENCH)},
+                .speechWin = {EC_WORD_I, EC_WORD_REALLY, EC_WORD_LIKE, EC_WORD_AN, EC_WORD_OFFENSIVE, EC_ABILITY(STENCH)},
+                .speechLose = {EC_WORD_I, EC_MOVE2(COVET), EC_WORD_ANY, EC_WORD_STRONG, EC_ABILITY(STENCH), EC_EMPTY_WORD},
                 .speechAfter = {EC_WORD_MY, EC_WORD_SENSE, EC_WORD_OF, EC_WORD_SMELL, EC_WORD_ISN_T, EC_WORD_NORMAL},
                 .mons =
                 {
@@ -1757,7 +1757,7 @@ static const struct TrainerHillFloor sFloors_Variety[] = {
                             .speechBefore = {EC_WORD_HI, EC_WORD_ARE, EC_WORD_YOU, EC_WORD_FEELING, EC_WORD_UPBEAT, EC_WORD_QUES},
                             .speechWin = {EC_WORD_AREN_T, EC_WORD_YOU, EC_WORD_FEELING, EC_WORD_WELL, EC_WORD_QUES, EC_EMPTY_WORD},
                             .speechLose = {EC_WORD_I, EC_WORD_CAN, EC_WORD_SEE, EC_WORD_YOU_RE, EC_WORD_FEELING, EC_WORD_GREAT},
-                            .speechAfter = {EC_WORD_YOUR, EC_WORD_POKEMON, EC_WORD_LOOK, EC_WORD_READY, EC_WORD_TO, EC_WORD_HUSTLE},
+                            .speechAfter = {EC_WORD_YOUR, EC_WORD_POKEMON, EC_WORD_LOOK, EC_WORD_READY, EC_WORD_TO, EC_ABILITY(HUSTLE)},
                             .mons =
                                 {
                                     [0] =
@@ -2329,10 +2329,10 @@ static const struct TrainerHillFloor sFloors_Variety[] = {
                         {
                             .name = _("KIMBERLY"),
                             .facilityClass = FACILITY_CLASS_POKEFAN_F,
-                            .speechBefore = {EC_WORD_I, EC_WORD_LIKE, EC_WORD_WORKING, EC_WORD_AT, EC_WORD_MY, EC_WORD_OWN_TEMPO},
+                            .speechBefore = {EC_WORD_I, EC_WORD_LIKE, EC_WORD_WORKING, EC_WORD_AT, EC_WORD_MY, EC_ABILITY(OWN_TEMPO)},
                             .speechWin = {EC_WORD_I_AM, EC_WORD_NOT, EC_WORD_BAD, EC_WORD_YOU, EC_WORD_THINK, EC_WORD_QUES},
                             .speechLose = {EC_WORD_YOU_RE, EC_WORD_A, EC_WORD_MEAN, EC_WORD_KID, EC_WORD_IT, EC_WORD_SEEMS},
-                            .speechAfter = {EC_WORD_MY, EC_WORD_OWN_TEMPO, EC_WORD_IS, EC_WORD_RIGHT, EC_WORD_FOR, EC_WORD_ME},
+                            .speechAfter = {EC_WORD_MY, EC_ABILITY(OWN_TEMPO), EC_WORD_IS, EC_WORD_RIGHT, EC_WORD_FOR, EC_WORD_ME},
                             .mons =
                                 {
                                     [0] =

@@ -757,7 +757,7 @@ void AnimTask_SwitchOutBallEffect(u8 taskId)
 void AnimTask_LoadBallGfx(u8 taskId)
 {
     enum PokeBall ballId = ItemIdToBallId(gLastUsedItem);
-    LoadBallGfx(ballId);
+    LoadBallGfx(ballId, TRUE);
     DestroyAnimVisualTask(taskId);
 }
 
