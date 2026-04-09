@@ -7,6 +7,15 @@
   - `FREE_BERRY_CRUSH` config
   - `FREE_DODRIO_BERRY_PICKUP` config
 ### Feature Devs
+- **aichiya**
+  - Port CyanSMP64's DPPt/HGSS instruments and music
+  - BW1 music with DPPt/HGSS instruments
+- **CyanSMP64**
+  - DPPt/HGSS instruments and music
+- **HunarPG**
+  - Port aichiya's branch to Expansion 1.15
+- **ipatix**
+  - HQ mixer
 - **Kasen**
   - DNS in battles
 - **LinathanZel**
