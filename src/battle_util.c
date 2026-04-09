@@ -11077,7 +11077,7 @@ enum Move SetBattlerChoicedMove(enum BattlerId battler, enum Move move)
 // Try remove choiced move if it's no longer one of the battler's moves and it doesn't have Gorilla Tactics.
 bool32 TryResetBattlerChoicedMove(enum BattlerId battler, enum Ability ability)
 {
-    if (GetBattlerAbility(gBattlerTarget) != ABILITY_GORILLA_TACTICS)
+    if (ability != ABILITY_GORILLA_TACTICS)
     {
         u32 moveIndex;
         for (moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)

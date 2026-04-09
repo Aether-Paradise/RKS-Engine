@@ -487,10 +487,10 @@ static enum CancelerResult CancelerChoiceLock(struct BattleCalcValues *cv)
 
     if (gChosenMove != MOVE_STRUGGLE
      && (choicedMove == MOVE_NONE || choicedMove == MOVE_UNAVAILABLE)
-     && (IsHoldEffectChoice(holdEffect) || cv->abilityAtk == ABILITY_GORILLA_TACTICS))
+     && (IsHoldEffectChoice(holdEffect) || cv->abilities[cv->battlerAtk] == ABILITY_GORILLA_TACTICS))
         choicedMove = SetBattlerChoicedMove(cv->battlerAtk, gChosenMove);
 
-    TryResetBattlerChoicedMove(cv->battlerAtk, cv->abilityAtk);
+    TryResetBattlerChoicedMove(cv->battlerAtk, cv->abilities[cv->battlerAtk]);
 
     return CANCELER_RESULT_SUCCESS;
 }
@@ -2899,7 +2899,7 @@ static enum MoveEndResult MoveEndBouncedMove(void)
             gBattleStruct->eventState.atkCancelerBattler = 0;
             for (enum BattlerId i = B_BATTLER_0; i < gBattlersCount; i++)
                 gBattleStruct->battlerState[gBattlerAttacker].targetsDone[i] = FALSE;
-            gBattleStruct->moveTarget[gBattlerAttacker] = gBattlerTarget;
+            SetBattlerMoveTarget(gBattlerAttacker, gBattlerTarget);
             gBattleScripting.moveendState = 0;
             gBattleScripting.animTurn = 0;
             gBattleScripting.animTargetsHit = 0;
