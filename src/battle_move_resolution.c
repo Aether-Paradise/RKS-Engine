@@ -488,7 +488,7 @@ static enum CancelerResult CancelerChoiceLock(struct BattleCalcValues *cv)
     if (gChosenMove != MOVE_STRUGGLE
      && (choicedMove == MOVE_NONE || choicedMove == MOVE_UNAVAILABLE)
      && (IsHoldEffectChoice(holdEffect) || cv->abilities[cv->battlerAtk] == ABILITY_GORILLA_TACTICS))
-        choicedMove = SetBattlerChoicedMove(cv->battlerAtk, gChosenMove);
+        SetBattlerChoicedMove(cv->battlerAtk, gChosenMove);
 
     TryResetBattlerChoicedMove(cv->battlerAtk, cv->abilities[cv->battlerAtk]);
 
