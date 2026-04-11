@@ -4009,10 +4009,14 @@ void SetPpNumbersPaletteInMoveSelection(enum BattlerId battler)
     u8 var;
 
     if (!gBattleStruct->zmove.viewing)
-        var = GetCurrentPpToMaxPpState(chooseMoveStruct->currentPp[gMoveSelectionCursor[battler]],
-                         chooseMoveStruct->maxPp[gMoveSelectionCursor[battler]]);
+    {
+        u32 moveSelectionCursor = GetBattlerMoveSelectionCursor(battler);
+        var = GetCurrentPpToMaxPpState(chooseMoveStruct->currentPp[moveSelectionCursor], chooseMoveStruct->maxPp[moveSelectionCursor]);
+    }
     else
+    {
         var = 3;
+    }
 
     gPlttBufferUnfaded[BG_PLTT_ID(5) + 12] = palPtr[(var * 2) + 0];
     gPlttBufferUnfaded[BG_PLTT_ID(5) + 11] = palPtr[(var * 2) + 1];

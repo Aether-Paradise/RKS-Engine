@@ -644,11 +644,12 @@ void SetBattlerAiData(enum BattlerId battler, struct AiLogicData *aiData)
 {
     enum Ability ability;
     enum HoldEffect holdEffect;
+    enum Move lastMove = GetBattlerLastMove(battler);
 
     ability = aiData->abilities[battler] = AI_DecideKnownAbilityForTurn(battler);
     aiData->items[battler] = gBattleMons[battler].item;
     holdEffect = aiData->holdEffects[battler] = AI_DecideHoldEffectForTurn(battler);
-    aiData->lastUsedMove[battler] = (gLastMoves[battler] == MOVE_UNAVAILABLE) ? MOVE_NONE : gLastMoves[battler];
+    aiData->lastUsedMove[battler] = (lastMove == MOVE_UNAVAILABLE) ? MOVE_NONE : lastMove;
     aiData->hpPercents[battler] = GetHealthPercentage(battler);
     aiData->moveLimitations[battler] = CheckMoveLimitations(battler, 0, MOVE_LIMITATIONS_ALL);
     aiData->speedStats[battler] = GetBattlerTotalSpeedStat(battler, ability, holdEffect);
@@ -2939,7 +2940,7 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
         break;
     case EFFECT_INSTRUCT:
         {
-            u32 instructedMove;
+            enum Move instructedMove, lockedMove;
             if (AI_IsSlower(battlerAtk, battlerDef, move, predictedMoveSpeedCheck, CONSIDER_PRIORITY))
                 instructedMove = predictedMove;
             else
@@ -2949,7 +2950,7 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
              || IsMoveInstructBanned(instructedMove)
              || MoveHasAdditionalEffectSelf(instructedMove, MOVE_EFFECT_RECHARGE)
              || IsZMove(instructedMove)
-             || (gLockedMoves[battlerDef] != MOVE_NONE && gLockedMoves[battlerDef] != MOVE_UNAVAILABLE)
+             || ((lockedMove = GetBattlerLockedMove(battlerDef)) != MOVE_NONE && lockedMove != MOVE_UNAVAILABLE)
              || gBattleMons[battlerDef].volatiles.multipleTurns
              || PartnerMoveIsSameAsAttacker(BATTLE_PARTNER(battlerAtk), battlerDef, move, aiData->partnerMove))
             {
@@ -3260,7 +3261,7 @@ static s32 AI_DoubleBattle(enum BattlerId battlerAtk, enum BattlerId battlerDef,
                 ADJUST_SCORE(-7);
             break;
         case EFFECT_PERISH_SONG:
-            if (!(gBattleMons[battlerDef].volatiles.escapePrevention || gBattleMons[battlerDef].volatiles.wrapped))
+            if (!(gBattleMons[battlerDef].volatiles.escapePrevention || IsBattlerWrapped(battlerDef)))
             {
                 if (IsTrappingMove(aiData->partnerMove) || predictedMove == MOVE_INGRAIN)
                     ADJUST_SCORE(WEAK_EFFECT);
@@ -5923,7 +5924,7 @@ static s32 AI_CalcMoveEffectScore(enum BattlerId battlerAtk, enum BattlerId batt
     }
     case EFFECT_RAPID_SPIN:
         if ((AreAnyHazardsOnSide(GetBattlerSide(battlerAtk)) && CountUsablePartyMons(battlerAtk) != 0)
-         || (gBattleMons[battlerAtk].volatiles.leechSeed || gBattleMons[battlerAtk].volatiles.wrapped))
+         || (gBattleMons[battlerAtk].volatiles.leechSeed || IsBattlerWrapped(battlerAtk)))
             ADJUST_SCORE(GOOD_EFFECT);
         break;
     case EFFECT_SMACK_DOWN:

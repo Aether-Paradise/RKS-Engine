@@ -1167,19 +1167,20 @@ static bool32 FindMonWithFlagsAndSuperEffective(enum BattlerId battler, u16 flag
     s32 firstId;
     s32 lastId; // + 1
     struct Pokemon *party;
-    enum Move move;
+    enum Move move, lastLandedMove;
 
     // Similar functionality handled more thoroughly by ShouldSwitchIfHasBadOdds
     if (gAiThinkingStruct->aiFlags[battler] & AI_FLAG_SMART_SWITCHING)
         return FALSE;
 
-    if (gLastLandedMoves[battler] == MOVE_NONE)
+    lastLandedMove = GetBattlerLastLandedMove(battler);
+    if (lastLandedMove == MOVE_NONE)
         return FALSE;
-    if (gLastLandedMoves[battler] == MOVE_UNAVAILABLE)
+    if (lastLandedMove == MOVE_UNAVAILABLE)
         return FALSE;
-    if (gLastHitBy[battler] == 0xFF)
+    if (GetBattlerLastHitBy(battler) == MAX_BATTLERS_COUNT)
         return FALSE;
-    if (IsBattleMoveStatus(gLastLandedMoves[battler]))
+    if (IsBattleMoveStatus(lastLandedMove))
         return FALSE;
 
     GetActiveBattlerIds(battler, &battlerIn1, &battlerIn2);
@@ -1205,11 +1206,11 @@ static bool32 FindMonWithFlagsAndSuperEffective(enum BattlerId battler, u16 flag
 
         species = GetMonData(&party[monIndex], MON_DATA_SPECIES_OR_EGG);
         monAbility = GetMonAbility(&party[monIndex]);
-        typeMultiplier = CalcPartyMonTypeEffectivenessMultiplier(gLastLandedMoves[battler], species, monAbility);
+        typeMultiplier = CalcPartyMonTypeEffectivenessMultiplier(GetBattlerLastLandedMove(battler), species, monAbility);
         UpdateMoveResultFlags(typeMultiplier, &moveFlags);
         if (moveFlags & flags)
         {
-            battlerIn1 = gLastHitBy[battler];
+            battlerIn1 = GetBattlerLastHitBy(battler);
 
             for (u32 moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
             {
@@ -1301,7 +1302,7 @@ static bool32 ShouldSwitchIfEncored(enum BattlerId battler)
 
 static bool32 ShouldSwitchIfBadChoiceLock(enum BattlerId battler)
 {
-    enum Move choicedMove = gBattleStruct->choicedMove[battler];
+    enum Move choicedMove = GetBattlerChoicedMove(battler);
     enum BattlerId opposingBattler = GetOppositeBattler(battler);
 
     struct DamageContext ctx = {0};
@@ -1404,7 +1405,7 @@ bool32 ShouldSwitchDynFuncExample(enum BattlerId battler)
 
 static bool32 CanBattlerConsiderSwitch(enum BattlerId battler)
 {
-    if (gBattleMons[battler].volatiles.wrapped)
+    if (IsBattlerWrapped(battler))
         return FALSE;
     if (gBattleMons[battler].volatiles.escapePrevention)
         return FALSE;
@@ -2133,7 +2134,7 @@ static s32 GetMaxDamagePlayerCouldDealToSwitchin(enum BattlerId battler, enum Ba
         if (playerMove != MOVE_NONE && !IsBattleMoveStatus(playerMove) && GetMoveEffect(playerMove) != EFFECT_FOCUS_PUNCH && gBattleMons[opposingBattler].pp[moveIndex] > 0)
         {
             damageTaken = AI_GetDamage(opposingBattler, battler, moveIndex, AI_SWITCHIN_DEFENDING, gAiLogicData);
-            if (playerMove == gBattleStruct->choicedMove[opposingBattler]) // If player is choiced, only care about the choice locked move
+            if (playerMove == GetBattlerChoicedMove(opposingBattler)) // If player is choiced, only care about the choice locked move
             {
                 *bestPlayerMove = playerMove;
                 return damageTaken;
@@ -2156,15 +2157,16 @@ static s32 GetMaxPriorityDamagePlayerCouldDealToSwitchin(enum BattlerId battler,
 
     for (u32 moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
     {
+        enum Move choicedMove = GetBattlerChoicedMove(opposingBattler);
         // If player is choiced into a non-priority move, AI understands that it can't deal priority damage
-        if (gBattleStruct->choicedMove[opposingBattler] != MOVE_NONE && GetMovePriority(gBattleStruct->choicedMove[opposingBattler]) < 1)
+        if (choicedMove != MOVE_NONE && GetMovePriority(choicedMove) < 1)
             break;
         playerMove = SMART_SWITCHING_OMNISCIENT ? gBattleMons[opposingBattler].moves[moveIndex] : playerMoves[moveIndex];
         if (GetBattleMovePriority(opposingBattler, gAiLogicData->abilities[opposingBattler], playerMove) > 0
             && playerMove != MOVE_NONE && !IsBattleMoveStatus(playerMove) && GetMoveEffect(playerMove) != EFFECT_FOCUS_PUNCH && gBattleMons[opposingBattler].pp[moveIndex] > 0)
         {
             damageTaken = AI_GetDamage(opposingBattler, battler, moveIndex, AI_SWITCHIN_DEFENDING, gAiLogicData);
-            if (playerMove == gBattleStruct->choicedMove[opposingBattler]) // If player is choiced, only care about the choice locked move
+            if (playerMove == choicedMove) // If player is choiced, only care about the choice locked move
             {
                 *bestPlayerPriorityMove = playerMove;
                 return damageTaken;

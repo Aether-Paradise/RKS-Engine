@@ -400,7 +400,17 @@ bool32 IsBattlerInvalidForSpreadMove(enum BattlerId battlerAtk, enum BattlerId b
 void SetStartingStatus(enum StartingStatus status);
 void ResetStartingStatuses(void);
 bool32 IsUsableWhileAsleepEffect(enum BattleMoveEffects effect);
-void SetWrapTurns(enum BattlerId battler, enum HoldEffect holdEffect);
+bool32 TrySetWrap(enum BattlerId battler, enum BattlerId wrappedBy, enum Move wrapMove, enum HoldEffect holdEffect);
+bool32 TryReduceWrapTimer(enum BattlerId battler);
+void UnsetBattlerWrap(enum BattlerId battler);
+bool32 IsBattlerWrapped(enum BattlerId battler);
+enum BattlerId GetBattlerWrappedBy(enum BattlerId battler);
+bool32 IsBattlerWrappedBy(enum BattlerId battler, enum BattlerId wrappedBy);
+enum Move GetBattlerWrappedMove(enum BattlerId battler);
+u32 GetWrapDamage(enum BattlerId battler, enum HoldEffect holdEffect);
+u32 GetStompingTantrumTimer(enum BattlerId battler);
+void SetStompingTantrumTimer(enum BattlerId battler);
+bool32 TryReduceStompingTantrumTimer(enum BattlerId battler);
 bool32 ChangeOrderTargetAfterAttacker(void);
 void TryUpdateEvolutionTracker(enum EvolutionConditions evolutionCondition, u32 upAmount, enum Move usedMove);
 bool32 CanUseMoveConsecutively(enum BattlerId battler);
@@ -410,5 +420,35 @@ enum BattlerId GetTargetBySlot(enum BattlerId battlerAtk, enum BattlerId battler
 bool32 IsNaturalEnemy(enum Species speciesAttacker, enum Species speciesTarget);
 enum Stat GetDownloadStat(enum BattlerId battler);
 enum Species GetBattlerBaseSpecies(enum BattlerId battler);
+bool32 TryResetBattlerChoicedMove(enum BattlerId battler, enum Ability ability);
+
+// Battler data utility functions
+enum Move GetBattlerChosenMove(enum BattlerId battler);
+enum Move SetBattlerChosenMove(enum BattlerId battler, enum Move move);
+u32 GetBattlerChosenMovePos(enum BattlerId battler);
+u32 SetBattlerChosenMovePos(enum BattlerId battler, u32 movePos);
+enum BattleMoveEffects GetBattlerChosenMoveEffect(enum BattlerId battler);
+enum BattlerId GetBattlerMoveTarget(enum BattlerId battler);
+enum BattlerId SetBattlerMoveTarget(enum BattlerId battler, enum BattlerId target);
+enum BattlerId GetBattlerLastHitBy(enum BattlerId battler);
+enum BattlerId SetBattlerLastHitBy(enum BattlerId battler, enum BattlerId lastHitBy);
+enum Move GetBattlerLastMove(enum BattlerId battler);
+enum Move SetBattlerLastMove(enum BattlerId battler, enum Move move);
+enum Move GetBattlerLockedMove(enum BattlerId battler);
+enum Move SetBattlerLockedMove(enum BattlerId battler, enum Move move);
+enum Move GetBattlerLastLandedMove(enum BattlerId battler);
+enum Move SetBattlerLastLandedMove(enum BattlerId battler, enum Move move);
+enum Move GetBattlerLastResultingMove(enum BattlerId battler);
+enum Move SetBattlerLastResultingMove(enum BattlerId battler, enum Move move);
+enum Move GetBattlerLastPrintedMove(enum BattlerId battler);
+enum Move SetBattlerLastPrintedMove(enum BattlerId battler, enum Move move);
+enum Move GetBattlerChoicedMove(enum BattlerId battler);
+enum Move SetBattlerChoicedMove(enum BattlerId battler, enum Move move);
+u32 GetBattlerMoveSelectionCursor(enum BattlerId battler);
+u32 SetBattlerMoveSelectionCursor(enum BattlerId battler, u32 selection);
+enum Type GetBattlerLastHitByType(enum BattlerId battler);
+enum Type SetBattlerLastHitByType(enum BattlerId battler, enum Type type);
+enum Type GetBattlerLastUsedMoveType(enum BattlerId battler);
+enum Type SetBattlerLastUsedMoveType(enum BattlerId battler, enum Type type);
 
 #endif // GUARD_BATTLE_UTIL_H

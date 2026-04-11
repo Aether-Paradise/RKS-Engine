@@ -457,7 +457,7 @@ bool32 IsBattlerTrapped(enum BattlerId battlerAtk, enum BattlerId battlerDef)
     if (AI_CanBattlerEscape(battlerDef))
         return FALSE;
 
-    if (gBattleMons[battlerDef].volatiles.wrapped)
+    if (IsBattlerWrapped(battlerDef))
         return TRUE;
     if (gBattleMons[battlerDef].volatiles.escapePrevention)
         return TRUE;
@@ -2257,7 +2257,7 @@ bool32 ShouldClearFieldStatus(enum BattlerId battler, u32 fieldStatus)
 bool32 IsBattlerDamagedByStatus(enum BattlerId battler)
 {
     return gBattleMons[battler].status1 & STATUS1_DAMAGING
-        || gBattleMons[battler].volatiles.wrapped
+        || IsBattlerWrapped(battler)
         || gBattleMons[battler].volatiles.nightmare
         || gBattleMons[battler].volatiles.cursed
         || gBattleMons[battler].volatiles.saltCure
@@ -3362,23 +3362,6 @@ static u32 GetCurseDamage(enum BattlerId battlerId)
     return damage;
 }
 
-static u32 GetTrapDamage(enum BattlerId battler)
-{
-    // ai has no knowledge about turns remaining
-    u32 damage = 0;
-    if (gBattleMons[battler].volatiles.wrapped)
-    {
-        if (gAiLogicData->holdEffects[gBattleMons[battler].volatiles.wrappedBy] == HOLD_EFFECT_BINDING_BAND)
-            damage = GetNonDynamaxMaxHP(battler) / (B_BINDING_DAMAGE >= GEN_6 ? 6 : 8);
-        else
-            damage = GetNonDynamaxMaxHP(battler) / (B_BINDING_DAMAGE >= GEN_6 ? 8 : 16);
-
-        if (damage == 0)
-            damage = 1;
-    }
-    return damage;
-}
-
 static u32 GetPoisonDamage(enum BattlerId battlerId)
 {
     u32 damage = 0;
@@ -3480,9 +3463,12 @@ u32 GetBattlerSecondaryDamage(enum BattlerId battlerId)
     secondaryDamage = GetLeechSeedDamage(battlerId)
      + GetNightmareDamage(battlerId)
      + GetCurseDamage(battlerId)
-     + GetTrapDamage(battlerId)
      + GetPoisonDamage(battlerId)
      + GetWeatherDamage(battlerId);
+
+    // AI has no knowledge about turns remaining
+    if (IsBattlerWrapped(battlerId))
+        secondaryDamage += GetWrapDamage(battlerId, gAiLogicData->holdEffects[GetBattlerWrappedBy(battlerId)]);
 
     return secondaryDamage;
 }
@@ -4250,7 +4236,7 @@ enum Move GetAllyChosenMove(enum BattlerId battlerId)
     else if (partnerBattler > battlerId) // Battler with the lower id chooses the move first.
         return gAiLogicData->lastUsedMove[partnerBattler];
     else
-        return GetBattlerChosenMove(partnerBattler);
+        return GetBattlerMoveFromChosenPosition(partnerBattler);
 }
 
 bool32 AreMovesEquivalent(enum BattlerId battlerAtk, enum BattlerId battlerAtkPartner, enum Move move, enum Move partnerMove)
@@ -4258,7 +4244,7 @@ bool32 AreMovesEquivalent(enum BattlerId battlerAtk, enum BattlerId battlerAtkPa
     if (!IsBattlerAlive(battlerAtkPartner) || partnerMove == MOVE_NONE)
         return FALSE;
 
-    enum BattlerId battlerDef = gBattleStruct->moveTarget[battlerAtk];
+    enum BattlerId battlerDef = GetBattlerMoveTarget(battlerAtk);
 
     // We don't care the effect is basically the same; we would use this move anyway.
     if (IsBestDmgMove(battlerAtk, battlerDef, AI_ATTACKING, move))
@@ -4272,7 +4258,7 @@ bool32 AreMovesEquivalent(enum BattlerId battlerAtk, enum BattlerId battlerAtkPa
     {
         if (GetMoveTarget(move) == TARGET_SELECTED && GetMoveTarget(partnerMove) == TARGET_SELECTED)
         {
-            if (battlerDef == gBattleStruct->moveTarget[battlerAtkPartner])
+            if (battlerDef == GetBattlerMoveTarget(battlerAtkPartner))
                 return TRUE;
             else
                 return FALSE;
@@ -4412,7 +4398,7 @@ bool32 DoesPartnerHaveSameMoveEffect(enum BattlerId battlerAtkPartner, enum Batt
     {
         if (GetMoveTarget(move) == TARGET_SELECTED && GetMoveTarget(partnerMove) == TARGET_SELECTED)
         {
-            return gBattleStruct->moveTarget[battlerAtkPartner] == battlerDef;
+            return GetBattlerMoveTarget(battlerAtkPartner) == battlerDef;
         }
         return TRUE;
     }
@@ -4428,7 +4414,7 @@ bool32 PartnerMoveEffectIsStatusSameTarget(enum BattlerId battlerAtkPartner, enu
     enum BattleMoveEffects partnerEffect = GetMoveEffect(partnerMove);
     enum MoveEffect nonVolatileStatus = GetMoveNonVolatileStatus(partnerMove);
     if (partnerMove != MOVE_NONE
-     && gBattleStruct->moveTarget[battlerAtkPartner] == battlerDef
+     && GetBattlerMoveTarget(battlerAtkPartner) == battlerDef
      && (nonVolatileStatus == MOVE_EFFECT_POISON
        || nonVolatileStatus == MOVE_EFFECT_TOXIC
        || nonVolatileStatus == MOVE_EFFECT_SLEEP
@@ -4468,7 +4454,7 @@ bool32 PartnerMoveIsSameAsAttacker(enum BattlerId battlerAtkPartner, enum Battle
     if (!HasPartner(battlerAtkPartner))
         return FALSE;
 
-    if (partnerMove != MOVE_NONE && move == partnerMove && gBattleStruct->moveTarget[battlerAtkPartner] == battlerDef)
+    if (partnerMove != MOVE_NONE && move == partnerMove && GetBattlerMoveTarget(battlerAtkPartner) == battlerDef)
         return TRUE;
     return FALSE;
 }

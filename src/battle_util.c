@@ -376,18 +376,18 @@ void HandleAction_UseMove(void)
         return;
     }
 
-    gCurrMovePos = gChosenMovePos = gBattleStruct->chosenMovePositions[gBattlerAttacker];
+    gCurrMovePos = gChosenMovePos = GetBattlerChosenMovePos(gBattlerAttacker);
 
     // choose move
     if (gProtectStructs[gBattlerAttacker].noValidMoves)
     {
         gProtectStructs[gBattlerAttacker].noValidMoves = FALSE;
         gCurrentMove = gChosenMove = MOVE_STRUGGLE;
-        gBattleStruct->moveTarget[gBattlerAttacker] = GetBattleMoveTarget(MOVE_STRUGGLE, TARGET_NONE);
+        SetBattlerMoveTarget(gBattlerAttacker, GetBattleMoveTarget(MOVE_STRUGGLE, TARGET_NONE));
     }
     else if (gBattleMons[gBattlerAttacker].volatiles.multipleTurns || gBattleMons[gBattlerAttacker].volatiles.rechargeTimer > 0)
     {
-        gCurrentMove = gChosenMove = gLockedMoves[gBattlerAttacker];
+        gCurrentMove = gChosenMove = GetBattlerLockedMove(gBattlerAttacker);
     }
     // encore forces you to use the same move
     else if (GetActiveGimmick(gBattlerAttacker) != GIMMICK_Z_MOVE && gBattleMons[gBattlerAttacker].volatiles.encoredMove != MOVE_NONE
@@ -396,7 +396,7 @@ void HandleAction_UseMove(void)
         gCurrentMove = gChosenMove = gBattleMons[gBattlerAttacker].volatiles.encoredMove;
         gCurrMovePos = gChosenMovePos = gBattleMons[gBattlerAttacker].volatiles.encoredMovePos;
         if (GetConfig(B_ENCORE_TARGET) < GEN_5)
-            gBattleStruct->moveTarget[gBattlerAttacker] = GetBattleMoveTarget(gCurrentMove, TARGET_NONE);
+            SetBattlerMoveTarget(gBattlerAttacker, GetBattleMoveTarget(gCurrentMove, TARGET_NONE));
     }
     // check if the encored move wasn't overwritten
     else if (GetActiveGimmick(gBattlerAttacker) != GIMMICK_Z_MOVE && gBattleMons[gBattlerAttacker].volatiles.encoredMove != MOVE_NONE
@@ -407,12 +407,12 @@ void HandleAction_UseMove(void)
         gBattleMons[gBattlerAttacker].volatiles.encoredMove = MOVE_NONE;
         gBattleMons[gBattlerAttacker].volatiles.encoredMovePos = 0;
         gBattleMons[gBattlerAttacker].volatiles.encoreTimer = 0;
-        gBattleStruct->moveTarget[gBattlerAttacker] = GetBattleMoveTarget(gCurrentMove, TARGET_NONE);
+        SetBattlerMoveTarget(gBattlerAttacker, GetBattleMoveTarget(gCurrentMove, TARGET_NONE));
     }
-    else if (gBattleMons[gBattlerAttacker].moves[gCurrMovePos] != gChosenMoveByBattler[gBattlerAttacker])
+    else if (gBattleMons[gBattlerAttacker].moves[gCurrMovePos] != GetBattlerChosenMove(gBattlerAttacker))
     {
         gCurrentMove = gChosenMove = gBattleMons[gBattlerAttacker].moves[gCurrMovePos];
-        gBattleStruct->moveTarget[gBattlerAttacker] = GetBattleMoveTarget(gCurrentMove, TARGET_NONE);
+        SetBattlerMoveTarget(gBattlerAttacker, GetBattleMoveTarget(gCurrentMove, TARGET_NONE));
     }
     else
     {
@@ -447,7 +447,7 @@ void HandleAction_UseMove(void)
     ClearDamageCalcResults();
     gMultiHitCounter = 0;
     gBattleCommunication[MISS_TYPE] = 0;
-    gBattlerTarget = gBattleStruct->moveTarget[gBattlerAttacker];
+    gBattlerTarget = GetBattlerMoveTarget(gBattlerAttacker);
     // Avoid assert errors before failure script is played (for ally targeting moves)
     if (!IsDoubleBattle() && gBattlerTarget >= gBattlersCount)
         gBattlerTarget = BATTLE_PARTNER(gBattlerTarget);
@@ -505,7 +505,7 @@ void HandleAction_Switch(void)
     gBattle_BG0_X = 0;
     gBattle_BG0_Y = 0;
     gActionSelectionCursor[gBattlerAttacker] = 0;
-    gMoveSelectionCursor[gBattlerAttacker] = 0;
+    SetBattlerMoveSelectionCursor(gBattlerAttacker, 0);
 
     PREPARE_MON_NICK_BUFFER(gBattleTextBuff1, gBattlerAttacker, gBattleStruct->battlerPartyIndexes[gBattlerAttacker]);
 
@@ -1079,7 +1079,7 @@ void CancelMultiTurnMoves(enum BattlerId battler)
     if (B_RAMPAGE_CONFUSION < GEN_5
      || gBattleMons[battler].volatiles.rampageTurns != 1) // Will be confused at the end of the turn
     {
-        gLockedMoves[battler] = MOVE_NONE;
+        SetBattlerLockedMove(battler, MOVE_NONE);
         gBattleMons[battler].volatiles.multipleTurns = 0;
         gBattleMons[battler].volatiles.rampageTurns = 0;
     }
@@ -1345,7 +1345,7 @@ u32 TrySetCantSelectMoveBattleScript(enum BattlerId battler)
     u8 moveId = gBattleResources->bufferB[battler][2] & ~RET_GIMMICK;
     enum Move move = gBattleMons[battler].moves[moveId];
     enum HoldEffect holdEffect = GetBattlerHoldEffect(battler);
-    u16 *choicedMove = &gBattleStruct->choicedMove[battler];
+    enum Move choicedMove = GetBattlerChoicedMove(battler);
     enum BattleMoveEffects moveEffect = GetMoveEffect(move);
 
     if (GetConfig(B_ENCORE_TARGET) >= GEN_5
@@ -1382,7 +1382,7 @@ u32 TrySetCantSelectMoveBattleScript(enum BattlerId battler)
         }
     }
 
-    if (DYNAMAX_BYPASS_CHECK && GetActiveGimmick(battler) != GIMMICK_Z_MOVE && move == gLastMoves[battler] && move != MOVE_STRUGGLE && (gBattleMons[battler].volatiles.torment == TRUE))
+    if (DYNAMAX_BYPASS_CHECK && GetActiveGimmick(battler) != GIMMICK_Z_MOVE && move == GetBattlerLastMove(battler) && move != MOVE_STRUGGLE && (gBattleMons[battler].volatiles.torment == TRUE))
     {
         CancelMultiTurnMoves(battler);
         if (gBattleTypeFlags & BATTLE_TYPE_PALACE)
@@ -1508,7 +1508,7 @@ u32 TrySetCantSelectMoveBattleScript(enum BattlerId battler)
         }
     }
 
-    if (MoveCantBeUsedTwice(move) && move == gLastResultingMoves[battler])
+    if (MoveCantBeUsedTwice(move) && move == GetBattlerLastResultingMove(battler))
     {
         gCurrentMove = move;
         PREPARE_MOVE_BUFFER(gBattleTextBuff1, gCurrentMove);
@@ -1525,9 +1525,9 @@ u32 TrySetCantSelectMoveBattleScript(enum BattlerId battler)
     }
 
     gPotentialItemEffectBattler = battler;
-    if (DYNAMAX_BYPASS_CHECK && IsHoldEffectChoice(holdEffect) && *choicedMove != MOVE_NONE && *choicedMove != MOVE_UNAVAILABLE && *choicedMove != move)
+    if (DYNAMAX_BYPASS_CHECK && IsHoldEffectChoice(holdEffect) && choicedMove != MOVE_NONE && choicedMove != MOVE_UNAVAILABLE && choicedMove != move)
     {
-        gCurrentMove = *choicedMove;
+        gCurrentMove = choicedMove;
         gLastUsedItem = gBattleMons[battler].item;
         if (gBattleTypeFlags & BATTLE_TYPE_PALACE)
         {
@@ -1558,10 +1558,9 @@ u32 TrySetCantSelectMoveBattleScript(enum BattlerId battler)
             limitations++;
         }
     }
-    if (DYNAMAX_BYPASS_CHECK && (GetBattlerAbility(battler) == ABILITY_GORILLA_TACTICS) && *choicedMove != MOVE_NONE
-              && *choicedMove != MOVE_UNAVAILABLE && *choicedMove != move)
+    if (DYNAMAX_BYPASS_CHECK && (GetBattlerAbility(battler) == ABILITY_GORILLA_TACTICS) && choicedMove != MOVE_NONE && choicedMove != MOVE_UNAVAILABLE && choicedMove != move)
     {
-        gCurrentMove = *choicedMove;
+        gCurrentMove = choicedMove;
         gLastUsedItem = gBattleMons[battler].item;
         if (gBattleTypeFlags & BATTLE_TYPE_PALACE)
         {
@@ -1610,7 +1609,7 @@ u32 CheckMoveLimitations(enum BattlerId battler, u8 unusableMoves, u16 check)
     enum Move move;
     enum BattleMoveEffects moveEffect;
     enum HoldEffect holdEffect = GetBattlerHoldEffect(battler);
-    u16 *choicedMove = &gBattleStruct->choicedMove[battler];
+    enum Move choicedMove = GetBattlerChoicedMove(battler);
     s32 i;
 
     gPotentialItemEffectBattler = battler;
@@ -1632,7 +1631,7 @@ u32 CheckMoveLimitations(enum BattlerId battler, u8 unusableMoves, u16 check)
         else if (check & MOVE_LIMITATION_DISABLED && move == gBattleMons[battler].volatiles.disabledMove)
             unusableMoves |= 1u << i;
         // Torment
-        else if (check & MOVE_LIMITATION_TORMENTED && move == gLastMoves[battler] && gBattleMons[battler].volatiles.torment == TRUE)
+        else if (check & MOVE_LIMITATION_TORMENTED && move == GetBattlerLastMove(battler) && gBattleMons[battler].volatiles.torment == TRUE)
             unusableMoves |= 1u << i;
         // Taunt
         else if (check & MOVE_LIMITATION_TAUNT
@@ -1647,7 +1646,7 @@ u32 CheckMoveLimitations(enum BattlerId battler, u8 unusableMoves, u16 check)
         else if (check & MOVE_LIMITATION_ENCORE && gBattleMons[battler].volatiles.encoreTimer && gBattleMons[battler].volatiles.encoredMove != move)
             unusableMoves |= 1u << i;
         // Choice Items
-        else if (check & MOVE_LIMITATION_CHOICE_ITEM && IsHoldEffectChoice(holdEffect) && *choicedMove != MOVE_NONE && *choicedMove != MOVE_UNAVAILABLE && *choicedMove != move)
+        else if (check & MOVE_LIMITATION_CHOICE_ITEM && IsHoldEffectChoice(holdEffect) && choicedMove != MOVE_NONE && choicedMove != MOVE_UNAVAILABLE && choicedMove != move)
             unusableMoves |= 1u << i;
         // Assault Vest
         else if (check & MOVE_LIMITATION_ASSAULT_VEST && holdEffect == HOLD_EFFECT_ASSAULT_VEST && IsBattleMoveStatus(move) && moveEffect != EFFECT_ME_FIRST)
@@ -1668,10 +1667,10 @@ u32 CheckMoveLimitations(enum BattlerId battler, u8 unusableMoves, u16 check)
         else if (check & MOVE_LIMITATION_STUFF_CHEEKS && moveEffect == EFFECT_STUFF_CHEEKS && !ItemIsBerry(gBattleMons[battler].item))
             unusableMoves |= 1u << i;
         // Gorilla Tactics
-        else if (check & MOVE_LIMITATION_CHOICE_ITEM && GetBattlerAbility(battler) == ABILITY_GORILLA_TACTICS && *choicedMove != MOVE_NONE && *choicedMove != MOVE_UNAVAILABLE && *choicedMove != move)
+        else if (check & MOVE_LIMITATION_CHOICE_ITEM && GetBattlerAbility(battler) == ABILITY_GORILLA_TACTICS && choicedMove != MOVE_NONE && choicedMove != MOVE_UNAVAILABLE && choicedMove != move)
             unusableMoves |= 1u << i;
         // Can't Use Twice flag
-        else if (check & MOVE_LIMITATION_CANT_USE_TWICE && MoveCantBeUsedTwice(move) && move == gLastResultingMoves[battler])
+        else if (check & MOVE_LIMITATION_CANT_USE_TWICE && MoveCantBeUsedTwice(move) && move == GetBattlerLastResultingMove(battler))
             unusableMoves |= 1u << i;
     }
     return unusableMoves;
@@ -1874,7 +1873,7 @@ void TryClearRageAndFuryCutter(void)
 {
     for (enum BattlerId i = 0; i < gBattlersCount; i++)
     {
-        if (!MoveHasAdditionalEffect(gChosenMoveByBattler[i], MOVE_EFFECT_RAGE))
+        if (!MoveHasAdditionalEffect(GetBattlerChosenMove(i), MOVE_EFFECT_RAGE))
             gBattleMons[i].volatiles.rage = FALSE;
     }
 }
@@ -2234,7 +2233,7 @@ static inline u8 GetBattlerSideFaintCounter(enum BattlerId battler)
 // Supreme Overlord adds a x0.1 damage boost for each fainted ally.
 static inline uq4_12_t GetSupremeOverlordModifier(enum BattlerId battler)
 {
-    return UQ_4_12(1.0) + (PercentToUQ4_12(gBattleStruct->supremeOverlordCounter[battler] * 10));
+    return UQ_4_12(1.0) + (PercentToUQ4_12(gBattleMons[battler].volatiles.supremeOverlordCounter * 10));
 }
 
 bool32 HadMoreThanHalfHpNowDoesnt(enum BattlerId battler)
@@ -3025,7 +3024,7 @@ static bool32 TryDancer(void)
      && gBattlerAttacker != dancerBattler)
     {
         gSpecialStatuses[dancerBattler].dancerUsedMove = TRUE;
-        gSpecialStatuses[dancerBattler].backUpTarget = gBattleStruct->moveTarget[dancerBattler] + 1;
+        gSpecialStatuses[dancerBattler].backUpTarget = GetBattlerMoveTarget(dancerBattler) + 1;
         gBattleMons[dancerBattler].volatiles.activateDancer = FALSE;
         gBattlerAttacker = gBattlerAbility = dancerBattler;
         gCalledMove = gCurrentMove;
@@ -3551,8 +3550,8 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
         case ABILITY_SUPREME_OVERLORD:
             if (shouldAbilityTrigger)
             {
-                gBattleStruct->supremeOverlordCounter[battler] = min(5, GetBattlerSideFaintCounter(battler));
-                if (gBattleStruct->supremeOverlordCounter[battler] > 0)
+                gBattleMons[battler].volatiles.supremeOverlordCounter = min(5, GetBattlerSideFaintCounter(battler));
+                if (gBattleMons[battler].volatiles.supremeOverlordCounter > 0)
                 {
                     BattleScriptCall(BattleScript_SupremeOverlordActivates);
                     effect++;
@@ -3774,14 +3773,14 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
                 if (!(gBattleTypeFlags & BATTLE_TYPE_RAID)
                  && gBattleMons[battler].item == ITEM_NONE
                  && gBattleResults.catchAttempts[ItemIdToBallId(gLastUsedBall)] >= 1
-                 && !gHasFetchedBall)
+                 && !gBattleStruct->hasFetchedBall)
                 {
                     gLastUsedItem = gLastUsedBall;
                     gBattleScripting.battler = battler;
                     gBattleMons[battler].item = gLastUsedItem;
                     BtlController_EmitSetMonData(battler, B_COMM_TO_CONTROLLER, REQUEST_HELDITEM_BATTLE, 0, 2, &gLastUsedItem);
                     MarkBattlerForControllerExec(battler);
-                    gHasFetchedBall = TRUE;
+                    gBattleStruct->hasFetchedBall = TRUE;
                     BattleScriptCall(BattleScript_BallFetch);
                     effect++;
                 }
@@ -4935,7 +4934,7 @@ bool32 CanBattlerEscape(enum BattlerId battler) // no ability check
         return TRUE;
     else if (gBattleMons[battler].volatiles.escapePrevention)
         return FALSE;
-    else if (gBattleMons[battler].volatiles.wrapped)
+    else if (IsBattlerWrapped(battler))
         return FALSE;
     else if (gBattleMons[battler].volatiles.root)
         return FALSE;
@@ -5540,7 +5539,7 @@ u32 GetBattleMoveTarget(enum Move move, enum MoveTarget moveTarget)
         break;
     }
 
-    gBattleStruct->moveTarget[gBattlerAttacker] = targetBattler;
+    SetBattlerMoveTarget(gBattlerAttacker, targetBattler);
 
     return targetBattler;
 }
@@ -6321,7 +6320,7 @@ static inline u32 CalcMoveBasePower(struct DamageContext *ctx)
             basePower = CalcBeatUpPower();
         break;
     case EFFECT_MAX_MOVE:
-        basePower = GetMaxMovePower(GetBattlerChosenMove(battlerAtk));
+        basePower = GetMaxMovePower(GetBattlerMoveFromChosenPosition(battlerAtk));
         break;
     case EFFECT_RAGE_FIST:
         basePower += 50 * GetBattlerPartyState(battlerAtk)->timesGotHit;
@@ -6388,7 +6387,7 @@ static inline u32 CalcMoveBasePowerAfterModifiers(struct DamageContext *ctx)
             modifier = uq4_12_multiply(modifier, UQ_4_12(0.5));
         break;
     case EFFECT_STOMPING_TANTRUM:
-        if (gBattleStruct->battlerState[battlerAtk].stompingTantrumTimer == 1)
+        if (GetStompingTantrumTimer(battlerAtk) == 1)
             modifier = uq4_12_multiply(modifier, UQ_4_12(2.0));
         break;
     case EFFECT_MAGNITUDE:
@@ -7666,7 +7665,7 @@ s32 DoFixedDamageMoveCalc(struct DamageContext *ctx)
         dmg = gBattleMons[ctx->battlerDef].hp;
         break;
     case EFFECT_BIDE:
-        dmg = gBideDmg[ctx->battlerAtk] * 2;
+        dmg = gBattleMons[ctx->battlerAtk].volatiles.bideDmg * 2;
         break;
     default:
         break;
@@ -9814,11 +9813,11 @@ bool32 SetTargetToNextPursuiter(enum BattlerId battlerDef)
     {
         enum BattlerId battler = gBattlerByTurnOrder[i];
         if (gChosenActionByBattler[battler] == B_ACTION_USE_MOVE
-        && GetMoveEffect(gChosenMoveByBattler[battler]) == EFFECT_PURSUIT
+        && GetBattlerChosenMoveEffect(battler) == EFFECT_PURSUIT
         && IsBattlerAlive(battlerDef)
         && IsBattlerAlive(battler)
         && !IsBattlerAlly(battler, battlerDef)
-        && (B_PURSUIT_TARGET >= GEN_4 || gBattleStruct->moveTarget[battler] == battlerDef)
+        && (B_PURSUIT_TARGET >= GEN_4 || GetBattlerMoveTarget(battler) == battlerDef)
         && !IsGimmickSelected(battler, GIMMICK_Z_MOVE)
         && !IsGimmickSelected(battler, GIMMICK_DYNAMAX)
         && GetActiveGimmick(battler) != GIMMICK_DYNAMAX)
@@ -10654,13 +10653,88 @@ bool32 IsUsableWhileAsleepEffect(enum BattleMoveEffects effect)
     }
 }
 
-void SetWrapTurns(enum BattlerId battler, enum HoldEffect holdEffect)
+bool32 TrySetWrap(enum BattlerId battler, enum BattlerId wrappedBy, enum Move wrapMove, enum HoldEffect holdEffect)
 {
-    u32 normalWrapTurns = B_WRAP_TURNS - 2; // 5 turns
+    if (IsBattlerWrapped(battler))
+        return FALSE;
+
+    u32 normalWrapTurns = B_WRAP_TIMER - 2; // 5 turns
     if (holdEffect == HOLD_EFFECT_GRIP_CLAW)
-        gBattleMons[battler].volatiles.wrapTurns = GetConfig(B_BINDING_TURNS) >= GEN_5 ? B_WRAP_TURNS : normalWrapTurns;
+        gBattleMons[battler].volatiles.wrapTimer = GetConfig(B_BINDING_TURNS) >= GEN_5 ? B_WRAP_TIMER : normalWrapTurns;
     else
-        gBattleMons[battler].volatiles.wrapTurns = GetConfig(B_BINDING_TURNS) >= GEN_5 ? RandomUniform(RNG_WRAP, 4, normalWrapTurns) : RandomUniform(RNG_WRAP, 2, normalWrapTurns);
+        gBattleMons[battler].volatiles.wrapTimer = GetConfig(B_BINDING_TURNS) >= GEN_5 ? RandomUniform(RNG_WRAP, 4, normalWrapTurns) : RandomUniform(RNG_WRAP, 2, normalWrapTurns);
+    gBattleMons[battler].volatiles.wrappedMove = wrapMove;
+    gBattleMons[battler].volatiles.wrappedBy = wrappedBy;
+    gBattleMons[battler].volatiles.wrapped = TRUE;
+    return TRUE;
+}
+
+bool32 TryReduceWrapTimer(enum BattlerId battler)
+{
+    if (gBattleMons[battler].volatiles.wrapTimer != 0)
+    {
+        gBattleMons[battler].volatiles.wrapTimer--;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+void UnsetBattlerWrap(enum BattlerId battler)
+{
+    gBattleMons[battler].volatiles.wrapped = FALSE;
+}
+
+bool32 IsBattlerWrapped(enum BattlerId battler)
+{
+    return gBattleMons[battler].volatiles.wrapped;
+}
+
+enum BattlerId GetBattlerWrappedBy(enum BattlerId battler)
+{
+    return gBattleMons[battler].volatiles.wrappedBy;
+}
+
+bool32 IsBattlerWrappedBy(enum BattlerId battler, enum BattlerId wrappedBy)
+{
+    return IsBattlerWrapped(battler) && GetBattlerWrappedBy(battler) == wrappedBy;
+}
+
+enum Move GetBattlerWrappedMove(enum BattlerId battler)
+{
+    return gBattleMons[battler].volatiles.wrappedMove;
+}
+
+u32 GetWrapDamage(enum BattlerId battler, enum HoldEffect holdEffect)
+{
+    u32 damage;
+    if (holdEffect == HOLD_EFFECT_BINDING_BAND)
+        damage = GetNonDynamaxMaxHP(battler) / (B_BINDING_DAMAGE >= GEN_6 ? 6 : 8);
+    else
+        damage = GetNonDynamaxMaxHP(battler) / (B_BINDING_DAMAGE >= GEN_6 ? 8 : 16);
+
+    if (damage == 0)
+        damage = 1;
+    return damage;
+}
+
+u32 GetStompingTantrumTimer(enum BattlerId battler)
+{
+    return gBattleMons[battler].volatiles.stompingTantrumTimer;
+}
+
+void SetStompingTantrumTimer(enum BattlerId battler)
+{
+    gBattleMons[battler].volatiles.stompingTantrumTimer = 2;
+}
+
+bool32 TryReduceStompingTantrumTimer(enum BattlerId battler)
+{
+    if (gBattleMons[battler].volatiles.stompingTantrumTimer != 0)
+    {
+        gBattleMons[battler].volatiles.stompingTantrumTimer--;
+        return TRUE;
+    }
+    return FALSE;
 }
 
 // Return True if the order was changed, and false if the order was not changed(for example because the target would move after the attacker anyway).
@@ -10799,7 +10873,7 @@ bool32 CanUseMoveConsecutively(enum BattlerId battler)
 // Used for Protect, Endure and Ally switch
 void TryResetConsecutiveUseCounter(enum BattlerId battler)
 {
-    u32 lastMove = gLastResultingMoves[battler];
+    u32 lastMove = GetBattlerLastResultingMove(battler);
     if (lastMove == MOVE_UNAVAILABLE)
     {
         gBattleMons[battler].volatiles.consecutiveMoveUses = 0;
@@ -10893,4 +10967,160 @@ enum Stat GetDownloadStat(enum BattlerId battler)
 enum Species GetBattlerBaseSpecies(enum BattlerId battler)
 {
     return GetBaseSpeciesId(gBattleMons[battler].species);
+}
+
+enum Move GetBattlerChosenMove(enum BattlerId battler)
+{
+    return gBattleMons[battler].volatiles.chosenMove;
+}
+
+enum Move SetBattlerChosenMove(enum BattlerId battler, enum Move move)
+{
+    return gBattleMons[battler].volatiles.chosenMove = move;
+}
+
+u32 GetBattlerChosenMovePos(enum BattlerId battler)
+{
+    return gBattleMons[battler].volatiles.chosenMovePos;
+}
+
+u32 SetBattlerChosenMovePos(enum BattlerId battler, u32 movePos)
+{
+    return gBattleMons[battler].volatiles.chosenMovePos = movePos;
+}
+
+enum BattleMoveEffects GetBattlerChosenMoveEffect(enum BattlerId battler)
+{
+    return GetMoveEffect(GetBattlerChosenMove(battler));
+}
+
+enum BattlerId GetBattlerMoveTarget(enum BattlerId battler)
+{
+    return gBattleMons[battler].volatiles.moveTarget;
+}
+
+enum BattlerId SetBattlerMoveTarget(enum BattlerId battler, enum BattlerId target)
+{
+    return gBattleMons[battler].volatiles.moveTarget = target;
+}
+
+enum BattlerId GetBattlerLastHitBy(enum BattlerId battler)
+{
+    return gBattleMons[battler].volatiles.lastHitBy;
+}
+
+enum BattlerId SetBattlerLastHitBy(enum BattlerId battler, enum BattlerId lastHitBy)
+{
+    return gBattleMons[battler].volatiles.lastHitBy = lastHitBy;
+}
+
+enum Move GetBattlerLastMove(enum BattlerId battler)
+{
+    return gBattleMons[battler].volatiles.lastMove;
+}
+
+enum Move SetBattlerLastMove(enum BattlerId battler, enum Move move)
+{
+    return gBattleMons[battler].volatiles.lastMove = move;
+}
+
+enum Move GetBattlerLockedMove(enum BattlerId battler)
+{
+    return gBattleMons[battler].volatiles.lockedMove;
+}
+
+enum Move SetBattlerLockedMove(enum BattlerId battler, enum Move move)
+{
+    return gBattleMons[battler].volatiles.lockedMove = move;
+}
+
+enum Move GetBattlerLastLandedMove(enum BattlerId battler)
+{
+    return gBattleMons[battler].volatiles.lastLandedMove;
+}
+
+enum Move SetBattlerLastLandedMove(enum BattlerId battler, enum Move move)
+{
+    return gBattleMons[battler].volatiles.lastLandedMove = move;
+}
+
+enum Move GetBattlerLastResultingMove(enum BattlerId battler)
+{
+    return gBattleMons[battler].volatiles.lastResultingMove;
+}
+
+enum Move SetBattlerLastResultingMove(enum BattlerId battler, enum Move move)
+{
+    return gBattleMons[battler].volatiles.lastResultingMove = move;
+}
+
+enum Move GetBattlerLastPrintedMove(enum BattlerId battler)
+{
+    return gBattleMons[battler].volatiles.lastPrintedMove;
+}
+
+enum Move SetBattlerLastPrintedMove(enum BattlerId battler, enum Move move)
+{
+    return gBattleMons[battler].volatiles.lastPrintedMove = move;
+}
+
+enum Move GetBattlerChoicedMove(enum BattlerId battler)
+{
+    return gBattleMons[battler].volatiles.choicedMove;
+}
+
+enum Move SetBattlerChoicedMove(enum BattlerId battler, enum Move move)
+{
+    return gBattleMons[battler].volatiles.choicedMove = move;
+}
+
+// Try remove choiced move if it's no longer one of the battler's moves and it doesn't have Gorilla Tactics.
+bool32 TryResetBattlerChoicedMove(enum BattlerId battler, enum Ability ability)
+{
+    // Gorilla Tactics doesn't lock moves while Dynamaxed
+    if (ability != ABILITY_GORILLA_TACTICS || GetActiveGimmick(battler) == GIMMICK_DYNAMAX)
+    {
+        u32 moveIndex;
+        for (moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+        {
+            if (gBattleMons[battler].moves[moveIndex] == GetBattlerChoicedMove(battler))
+                break;
+        }
+        if (moveIndex == MAX_MON_MOVES)
+        {
+            SetBattlerChoicedMove(battler, MOVE_NONE);
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+u32 GetBattlerMoveSelectionCursor(enum BattlerId battler)
+{
+    return gBattleMons[battler].volatiles.moveSelectionCursor;
+}
+
+u32 SetBattlerMoveSelectionCursor(enum BattlerId battler, u32 selection)
+{
+    return gBattleMons[battler].volatiles.moveSelectionCursor = selection;
+}
+
+enum Type GetBattlerLastHitByType(enum BattlerId battler)
+{
+    return gBattleMons[battler].volatiles.lastHitByType;
+}
+
+enum Type SetBattlerLastHitByType(enum BattlerId battler, enum Type type)
+{
+    return gBattleMons[battler].volatiles.lastHitByType = type;
+}
+
+enum Type GetBattlerLastUsedMoveType(enum BattlerId battler)
+{
+    return gBattleMons[battler].volatiles.lastUsedMoveType;
+}
+
+enum Type SetBattlerLastUsedMoveType(enum BattlerId battler, enum Type type)
+{
+    return gBattleMons[battler].volatiles.lastUsedMoveType = type;
 }
