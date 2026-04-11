@@ -1,6 +1,7 @@
 #ifndef GUARD_SPECIES_INFO_H
 #define GUARD_SPECIES_INFO_H
 
+#include "test_runner.h"
 #include "constants/abilities.h"
 #include "constants/cries.h"
 #include "constants/egg_ids.h"
@@ -363,7 +364,7 @@ static inline const u8 *GetSpeciesName(enum Species species)
 static inline enum PokemonCry GetSpeciesCryId(enum Species species)
 {
     species = SanitizeSpeciesId(species);
-    if (P_CRIES_ENABLED == FALSE || gSpeciesInfo[species].cryId >= CRY_COUNT)
+    if (P_CRIES_ENABLED == FALSE || gSpeciesInfo[species].cryId >= CRY_COUNT || gTestRunnerHeadless)
         return CRY_NONE;
     return gSpeciesInfo[species].cryId;
 }
