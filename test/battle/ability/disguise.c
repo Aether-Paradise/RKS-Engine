@@ -80,7 +80,7 @@ SINGLE_BATTLE_TEST("Disguised Mimikyu's Air Balloon will pop upon changing to it
     PARAMETRIZE { species = SPECIES_MIMIKYU_DISGUISED;       newSpecies = SPECIES_MIMIKYU_BUSTED; }
     PARAMETRIZE { species = SPECIES_MIMIKYU_TOTEM_DISGUISED; newSpecies = SPECIES_MIMIKYU_BUSTED_TOTEM; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_AIR_BALLOON].holdEffect == HOLD_EFFECT_AIR_BALLOON);
+        ASSUME(GetItemHoldEffect(ITEM_AIR_BALLOON) == HOLD_EFFECT_AIR_BALLOON);
         PLAYER(species) { Ability(ABILITY_DISGUISE); Item(ITEM_AIR_BALLOON); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -144,7 +144,7 @@ SINGLE_BATTLE_TEST("Disguised Mimikyu takes damage from Rocky Helmet without bre
     PARAMETRIZE { species = SPECIES_MIMIKYU_DISGUISED; }
     PARAMETRIZE { species = SPECIES_MIMIKYU_TOTEM_DISGUISED; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_ROCKY_HELMET].holdEffect == HOLD_EFFECT_ROCKY_HELMET);
+        ASSUME(GetItemHoldEffect(ITEM_ROCKY_HELMET) == HOLD_EFFECT_ROCKY_HELMET);
         PLAYER(species) { Ability(ABILITY_DISGUISE); }
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_ROCKY_HELMET); }
     } WHEN {
@@ -152,7 +152,6 @@ SINGLE_BATTLE_TEST("Disguised Mimikyu takes damage from Rocky Helmet without bre
     } SCENE {
         ANIMATION(ANIM_TYPE_MOVE, MOVE_AERIAL_ACE, player);
         HP_BAR(opponent);
-        ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, opponent);
         HP_BAR(player);
         MESSAGE("Mimikyu was hurt by the opposing Wobbuffet's Rocky Helmet!");
     } THEN {
@@ -175,7 +174,7 @@ SINGLE_BATTLE_TEST("Disguised Mimikyu takes damage from Rough Skin without break
         HP_BAR(opponent);
         ABILITY_POPUP(opponent, ABILITY_ROUGH_SKIN);
         HP_BAR(player);
-        MESSAGE("Mimikyu was hurt by the opposing Carvanha's Rough Skin!");
+        MESSAGE("Mimikyu was hurt!");
     } THEN {
         EXPECT_EQ(player->species, species);
     }

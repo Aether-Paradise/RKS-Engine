@@ -18,7 +18,7 @@ SINGLE_BATTLE_TEST("Shed Tail creates a Substitute at the cost of 1/2 users maxi
     } WHEN {
         TURN { MOVE(player, MOVE_SHED_TAIL); SEND_OUT(player, 1); }
     } SCENE {
-        maxHP = GetMonData(&gPlayerParty[0], MON_DATA_HP);
+        maxHP = GetMonData(&gParties[B_TRAINER_0][0], MON_DATA_HP);
         ANIMATION(ANIM_TYPE_MOVE, MOVE_SHED_TAIL, player);
         HP_BAR(player, captureDamage: &costHP);
         MESSAGE("Wobbuffet shed its tail to create a decoy!");
@@ -44,7 +44,7 @@ SINGLE_BATTLE_TEST("Shed Tail fails if the user doesn't have enough HP")
 SINGLE_BATTLE_TEST("Shed Tail's HP cost can trigger a berry before the user switches out")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_SITRUS_BERRY].battleUsage == EFFECT_ITEM_RESTORE_HP);
+        ASSUME(GetItemBattleUsage(ITEM_SITRUS_BERRY) == EFFECT_ITEM_RESTORE_HP);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_SITRUS_BERRY); }
         PLAYER(SPECIES_WYNAUT);
         OPPONENT(SPECIES_WOBBUFFET);

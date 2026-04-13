@@ -18,7 +18,7 @@ SINGLE_BATTLE_TEST("Substitute creates a Substitute at the cost of 1/4 users max
     } WHEN {
         TURN { MOVE(player, MOVE_SUBSTITUTE); }
     } SCENE {
-        maxHP = GetMonData(&gPlayerParty[0], MON_DATA_HP);
+        maxHP = GetMonData(&gParties[B_TRAINER_0][0], MON_DATA_HP);
         ANIMATION(ANIM_TYPE_MOVE, MOVE_SUBSTITUTE, player);
         HP_BAR(player, captureDamage: &costHP);
         MESSAGE("Wobbuffet put in a substitute!");
@@ -43,7 +43,7 @@ SINGLE_BATTLE_TEST("Substitute fails if the user doesn't have enough HP")
 SINGLE_BATTLE_TEST("Substitute's HP cost can trigger a berry")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_SITRUS_BERRY].battleUsage == EFFECT_ITEM_RESTORE_HP);
+        ASSUME(GetItemBattleUsage(ITEM_SITRUS_BERRY) == EFFECT_ITEM_RESTORE_HP);
         PLAYER(SPECIES_WOBBUFFET) { HP(300); Item(ITEM_SITRUS_BERRY); }
         PLAYER(SPECIES_WYNAUT);
         OPPONENT(SPECIES_WOBBUFFET);

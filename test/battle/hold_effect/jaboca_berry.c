@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_JABOCA_BERRY].holdEffect == HOLD_EFFECT_JABOCA_BERRY);
+    ASSUME(GetItemHoldEffect(ITEM_JABOCA_BERRY) == HOLD_EFFECT_JABOCA_BERRY);
     ASSUME(GetMoveCategory(MOVE_SCRATCH) == DAMAGE_CATEGORY_PHYSICAL);
 }
 
@@ -58,7 +58,7 @@ SINGLE_BATTLE_TEST("Jaboca Berry triggers before Bug Bite can steal it")
     }
 }
 
-SINGLE_BATTLE_TEST("Jaboca Berry is triggered even if berry user dies")
+SINGLE_BATTLE_TEST("Jaboca Berry is triggered even if berry user faints")
 {
     GIVEN {
         ASSUME(GetMoveCategory(MOVE_SWIFT) == DAMAGE_CATEGORY_SPECIAL);

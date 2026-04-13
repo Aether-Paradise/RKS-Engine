@@ -110,13 +110,13 @@ TEST("Item names fit on Bag Screen (list)")
     enum Item item = ITEM_NONE;
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        PARAMETRIZE_LABEL("%S", gItemsInfo[i].name) { item = i; }
+        PARAMETRIZE_LABEL("%S", GetItemName(i)) { item = i; }
     }
-    //DebugPrintf("Item %d: %S", GetStringWidth(fontId, gItemsInfo[item].name, 0), gItemsInfo[item].name);
-    if (gItemsInfo[item].pocket == POCKET_TM_HM || gItemsInfo[item].pocket == POCKET_BERRIES)
-        EXPECT_LE(GetStringWidth(fontId, gItemsInfo[item].name, 0), tmHmBerryWidthPx);
+    //DebugPrintf("Item %d: %S", GetStringWidth(fontId, GetItemName(item), 0), GetItemName(item));
+    if (ItemIsTMHM(item) || ItemIsBerry(item))
+        EXPECT_LE(GetStringWidth(fontId, GetItemName(item), 0), tmHmBerryWidthPx);
     else
-        EXPECT_LE(GetStringWidth(fontId, gItemsInfo[item].name, 0), restWidthPx);
+        EXPECT_LE(GetStringWidth(fontId, GetItemName(item), 0), restWidthPx);
 }
 
 TEST("Item plural names fit on Bag Screen (left box)")
@@ -128,7 +128,7 @@ TEST("Item plural names fit on Bag Screen (left box)")
     u8 pluralName[ITEM_NAME_PLURAL_LENGTH + 1];
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        PARAMETRIZE_LABEL("%S", gItemsInfo[i].name) { item = i; }
+        PARAMETRIZE_LABEL("%S", GetItemName(i)) { item = i; }
     }
     CopyItemNameHandlePlural(item, pluralName, 2);
     EXPECT_LE(GetStringWidth(fontId, pluralName, 0), widthPx);
@@ -141,9 +141,9 @@ TEST("Item names fit on PC Storage (list)")
     enum Item item = ITEM_NONE;
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        PARAMETRIZE_LABEL("%S", gItemsInfo[i].name) { item = i; }
+        PARAMETRIZE_LABEL("%S", GetItemName(i)) { item = i; }
     }
-    EXPECT_LE(GetStringWidth(fontId, gItemsInfo[item].name, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetItemName(item), 0), widthPx);
 }
 
 TEST("Item plural names fit on PC storage (left box)")
@@ -155,7 +155,7 @@ TEST("Item plural names fit on PC storage (left box)")
     u8 pluralName[ITEM_NAME_PLURAL_LENGTH + 1];
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        PARAMETRIZE_LABEL("%S", gItemsInfo[i].name) { item = i; }
+        PARAMETRIZE_LABEL("%S", GetItemName(i)) { item = i; }
     }
     CopyItemNameHandlePlural(item, pluralName, 2);
     EXPECT_LE(GetStringWidth(fontId, pluralName, 0), widthPx);
@@ -168,8 +168,8 @@ TEST("Item names fit on Pokemon Storage System")
     enum Item item = ITEM_NONE;
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        if (gItemsInfo[i].importance) continue;
-        PARAMETRIZE_LABEL("%S", gItemsInfo[i].name) { item = i; }
+        if (GetItemImportance(i)) continue;
+        PARAMETRIZE_LABEL("%S", GetItemName(i)) { item = i; }
     }
     // All items explicitly listed here are too big to fit.
     switch (item)
@@ -180,10 +180,10 @@ TEST("Item names fit on Pokemon Storage System")
     case ITEM_UNREMARKABLE_TEACUP:
     case ITEM_MASTERPIECE_TEACUP:
     case ITEM_TWICE_SPICED_RADISH:
-        EXPECT_GT(GetStringWidth(fontId, gItemsInfo[item].name, 0), widthPx);
+        EXPECT_GT(GetStringWidth(fontId, GetItemName(item), 0), widthPx);
         break;
     default:
-        EXPECT_LE(GetStringWidth(fontId, gItemsInfo[item].name, 0), widthPx);
+        EXPECT_LE(GetStringWidth(fontId, GetItemName(item), 0), widthPx);
         break;
     }
 }
@@ -195,17 +195,17 @@ TEST("Item names fit on Pokemon Summary Screen")
     enum Item item = ITEM_NONE;
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        if (gItemsInfo[i].importance) continue;
-        PARAMETRIZE_LABEL("%S", gItemsInfo[i].name) { item = i; }
+        if (GetItemImportance(i)) continue;
+        PARAMETRIZE_LABEL("%S", GetItemName(i)) { item = i; }
     }
     // All items explicitly listed here are too big to fit.
     switch (item)
     {
     case ITEM_UNREMARKABLE_TEACUP:
-        EXPECT_GT(GetStringWidth(fontId, gItemsInfo[item].name, 0), widthPx);
+        EXPECT_GT(GetStringWidth(fontId, GetItemName(item), 0), widthPx);
         break;
     default:
-        EXPECT_LE(GetStringWidth(fontId, gItemsInfo[item].name, 0), widthPx);
+        EXPECT_LE(GetStringWidth(fontId, GetItemName(item), 0), widthPx);
         break;
     }
 }
@@ -217,9 +217,9 @@ TEST("Item names fit on Shop Screen")
     enum Item item = ITEM_NONE;
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        PARAMETRIZE_LABEL("%S", gItemsInfo[i].name) { item = i; }
+        PARAMETRIZE_LABEL("%S", GetItemName(i)) { item = i; }
     }
-    EXPECT_LE(GetStringWidth(fontId, gItemsInfo[item].name, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetItemName(item), 0), widthPx);
 }
 
 TEST("Item descriptions fit on Bag and Shop Screen")
@@ -229,9 +229,9 @@ TEST("Item descriptions fit on Bag and Shop Screen")
     enum Item item = ITEM_NONE;
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        PARAMETRIZE_LABEL("%S", gItemsInfo[i].description) { item = i; }
+        PARAMETRIZE_LABEL("%S", GetItemDescription(i)) { item = i; }
     }
-    EXPECT_LE(GetStringWidth(fontId, gItemsInfo[item].description, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetItemDescription(item), 0), widthPx);
 }
 
 TEST("Species names fit on Battle Screen HP box")
@@ -586,8 +586,8 @@ TEST("Battle strings fit on the battle message window")
         givemon SPECIES_WOBBUFFET, 100;
         createmon 1, 0, SPECIES_WOBBUFFET, 100;
     );
-    SetMonData(&gPlayerParty[0], MON_DATA_NICKNAME, nickname);
-    SetMonData(&gEnemyParty[0], MON_DATA_NICKNAME, nickname);
+    SetMonData(&gParties[B_TRAINER_0][0], MON_DATA_NICKNAME, nickname);
+    SetMonData(&gParties[B_TRAINER_1][0], MON_DATA_NICKNAME, nickname);
 
     for (i = start; i <= end; i++)
     {
@@ -774,7 +774,7 @@ TEST("Battle strings fit on the battle message window")
         PREPARE_MON_NICK_WITH_PREFIX_LOWER_BUFFER(gBattleTextBuff1, 1, 0);
         PREPARE_ABILITY_BUFFER(gBattleTextBuff2, longAbilityID);
         break;
-    // Buffer Stat name to B_BUFF1, "drastically rose" to B_BUFF2
+    // Buffer Stat name to B_BUFF1, "rose drastically" to B_BUFF2
     case STRINGID_ATTACKERSSTATROSE:
     case STRINGID_DEFENDERSSTATROSE:
     case STRINGID_USINGITEMSTATOFPKMNROSE:

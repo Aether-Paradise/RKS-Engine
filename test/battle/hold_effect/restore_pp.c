@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_LEPPA_BERRY].holdEffect == HOLD_EFFECT_RESTORE_PP);
+    ASSUME(GetItemHoldEffect(ITEM_LEPPA_BERRY) == HOLD_EFFECT_RESTORE_PP);
 }
 
 SINGLE_BATTLE_TEST("Restore PP berry activates immediately on switch in")

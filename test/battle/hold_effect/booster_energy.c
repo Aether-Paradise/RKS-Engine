@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_BOOSTER_ENERGY].holdEffect == HOLD_EFFECT_BOOSTER_ENERGY);
+    ASSUME(GetItemHoldEffect(ITEM_BOOSTER_ENERGY) == HOLD_EFFECT_BOOSTER_ENERGY);
 }
 
 SINGLE_BATTLE_TEST("Booster Energy will activate Quark Drive after Electric Terrain ends")

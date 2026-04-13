@@ -127,12 +127,12 @@ SINGLE_BATTLE_TEST("Galvanize doesn't affect Judgment / Techno Blast / Multi-Att
         ASSUME(GetMoveEffect(MOVE_JUDGMENT) == EFFECT_CHANGE_TYPE_ON_ITEM);
         ASSUME(GetMoveEffect(MOVE_TECHNO_BLAST) == EFFECT_CHANGE_TYPE_ON_ITEM);
         ASSUME(GetMoveEffect(MOVE_MULTI_ATTACK) == EFFECT_CHANGE_TYPE_ON_ITEM);
-        ASSUME(gItemsInfo[ITEM_SPLASH_PLATE].holdEffect == HOLD_EFFECT_PLATE);
-        ASSUME(gItemsInfo[ITEM_SPLASH_PLATE].secondaryId == TYPE_WATER);
-        ASSUME(gItemsInfo[ITEM_DOUSE_DRIVE].holdEffect == HOLD_EFFECT_DRIVE);
-        ASSUME(gItemsInfo[ITEM_DOUSE_DRIVE].secondaryId == TYPE_WATER);
-        ASSUME(gItemsInfo[ITEM_WATER_MEMORY].holdEffect == HOLD_EFFECT_MEMORY);
-        ASSUME(gItemsInfo[ITEM_WATER_MEMORY].secondaryId == TYPE_WATER);
+        ASSUME(GetItemHoldEffect(ITEM_SPLASH_PLATE) == HOLD_EFFECT_PLATE);
+        ASSUME(GetItemSecondaryId(ITEM_SPLASH_PLATE) == TYPE_WATER);
+        ASSUME(GetItemHoldEffect(ITEM_DOUSE_DRIVE) == HOLD_EFFECT_DRIVE);
+        ASSUME(GetItemSecondaryId(ITEM_DOUSE_DRIVE) == TYPE_WATER);
+        ASSUME(GetItemHoldEffect(ITEM_WATER_MEMORY) == HOLD_EFFECT_MEMORY);
+        ASSUME(GetItemSecondaryId(ITEM_WATER_MEMORY) == TYPE_WATER);
         ASSUME(GetSpeciesType(SPECIES_VAPOREON, 0) == TYPE_WATER);
         PLAYER(SPECIES_GEODUDE_ALOLA) { Ability(ABILITY_GALVANIZE); Item(item); }
         OPPONENT(SPECIES_VAPOREON) { Ability(ABILITY_WATER_ABSORB); }
@@ -141,11 +141,11 @@ SINGLE_BATTLE_TEST("Galvanize doesn't affect Judgment / Techno Blast / Multi-Att
     } SCENE {
         NOT { ANIMATION(ANIM_TYPE_MOVE, move, player); }
         if (move == MOVE_JUDGMENT)
-            MESSAGE("The opposing Vaporeon's Water Absorb made Judgment useless!");
+            MESSAGE("It doesn't affect the opposing Vaporeon…");
         else if (move == MOVE_TECHNO_BLAST)
-            MESSAGE("The opposing Vaporeon's Water Absorb made Techno Blast useless!");
+            MESSAGE("It doesn't affect the opposing Vaporeon…");
         else if (move == MOVE_MULTI_ATTACK)
-            MESSAGE("The opposing Vaporeon's Water Absorb made Multi-Attack useless!");
+            MESSAGE("It doesn't affect the opposing Vaporeon…");
     }
 }
 
@@ -161,7 +161,7 @@ SINGLE_BATTLE_TEST("Galvanize doesn't affect Hidden Power's type")
         TURN { MOVE(player, MOVE_HIDDEN_POWER); }
     } SCENE {
         NOT { ANIMATION(ANIM_TYPE_MOVE, MOVE_HIDDEN_POWER, player); }
-        MESSAGE("The opposing Vaporeon's Water Absorb made Hidden Power useless!");
+        MESSAGE("It doesn't affect the opposing Vaporeon…");
     }
 }
 

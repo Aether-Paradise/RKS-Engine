@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_APICOT_BERRY].holdEffect == HOLD_EFFECT_SP_DEFENSE_UP);
+    ASSUME(GetItemHoldEffect(ITEM_APICOT_BERRY) == HOLD_EFFECT_SP_DEFENSE_UP);
     ASSUME(GetMoveEffect(MOVE_DRAGON_RAGE) == EFFECT_FIXED_HP_DAMAGE);
     ASSUME(GetMoveFixedHPDamage(MOVE_DRAGON_RAGE) == 40);
 }
@@ -25,11 +25,11 @@ SINGLE_BATTLE_TEST("Apicot Berry raises the holder's Sp. Def by one stage when H
         if (move == MOVE_SCRATCH) {
             NONE_OF {
                 ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, player);
-                MESSAGE("Using Apicot Berry, the Sp. Def of Wobbuffet rose!");
+                MESSAGE("The Apicot Berry boosted Wobbuffet's Sp. Def!");
             }
         } else {
             ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, player);
-            MESSAGE("Using Apicot Berry, the Sp. Def of Wobbuffet rose!");
+            MESSAGE("The Apicot Berry boosted Wobbuffet's Sp. Def!");
         }
     } THEN {
         if (move == MOVE_DRAGON_RAGE)
@@ -47,7 +47,7 @@ SINGLE_BATTLE_TEST("Apicot Berry raises Sp. Def by one stage when HP drops to 1/
     } SCENE {
         ANIMATION(ANIM_TYPE_MOVE, MOVE_DRAGON_RAGE, opponent);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, player);
-        MESSAGE("Using Apicot Berry, the Sp. Def of Bellsprout rose!");
+        MESSAGE("The Apicot Berry boosted Bellsprout's Sp. Def!");
     } THEN {
         EXPECT_EQ(player->statStages[STAT_SPDEF], DEFAULT_STAT_STAGE + 1);
     }
@@ -63,7 +63,7 @@ SINGLE_BATTLE_TEST("Apicot Berry raises Sp. Def by one stage when HP drops to 1/
     } SCENE {
         ANIMATION(ANIM_TYPE_MOVE, MOVE_DRAGON_RAGE, opponent);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, player);
-        MESSAGE("Using Apicot Berry, the Sp. Def of Applin sharply rose!");
+        MESSAGE("The Apicot Berry sharply boosted Applin's Sp. Def!");
     } THEN {
         EXPECT_EQ(player->statStages[STAT_SPDEF], DEFAULT_STAT_STAGE + 2);
     }

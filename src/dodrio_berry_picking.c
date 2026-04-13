@@ -672,7 +672,7 @@ void StartDodrioBerryPicking(u16 partyId, MainCallback exitCallback)
         sGame->exitCallback = exitCallback;
         sGame->multiplayerId = GetMultiplayerId();
         sGame->player = sGame->players[sGame->multiplayerId];
-        InitMonInfo(&sGame->monInfo[sGame->multiplayerId], &gPlayerParty[partyId]);
+        InitMonInfo(&sGame->monInfo[sGame->multiplayerId], &gParties[B_TRAINER_0][partyId]);
         CreateTask(Task_StartDodrioGame, 1);
         SetMainCallback2(CB2_DodrioGame);
         SetRandomPrize();
@@ -2619,6 +2619,7 @@ static void SetRandomPrize(void)
         sGame->berryResults[i][BERRY_PRIZE] = sPrizeBerryIds[prizeSet][prizeIdx];
 }
 
+#if FREE_DODRIO_BERRY_PICKUP == FALSE
 static u32 GetBerriesPicked(u8 playerId)
 {
     u32 sum = sGame->berryResults[playerId][BERRY_BLUE]
@@ -2626,9 +2627,11 @@ static u32 GetBerriesPicked(u8 playerId)
             + sGame->berryResults[playerId][BERRY_GOLD];
     return min(sum, MAX_BERRIES);
 }
+#endif //FREE_DODRIO_BERRY_PICKUP
 
 static void TryUpdateRecords(void)
 {
+#if FREE_DODRIO_BERRY_PICKUP == FALSE
     u32 berriesPicked = Min(GetBerriesPicked(sGame->multiplayerId), MAX_BERRIES); // Min here is redundant
     u32 score = Min(GetScore(sGame->multiplayerId), MAX_SCORE);
 
@@ -2638,6 +2641,7 @@ static void TryUpdateRecords(void)
         gSaveBlock2Ptr->berryPick.berriesPicked = berriesPicked;
     if (gSaveBlock2Ptr->berryPick.berriesPickedInRow < sGame->maxBerriesPickedInRow)
         gSaveBlock2Ptr->berryPick.berriesPickedInRow = sGame->maxBerriesPickedInRow;
+#endif //FREE_DODRIO_BERRY_PICKUP
 }
 
 // Enqueue the given state, and dequeue and return
@@ -2911,8 +2915,8 @@ void IsDodrioInParty(void)
     int i;
     for (i = 0; i < PARTY_SIZE; i++)
     {
-        if (GetMonData(&gPlayerParty[i], MON_DATA_SANITY_HAS_SPECIES)
-            && GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_DODRIO)
+        if (GetMonData(&gParties[B_TRAINER_0][i], MON_DATA_SANITY_HAS_SPECIES)
+            && GetMonData(&gParties[B_TRAINER_0][i], MON_DATA_SPECIES_OR_EGG) == SPECIES_DODRIO)
         {
             gSpecialVar_Result = TRUE;
             return;
@@ -3007,9 +3011,11 @@ static void PrintRecordsText(u8 windowId, s32 width)
 {
     s32 i, x, numWidth;
     s32 recordNums[NUM_RECORD_TYPES];
+#if FREE_DODRIO_BERRY_PICKUP == FALSE
     recordNums[0] = gSaveBlock2Ptr->berryPick.berriesPicked;
     recordNums[1] = gSaveBlock2Ptr->berryPick.bestScore;
     recordNums[2] = gSaveBlock2Ptr->berryPick.berriesPickedInRow;
+#endif //FREE_DODRIO_BERRY_PICKUP
 
     LoadUserWindowBorderGfx_(windowId, 0x21D, BG_PLTT_ID(13));
     DrawTextBorderOuter(windowId, 0x21D, 13);

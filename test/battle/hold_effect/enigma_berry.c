@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_ENIGMA_BERRY].holdEffect == HOLD_EFFECT_ENIGMA_BERRY);
+    ASSUME(GetItemHoldEffect(ITEM_ENIGMA_BERRY) == HOLD_EFFECT_ENIGMA_BERRY);
 }
 
 SINGLE_BATTLE_TEST("Enigma Berry recovers 25% of HP if hit by super effective move")

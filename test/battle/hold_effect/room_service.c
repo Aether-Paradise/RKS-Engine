@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_ROOM_SERVICE].holdEffect == HOLD_EFFECT_ROOM_SERVICE);
+    ASSUME(GetItemHoldEffect(ITEM_ROOM_SERVICE) == HOLD_EFFECT_ROOM_SERVICE);
 }
 
 SINGLE_BATTLE_TEST("Room Serive decreases the holder's seep by one stage")

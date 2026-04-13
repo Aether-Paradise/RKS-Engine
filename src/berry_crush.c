@@ -1073,6 +1073,7 @@ static void SaveResults(void)
     presses = MathUtil_Div32(presses, time) & 0xFFFF;
     sGame->pressingSpeed = presses;
 
+#if FREE_BERRY_CRUSH == FALSE
     switch (sGame->playerCount)
     {
     case 2:
@@ -1108,6 +1109,7 @@ static void SaveResults(void)
         }
         break;
     }
+#endif //FREE_BERRY_CRUSH
 
     sGame->powder = sGame->results.powder;
     if (GiveBerryPowder(sGame->powder))
@@ -1774,6 +1776,7 @@ static void CloseResultsWindow(struct BerryCrushGame *game)
 #define tWindowId          data[1]
 #define tPressingSpeeds(i) data[2 + (i)] // data[2]-[5], for different group sizes
 
+#if FREE_BERRY_CRUSH == FALSE
 static void Task_ShowRankings(u8 taskId)
 {
     u8 i = 0, j, xPos, yPos;
@@ -1837,9 +1840,11 @@ static void Task_ShowRankings(u8 taskId)
     }
     tState++;
 }
+#endif //FREE_BERRY_CRUSH
 
 void ShowBerryCrushRankings(void)
 {
+#if FREE_BERRY_CRUSH == FALSE
     u8 taskId;
 
     LockPlayerFieldControls();
@@ -1848,6 +1853,7 @@ void ShowBerryCrushRankings(void)
     gTasks[taskId].tPressingSpeeds(1) = gSaveBlock2Ptr->berryCrush.pressingSpeeds[1];
     gTasks[taskId].tPressingSpeeds(2) = gSaveBlock2Ptr->berryCrush.pressingSpeeds[2];
     gTasks[taskId].tPressingSpeeds(3) = gSaveBlock2Ptr->berryCrush.pressingSpeeds[3];
+#endif //FREE_BERRY_CRUSH
 }
 
 static void PrintTimer(struct BerryCrushGame_Gfx *gfx, u16 timer)

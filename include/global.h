@@ -608,11 +608,15 @@ struct SaveBlock2
     /*0xB0*/ struct PlayersApprentice playerApprentice;
     /*0xDC*/ struct Apprentice apprentices[APPRENTICE_COUNT];
 #endif //FREE_FRONTIER_APPRENTICES
+#if FREE_BERRY_CRUSH == FALSE
     /*0x1EC*/ struct BerryCrush berryCrush;
+#endif //FREE_BERRY_CRUSH
 #if FREE_POKEMON_JUMP == FALSE
     /*0x1FC*/ struct PokemonJumpRecords pokeJump;
 #endif //FREE_POKEMON_JUMP
+#if FREE_DODRIO_BERRY_PICKUP == FALSE
     /*0x20C*/ struct BerryPickingResults berryPick;
+#endif //FREE_DODRIO_BERRY_PICKUP
 #if FREE_RECORD_MIXING_HALL_RECORDS == FALSE
     /*0x21C*/ struct RankingHall1P hallRecords1P[HALL_FACILITIES_COUNT][FRONTIER_LVL_MODE_COUNT][HALL_RECORDS_COUNT]; // From record mixing.
     /*0x57C*/ struct RankingHall2P hallRecords2P[FRONTIER_LVL_MODE_COUNT][HALL_RECORDS_COUNT]; // From record mixing.

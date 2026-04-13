@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_LIECHI_BERRY].holdEffect == HOLD_EFFECT_ATTACK_UP);
+    ASSUME(GetItemHoldEffect(ITEM_LIECHI_BERRY) == HOLD_EFFECT_ATTACK_UP);
     ASSUME(GetMoveEffect(MOVE_DRAGON_RAGE) == EFFECT_FIXED_HP_DAMAGE);
     ASSUME(GetMoveFixedHPDamage(MOVE_DRAGON_RAGE) == 40);
 }
@@ -25,11 +25,11 @@ SINGLE_BATTLE_TEST("Liechi Berry raises the holder's Attack by one stage when HP
         if (move == MOVE_SCRATCH) {
             NONE_OF {
                 ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, player);
-                MESSAGE("Using Liechi Berry, the Attack of Wobbuffet rose!");
+                MESSAGE("The Liechi Berry boosted Wobbuffet's Attack!");
             }
         } else {
             ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, player);
-            MESSAGE("Using Liechi Berry, the Attack of Wobbuffet rose!");
+            MESSAGE("The Liechi Berry boosted Wobbuffet's Attack!");
         }
     } THEN {
         if (move == MOVE_DRAGON_RAGE)
@@ -47,7 +47,7 @@ SINGLE_BATTLE_TEST("Liechi Berry raises Attack by one stage when HP drops to 1/2
     } SCENE {
         ANIMATION(ANIM_TYPE_MOVE, MOVE_DRAGON_RAGE, opponent);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, player);
-        MESSAGE("Using Liechi Berry, the Attack of Bellsprout rose!");
+        MESSAGE("The Liechi Berry boosted Bellsprout's Attack!");
     } THEN {
         EXPECT_EQ(player->statStages[STAT_ATK], DEFAULT_STAT_STAGE + 1);
     }
@@ -63,7 +63,7 @@ SINGLE_BATTLE_TEST("Liechi Berry raises Attack by one stage when HP drops to 1/4
     } SCENE {
         ANIMATION(ANIM_TYPE_MOVE, MOVE_DRAGON_RAGE, opponent);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, player);
-        MESSAGE("Using Liechi Berry, the Attack of Applin sharply rose!");
+        MESSAGE("The Liechi Berry sharply boosted Applin's Attack!");
     } THEN {
         EXPECT_EQ(player->statStages[STAT_ATK], DEFAULT_STAT_STAGE + 2);
     }

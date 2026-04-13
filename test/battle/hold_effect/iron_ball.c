@@ -2,7 +2,7 @@
 #include "test/battle.h"
 
 ASSUMPTIONS{
-    ASSUME(gItemsInfo[ITEM_IRON_BALL].holdEffect == HOLD_EFFECT_IRON_BALL);
+    ASSUME(GetItemHoldEffect(ITEM_IRON_BALL) == HOLD_EFFECT_IRON_BALL);
 }
 
 SINGLE_BATTLE_TEST("Ground-type moves do neutral damage to non-grounded Flying types holding Iron Ball regardless of other typings (Gen5+)")

@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_LAGGING_TAIL].holdEffect == HOLD_EFFECT_LAGGING_TAIL);
+    ASSUME(GetItemHoldEffect(ITEM_LAGGING_TAIL) == HOLD_EFFECT_LAGGING_TAIL);
 }
 
 DOUBLE_BATTLE_TEST("Lagging Tail priority bracket will not change if the item is removed is changed mid-turn")

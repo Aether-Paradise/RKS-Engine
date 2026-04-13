@@ -617,7 +617,7 @@ static void SetBagItemsListTemplate(void)
 
 static void CopyBagItemName(u8 *dst, enum Item itemId)
 {
-    if (GetItemPocket(itemId) == POCKET_BERRIES)
+    if (ItemIsBerry(itemId))
     {
         ConvertIntToDecimalStringN(gStringVar1, ItemIdToBerryType(itemId), STR_CONV_MODE_LEADING_ZEROS, MAX_PYRAMID_ITEM_DIGITS);
         CopyItemName(itemId, gStringVar2);
@@ -1419,7 +1419,7 @@ static void CancelItemSwap(u8 taskId)
 void TryStoreHeldItemsInPyramidBag(void)
 {
     u8 i;
-    struct Pokemon *party = gPlayerParty;
+    struct Pokemon *party = gParties[B_TRAINER_0];
     u16 *newItems = Alloc(PYRAMID_BAG_ITEMS_COUNT * sizeof(*newItems));
 #if MAX_PYRAMID_BAG_ITEM_CAPACITY > 255
     u16 *newQuantities = Alloc(PYRAMID_BAG_ITEMS_COUNT * sizeof(*newQuantities));

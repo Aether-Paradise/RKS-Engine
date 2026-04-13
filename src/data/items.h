@@ -159,6 +159,8 @@ static const u8 sGenericMulchDesc[]   = _("A fertilizer that\n"
                                           "is unsuitable for\n"
                                           "local soil.");
 
+#undef gItemsInfo
+
 const struct ItemInfo gItemsInfo[] =
 {
     [ITEM_NONE] =
@@ -15832,3 +15834,7 @@ const struct ItemInfo gItemsInfo[] =
 
 #undef ITEM_NAME
 #undef ITEM_PLURAL_NAME
+
+#define gItemsInfo \
+_Pragma("GCC error \"Use getters instead of accessing gItemsInfo directly.\"") \
+gItemsInfo

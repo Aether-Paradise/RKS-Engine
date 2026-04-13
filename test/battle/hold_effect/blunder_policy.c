@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_BLUNDER_POLICY].holdEffect == HOLD_EFFECT_BLUNDER_POLICY);
+    ASSUME(GetItemHoldEffect(ITEM_BLUNDER_POLICY) == HOLD_EFFECT_BLUNDER_POLICY);
 }
 
 SINGLE_BATTLE_TEST("Blunder Policy raises the users speed by 2 stages if the user misses")
