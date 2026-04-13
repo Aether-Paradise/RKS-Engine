@@ -3,11 +3,11 @@
 
 // Frame count references used by testing system
 #define AI_FRAME_CEILING_SINGLES_NO_FLAGS                       3
-#define AI_FRAME_CEILING_SINGLES_SMART_TRAINER                  8
-#define AI_FRAME_CEILING_DOUBLES_NO_FLAGS                       23
-#define AI_FRAME_CEILING_DOUBLES_SMART_TRAINER                  40
-#define AI_FRAME_CEILING_STEVEN_MULTI                           29
-#define AI_FRAME_CEILING_STEVEN_MULTI_SMART_TRAINER             32
+#define AI_FRAME_CEILING_SINGLES_SMART_TRAINER                  7
+#define AI_FRAME_CEILING_DOUBLES_NO_FLAGS                       22
+#define AI_FRAME_CEILING_DOUBLES_SMART_TRAINER                  38
+#define AI_FRAME_CEILING_STEVEN_MULTI                           27
+#define AI_FRAME_CEILING_STEVEN_MULTI_SMART_TRAINER             33
 
 // For the details on what specific factors the switching functions are considering, go read the corresponding function inside ShouldSwitch in src/battle_ai_switch_items.c
 // These configuration options control how likely the AI is to switch if it determines that a switch meets all of its criteria
@@ -56,6 +56,7 @@
 #define SHOULD_SWITCH_REGENERATOR_STATS_RAISED_PERCENTAGE           20
 #define SHOULD_SWITCH_INTIMIDATE_PERCENTAGE                         25
 #define SHOULD_SWITCH_INTIMIDATE_STATS_RAISED_PERCENTAGE            10
+#define SHOULD_SWITCH_WISH_PASSING_PERCENTAGE                       50
 
 // AI switchin considerations
 #define ALL_MOVES_BAD_STATUS_MOVES_BAD                          FALSE // If the AI has no moves that affect the target, ShouldSwitchIfAllMovesBad can prompt a switch. Enabling this config will ignore status moves that can affect the target when making this decision.

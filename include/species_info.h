@@ -1,5 +1,5 @@
-#ifndef GUARD_SPECIES_INFO_H
-#define GUARD_SPECIES_INFO_H
+#ifndef GUARD_SPECIES_H
+#define GUARD_SPECIES_H
 
 #include "constants/abilities.h"
 #include "constants/cries.h"
@@ -158,733 +158,123 @@ struct SpeciesInfo /*0xC4*/
 
 extern const struct SpeciesInfo gSpeciesInfo[];
 
-static inline bool32 IsSpeciesEnabled(enum Species species)
-{
-    // This function should not use the GetSpeciesBaseHP function, as the included sanitation will result in an infinite loop
-    return gSpeciesInfo[species].baseHP > 0 || species == SPECIES_EGG;
-}
-
-static inline enum Species SanitizeSpeciesId(enum Species species)
-{
-    assertf(species <= NUM_SPECIES && (species == SPECIES_NONE || IsSpeciesEnabled(species)), "invalid species: %d", species)
-    {
-        return SPECIES_NONE;
-    }
-
-    return species;
-}
-
-static inline u32 GetSpeciesBaseHP(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].baseHP;
-}
-
-static inline u32 GetSpeciesBaseAttack(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].baseAttack;
-}
-
-static inline u32 GetSpeciesBaseDefense(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].baseDefense;
-}
-
-static inline u32 GetSpeciesBaseSpAttack(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].baseSpAttack;
-}
-
-static inline u32 GetSpeciesBaseSpDefense(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].baseSpDefense;
-}
-
-static inline u32 GetSpeciesBaseSpeed(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].baseSpeed;
-}
-
-static inline u32 GetSpeciesBaseStat(enum Species species, u32 statIndex)
-{
-    switch (statIndex)
-    {
-    case STAT_HP:
-        return GetSpeciesBaseHP(species);
-    case STAT_ATK:
-        return GetSpeciesBaseAttack(species);
-    case STAT_DEF:
-        return GetSpeciesBaseDefense(species);
-    case STAT_SPEED:
-        return GetSpeciesBaseSpeed(species);
-    case STAT_SPATK:
-        return GetSpeciesBaseSpAttack(species);
-    case STAT_SPDEF:
-        return GetSpeciesBaseSpDefense(species);
-    }
-    return 0;
-}
-
-static inline u32 GetSpeciesBaseStatTotal(enum Species species)
-{
-    return GetSpeciesBaseHP(species)
-         + GetSpeciesBaseAttack(species)
-         + GetSpeciesBaseDefense(species)
-         + GetSpeciesBaseSpeed(species)
-         + GetSpeciesBaseSpAttack(species)
-         + GetSpeciesBaseSpDefense(species);
-}
-
-static inline enum Type GetSpeciesType(enum Species species, u8 slot)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].types[slot];
-}
-
-static inline u32 GetSpeciesCatchRate(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].catchRate;
-}
-
-static inline u32 GetSpeciesForcedTeraType(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].forceTeraType;
-}
-
-static inline u32 GetSpeciesExpYield(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].expYield;
-}
-
-static inline u32 GetSpeciesEVYieldHP(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].evYield_HP;
-}
-
-static inline u32 GetSpeciesEVYieldAttack(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].evYield_Attack;
-}
-
-static inline u32 GetSpeciesEVYieldDefense(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].evYield_Defense;
-}
-
-static inline u32 GetSpeciesEVYieldSpAttack(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].evYield_SpAttack;
-}
-
-static inline u32 GetSpeciesEVYieldSpDefense(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].evYield_SpDefense;
-}
-
-static inline u32 GetSpeciesEVYieldSpeed(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].evYield_Speed;
-}
-
-static inline u32 GetSpeciesEVYield(enum Species species, u32 statIndex)
-{
-    switch (statIndex)
-    {
-    case STAT_HP:
-        return GetSpeciesEVYieldHP(species);
-    case STAT_ATK:
-        return GetSpeciesEVYieldAttack(species);
-    case STAT_DEF:
-        return GetSpeciesEVYieldDefense(species);
-    case STAT_SPEED:
-        return GetSpeciesEVYieldSpeed(species);
-    case STAT_SPATK:
-        return GetSpeciesEVYieldSpAttack(species);
-    case STAT_SPDEF:
-        return GetSpeciesEVYieldSpDefense(species);
-    }
-    return 0;
-}
-
-static inline enum Item GetSpeciesCommonItem(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].itemCommon;
-}
-
-static inline enum Item GetSpeciesRareItem(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].itemRare;
-}
-
-static inline u32 GetSpeciesGenderRatio(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].genderRatio;
-}
-
-static inline u32 GetSpeciesEggCycles(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].eggCycles;
-}
-
-static inline u32 GetSpeciesBaseFriendship(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].friendship;
-}
-
-static inline enum GrowthRate GetSpeciesGrowthRate(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].growthRate;
-}
-
-static inline u32 GetSpeciesEggGroup(enum Species species, u8 slot)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].eggGroups[slot];
-}
-
-static inline enum Ability GetSpeciesAbility(enum Species species, u8 slot)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].abilities[slot];
-}
-
-static inline const u8 *GetSpeciesCategory(enum Species species)
-{
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].categoryName[0] == 0)
-        return gSpeciesInfo[SPECIES_NONE].categoryName;
-    return gSpeciesInfo[species].categoryName;
-}
-
-static inline const u8 *GetSpeciesName(enum Species species)
-{
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].speciesName[0] == 0)
-        return gSpeciesInfo[SPECIES_NONE].speciesName;
-    return gSpeciesInfo[species].speciesName;
-}
-
-static inline enum PokemonCry GetSpeciesCryId(enum Species species)
-{
-    species = SanitizeSpeciesId(species);
-    if (P_CRIES_ENABLED == FALSE || gSpeciesInfo[species].cryId >= CRY_COUNT)
-        return CRY_NONE;
-    return gSpeciesInfo[species].cryId;
-}
-
-static inline enum NationalDexOrder SpeciesToNationalPokedexNum(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].natDexNum;
-}
-
-static inline u32 GetSpeciesHeight(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].height;
-}
-
-static inline u32 GetSpeciesWeight(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].weight;
-}
-
-static inline u32 GetSpeciesPokedexScale(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].pokemonScale;
-}
-
-static inline u32 GetSpeciesPokedexOffset(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].pokemonOffset;
-}
-
-static inline u32 GetSpeciesPokedexTrainerScale(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].trainerScale;
-}
-
-static inline u32 GetSpeciesPokedexTrainerOffset(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].trainerOffset;
-}
-
-static inline const u8 *GetSpeciesPokedexDescription(enum Species species)
-{
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].description == NULL)
-        return gSpeciesInfo[SPECIES_NONE].description;
-    return gSpeciesInfo[species].description;
-}
-
-static inline enum BodyColor GetSpeciesBodyColor(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].bodyColor;
-}
-
-static inline const u32 *GetSpeciesFrontPic(enum Species species)
-{
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].frontPic == NULL)
-        return gSpeciesInfo[SPECIES_NONE].frontPic;
-    return gSpeciesInfo[species].frontPic;
-}
-
-static inline const u32 *GetSpeciesFrontPicFemale(enum Species species)
-{
-#if P_GENDER_DIFFERENCES
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].frontPicFemale != NULL)
-        return gSpeciesInfo[species].frontPicFemale;
-#endif
-    return GetSpeciesFrontPic(species);
-}
-
-static inline u32 GetSpeciesFrontPicSize(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].frontPicSize;
-}
-
-static inline u32 GetSpeciesFrontPicSizeFemale(enum Species species)
-{
-#if P_GENDER_DIFFERENCES
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].frontPicFemale != NULL)
-        return gSpeciesInfo[species].frontPicSizeFemale;
-#endif
-    return GetSpeciesFrontPicSize(species);
-}
-
-static inline u32 GetSpeciesFrontPicYOffset(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].frontPicYOffset;
-}
-
-static inline u32 GetSpeciesFrontAnimId(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].frontAnimId;
-}
-
-static inline u32 GetSpeciesFrontAnimDelay(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].frontAnimDelay;
-}
-
-static inline const union AnimCmd *const *GetSpeciesFrontAnimFrames(enum Species species)
-{
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].frontAnimFrames != NULL)
-        return gSpeciesInfo[species].frontAnimFrames;
-    return gSpeciesInfo[SPECIES_NONE].frontAnimFrames;
-}
-
-static inline u32 GetSpeciesEnemyElevation(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].enemyMonElevation;
-}
-
-static inline u32 GetSpeciesEnemyShadowXOffset(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].enemyShadowXOffset;
-}
-
-static inline u32 GetSpeciesEnemyShadowYOffset(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].enemyShadowYOffset;
-}
-
-static inline u32 GetSpeciesEnemyShadowSize(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].enemyShadowSize;
-}
-
-static inline u32 IsSpeciesEnemyShadowSuppressed(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].suppressEnemyShadow;
-}
-
-static inline bool32 IsMonSpriteNotFlipped(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].noFlip;
-}
-
-static inline const u32 *GetSpeciesBackPic(enum Species species)
-{
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].backPic == NULL)
-        return gSpeciesInfo[SPECIES_NONE].backPic;
-    return gSpeciesInfo[species].backPic;
-}
-
-static inline const u32 *GetSpeciesBackPicFemale(enum Species species)
-{
-#if P_GENDER_DIFFERENCES
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].backPicFemale != NULL)
-        return gSpeciesInfo[species].backPicFemale;
-#endif
-    return GetSpeciesBackPic(species);
-}
-
-static inline u32 GetSpeciesBackPicSize(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].backPicSize;
-}
-
-static inline u32 GetSpeciesBackPicSizeFemale(enum Species species)
-{
-#if P_GENDER_DIFFERENCES
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].backPicFemale != NULL)
-        return gSpeciesInfo[species].backPicSizeFemale;
-#endif
-    return GetSpeciesBackPicSize(species);
-}
-
-static inline u32 GetSpeciesBackPicYOffset(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].backPicYOffset;
-}
-
-static inline enum BackAnim GetSpeciesBackAnimSet(enum Species species)
-{
-    if (gSpeciesInfo[species].backAnimId != BACK_ANIM_NONE)
-        return gSpeciesInfo[species].backAnimId - 1;
-    else
-        return BACK_ANIM_NONE;
-}
-
-static inline const u16 *GetSpeciesPalette(enum Species species)
-{
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].palette == NULL)
-        return gSpeciesInfo[SPECIES_NONE].palette;
-    return gSpeciesInfo[species].palette;
-}
-
-static inline const u16 *GetSpeciesPaletteFemale(enum Species species)
-{
-#if P_GENDER_DIFFERENCES
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].paletteFemale != NULL)
-        return gSpeciesInfo[species].paletteFemale;
-#endif
-    return GetSpeciesPalette(species);
-}
-
-static inline const u16 *GetSpeciesShinyPalette(enum Species species)
-{
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].shinyPalette == NULL)
-        return gSpeciesInfo[SPECIES_NONE].shinyPalette;
-    return gSpeciesInfo[species].shinyPalette;
-}
-
-static inline const u16 *GetSpeciesShinyPaletteFemale(enum Species species)
-{
-#if P_GENDER_DIFFERENCES
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].shinyPaletteFemale != NULL)
-        return gSpeciesInfo[species].shinyPaletteFemale;
-#endif
-    return GetSpeciesShinyPalette(species);
-}
-
-static inline const u8 *GetSpeciesIconSprite(enum Species species)
-{
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].iconSprite == NULL)
-        return gSpeciesInfo[SPECIES_NONE].iconSprite;
-    return gSpeciesInfo[species].iconSprite;
-}
-
-static inline const u8 *GetSpeciesIconSpriteFemale(enum Species species)
-{
-#if P_GENDER_DIFFERENCES
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].iconSpriteFemale != NULL)
-        return gSpeciesInfo[species].iconSpriteFemale;
-#endif
-    return GetSpeciesIconSprite(species);
-}
-
-static inline u32 GetSpeciesIconPalIndex(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].iconPalIndex;
-}
-
-static inline u32 GetSpeciesIconPalIndexFemale(enum Species species)
-{
-#if P_GENDER_DIFFERENCES
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].iconSpriteFemale != NULL)
-        return gSpeciesInfo[species].iconPalIndexFemale;
-#endif
-    return GetSpeciesIconPalIndex(species);
-}
-
-static inline bool32 IsSpeciesRestrictedLegendary(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].isRestrictedLegendary;
-}
-
-static inline bool32 IsSpeciesSubLegendary(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].isSubLegendary;
-}
-
-static inline bool32 IsSpeciesMythical(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].isMythical;
-}
-
-static inline bool32 IsSpeciesUltraBeast(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].isUltraBeast;
-}
-
-static inline bool32 IsSpeciesParadox(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].isParadox;
-}
-
-static inline bool32 IsSpeciesTotem(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].isTotem;
-}
-
-static inline bool32 IsSpeciesMegaEvolution(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].isMegaEvolution;
-}
-
-static inline bool32 IsSpeciesPrimalReversion(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].isPrimalReversion;
-}
-
-static inline bool32 IsSpeciesUltraBurst(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].isUltraBurst;
-}
-
-static inline bool32 IsSpeciesGigantamax(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].isGigantamax;
-}
-
-static inline bool32 IsSpeciesTeraForm(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].isTeraForm;
-}
-
-static inline bool32 IsSpeciesAlolanForm(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].isAlolanForm;
-}
-
-static inline bool32 IsSpeciesGalarianForm(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].isGalarianForm;
-}
-
-static inline bool32 IsSpeciesHisuianForm(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].isHisuianForm;
-}
-
-static inline bool32 IsSpeciesPaldeanForm(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].isPaldeanForm;
-}
-
-static inline bool32 IsSpeciesRegionalForm(u32 species)
-{
-    species = SanitizeSpeciesId(species);
-    return gSpeciesInfo[species].isAlolanForm
-        || gSpeciesInfo[species].isGalarianForm
-        || gSpeciesInfo[species].isHisuianForm
-        || gSpeciesInfo[species].isPaldeanForm;
-}
-
-static inline bool32 IsSpeciesTradeBanned(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].cannotBeTraded;
-}
-
-static inline u32 GetSpeciesPerfectIVCount(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].perfectIVCount;
-}
-
-static inline bool32 IsSpeciesDexForced(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].dexForceRequired;
-}
-
-static inline bool32 IsSpeciesFrontierBanned(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].isFrontierBanned;
-}
-
-static inline bool32 IsSpeciesSkyBattleBanned(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].isSkyBattleBanned;
-}
-
-static inline bool32 IsSpeciesTelekinesisBanned(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].isTelekinesisBanned;
-}
-
-static inline enum EggIds GetSpeciesEggId(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].eggId;
-}
-
-static inline u32 GetSpeciesPokemonJumpType(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].pokemonJumpType;
-}
-
-static inline bool32 IsSpeciesAllowedInPokemonJump(enum Species species)
-{
-    return GetSpeciesPokemonJumpType(species) != PKMN_JUMP_TYPE_NONE;
-}
-
-static inline const struct LevelUpMove *GetSpeciesLevelUpLearnset(enum Species species)
-{
-    const struct LevelUpMove *learnset = gSpeciesInfo[SanitizeSpeciesId(species)].levelUpLearnset;
-    if (learnset == NULL)
-        return gSpeciesInfo[SPECIES_NONE].levelUpLearnset;
-    return learnset;
-}
-
-static inline const u16 *GetSpeciesTeachableLearnset(enum Species species)
-{
-    const u16 *learnset = gSpeciesInfo[SanitizeSpeciesId(species)].teachableLearnset;
-    if (learnset == NULL)
-        return gSpeciesInfo[SPECIES_NONE].teachableLearnset;
-    return learnset;
-}
-
-static inline const u16 *GetSpeciesEggMoves(enum Species species)
-{
-    const u16 *learnset = gSpeciesInfo[SanitizeSpeciesId(species)].eggMoveLearnset;
-    if (learnset == NULL)
-        return gSpeciesInfo[SPECIES_NONE].eggMoveLearnset;
-    return learnset;
-}
-
-static inline const struct Evolution *GetSpeciesEvolutions(enum Species species)
-{
-    const struct Evolution *evolutions = gSpeciesInfo[SanitizeSpeciesId(species)].evolutions;
-    if (evolutions == NULL)
-        return gSpeciesInfo[SPECIES_NONE].evolutions;
-    return evolutions;
-}
-
-static inline const enum Species *GetSpeciesFormTable(enum Species species)
-{
-    const enum Species *formTable = gSpeciesInfo[SanitizeSpeciesId(species)].formSpeciesIdTable;
-    if (formTable == NULL)
-        return gSpeciesInfo[SPECIES_NONE].formSpeciesIdTable;
-    return formTable;
-}
-
-static inline enum Species GetFormSpeciesId(enum Species species, u8 formId)
-{
-    const enum Species *formTable = GetSpeciesFormTable(species);
-    if (formTable != NULL)
-        return formTable[formId];
-    else
-        return species;
-}
-
-static inline enum Species GetBaseSpeciesId(enum Species species)
-{
-    return GetFormSpeciesId(species, 0);
-}
-
-static inline const struct FormChange *GetSpeciesFormChanges(enum Species species)
-{
-    const struct FormChange *formChanges = gSpeciesInfo[SanitizeSpeciesId(species)].formChangeTable;
-    if (formChanges == NULL)
-        return gSpeciesInfo[SPECIES_NONE].formChangeTable;
-    return formChanges;
-}
-
-static inline bool32 SpeciesHasGenderDifferences(enum Species species)
-{
-#if P_GENDER_DIFFERENCES
-    if (gSpeciesInfo[species].frontPicFemale != NULL
-     || gSpeciesInfo[species].backPicFemale != NULL
-     || gSpeciesInfo[species].paletteFemale != NULL
-     || gSpeciesInfo[species].shinyPaletteFemale != NULL
-     || gSpeciesInfo[species].iconSpriteFemale != NULL)
-        return TRUE;
-#endif
-
-    return FALSE;
-}
-
+bool32 IsSpeciesEnabled(enum Species species);
+enum Species SanitizeSpeciesId(enum Species species);
+u32 GetSpeciesBaseHP(enum Species species);
+u32 GetSpeciesBaseAttack(enum Species species);
+u32 GetSpeciesBaseDefense(enum Species species);
+u32 GetSpeciesBaseSpAttack(enum Species species);
+u32 GetSpeciesBaseSpDefense(enum Species species);
+u32 GetSpeciesBaseSpeed(enum Species species);
+u32 GetSpeciesBaseStat(enum Species species, u32 statIndex);
+u32 GetSpeciesBaseStatTotal(enum Species species);
+enum Type GetSpeciesType(enum Species species, u8 slot);
+u32 GetSpeciesCatchRate(enum Species species);
+u32 GetSpeciesForcedTeraType(enum Species species);
+u32 GetSpeciesExpYield(enum Species species);
+u32 GetSpeciesEVYieldHP(enum Species species);
+u32 GetSpeciesEVYieldAttack(enum Species species);
+u32 GetSpeciesEVYieldDefense(enum Species species);
+u32 GetSpeciesEVYieldSpAttack(enum Species species);
+u32 GetSpeciesEVYieldSpDefense(enum Species species);
+u32 GetSpeciesEVYieldSpeed(enum Species species);
+u32 GetSpeciesEVYield(enum Species species, u32 statIndex);
+enum Item GetSpeciesCommonItem(enum Species species);
+enum Item GetSpeciesRareItem(enum Species species);
+u32 GetSpeciesGenderRatio(enum Species species);
+u32 GetSpeciesEggCycles(enum Species species);
+u32 GetSpeciesBaseFriendship(enum Species species);
+enum GrowthRate GetSpeciesGrowthRate(enum Species species);
+u32 GetSpeciesEggGroup(enum Species species, u8 slot);
+enum Ability GetSpeciesAbility(enum Species species, u8 slot);
+const u8 *GetSpeciesCategory(enum Species species);
+const u8 *GetSpeciesName(enum Species species);
+enum PokemonCry GetSpeciesCryId(enum Species species);
+enum NationalDexOrder SpeciesToNationalPokedexNum(enum Species species);
+u32 GetSpeciesHeight(enum Species species);
+u32 GetSpeciesWeight(enum Species species);
+u32 GetSpeciesPokedexScale(enum Species species);
+u32 GetSpeciesPokedexOffset(enum Species species);
+u32 GetSpeciesPokedexTrainerScale(enum Species species);
+u32 GetSpeciesPokedexTrainerOffset(enum Species species);
+const u8 *GetSpeciesPokedexDescription(enum Species species);
+enum BodyColor GetSpeciesBodyColor(enum Species species);
+const u32 *GetSpeciesFrontPic(enum Species species);
+const u32 *GetSpeciesFrontPicFemale(enum Species species);
+u32 GetSpeciesFrontPicSize(enum Species species);
+u32 GetSpeciesFrontPicSizeFemale(enum Species species);
+u32 GetSpeciesFrontPicYOffset(enum Species species);
+u32 GetSpeciesFrontAnimId(enum Species species);
+u32 GetSpeciesFrontAnimDelay(enum Species species);
+const union AnimCmd *const *GetSpeciesFrontAnimFrames(enum Species species);
+u32 GetSpeciesEnemyElevation(enum Species species);
+u32 GetSpeciesEnemyShadowXOffset(enum Species species);
+u32 GetSpeciesEnemyShadowYOffset(enum Species species);
+u32 GetSpeciesEnemyShadowSize(enum Species species);
+u32 IsSpeciesEnemyShadowSuppressed(enum Species species);
+bool32 IsMonSpriteNotFlipped(enum Species species);
+const u32 *GetSpeciesBackPic(enum Species species);
+const u32 *GetSpeciesBackPicFemale(enum Species species);
+u32 GetSpeciesBackPicSize(enum Species species);
+u32 GetSpeciesBackPicSizeFemale(enum Species species);
+u32 GetSpeciesBackPicYOffset(enum Species species);
+enum BackAnim GetSpeciesBackAnimSet(enum Species species);
+const u16 *GetSpeciesPalette(enum Species species);
+const u16 *GetSpeciesPaletteFemale(enum Species species);
+const u16 *GetSpeciesShinyPalette(enum Species species);
+const u16 *GetSpeciesShinyPaletteFemale(enum Species species);
+const u8 *GetSpeciesIconSprite(enum Species species);
+const u8 *GetSpeciesIconSpriteFemale(enum Species species);
+u32 GetSpeciesIconPalIndex(enum Species species);
+u32 GetSpeciesIconPalIndexFemale(enum Species species);
+bool32 IsSpeciesRestrictedLegendary(enum Species species);
+bool32 IsSpeciesSubLegendary(enum Species species);
+bool32 IsSpeciesMythical(enum Species species);
+bool32 IsSpeciesUltraBeast(enum Species species);
+bool32 IsSpeciesParadox(enum Species species);
+bool32 IsSpeciesTotem(enum Species species);
+bool32 IsSpeciesMegaEvolution(enum Species species);
+bool32 IsSpeciesPrimalReversion(enum Species species);
+bool32 IsSpeciesUltraBurst(enum Species species);
+bool32 IsSpeciesGigantamax(enum Species species);
+bool32 IsSpeciesTeraForm(enum Species species);
+bool32 IsSpeciesAlolanForm(enum Species species);
+bool32 IsSpeciesGalarianForm(enum Species species);
+bool32 IsSpeciesHisuianForm(enum Species species);
+bool32 IsSpeciesPaldeanForm(enum Species species);
+bool32 IsSpeciesRegionalForm(u32 species);
+bool32 IsSpeciesTradeBanned(enum Species species);
+u32 GetSpeciesPerfectIVCount(enum Species species);
+bool32 IsSpeciesDexForced(enum Species species);
+bool32 IsSpeciesFrontierBanned(enum Species species);
+bool32 IsSpeciesSkyBattleBanned(enum Species species);
+bool32 IsSpeciesTelekinesisBanned(enum Species species);
+enum EggIds GetSpeciesEggId(enum Species species);
+u32 GetSpeciesPokemonJumpType(enum Species species);
+bool32 IsSpeciesAllowedInPokemonJump(enum Species species);
+const struct LevelUpMove *GetSpeciesLevelUpLearnset(enum Species species);
+const u16 *GetSpeciesTeachableLearnset(enum Species species);
+const u16 *GetSpeciesEggMoves(enum Species species);
+const struct Evolution *GetSpeciesEvolutions(enum Species species);
+const enum Species *GetSpeciesFormTable(enum Species species);
+enum Species GetFormSpeciesId(enum Species species, u8 formId);
+enum Species GetBaseSpeciesId(enum Species species);
+const struct FormChange *GetSpeciesFormChanges(enum Species species);
+bool32 SpeciesHasGenderDifferences(enum Species species);
 #if P_FOOTPRINTS
-static inline const u8 *GetSpeciesFootprint(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].footprint;
-}
+const u8 *GetSpeciesFootprint(enum Species species);
 #endif // P_FOOTPRINTS
-
 #if OW_POKEMON_OBJECT_EVENTS
-static inline const struct ObjectEventGraphicsInfo *GetSpeciesOverworldData(enum Species species)
-{
-    return &gSpeciesInfo[SanitizeSpeciesId(species)].overworldData;
-}
-
-static inline const struct ObjectEventGraphicsInfo *GetSpeciesOverworldDataFemale(enum Species species)
-{
-#if P_GENDER_DIFFERENCES
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].overworldDataFemale.paletteTag == OBJ_EVENT_PAL_TAG_DYNAMIC)
-        return &gSpeciesInfo[species].overworldDataFemale;
-#endif
-    return GetSpeciesOverworldData(species);
-}
-
-static inline const void *GetSpeciesOverworldPalette(enum Species species)
-{
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].overworldPalette == NULL)
-        return gSpeciesInfo[SPECIES_NONE].overworldPalette;
-    return gSpeciesInfo[species].overworldPalette;
-}
-
-static inline const u16 *GetSpeciesOverworldPaletteFemale(enum Species species)
-{
-#if P_GENDER_DIFFERENCES
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].overworldPaletteFemale != NULL)
-        return gSpeciesInfo[species].overworldPaletteFemale;
-#endif
-    return GetSpeciesOverworldPalette(species);
-}
-
-static inline const u16 *GetSpeciesOverworldShinyPalette(enum Species species)
-{
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].overworldShinyPalette == NULL)
-        return gSpeciesInfo[SPECIES_NONE].overworldShinyPalette;
-    return gSpeciesInfo[species].overworldShinyPalette;
-}
-
-static inline const u16 *GetSpeciesOverworldShinyPaletteFemale(enum Species species)
-{
-#if P_GENDER_DIFFERENCES
-    species = SanitizeSpeciesId(species);
-    if (gSpeciesInfo[species].overworldShinyPaletteFemale != NULL)
-        return gSpeciesInfo[species].overworldShinyPaletteFemale;
-#endif
-    return GetSpeciesOverworldShinyPalette(species);
-}
-
+const struct ObjectEventGraphicsInfo *GetSpeciesOverworldData(enum Species species);
+const struct ObjectEventGraphicsInfo *GetSpeciesOverworldDataFemale(enum Species species);
+const void *GetSpeciesOverworldPalette(enum Species species);
+const u16 *GetSpeciesOverworldPaletteFemale(enum Species species);
+const u16 *GetSpeciesOverworldShinyPalette(enum Species species);
+const u16 *GetSpeciesOverworldShinyPaletteFemale(enum Species species);
 #endif // OW_POKEMON_OBJECT_EVENTS
 
 #define gSpeciesInfo \
 _Pragma("GCC error \"Use getters instead of accessing gSpeciesInfo directly.\"") \
 gSpeciesInfo
 
-#endif // GUARD_SPECIES_INFO_H
+#endif // GUARD_SPECIES_H
