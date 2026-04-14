@@ -15,10 +15,19 @@ DemoCave1F_Text_GalarianYamask_Sign::
 	.string "Pressing B and evolving multiple mon\n"
 	.string "can be disabled via optional parameters.$"
 
-DemoCave1F_Text_GalarianYamask_StillYamask::
-	.string "If your Galarian Yamask didn't evolve,\n"
-	.string "it may haven't gotten 49 damage,\l"
-	.string "or maybe you pressed B to cancel.$"
+DemoCave1F_Text_GalarianYamask_NoYamask::
+	.string "You don't have a Galarian Yamask.$"
+
+DemoCave1F_Text_GalarianYamask_NoEvoCondition::
+	.string "Your Galarian Yamask doesn't meet\n"
+	.string "its evolution requirements.$"
+
+DemoCave1F_Text_GalarianYamask_CancelledEvolution::
+	.string "You cancelled your Galarian Yamask's\n"
+	.string "evolution.$"
+
+DemoCave1F_Text_GalarianYamask_SuccessfulEvolution::
+	.string "You now have a Runegrigus!$"
 
 DemoCave1F_Text_Archie::
 	.string "I hate these wall patterns so much.\n"
