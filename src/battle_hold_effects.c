@@ -831,7 +831,7 @@ static u32 ItemHealHp(enum BattlerId battler, enum Item itemId, enum HealAmount 
             healAmount *= 2;
 
         SetHealAmount(battler, healAmount);
-        if (GetItemPocket(itemId) == POCKET_BERRIES)
+        if (ItemIsBerry(itemId))
             BattleScriptCall(BattleScript_ItemHealHP_RemoveBerry);
         else
             BattleScriptCall(BattleScript_ItemHealHP_RemoveItem);

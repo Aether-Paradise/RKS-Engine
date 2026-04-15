@@ -3,13 +3,13 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_ZOOM_LENS].holdEffect == HOLD_EFFECT_ZOOM_LENS);
+    ASSUME(GetItemHoldEffect(ITEM_ZOOM_LENS) == HOLD_EFFECT_ZOOM_LENS);
     ASSUME(GetMoveAccuracy(MOVE_SING) == 55);
 }
 
 SINGLE_BATTLE_TEST("Zoom Lens boosts accuracy when the target has already moved this turn")
 {
-    PASSES_RANDOMLY(55 * (100 + gItemsInfo[ITEM_ZOOM_LENS].holdEffectParam) / 100, 100, RNG_ACCURACY);
+    PASSES_RANDOMLY(55 * (100 + GetItemHoldEffectParam(ITEM_ZOOM_LENS)) / 100, 100, RNG_ACCURACY);
     GIVEN {
         ASSUME(GetMovePriority(MOVE_QUICK_ATTACK) > GetMovePriority(MOVE_SING));
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_ZOOM_LENS); }

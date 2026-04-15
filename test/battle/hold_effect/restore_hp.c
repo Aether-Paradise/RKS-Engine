@@ -32,7 +32,7 @@ DOUBLE_BATTLE_TEST("Restore HP Item effects do not miss timing (Held Items)")
     PARAMETRIZE { item = ITEM_BERRY_JUICE; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_BERRY_JUICE].holdEffect == HOLD_EFFECT_RESTORE_HP);
+        ASSUME(GetItemHoldEffect(ITEM_BERRY_JUICE) == HOLD_EFFECT_RESTORE_HP);
         PLAYER(SPECIES_WOBBUFFET);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WYNAUT) { MaxHP(100); HP(51); Item(item); }
@@ -90,7 +90,7 @@ DOUBLE_BATTLE_TEST("Restore HP Item effects do not miss timing after a recoil mo
 
     GIVEN {
         ASSUME(GetMoveRecoil(MOVE_TAKE_DOWN) == 25);
-        ASSUME(gItemsInfo[ITEM_BERRY_JUICE].holdEffect == HOLD_EFFECT_RESTORE_HP);
+        ASSUME(GetItemHoldEffect(ITEM_BERRY_JUICE) == HOLD_EFFECT_RESTORE_HP);
         PLAYER(SPECIES_WOBBUFFET);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WYNAUT) { MaxHP(100); HP(51); Item(item); }
