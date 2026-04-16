@@ -574,7 +574,7 @@ TEST("Map names fit in popup")
         for (u32 j = 0; j < MAP_GROUP_COUNT[i]; j++)
         {
             const struct MapHeader *mapHeader = Overworld_GetMapHeaderByGroupAndId(i, j);
-            if (mapHeader->showMapName)
+            if (mapHeader->showMapName && mapHeader->regionMapSectionId != MAPSEC_SECRET_BASE)
                 PARAMETRIZE_LABEL("%S", GetPopUpMapName(mapName, mapHeader)) { mapGroup = i; mapNum = j;}
         }
     }
