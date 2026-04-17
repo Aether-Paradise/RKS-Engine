@@ -8,6 +8,7 @@
 #include "battle_pike.h"
 #include "battle_pyramid.h"
 #include "battle_pyramid_bag.h"
+#include "berry_pouch.h"
 #include "item_icon.h"
 #include "bg.h"
 #include "contest.h"
@@ -431,8 +432,6 @@ static void SlidePartyMenuBoxOneStep(u8);
 static void Task_SlideSelectedSlotsOffscreen(u8);
 static void SwitchPartyMon(void);
 static void Task_SlideSelectedSlotsOnscreen(u8);
-static void CB2_SelectBagItemToGive(void);
-static void CB2_GiveHoldItem(void);
 static void CB2_WriteMailToGiveMon(void);
 static void Task_SwitchHoldItemsPrompt(u8);
 static void Task_GiveHoldItem(u8);
@@ -4210,7 +4209,7 @@ static void CursorCb_Give(u8 taskId)
     Task_ClosePartyMenu(taskId);
 }
 
-static void CB2_SelectBagItemToGive(void)
+void CB2_SelectBagItemToGive(void)
 {
     if (CurrentBattlePyramidLocation() == PYRAMID_LOCATION_NONE)
         GoToBagMenu(ITEMMENULOCATION_PARTY, POCKETS_COUNT, CB2_GiveHoldItem);
@@ -4218,7 +4217,7 @@ static void CB2_SelectBagItemToGive(void)
         GoToBattlePyramidBagMenu(PYRAMIDBAG_LOC_PARTY, CB2_GiveHoldItem);
 }
 
-static void CB2_GiveHoldItem(void)
+void CB2_GiveHoldItem(void)
 {
     u8 i;
 
@@ -6205,6 +6204,11 @@ void CB2_ShowPartyMenuForItemUse(void)
     }
 
     InitPartyMenu(menuType, partyLayout, PARTY_ACTION_USE_ITEM, TRUE, msgId, task, callback);
+}
+
+static void CB2_ReturnToBerryPouchMenu(void)
+{
+    InitBerryPouch(BERRYPOUCH_REOPENING, NULL, BERRYPOUCH_KEEP_PREV);
 }
 
 static void CB2_ReturnToBagMenu(void)
@@ -9179,6 +9183,13 @@ void OpenPartyMenuInBattle(u8 partyAction)
 void ChooseMonForInBattleItem(void)
 {
     InitPartyMenu(PARTY_MENU_TYPE_IN_BATTLE, GetPartyLayoutFromBattleType(), PARTY_ACTION_USE_ITEM, FALSE, PARTY_MSG_USE_ON_WHICH_MON, Task_HandleChooseMonInput, CB2_ReturnToBagMenu);
+    ReshowBattleScreenDummy();
+    UpdatePartyToBattleOrder();
+}
+
+void ChooseMonForInBattleItem_BerryPouch(void)
+{
+    InitPartyMenu(PARTY_MENU_TYPE_IN_BATTLE, GetPartyLayoutFromBattleType(), PARTY_ACTION_USE_ITEM, FALSE, PARTY_MSG_USE_ON_WHICH_MON, Task_HandleChooseMonInput, CB2_ReturnToBerryPouchMenu);
     ReshowBattleScreenDummy();
     UpdatePartyToBattleOrder();
 }
