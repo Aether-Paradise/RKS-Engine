@@ -1,8 +1,6 @@
 #ifndef GUARD_ITEM_CONSTANTS_H
 #define GUARD_ITEM_CONSTANTS_H
 
-#include "config/frlg_bag.h"
-
 enum Pocket
 {
     POCKET_ITEMS,

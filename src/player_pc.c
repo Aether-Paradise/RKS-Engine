@@ -31,6 +31,7 @@
 #include "window.h"
 #include "menu_specialized.h"
 #include "constants/layouts.h"
+#include "config/frlg_bag.h"
 
 // Top level PC menu options
 enum {

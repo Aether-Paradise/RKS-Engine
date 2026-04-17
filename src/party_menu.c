@@ -84,6 +84,7 @@
 #include "constants/party_menu.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
+#include "config/frlg_bag.h"
 #include "config/party_menu.h"
 
 #if (RKSE_PARTY_MENU_DESIGN == PARTY_MENU_DESIGN_EMERALD)

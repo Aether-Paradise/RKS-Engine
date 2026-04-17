@@ -28,6 +28,7 @@
 #include "constants/items.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
+#include "config/frlg_bag.h"
 
 // Any item in the TM Case with nonzero importance is considered an HM
 #define IS_HM(itemId) (GetItemTMHMIndex(itemId) > NUM_TECHNICAL_MACHINES)

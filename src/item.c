@@ -23,6 +23,7 @@
 #include "constants/moves.h"
 #include "constants/item_effects.h"
 #include "constants/hold_effects.h"
+#include "config/frlg_bag.h"
 
 extern const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES];
 
