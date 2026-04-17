@@ -145,7 +145,8 @@ static void SetUpItemUseCallback(u8 taskId)
     {
         if (!CheckIfInBerryPouch()
          && CurrentBattlePyramidLocation() == PYRAMID_LOCATION_NONE
-         && FRLG_I_USE_FRLG_BAG && type == ITEM_USE_FIELD - 1)
+         && FRLG_I_USE_FRLG_BAG == CONFIG_BAG_UI_FRLG
+         && type == ITEM_USE_FIELD - 1)
         {
             Bag_BeginCloseWin0Animation();
         }
@@ -969,7 +970,7 @@ static void RemoveUsedItem(void)
     StringExpandPlaceholders(gStringVar4, gText_PlayerUsedVar2);
     if (CurrentBattlePyramidLocation() == PYRAMID_LOCATION_NONE)
     {
-        if (FRLG_I_USE_FRLG_BAG)
+        if (FRLG_I_USE_FRLG_BAG == CONFIG_BAG_UI_FRLG)
         {
             UpdatePocketItemListFrlg(GetItemPocket(gSpecialVar_ItemId));
             UpdatePocketListPositionFrlg(GetItemPocket(gSpecialVar_ItemId));
@@ -1188,7 +1189,7 @@ void ItemUseInBattle_PokeBall(u8 taskId)
         RemoveBagItem(gSpecialVar_ItemId, 1);
         if (CurrentBattlePyramidLocation() == PYRAMID_LOCATION_NONE)
         {
-            if (FRLG_I_USE_FRLG_BAG)
+            if (FRLG_I_USE_FRLG_BAG == CONFIG_BAG_UI_FRLG)
             {
                 Bag_BeginCloseWin0Animation();
                 ItemMenu_StartFadeToExitCallback(taskId);
@@ -1418,7 +1419,7 @@ void ItemUseInBattle_BagMenu(u8 taskId)
             ScheduleBgCopyTilemapToVram(2);
             gTasks[taskId].func = CloseBattlePyramidBag;
         }
-        else if (FRLG_I_USE_FRLG_BAG)
+        else if (FRLG_I_USE_FRLG_BAG == CONFIG_BAG_UI_FRLG)
         {
             Bag_BeginCloseWin0Animation();
             gTasks[taskId].func = ItemMenu_StartFadeToExitCallback;
@@ -1733,7 +1734,7 @@ static void SetItemMenuCallback(void (*callback)(void))
     {
         BerryPouch_SetExitCallback(callback);
     }
-    else if (FRLG_I_USE_FRLG_BAG)
+    else if (FRLG_I_USE_FRLG_BAG == CONFIG_BAG_UI_FRLG)
     {
         ItemMenu_SetExitCallback(callback);
     }
@@ -1753,7 +1754,7 @@ static void CloseItemMenu(u8 taskId)
     {
         BerryPouch_StartFadeToExitCallback(taskId);
     }
-    else if (FRLG_I_USE_FRLG_BAG)
+    else if (FRLG_I_USE_FRLG_BAG == CONFIG_BAG_UI_FRLG)
     {
         ItemMenu_StartFadeToExitCallback(taskId);
     }

@@ -3507,7 +3507,7 @@ void CB2_SelectBagItemToGive(void)
 {
     if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
         GoToBattlePyramidBagMenu(PYRAMIDBAG_LOC_PARTY, CB2_GiveHoldItem);
-    else if (FRLG_I_USE_FRLG_BAG)
+    else if (FRLG_I_USE_FRLG_BAG == CONFIG_BAG_UI_FRLG)
         GoToBagMenuFrlg(ITEMMENULOCATION_PARTY, OPEN_BAG_LAST, CB2_GiveHoldItem);
     else
         GoToBagMenu(ITEMMENULOCATION_PARTY, POCKETS_COUNT, CB2_GiveHoldItem);
@@ -4783,7 +4783,7 @@ static void CB2_ReturnToBagMenu(void)
         CB2_ReturnToBerryPouchMenu();
     else if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
         GoToBattlePyramidBagMenu(PYRAMIDBAG_LOC_PREV, gPyramidBagMenuState.exitCallback);
-    else if (FRLG_I_USE_FRLG_BAG)
+    else if (FRLG_I_USE_FRLG_BAG == CONFIG_BAG_UI_FRLG)
         GoToBagMenuFrlg(ITEMMENULOCATION_LAST, OPEN_BAG_LAST, NULL);
     else
         GoToBagMenu(ITEMMENULOCATION_LAST, POCKETS_COUNT, NULL);

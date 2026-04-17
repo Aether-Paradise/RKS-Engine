@@ -49,6 +49,14 @@ jobs:
           GAME_VERSION: EMERALD
         run: make -j$(nproc) -O all
 
+      - name: ROM (Emerald) - Override FRLG_I_USE_FRLG_BAG (TRUE)
+        env:
+          GAME_VERSION: EMERALD
+          OVR_FRLG_I_USE_FRLG_BAG: CONFIG_BAG_UI_FRLG
+        run: |
+          make touch-config_frlg_bag
+          make -j${nproc} -O all
+
       - name: ROM (Emerald) - Override RKSE_PARTY_MENU_DESIGN (SwSh)
         env:
           GAME_VERSION: EMERALD
@@ -100,6 +108,13 @@ jobs:
       - name: ROM (Firered)
         run: make firered -j$(nproc) -O
 
+      - name: ROM (Firered) - Override FRLG_I_USE_FRLG_BAG (TRUE)
+        env:
+          OVR_FRLG_I_USE_FRLG_BAG: CONFIG_BAG_UI_FRLG
+        run: |
+          make touch-config_frlg_bag
+          make firered -j${nproc} -O all
+
       - name: ROM (Firered) - Override RKSE_PARTY_MENU_DESIGN (SwSh)
         env:
           OVR_RKSE_PARTY_MENU_DESIGN: PARTY_MENU_DESIGN_SWSH
@@ -148,6 +163,13 @@ jobs:
 
       - name: ROM (Leafgreen)
         run: make leafgreen -j$(nproc) -O
+
+      - name: ROM (Leafgreen) - Override FRLG_I_USE_FRLG_BAG (TRUE)
+        env:
+          OVR_FRLG_I_USE_FRLG_BAG: CONFIG_BAG_UI_FRLG
+        run: |
+          make touch-config_frlg_bag
+          make leafgreen -j${nproc} -O all
 
       - name: ROM (Leafgreen) - Override RKSE_PARTY_MENU_DESIGN (SwSh)
         env:

@@ -601,7 +601,7 @@ static EWRAM_DATA struct TempWallyBag *sTempWallyBag = 0;
 
 void ResetBagScrollPositions(void)
 {
-    if (FRLG_I_USE_FRLG_BAG)
+    if (FRLG_I_USE_FRLG_BAG == CONFIG_BAG_UI_FRLG)
     {
         ResetBagCursorPositions();
         return;
@@ -613,7 +613,7 @@ void ResetBagScrollPositions(void)
 
 void CB2_BagMenuFromStartMenu(void)
 {
-    if (FRLG_I_USE_FRLG_BAG)
+    if (FRLG_I_USE_FRLG_BAG == CONFIG_BAG_UI_FRLG)
     {
         CB2_BagMenuFromStartMenuFrlg();
         return;
@@ -625,7 +625,7 @@ void CB2_BagMenuFromBattle(void)
 {
     if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
         GoToBattlePyramidBagMenu(PYRAMIDBAG_LOC_BATTLE, CB2_SetUpReshowBattleScreenAfterMenu2);
-    else if (FRLG_I_USE_FRLG_BAG)
+    else if (FRLG_I_USE_FRLG_BAG == CONFIG_BAG_UI_FRLG)
         GoToBagMenuFrlg(ITEMMENULOCATION_BATTLE, OPEN_BAG_LAST, CB2_SetUpReshowBattleScreenAfterMenu2);
     else
         GoToBagMenu(ITEMMENULOCATION_BATTLE, POCKETS_COUNT, CB2_SetUpReshowBattleScreenAfterMenu2);
@@ -654,7 +654,7 @@ void ChooseBerryForMachine(MainCallback exitCallback)
 
 void CB2_GoToSellMenu(void)
 {
-    if (FRLG_I_USE_FRLG_BAG)
+    if (FRLG_I_USE_FRLG_BAG == CONFIG_BAG_UI_FRLG)
         GoToBagMenuFrlg(ITEMMENULOCATION_SHOP, OPEN_BAG_LAST, CB2_ExitSellMenu);
     else
         GoToBagMenu(ITEMMENULOCATION_SHOP, POCKETS_COUNT, CB2_ExitSellMenu);
@@ -1256,7 +1256,7 @@ void DisplayItemMessage(u8 taskId, u8 fontId, const u8 *str, TaskFunc callback)
 {
     s16 *data = gTasks[taskId].data;
 
-    if (FRLG_I_USE_FRLG_BAG)
+    if (FRLG_I_USE_FRLG_BAG == CONFIG_BAG_UI_FRLG)
     {
         DisplayItemMessageFrlg(taskId, fontId, str, callback);
         return;
@@ -1271,8 +1271,8 @@ void DisplayItemMessage(u8 taskId, u8 fontId, const u8 *str, TaskFunc callback)
 void CloseItemMessage(u8 taskId)
 {
     s16 *data = gTasks[taskId].data;
-    
-    if (FRLG_I_USE_FRLG_BAG)
+
+    if (FRLG_I_USE_FRLG_BAG == CONFIG_BAG_UI_FRLG)
     {
         Task_ReturnToBagFromContextMenu(taskId);
         return;
