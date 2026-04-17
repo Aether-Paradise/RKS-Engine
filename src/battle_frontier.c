@@ -336,7 +336,7 @@ void CreateFacilityMon(const struct TrainerMon *fmon, u16 level, u8 fixedIV, u32
 
         SetMonMoveSlot(dst, move, j);
         if (GetMoveEffect(move) == EFFECT_FRUSTRATION)
-            friendship = 0;  // Frustration is more powerful the lower the pokemon's friendship is.
+            friendship = 0;  // Frustration is more powerful the lower the Pokémon's friendship is.
     }
 
     SetMonData(dst, MON_DATA_FRIENDSHIP, &friendship);
