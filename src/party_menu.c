@@ -1171,7 +1171,7 @@ static void DisplayPartyPokemonDataForBattlePyramidHeldItem(u8 slot)
         DisplayPartyPokemonDescriptionData(slot, PARTYBOX_DESC_DONT_HAVE);
 }
 
-// Returns TRUE if teaching move or cant evolve with item (i.e. description data is shown), FALSE otherwise
+// Returns TRUE if teaching move or can't evolve with item (i.e. description data is shown), FALSE otherwise
 static bool8 DisplayPartyPokemonDataForMoveTutorOrEvolutionItem(u8 slot)
 {
     struct Pokemon *currentPokemon = &gParties[B_TRAINER_0][slot];
@@ -4235,7 +4235,7 @@ bool8 FieldCallback_PrepareFadeInFromMenu(void)
     return TRUE;
 }
 
-// Same as above, but removes follower pokemon
+// Same as above, but removes follower Pokémon
 bool8 FieldCallback_PrepareFadeInForTeleport(void)
 {
     RemoveFollowingPokemon();
@@ -7508,7 +7508,7 @@ static u8 GetPartyLayoutFromBattleType(void)
         return PARTY_LAYOUT_MULTI;
     if (IsMultiBattle() == TRUE && AreMultiPartiesFullTeams())
         return PARTY_LAYOUT_MULTI_FULL;
-    if (!IsDoubleBattle() || gPartiesCount[B_TRAINER_0] == 1) // Draw the single layout in a double battle where the player has only one pokemon.
+    if (!IsDoubleBattle() || gPartiesCount[B_TRAINER_0] == 1) // Draw the single layout in a double battle where the player has only one Pokémon.
         return PARTY_LAYOUT_SINGLE;
     return PARTY_LAYOUT_DOUBLE;
 }
