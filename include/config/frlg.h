@@ -8,9 +8,8 @@
 
 // Settings for Emerald mode
 #define FRLG_INCLUDE_ALL                TRUE               // Change this to toggle all configs on. You can also individually turn them on by setting each to TRUE.
-#define FRLG_INCLUDE_OBJECT_EVENTS      FRLG_INCLUDE_ALL    // Include data for FRLG's object events
 #define FRLG_INCLUDE_KANTO_TILESETS     FRLG_INCLUDE_ALL    // Include data for FRLG's tilesets
-#define FRLG_INCLUDE_KANTO_MAPS         FRLG_INCLUDE_ALL    // Include data for FRLG's maps. IMPORTANT: Requires FRLG_INCLUDE_OBJECT_EVENTS and FRLG_INCLUDE_KANTO_TILESETS!!
+#define FRLG_INCLUDE_KANTO_MAPS         FRLG_INCLUDE_ALL    // Include data for FRLG's maps. IMPORTANT: Requires FRLG_INCLUDE_KANTO_TILESETS!!
                                                             // Flags and Vars are not handled, so events may be in a broken state.
 #define FRLG_KANTO_MAP_WILD_PKMN        FIRE_RED            // Wild encounter data to be used when enabling FRLG_INCLUDE_KANTO_MAPS
 
