@@ -2,17 +2,20 @@
 ### Director
 - **AsparagusEduardo**
   - Extended Easy Chat Support
-  - `FREE_SECRET_BASES` config
-  - `FREE_FRONTIER_APPRENTICES` config
-  - `FREE_BERRY_CRUSH` config
-  - `FREE_DODRIO_BERRY_PICKUP` config
-### Feature Devs
+  - New configs
+    - `FREE_SECRET_BASES`
+    - `FREE_FRONTIER_APPRENTICES`
+    - `FREE_BERRY_CRUSH`
+    - `FREE_DODRIO_BERRY_PICKUP`
+### Feature Branch Devs
+- **AGSMGMaster64**
+  - [Expansion-Compatible FRLG Misc Item Menus](https://github.com/agsmgmaster64/worldlinkdeluxe-ame/tree/frlg-items-expansion)
 - **Kasen**
-  - DNS in battles
+  - [DNS in battles](https://github.com/Kasenn/pokeemerald-expansion-kasen/tree/battle-dns)
 - **LinathanZel**
-  - Help Windows
+  - [Help Windows](https://github.com/LinathanZel/pokeemerald-expansion/tree/help_window)
 - **Montblanc**
-  - Sword and Shield Party Menu
+  - [Sword and Shield Party Menu](https://github.com/montmoguri/pokeemerald-expansion/wiki/Sword-&-Shield-Party-Menu)
 
 ## Expansion Credits ✨
 

@@ -18,6 +18,12 @@
 - ***More available Saveblock space by default:***
   - Most features that utilize SaveBlock space have been disabled by default. Check `include/config/save.h` to reenable them.
 - ***Reordered Species and Item IDs***: Pokémon and Items are now sorted by their introduction order to the series.
+- ***Integrated new eature branches:***
+  - [Day/Night System in battles](https://github.com/Kasenn/pokeemerald-expansion-kasen/tree/battle-dns) - *by Kasen*
+  - [Help Windows](https://github.com/LinathanZel/pokeemerald-expansion/tree/help_window) - *by LinathanZel*
+- ***New UI feature branches enabled via config:***
+  - [FRLG Item Menus](https://github.com/agsmgmaster64/worldlinkdeluxe-ame/tree/frlg-items-expansion) - *by AGSMGMaster64*
+  - [Sword and Shield Party Menu](https://github.com/montmoguri/pokeemerald-expansion/wiki/Sword-&-Shield-Party-Menu) - *by Montblanc*
 - ***Config cleanup***: Configs has been removed due to redundancy:
   - Always `TRUE`:
     - `FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK1`
