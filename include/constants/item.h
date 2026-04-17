@@ -1,6 +1,8 @@
 #ifndef GUARD_ITEM_CONSTANTS_H
 #define GUARD_ITEM_CONSTANTS_H
 
+#include "config/frlg_bag.h"
+
 enum Pocket
 {
     POCKET_ITEMS,
@@ -10,6 +12,7 @@ enum Pocket
     POCKET_KEY_ITEMS,
     POCKETS_COUNT,
     POCKET_DUMMY = POCKETS_COUNT,
+    POCKET_MAX_SCROLL = POCKETS_COUNT - 1,
 };
 
 #define REPEL_LURE_MASK         (1 << 15)

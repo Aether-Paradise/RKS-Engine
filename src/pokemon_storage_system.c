@@ -977,9 +977,9 @@ static const struct WindowTemplate sWindowTemplates[] =
     [WIN_ITEM_DESC] = {
         .bg = 0,
         .tilemapLeft = 0,
-        .tilemapTop = 13,
-        .width = 21,
-        .height = 7,
+        .tilemapTop = 12,
+        .width = 25,
+        .height = 8,
         .paletteNum = 15,
         .baseBlock = 0x14,
     },
@@ -2028,7 +2028,7 @@ static void EnterPokeStorage(u8 boxOption)
     }
 }
 
-static void CB2_ReturnToPokeStorage(void)
+void CB2_ReturnToPokeStorage(void)
 {
     ResetTasks();
     sStorage = Alloc(sizeof(*sStorage));
@@ -9323,12 +9323,12 @@ static void PrintItemDescription(void)
     const u8 *description;
 
     if (IsMovingItem())
-        description = GetItemDescription(sStorage->movingItemId);
+        description = GetItemLongDescription(sStorage->movingItemId);
     else
-        description = GetItemDescription(sStorage->displayMonItemId);
+        description = GetItemLongDescription(sStorage->displayMonItemId);
 
     FillWindowPixelBuffer(WIN_ITEM_DESC, PIXEL_FILL(1));
-    AddTextPrinterParameterized5(WIN_ITEM_DESC, FONT_NORMAL, description, 4, 0, 0, NULL, 0, 1);
+    AddTextPrinterParameterized5(WIN_ITEM_DESC, FONT_NORMAL, description, 2, 0, 0, NULL, 0, 1);
 }
 
 static void InitItemInfoWindow(void)
@@ -9346,9 +9346,9 @@ static bool8 UpdateItemInfoWindowSlideIn(void)
         return FALSE;
 
     sStorage->itemInfoWindowOffset--;
-    pos = 21 - sStorage->itemInfoWindowOffset;
+    pos = 25 - sStorage->itemInfoWindowOffset;
     for (i = 0; i < pos; i++)
-        WriteSequenceToBgTilemapBuffer(0, GetBgAttribute(0, BG_ATTR_BASETILE) + 0x14 + sStorage->itemInfoWindowOffset + i, i, 13, 1, 7, 15, 21);
+        WriteSequenceToBgTilemapBuffer(0, GetBgAttribute(0, BG_ATTR_BASETILE) + 0x14 + sStorage->itemInfoWindowOffset + i, i, 12, 1, 8, 15, 25);
 
     DrawItemInfoWindow(pos);
     return (sStorage->itemInfoWindowOffset != 0);
@@ -9358,23 +9358,23 @@ static bool8 UpdateItemInfoWindowSlideOut(void)
 {
     s32 i, pos;
 
-    if (sStorage->itemInfoWindowOffset == 22)
+    if (sStorage->itemInfoWindowOffset == 26)
         return FALSE;
 
     if (sStorage->itemInfoWindowOffset == 0)
-        FillBgTilemapBufferRect(0, 0, 21, 12, 1, 9, 17);
+        FillBgTilemapBufferRect(0, 0, 25, 11, 1, 10, 17);
 
     sStorage->itemInfoWindowOffset++;
     pos = 21 - sStorage->itemInfoWindowOffset;
     for (i = 0; i < pos; i++)
     {
-        WriteSequenceToBgTilemapBuffer(0, GetBgAttribute(0, BG_ATTR_BASETILE) + 0x14 + sStorage->itemInfoWindowOffset + i, i, 13, 1, 7, 15, 21);
+        WriteSequenceToBgTilemapBuffer(0, GetBgAttribute(0, BG_ATTR_BASETILE) + 0x14 + sStorage->itemInfoWindowOffset + i, i, 12, 1, 8, 15, 25);
     }
 
     if (pos >= 0)
         DrawItemInfoWindow(pos);
 
-    FillBgTilemapBufferRect(0, 0, pos + 1, 12, 1, 9, 17);
+    FillBgTilemapBufferRect(0, 0, pos + 1, 11, 1, 10, 17);
     ScheduleBgCopyTilemapToVram(0);
     return TRUE;
 }
@@ -9383,11 +9383,11 @@ static void DrawItemInfoWindow(u32 x)
 {
     if (x != 0)
     {
-        FillBgTilemapBufferRect(0, 0x13A, 0, 0xC, x, 1, 15);
+        FillBgTilemapBufferRect(0, 0x13A, 0, 0xB, x, 1, 15);
         FillBgTilemapBufferRect(0, 0x93A, 0, 0x14, x, 1, 15);
     }
-    FillBgTilemapBufferRect(0, 0x13B, x, 0xD, 1, 7, 15);
-    FillBgTilemapBufferRect(0, 0x13C, x, 0xC, 1, 1, 15);
+    FillBgTilemapBufferRect(0, 0x13B, x, 0xC, 1, 8, 15);
+    FillBgTilemapBufferRect(0, 0x13C, x, 0xB, 1, 1, 15);
     FillBgTilemapBufferRect(0, 0x13D, x, 0x14, 1, 1, 15);
     ScheduleBgCopyTilemapToVram(0);
 }

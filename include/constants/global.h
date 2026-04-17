@@ -24,6 +24,7 @@
 #include "config/dexnav.h"
 #include "config/follower_npc.h"
 #include "config/frlg.h"
+#include "config/frlg_bag.h"
 #include "config/general.h"
 #include "config/item.h"
 #include "config/map_preview_screen.h"
