@@ -621,7 +621,7 @@ static const u8 sText_CannotSendMonToBoxPartner[] = _("Cannot send a mon that do
 #define tHoldEffectParam    data[10]
 
 // static const data
-#include "data/swsh_party_menu.h"
+#include "data/party_menu_swsh.h"
 
 // code
 static void InitPartyMenu(u8 menuType, u8 layout, u8 partyAction, bool8 keepCursorPos, u8 messageId, TaskFunc task, MainCallback callback)
