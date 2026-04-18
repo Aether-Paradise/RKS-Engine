@@ -25,3 +25,17 @@ DemoTown_EventScript_TradeCompleted::
 	msgbox DemoTown_Text_ReallyWantedToGetBagon, MSGBOX_DEFAULT
 	release
 	end
+
+DemoTown_EventScript_EventScript_MirageIslandWatcher::
+	lock
+	faceplayer
+	specialvar VAR_RESULT, IsMirageIslandPresent
+	goto_if_eq VAR_RESULT, TRUE, DemoTown_EventScript_EventScript_MirageIslandPresent
+	msgbox DemoTown_EventScript_Text_CantSeeMirageIslandToday, MSGBOX_DEFAULT
+	release
+	end
+
+DemoTown_EventScript_EventScript_MirageIslandPresent::
+	msgbox DemoTown_EventScript_Text_CanSeeMirageIslandToday, MSGBOX_DEFAULT
+	release
+	end

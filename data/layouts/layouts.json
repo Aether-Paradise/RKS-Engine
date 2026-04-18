@@ -990,19 +990,6 @@
       "layout_version": "emerald"
     },
     {
-      "id": "LAYOUT_PACIFIDLOG_TOWN_HOUSE1",
-      "name": "PacifidlogTown_House1_Layout",
-      "width": 10,
-      "height": 9,
-      "border_width": 2,
-      "border_height": 2,
-      "primary_tileset": "gTileset_Building",
-      "secondary_tileset": "gTileset_GenericBuilding",
-      "border_filepath": "data/layouts/PacifidlogTown_House1/border.bin",
-      "blockdata_filepath": "data/layouts/PacifidlogTown_House1/map.bin",
-      "layout_version": "emerald"
-    },
-    {
       "id": "LAYOUT_PACIFIDLOG_TOWN_HOUSE2",
       "name": "PacifidlogTown_House2_Layout",
       "width": 10,

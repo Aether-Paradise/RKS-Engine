@@ -17,3 +17,10 @@ DemoTown_Text_CancelledTrade:
 
 DemoTown_Text_ReallyWantedToGetBagon:
 	.string "Thank you for the trade!$" @ Does not buffer trade data
+
+DemoTown_EventScript_Text_CantSeeMirageIslandToday:
+	.string "I can't see MIRAGE ISLAND today…$"
+
+DemoTown_EventScript_Text_CanSeeMirageIslandToday:
+	.string "Oh! Oh my!\n"
+	.string "I can see MIRAGE ISLAND today!$"

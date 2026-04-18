@@ -99,13 +99,6 @@
       "elevation": 0,
       "dest_map": "MAP_PACIFIDLOG_TOWN_HOUSE4",
       "dest_warp_id": "0"
-    },
-    {
-      "x": 17,
-      "y": 21,
-      "elevation": 0,
-      "dest_map": "MAP_PACIFIDLOG_TOWN_HOUSE5",
-      "dest_warp_id": "0"
     }
   ],
   "coord_events": [
