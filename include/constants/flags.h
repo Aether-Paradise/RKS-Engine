@@ -47,6 +47,7 @@
 
 #define FLAG_DEMO_HIDE_DEOXYS_TRIANGLE  0x20
 #define FLAG_DEMO_HIDE_DEOXYS           0x21
+#define FLAG_DEMO_INGAME_TRADE          0x22
 
 #if IS_FRLG
 
@@ -54,7 +55,6 @@
 
 #else
 
-#define FLAG_UNUSED_0x022    0x22 // Unused Flag
 #define FLAG_UNUSED_0x023    0x23 // Unused Flag
 #define FLAG_UNUSED_0x024    0x24 // Unused Flag
 #define FLAG_UNUSED_0x025    0x25 // Unused Flag
@@ -182,7 +182,7 @@
 #define FLAG_RECEIVED_CASTFORM               0x97
 #define FLAG_RECEIVED_SUPER_ROD              0x98
 #define FLAG_RUSTBORO_NPC_TRADE_COMPLETED    0x99
-#define FLAG_PACIFIDLOG_NPC_TRADE_COMPLETED  0x9A
+#define FLAG_UNUSED_0x09A                    0x9A
 #define FLAG_FORTREE_NPC_TRADE_COMPLETED     0x9B
 #define FLAG_BATTLE_FRONTIER_TRADE_DONE      0x9C
 #define FLAG_FORCE_MIRAGE_TOWER_VISIBLE      0x9D

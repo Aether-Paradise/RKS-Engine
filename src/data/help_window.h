@@ -52,6 +52,6 @@ const struct HelpWindow gHelpWindowInfo[] =
                                 "evolve during your story, like how Kufbu does!\n"
                             ),
         .descFont = FONT_NARROWER,
-    }
+    },
     // Add more entries
 };
