@@ -48,6 +48,7 @@
 #define FLAG_DEMO_HIDE_DEOXYS_TRIANGLE  0x20
 #define FLAG_DEMO_HIDE_DEOXYS           0x21
 #define FLAG_DEMO_INGAME_TRADE          0x22
+#define FLAG_DEMO_RECEIVED_WEEKLY_TM    0x23
 
 #if IS_FRLG
 
@@ -55,7 +56,6 @@
 
 #else
 
-#define FLAG_UNUSED_0x023    0x23 // Unused Flag
 #define FLAG_UNUSED_0x024    0x24 // Unused Flag
 #define FLAG_UNUSED_0x025    0x25 // Unused Flag
 #define FLAG_UNUSED_0x026    0x26 // Unused Flag
@@ -331,7 +331,7 @@
 #define FLAG_PETALBURG_MART_EXPANDED_ITEMS   0x128
 #define FLAG_RECEIVED_MIRACLE_SEED           0x129
 #define FLAG_RECEIVED_BELDUM                 0x12A
-#define FLAG_RECEIVED_FANCLUB_TM_THIS_WEEK   0x12B
+#define FLAG_UNUSED_0x12B                    0x12B
 #define FLAG_UNUSED_0x12C                    0x12C
 #define FLAG_RIVAL_LEFT_FOR_ROUTE103         0x12D
 #define FLAG_OMIT_DIVE_FROM_STEVEN_LETTER    0x12E

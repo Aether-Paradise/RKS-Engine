@@ -990,19 +990,6 @@
       "layout_version": "emerald"
     },
     {
-      "id": "LAYOUT_PACIFIDLOG_TOWN_HOUSE2",
-      "name": "PacifidlogTown_House2_Layout",
-      "width": 10,
-      "height": 9,
-      "border_width": 2,
-      "border_height": 2,
-      "primary_tileset": "gTileset_Building",
-      "secondary_tileset": "gTileset_GenericBuilding",
-      "border_filepath": "data/layouts/PacifidlogTown_House2/border.bin",
-      "blockdata_filepath": "data/layouts/PacifidlogTown_House2/map.bin",
-      "layout_version": "emerald"
-    },
-    {
       "id": "LAYOUT_PETALBURG_CITY_GYM",
       "name": "PetalburgCity_Gym_Layout",
       "width": 9,

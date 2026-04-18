@@ -1655,9 +1655,10 @@ void TryInitBattleTowerAwardManObjectEvent(void)
     //TryInitLocalObjectEvent(6);
 }
 
-u16 GetDaysUntilPacifidlogTMAvailable(void)
+// Originally GetDaysUntilPacifidlogTMAvailable
+u16 GetDaysUntilWeeklyTMAvailable(void)
 {
-    u16 tmReceivedDay = VarGet(VAR_PACIFIDLOG_TM_RECEIVED_DAY);
+    u16 tmReceivedDay = VarGet(VAR_DEMO_WEEKLY_TM_DAY);
     if (gLocalTime.days - tmReceivedDay >= 7)
         return 0;
     else if (gLocalTime.days < 0)
@@ -1666,9 +1667,10 @@ u16 GetDaysUntilPacifidlogTMAvailable(void)
     return 7 - (gLocalTime.days - tmReceivedDay);
 }
 
-u16 SetPacifidlogTMReceivedDay(void)
+// Originally SetPacifidlogTMReceivedDay
+u16 SetDemoWeeklyTMDay(void)
 {
-    VarSet(VAR_PACIFIDLOG_TM_RECEIVED_DAY, gLocalTime.days);
+    VarSet(VAR_DEMO_WEEKLY_TM_DAY, gLocalTime.days);
     return gLocalTime.days;
 }
 

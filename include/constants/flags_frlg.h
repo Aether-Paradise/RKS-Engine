@@ -2,7 +2,6 @@
 #define GUARD_CONSTANTS_FLAGS_FRLG_H
 
 
-#define FLAG_0x023               0x023
 #define FLAG_0x024               0x024
 #define FLAG_0x025               0x025
 #define FLAG_0x026               0x026
@@ -1722,7 +1721,6 @@
 #define FLAG_PETALBURG_MART_EXPANDED_ITEMS   0
 #define FLAG_RECEIVED_MIRACLE_SEED           0
 #define FLAG_RECEIVED_BELDUM                 0
-#define FLAG_RECEIVED_FANCLUB_TM_THIS_WEEK   0
 #define FLAG_RIVAL_LEFT_FOR_ROUTE103         0
 #define FLAG_OMIT_DIVE_FROM_STEVEN_LETTER    0
 #define FLAG_HAS_MATCH_CALL                  0
