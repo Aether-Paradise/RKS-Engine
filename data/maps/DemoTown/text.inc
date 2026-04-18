@@ -11,6 +11,10 @@ DemoTown_Text_NotRequestedMon:
 	.string "That's not a {STR_VAR_1},\n"
 	.string "I can't give you my {STR_VAR_2} for it.$"
 
+DemoTown_Text_DoYouWantARalts:
+	.string "{COLOR BLUE}{SHADOW LIGHT_BLUE}Do you want a Ralts to test\n"
+	.string "this feature?.$"
+
 DemoTown_Text_CancelledTrade:
 	.string "I see.\n"
 	.string "We can do this another time.$"
