@@ -530,6 +530,13 @@ static const u8 sText_BasePointsResetToZero[] = _("{STR_VAR_1}'s base points\nwe
 static const u8 sText_CannotSendMonToBoxHM[] = _("Cannot send that mon to the box,\nbecause it knows a HM move.{PAUSE_UNTIL_PRESS}");
 static const u8 sText_CannotSendMonToBoxPartner[] = _("Cannot send a mon that doesn't\nbelong to you to the box.{PAUSE_UNTIL_PRESS}");
 
+#define tItemCount          data[5]
+#define tMaxItemQuantity    data[6]
+#define tQuantityInBag      data[7]
+#define tWindowId           data[8]
+#define tItemEffect         data[9]
+#define tHoldEffectParam    data[10]
+
 // static const data
 #include "data/party_menu.h"
 
@@ -752,16 +759,25 @@ static bool8 ShowPartyMenu(void)
         gMain.state++;
         break;
     case 20:
+        gMain.state++;
+        break;
+    case 21:
+        gMain.state++;
+        break;
+    case 22:
+        gMain.state++;
+        break;
+    case 23:
         CreateTask(sPartyMenuInternal->task, 0);
         DisplayPartyMenuStdMessage(sPartyMenuInternal->messageId);
         gMain.state++;
         break;
-    case 21:
+    case 24:
         BlendPalettes(PALETTES_ALL, 16, 0);
         gPaletteFade.bufferTransferDisabled = FALSE;
         gMain.state++;
         break;
-    case 22:
+    case 25:
         BeginNormalPaletteFade(PALETTES_ALL, 0, 16, 0, RGB_BLACK);
         gMain.state++;
         break;
@@ -783,83 +799,86 @@ static bool8 ReloadPartyMenu(void)
         gMain.state++;
         break;
     case 1:
-        ScanlineEffect_Stop();
         gMain.state++;
         break;
     case 2:
+        ScanlineEffect_Stop();
+        gMain.state++;
+        break;
+    case 3:
         ResetPaletteFade();
         gPaletteFade.bufferTransferDisabled = TRUE;
         gMain.state++;
         break;
-    case 3:
+    case 4:
         ResetSpriteData();
         gMain.state++;
         break;
-    case 4:
+    case 5:
         FreeAllSpritePalettes();
         gMain.state++;
         break;
-    case 5:
+    case 6:
         SetPartyMonsAllowedInMinigame();
         gMain.state++;
         break;
-    case 6:
+    case 7:
         sPartyMenuInternal->data[0] = 0;
         gMain.state++;
         break;
-    case 7:
+    case 8:
         LoadPartyMenuWindows();
         gMain.state++;
         break;
-    case 8:
+    case 9:
         LoadPartyMenuBoxes(gPartyMenu.layout);
         sPartyMenuInternal->data[0] = 0;
         gMain.state++;
         break;
-    case 9:
+    case 10:
         LoadHeldItemIcons();
         gMain.state++;
         break;
-    case 10:
+    case 11:
         LoadPartyMenuPokeballGfx();
         gMain.state++;
         break;
-    case 11:
+    case 12:
         LoadPartyMenuAilmentGfx();
         gMain.state++;
         break;
-    case 12:
+    case 13:
         LoadMonIconPalettes();
         gMain.state++;
         break;
-    case 13:
+    case 14:
         if (CreatePartyMonSpritesLoop())
         {
             sPartyMenuInternal->data[0] = 0;
             gMain.state++;
         }
         break;
-    case 14:
+    case 15:
         if (RenderPartyMenuBoxes())
         {
             sPartyMenuInternal->data[0] = 0;
             gMain.state++;
         }
         break;
-    case 15:
+    case 16:
         CreateCancelConfirmPokeballSprites();
         gMain.state++;
         break;
-    case 16:
+    case 17:
         CreateCancelConfirmWindows(sPartyMenuInternal->chooseHalf);
         gMain.state++;
         break;
-    case 17:
+    case 18:
         BlendPalettes(PALETTES_ALL, 16, RGB_WHITEALPHA);
         gPaletteFade.bufferTransferDisabled = FALSE;
         gMain.state++;
         break;
-    case 18:
+    case 19:
         BeginNormalPaletteFade(PALETTES_ALL, 0, 16, 0, RGB_WHITEALPHA);
         gMain.state++;
         break;
@@ -6335,10 +6354,6 @@ void ItemUseCB_EvolutionStone(u8 taskId, TaskFunc task)
     }
 }
 
-#define FUSE_MON        1
-#define UNFUSE_MON      2
-#define SECOND_FUSE_MON 3
-
 #define tState          data[0]
 #define tTargetSpecies  data[1]
 #define tAnimWait       data[2]
@@ -6354,6 +6369,12 @@ void ItemUseCB_EvolutionStone(u8 taskId, TaskFunc task)
 #define tExtraMoveHandling   data[13]
 #define forgetMove           data[14]
 #define storageIndex         data[15]
+
+#define MOSAIC_ANIM_DURATION 10
+
+#define FUSE_MON        1
+#define UNFUSE_MON      2
+#define SECOND_FUSE_MON 3
 
 static void Task_TryItemUseFusionChange(u8 taskId);
 static void SpriteCB_FormChangeIconMosaic(struct Sprite *sprite);
@@ -6595,7 +6616,7 @@ static void Task_TryItemUseFusionChange(u8 taskId)
         if (gTasks[taskId].tAnimWait == 0)
         {
             icon->oam.mosaic = TRUE;
-            icon->data[0] = 10;
+            icon->data[0] = MOSAIC_ANIM_DURATION;
             icon->data[1] = 1;
             icon->data[2] = taskId;
             icon->callback = SpriteCB_FormChangeIconMosaic;
@@ -6603,7 +6624,7 @@ static void Task_TryItemUseFusionChange(u8 taskId)
             if (gTasks[taskId].fusionType == FUSE_MON)
             {
                 icon2->oam.mosaic = TRUE;
-                icon2->data[0] = 10;
+                icon2->data[0] = MOSAIC_ANIM_DURATION;
                 icon2->data[1] = 1;
                 icon2->data[2] = taskId;
                 icon2->callback = SpriteCB_FormChangeIconMosaic;
@@ -6813,7 +6834,7 @@ static void SpriteCB_FormChangeIconMosaic(struct Sprite *sprite)
         if (gTasks[taskId].tAnimWait == 60)
             sprite->data[0] = 0;
         else
-            sprite->data[0] = 10;
+            sprite->data[0] = MOSAIC_ANIM_DURATION;
     }
 
     SetGpuReg(REG_OFFSET_MOSAIC, (sprite->data[0] << 12) | (sprite->data[1] << 8));
@@ -6842,7 +6863,7 @@ static void Task_TryItemUseFormChange(u8 taskId)
             FreeAndDestroyMonIconSprite(icon);
             CreatePartyMonIconSpriteParameterized(gTasks[taskId].tTargetSpecies, GetMonData(mon, MON_DATA_PERSONALITY), FALSE, &sPartyMenuBoxes[gPartyMenu.slotId], 1);
             icon->oam.mosaic = TRUE;
-            icon->data[0] = 10;
+            icon->data[0] = MOSAIC_ANIM_DURATION;
             icon->data[1] = 1;
             icon->data[2] = taskId;
             icon->callback = SpriteCB_FormChangeIconMosaic;
