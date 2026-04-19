@@ -122,20 +122,6 @@
   ],
   "warp_events": [
     {
-      "x": 19,
-      "y": 5,
-      "elevation": 3,
-      "dest_map": "MAP_MT_MOON_1F",
-      "dest_warp_id": "3"
-    },
-    {
-      "x": 32,
-      "y": 5,
-      "elevation": 0,
-      "dest_map": "MAP_MT_MOON_B1F",
-      "dest_warp_id": "7"
-    },
-    {
       "x": 12,
       "y": 5,
       "elevation": 0,

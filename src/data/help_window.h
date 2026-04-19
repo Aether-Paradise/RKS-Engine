@@ -41,5 +41,17 @@ const struct HelpWindow gHelpWindowInfo[] =
                             ),
         .headerFont = FONT_NARROWER,
     },
+    [HELP_TRY_SPECIAL_EVO] =
+    {
+        .header = COMPOUND_STRING("Feature: Scripted Evolutions"),
+        .desc = COMPOUND_STRING("This space to the right can evolve {COLOR BLUE}Galarian Yamask{COLOR DARK_GRAY} using\n"
+                                "{COLOR RED}tryspecialevo{COLOR DARK_GRAY} with the ID assigned in the evolution table.\n"
+                                "If {COLOR RED}tryMultiple=TRUE{COLOR DARK_GRAY}, {COLOR GREEN}VAR_RESULT{COLOR DARK_GRAY} will return the amount\n"
+                                "of Pokémon evolved. Otherwise, it will return the result\n"
+                                "of the evolution attempt. Use this in your scripts to\n"
+                                "evolve during your story, like how Kufbu does!\n"
+                            ),
+        .descFont = FONT_NARROWER,
+    },
     // Add more entries
 };

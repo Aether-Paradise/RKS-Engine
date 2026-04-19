@@ -1655,9 +1655,10 @@ void TryInitBattleTowerAwardManObjectEvent(void)
     //TryInitLocalObjectEvent(6);
 }
 
-u16 GetDaysUntilPacifidlogTMAvailable(void)
+// Originally GetDaysUntilPacifidlogTMAvailable
+u16 GetDaysUntilWeeklyTMAvailable(void)
 {
-    u16 tmReceivedDay = VarGet(VAR_PACIFIDLOG_TM_RECEIVED_DAY);
+    u16 tmReceivedDay = VarGet(VAR_DEMO_WEEKLY_TM_DAY);
     if (gLocalTime.days - tmReceivedDay >= 7)
         return 0;
     else if (gLocalTime.days < 0)
@@ -1666,9 +1667,10 @@ u16 GetDaysUntilPacifidlogTMAvailable(void)
     return 7 - (gLocalTime.days - tmReceivedDay);
 }
 
-u16 SetPacifidlogTMReceivedDay(void)
+// Originally SetPacifidlogTMReceivedDay
+u16 SetDemoWeeklyTMDay(void)
 {
-    VarSet(VAR_PACIFIDLOG_TM_RECEIVED_DAY, gLocalTime.days);
+    VarSet(VAR_DEMO_WEEKLY_TM_DAY, gLocalTime.days);
     return gLocalTime.days;
 }
 
@@ -3407,17 +3409,9 @@ static void ChangeDeoxysRockLevel(u8 rockLevel)
         PlaySE(SE_RG_DEOXYS_MOVE); // Success sound
 
     CreateTask(WaitForDeoxysRockMovement, 8);
-    gFieldEffectArguments[0] = LOCALID_BIRTH_ISLAND_EXTERIOR_ROCK;
-    if (gSaveBlock1Ptr->location.mapNum == MAP_NUM(MAP_BIRTH_ISLAND_EXTERIOR_FRLG) && gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MAP_BIRTH_ISLAND_EXTERIOR_FRLG))
-    {
-        gFieldEffectArguments[1] = MAP_NUM(MAP_BIRTH_ISLAND_EXTERIOR_FRLG);
-        gFieldEffectArguments[2] = MAP_GROUP(MAP_BIRTH_ISLAND_EXTERIOR_FRLG);
-    }
-    else
-    {
-        gFieldEffectArguments[1] = MAP_NUM(MAP_BIRTH_ISLAND_EXTERIOR);
-        gFieldEffectArguments[2] = MAP_GROUP(MAP_BIRTH_ISLAND_EXTERIOR);
-    }
+    gFieldEffectArguments[0] = LOCALID_DEMO_DEOXYS_EVENT_ROCK;
+    gFieldEffectArguments[1] = MAP_NUM(MAP_DEMO_DEOXYS_EVENT);
+    gFieldEffectArguments[2] = MAP_GROUP(MAP_DEMO_DEOXYS_EVENT);
     gFieldEffectArguments[3] = sDeoxysRockCoords[rockLevel][0];
     gFieldEffectArguments[4] = sDeoxysRockCoords[rockLevel][1];
 
@@ -3429,7 +3423,7 @@ static void ChangeDeoxysRockLevel(u8 rockLevel)
         gFieldEffectArguments[5] = 5;
 
     FieldEffectStart(FLDEFF_MOVE_DEOXYS_ROCK);
-    SetObjEventTemplateCoords(LOCALID_BIRTH_ISLAND_EXTERIOR_ROCK, sDeoxysRockCoords[rockLevel][0], sDeoxysRockCoords[rockLevel][1]);
+    SetObjEventTemplateCoords(LOCALID_DEMO_DEOXYS_EVENT_ROCK, sDeoxysRockCoords[rockLevel][0], sDeoxysRockCoords[rockLevel][1]);
 }
 
 static void WaitForDeoxysRockMovement(u8 taskId)
@@ -3444,8 +3438,7 @@ static void WaitForDeoxysRockMovement(u8 taskId)
 void IncrementBirthIslandRockStepCount(void)
 {
     u16 stepCount = VarGet(VAR_DEOXYS_ROCK_STEP_COUNT);
-    if ((gSaveBlock1Ptr->location.mapNum == MAP_NUM(MAP_BIRTH_ISLAND_EXTERIOR) && gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MAP_BIRTH_ISLAND_EXTERIOR))
-     || (gSaveBlock1Ptr->location.mapNum == MAP_NUM(MAP_BIRTH_ISLAND_EXTERIOR_FRLG) && gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MAP_BIRTH_ISLAND_EXTERIOR_FRLG)))
+    if (gSaveBlock1Ptr->location.mapNum == MAP_NUM(MAP_DEMO_DEOXYS_EVENT) && gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MAP_DEMO_DEOXYS_EVENT))
     {
         if (++stepCount > 99)
             VarSet(VAR_DEOXYS_ROCK_STEP_COUNT, 0);

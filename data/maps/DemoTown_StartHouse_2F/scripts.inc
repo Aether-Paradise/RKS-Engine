@@ -1,0 +1,29 @@
+DemoTown_StartHouse_2F_MapScripts::
+	map_script MAP_SCRIPT_ON_TRANSITION, DemoTown_StartHouse_2F_OnTransition
+	map_script MAP_SCRIPT_ON_WARP_INTO_MAP_TABLE, DemoTown_StartHouse_2F_OnWarp
+	.byte 0
+
+DemoTown_StartHouse_2F_OnTransition::
+	call_if_eq VAR_MAP_SCENE_PALLET_TOWN_PLAYERS_HOUSE_2F, 0, DemoTown_StartHouse_2F_EventScript_SetRespawn
+	end
+
+DemoTown_StartHouse_2F_EventScript_SetRespawn::
+	setrespawn HEAL_LOCATION_DEMO_TOWN
+	return
+
+DemoTown_StartHouse_2F_OnWarp::
+	map_script_2 VAR_MAP_SCENE_PALLET_TOWN_PLAYERS_HOUSE_2F, 0, DemoTown_StartHouse_2F_FirstWarpIn
+	.2byte 0
+
+DemoTown_StartHouse_2F_FirstWarpIn::
+	turnobject LOCALID_PLAYER, DIR_NORTH
+	setvar VAR_MAP_SCENE_PALLET_TOWN_PLAYERS_HOUSE_2F, 1
+	end
+
+DemoTown_StartHouse_2F_EventScript_NES::
+	msgbox DemoTown_StartHouse_2F_Text_PlayedWithNES, MSGBOX_SIGN
+	end
+
+DemoTown_StartHouse_2F_EventScript_Sign::
+	msgbox DemoTown_StartHouse_2F_Text_PressLRForHelp, MSGBOX_SIGN
+	end

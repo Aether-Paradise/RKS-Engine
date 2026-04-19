@@ -28,8 +28,6 @@ const struct Tileset gTileset_SecretBaseRedCave =
 const struct Tileset *const gTilesetPointer_SecretBase = &gTileset_SecretBase;
 const struct Tileset *const gTilesetPointer_SecretBaseRedCave = &gTileset_SecretBaseRedCave;
 
-#if !IS_FRLG || EM_INCLUDE_HOENN_TILESETS
-
 const struct Tileset gTileset_General =
 {
     .isCompressed = TRUE,
@@ -842,10 +840,6 @@ const struct Tileset gTileset_UnionRoom =
     .callback = NULL,
 };
 
-#endif // !IS_FRLG || EM_INCLUDE_HOENN_TILESETS
-
-#if IS_FRLG || FRLG_INCLUDE_KANTO_TILESETS
-
 // FRLG tilesets
 const struct Tileset gTileset_BuildingFrlg =
 {
@@ -1550,5 +1544,3 @@ const struct Tileset gTileset_HallOfFame =
     .metatileAttributes = gMetatileAttributes_HallOfFame,
     .callback = NULL,
 };
-
-#endif // IS_FRLG || FRLG_INCLUDE_KANTO_TILESETS

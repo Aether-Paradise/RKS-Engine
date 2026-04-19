@@ -125,8 +125,8 @@ gNameChoice_Suzi::
 	.string "SUZI$"
 
 gControlsGuide_Text_Intro::
-	.string "The various buttons will be explained in\n"
-	.string "the order of their importance.$"
+	.string "Welcome to RKS-Engine {STR_VAR_1}.\n"
+	.string "Controls will now be explained.$"
 
 gControlsGuide_Text_DPad::
 	.string "Moves the main character.\n"
