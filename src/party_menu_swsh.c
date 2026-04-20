@@ -911,6 +911,7 @@ static bool8 ShowPartyMenu(void)
     case 20:
         if (gPartyMenu.menuType != PARTY_MENU_TYPE_IN_BATTLE
             && gPartyMenu.menuType != PARTY_MENU_TYPE_MULTI_SHOWCASE
+            && gPartyMenu.menuType != PARTY_MENU_TYPE_MULTI_FULL_SHOWCASE
             && gPartyMenu.slotId < gPartiesCount[B_TRAINER_0]
             && GetMonData(&gParties[B_TRAINER_0][gPartyMenu.slotId], MON_DATA_SPECIES) != SPECIES_NONE)
         {
@@ -928,6 +929,7 @@ static bool8 ShowPartyMenu(void)
     case 22:
         if (gPartyMenu.menuType != PARTY_MENU_TYPE_IN_BATTLE
             && gPartyMenu.menuType != PARTY_MENU_TYPE_MULTI_SHOWCASE
+            && gPartyMenu.menuType != PARTY_MENU_TYPE_MULTI_FULL_SHOWCASE
             && gPartyMenu.slotId < gPartiesCount[B_TRAINER_0]
             && GetMonData(&gParties[B_TRAINER_0][gPartyMenu.slotId], MON_DATA_SPECIES) != SPECIES_NONE)
         {
@@ -1044,6 +1046,7 @@ static bool8 ReloadPartyMenu(void)
     case 14:
         if (gPartyMenu.menuType != PARTY_MENU_TYPE_IN_BATTLE
             && gPartyMenu.menuType != PARTY_MENU_TYPE_MULTI_SHOWCASE
+            && gPartyMenu.menuType != PARTY_MENU_TYPE_MULTI_FULL_SHOWCASE
             && gPartyMenu.slotId < gPartiesCount[B_TRAINER_0]
             && GetMonData(&gParties[B_TRAINER_0][gPartyMenu.slotId], MON_DATA_SPECIES) != SPECIES_NONE)
         {
@@ -1061,6 +1064,7 @@ static bool8 ReloadPartyMenu(void)
     case 16:
         if (gPartyMenu.menuType != PARTY_MENU_TYPE_IN_BATTLE
             && gPartyMenu.menuType != PARTY_MENU_TYPE_MULTI_SHOWCASE
+            && gPartyMenu.menuType != PARTY_MENU_TYPE_MULTI_FULL_SHOWCASE
             && gPartyMenu.slotId < gPartiesCount[B_TRAINER_0]
             && GetMonData(&gParties[B_TRAINER_0][gPartyMenu.slotId], MON_DATA_SPECIES) != SPECIES_NONE)
         {
@@ -1379,7 +1383,7 @@ static void RenderPartyMenuBox(u8 slot)
             else if (!DisplayPartyPokemonDataForItemOrTutor(slot))
                 DisplayPartyPokemonData(slot);
 
-            if (gPartyMenu.menuType == PARTY_MENU_TYPE_MULTI_SHOWCASE)
+            if (gPartyMenu.menuType == PARTY_MENU_TYPE_MULTI_SHOWCASE || gPartyMenu.menuType == PARTY_MENU_TYPE_MULTI_FULL_SHOWCASE)
                 AnimatePartySlot(slot, 0);
             else if (gPartyMenu.slotId == slot)
                 AnimatePartySlot(slot, 1);
@@ -2325,6 +2329,7 @@ static void UpdatePartyMonSprite(u8 slotId)
 
     if (gPartyMenu.menuType != PARTY_MENU_TYPE_IN_BATTLE
         && gPartyMenu.menuType != PARTY_MENU_TYPE_MULTI_SHOWCASE
+        && gPartyMenu.menuType != PARTY_MENU_TYPE_MULTI_FULL_SHOWCASE
         && slotId < gPartiesCount[B_TRAINER_0]
         && GetMonData(&gParties[B_TRAINER_0][slotId], MON_DATA_SPECIES) != SPECIES_NONE)
     {
@@ -5636,7 +5641,8 @@ static void DestroyItemIconSprite(void)
 static void CreateHoverSprite(struct PartyMenuBox *menuBox, u8 slot)
 {
     // Do not show hover cursor in MULTI_SHOWCASE
-    if (gPartyMenu.menuType == PARTY_MENU_TYPE_MULTI_SHOWCASE)
+    if (gPartyMenu.menuType == PARTY_MENU_TYPE_MULTI_SHOWCASE
+     || gPartyMenu.menuType == PARTY_MENU_TYPE_MULTI_FULL_SHOWCASE)
     {
         DestroyHoverSprite();
         DestroyItemIconSprite();
