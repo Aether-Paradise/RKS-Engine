@@ -611,6 +611,8 @@ static void Task_FirstBattleEnterParty_StartPrintMsg2(u8 taskId);
 static void Task_FirstBattleEnterParty_RunPrinterMsg2(u8 taskId);
 static void Task_FirstBattleEnterParty_FadeNormal(u8 taskId);
 static void Task_FirstBattleEnterParty_WaitFadeNormal(u8 taskId);
+static u8 CombinedToIndividualPartyId(u8 index);
+static u8 IndividualToCombinedPartyId(u8 index, enum BattlerId battler);
 
 static const u8 sText_askText[] = _("Would you like to change {STR_VAR_1}'s\nability to {STR_VAR_2}?");
 static const u8 sText_doneText[] = _("{STR_VAR_1}'s ability became\n{STR_VAR_2}!{PAUSE_UNTIL_PRESS}");
@@ -2131,7 +2133,7 @@ static void HandleChooseMonSelection(u8 taskId, s8 *slotPtr)
             else
             {
                 PlaySE(SE_SELECT);
-                gSelectedMonPartyId = partyId;
+                gSelectedMonPartyId = CombinedToIndividualPartyId(partyId);
                 Task_ClosePartyMenu(taskId);
             }
             break;
@@ -7085,7 +7087,10 @@ static void ReturnToUseOnWhichMon(u8 taskId)
 static void TryUseItemOnMove(u8 taskId)
 {
     struct PartyMenu *ptr = &gPartyMenu;
-    struct Pokemon *mon = &gParties[B_TRAINER_0][ptr->slotId];
+    struct Pokemon *party = NULL;
+    s8 partySlot = 0;
+    GetPartyAndSlotFromPartyMenuId(ptr->slotId, &party, &partySlot);
+    struct Pokemon *mon = &party[partySlot];
     // In battle, set appropriate variables to be used in battle script.
     if (gMain.inBattle)
     {
@@ -9350,38 +9355,47 @@ static u8 GetPartyMenuActionsTypeInBattle(struct Pokemon *mon)
 static bool8 TrySwitchInPokemon(void)
 {
     u8 slot = GetCursorSelectionMonId();
+    struct Pokemon *party = NULL;
+    s8 partySlot = 0, newPartySlot = 0;
     u8 newSlot;
+    u8 battlePartyId = 0;
 
-    // In a multi battle, slots 1, 4, and 5 are the partner's Pokémon
-    if (IsMultiBattle() == TRUE && (slot == 1 || slot == 4 || slot == 5))
+    GetPartyAndSlotFromPartyMenuId(slot, &party, &partySlot);
+    battlePartyId = GetPartyIdFromBattleSlot(slot);
+
+    // In a 6v6 multi battle, slots 1, 4, and 5 are the partner's Pokémon
+    if (IsMultiBattle() == TRUE && (slot == 1 || slot == 4 || slot == 5) && !AreMultiPartiesFullTeams())
     {
         StringCopy(gStringVar1, GetTrainerPartnerName());
         StringExpandPlaceholders(gStringVar4, gText_CantSwitchWithAlly);
         return FALSE;
     }
-    if (GetMonData(&gParties[B_TRAINER_0][slot], MON_DATA_HP) == 0)
+    if (GetMonData(&party[partySlot], MON_DATA_HP) == 0)
     {
-        GetMonNickname(&gParties[B_TRAINER_0][slot], gStringVar1);
+        GetMonNickname(&party[partySlot], gStringVar1);
         StringExpandPlaceholders(gStringVar4, gText_PkmnHasNoEnergy);
         return FALSE;
     }
     for (enum BattlerId i = 0; i < gBattlersCount; i++)
     {
-        if (IsOnPlayerSide(i) && GetPartyIdFromBattleSlot(slot) == gBattlerPartyIndexes[i])
+        if (IsOnPlayerSide(i)
+         && GetBattlerParty(i) == party
+         && CombinedToIndividualPartyId(battlePartyId) == gBattlerPartyIndexes[i])
         {
-            GetMonNickname(&gParties[B_TRAINER_0][slot], gStringVar1);
+            GetMonNickname(&party[partySlot], gStringVar1);
             StringExpandPlaceholders(gStringVar4, gText_PkmnAlreadyInBattle);
             return FALSE;
         }
     }
-    if (GetMonData(&gParties[B_TRAINER_0][slot], MON_DATA_IS_EGG))
+    if (GetMonData(&party[partySlot], MON_DATA_IS_EGG))
     {
         StringExpandPlaceholders(gStringVar4, gText_EggCantBattle);
         return FALSE;
     }
-    if (GetPartyIdFromBattleSlot(slot) == gBattleStruct->prevSelectedPartySlot)
+    if (BattlersShareParty(gBattlerInMenuId, BATTLE_PARTNER(gBattlerInMenuId))
+     && battlePartyId == gBattleStruct->prevSelectedPartySlot)
     {
-        GetMonNickname(&gParties[B_TRAINER_0][slot], gStringVar1);
+        GetMonNickname(&party[partySlot], gStringVar1);
         StringExpandPlaceholders(gStringVar4, gText_PkmnAlreadySelected);
         return FALSE;
     }
@@ -9393,15 +9407,17 @@ static bool8 TrySwitchInPokemon(void)
     if (gPartyMenu.action == PARTY_ACTION_CANT_SWITCH)
     {
         u8 currBattler = gBattlerInMenuId;
-        GetMonNickname(&gParties[B_TRAINER_0][GetPartyIdFromBattlePartyId(gBattlerPartyIndexes[currBattler])], gStringVar1);
+        GetMonNickname(&party[GetPartyIdFromBattlePartyId(IndividualToCombinedPartyId(gBattlerPartyIndexes[currBattler], currBattler))], gStringVar1);
         StringExpandPlaceholders(gStringVar4, gText_PkmnCantSwitchOut);
         return FALSE;
     }
-    gSelectedMonPartyId = GetPartyIdFromBattleSlot(slot);
+    gSelectedMonPartyId = CombinedToIndividualPartyId(battlePartyId);
     gPartyMenuUseExitCallback = TRUE;
-    newSlot = GetPartyIdFromBattlePartyId(gBattlerPartyIndexes[gBattlerInMenuId]);
+    newSlot = GetPartyIdFromBattlePartyId(IndividualToCombinedPartyId(gBattlerPartyIndexes[gBattlerInMenuId], gBattlerInMenuId));
+    GetPartyAndSlotFromPartyMenuId(newSlot, &party, &newPartySlot);
     SwitchPartyMonSlots(newSlot, slot);
-    SwapPartyPokemon(&gParties[B_TRAINER_0][newSlot], &gParties[B_TRAINER_0][slot]);
+    SwapPartyPokemon(&party[newPartySlot], &party[partySlot]);
+
     return TRUE;
 }
 
@@ -10678,4 +10694,20 @@ static void Task_FirstBattleEnterParty_WaitFadeNormal(u8 taskId)
         gTasks[taskId].func = Task_HandleChooseMonInput;
     }
 }
+
+// Functions for 4-party link multi battle handling
+static u8 CombinedToIndividualPartyId(u8 index)
+{
+    if (IsMultiBattle() == TRUE && !AreMultiPartiesFullTeams() && index >= MULTI_PARTY_SIZE)
+        return index - MULTI_PARTY_SIZE;
+    return index;
+}
+
+static u8 IndividualToCombinedPartyId(u8 index, enum BattlerId battler)
+{
+    if (IsMultiBattle() == TRUE && !AreMultiPartiesFullTeams() && (GetBattlerPosition(battler) & BIT_FLANK))
+        return index + MULTI_PARTY_SIZE;
+    return index;
+}
+
 #endif // SWSH_PARTY_MENU
