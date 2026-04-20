@@ -353,7 +353,7 @@ static void CreatePartyMonStatusSpriteParameterized(enum Species, u8, struct Par
 // These next 4 functions are essentially redundant with the above 4
 // The only difference is that rather than receive the data directly they retrieve it from the mon struct
 static void CreatePartyMonHeldItemSprite(struct Pokemon *, struct PartyMenuBox *);
-static void CreatePartyMonIconSprite(struct Pokemon *, struct PartyMenuBox *, u32);
+static void CreatePartyMonIconSprite(struct Pokemon *, struct PartyMenuBox *);
 static void CreatePartyMonStatusSprite(struct Pokemon *, struct PartyMenuBox *);
 static void CreateHoverSprite(struct PartyMenuBox *, u8);
 static void CreateMessageWindowSprite(void);
@@ -531,6 +531,7 @@ static void Task_InitMultiPartnerPartySlideIn(u8);
 static void Task_MultiPartnerPartySlideIn(u8);
 static void SlideMultiPartyMenuBoxSpritesOneStep(u8);
 static void Task_WaitAfterMultiPartnerPartySlideIn(u8);
+static void Task_WaitBeforeMultiPartnerFullParty(u8);
 static void BufferMonSelection(void);
 static void Task_PartyMenuWaitForFade(u8 taskId);
 static void Task_ChooseContestMon(u8 taskId);
@@ -681,6 +682,20 @@ static void InitPartyMenu(enum PartyMenuType menuType, enum PartyMenuLayout layo
         CalculatePlayerPartyCount();
         SetMainCallback2(CB2_InitPartyMenu);
     }
+}
+
+static void LoadBattlePartyCurrentOrderForLayout(void)
+{
+    if (!gMain.inBattle || !IsMultiBattle())
+        return;
+
+    enum BattlerId battler = gBattlerInMenuId;
+
+    if (gPartyMenu.layout == PARTY_LAYOUT_MULTI_FULL_PARTNER || gPartyMenu.layout == PARTY_LAYOUT_MULTI_FULL_SHOWCASE_PARTNER)
+        battler = B_BATTLER_2;
+
+    if (battler < gBattlersCount) // Including check given recent cases where animations set battlers OOB
+        memcpy(gBattlePartyCurrentOrder, gBattleStruct->battlerPartyOrders[battler], sizeof(gBattlePartyCurrentOrder));
 }
 
 static void RefreshPartyMenu(void) //Refreshes the party menu without restarting tasks
@@ -1319,7 +1334,18 @@ static void LoadPartyMenuBoxes(u8 layout)
 
 static void RenderPartyMenuBox(u8 slot)
 {
-    if (gPartyMenu.menuType == PARTY_MENU_TYPE_MULTI_SHOWCASE && slot >= MULTI_PARTY_SIZE)
+    if (gPartyMenu.menuType == PARTY_MENU_TYPE_MULTI_FULL_SHOWCASE && gPartyMenu.layout == PARTY_LAYOUT_MULTI_FULL_SHOWCASE_PARTNER)
+    {
+        DisplayPartyPokemonDataForMultiBattle(slot);
+        if (gMultiPartnerParty[slot].species == SPECIES_NONE)
+            LoadPartyBoxPalette(&sPartyMenuBoxes[slot], PARTY_PAL_NO_MON);
+        else
+            LoadPartyBoxPalette(&sPartyMenuBoxes[slot], PARTY_PAL_MULTI_ALT);
+        CopyWindowToVram(sPartyMenuBoxes[slot].windowId, COPYWIN_GFX);
+        PutWindowTilemap(sPartyMenuBoxes[slot].windowId);
+        ScheduleBgCopyTilemapToVram(2);
+    }
+    else if (gPartyMenu.menuType == PARTY_MENU_TYPE_MULTI_SHOWCASE && slot >= MULTI_PARTY_SIZE)
     {
         DisplayPartyPokemonDataForMultiBattle(slot);
         if (gMultiPartnerParty[slot - MULTI_PARTY_SIZE].species == SPECIES_NONE)
@@ -1633,6 +1659,9 @@ static void DisplayPartyPokemonDataForMultiBattle(u8 slot)
     struct PartyMenuBox *menuBox = &sPartyMenuBoxes[slot];
     u8 actualSlot = slot - MULTI_PARTY_SIZE;
 
+    if (gPartyMenu.layout == PARTY_LAYOUT_MULTI_FULL_SHOWCASE_PARTNER)
+        actualSlot = slot;
+
     if (gMultiPartnerParty[actualSlot].species == SPECIES_NONE)
     {
         DrawEmptySlot(menuBox->windowId);
@@ -1668,29 +1697,45 @@ static u8 *GetPartyMenuBgTile(u16 tileId)
 
 static void CreatePartyMonSprites(u8 slot)
 {
-    u8 actualSlot;
+    struct Pokemon *party = NULL;
+    s8 partySlot = 0;
+    GetPartyAndSlotFromPartyMenuId(slot, &party, &partySlot);
 
-    if (gPartyMenu.menuType == PARTY_MENU_TYPE_MULTI_SHOWCASE && slot >= MULTI_PARTY_SIZE)
+    if (gPartyMenu.menuType == PARTY_MENU_TYPE_MULTI_FULL_SHOWCASE && gPartyMenu.layout == PARTY_LAYOUT_MULTI_FULL_SHOWCASE_PARTNER)
     {
         u8 status;
-        actualSlot = slot - MULTI_PARTY_SIZE;
 
-        if (gMultiPartnerParty[actualSlot].species != SPECIES_NONE)
+        if (gMultiPartnerParty[partySlot].species != SPECIES_NONE)
         {
-            CreatePartyMonIconSpriteParameterized(gMultiPartnerParty[actualSlot].species, gMultiPartnerParty[actualSlot].personality, FALSE, &sPartyMenuBoxes[slot], 0);
-            CreatePartyMonHeldItemSpriteParameterized(gMultiPartnerParty[actualSlot].species, gMultiPartnerParty[actualSlot].heldItem, &sPartyMenuBoxes[slot]);
-            if (gMultiPartnerParty[actualSlot].hp == 0)
+            CreatePartyMonIconSpriteParameterized(gMultiPartnerParty[partySlot].species, gMultiPartnerParty[partySlot].personality, FALSE, &sPartyMenuBoxes[slot], 0);
+            CreatePartyMonHeldItemSpriteParameterized(gMultiPartnerParty[partySlot].species, gMultiPartnerParty[partySlot].heldItem, &sPartyMenuBoxes[slot]);
+            if (gMultiPartnerParty[partySlot].hp == 0)
                 status = AILMENT_FNT;
             else
-                status = GetAilmentFromStatus(gMultiPartnerParty[actualSlot].status);
-            CreatePartyMonStatusSpriteParameterized(gMultiPartnerParty[actualSlot].species, status, &sPartyMenuBoxes[slot]);
+                status = GetAilmentFromStatus(gMultiPartnerParty[partySlot].status);
+            CreatePartyMonStatusSpriteParameterized(gMultiPartnerParty[partySlot].species, status, &sPartyMenuBoxes[slot]);
         }
     }
-    else if (GetMonData(&gParties[B_TRAINER_0][slot], MON_DATA_SPECIES) != SPECIES_NONE)
+    else if (gPartyMenu.menuType == PARTY_MENU_TYPE_MULTI_SHOWCASE && slot >= MULTI_PARTY_SIZE)
     {
-        CreatePartyMonIconSprite(&gParties[B_TRAINER_0][slot], &sPartyMenuBoxes[slot], slot);
-        CreatePartyMonHeldItemSprite(&gParties[B_TRAINER_0][slot], &sPartyMenuBoxes[slot]);
-        CreatePartyMonStatusSprite(&gParties[B_TRAINER_0][slot], &sPartyMenuBoxes[slot]);
+        u8 status;
+
+        if (gMultiPartnerParty[partySlot].species != SPECIES_NONE)
+        {
+            CreatePartyMonIconSpriteParameterized(gMultiPartnerParty[partySlot].species, gMultiPartnerParty[partySlot].personality, FALSE, &sPartyMenuBoxes[slot], 0);
+            CreatePartyMonHeldItemSpriteParameterized(gMultiPartnerParty[partySlot].species, gMultiPartnerParty[partySlot].heldItem, &sPartyMenuBoxes[slot]);
+            if (gMultiPartnerParty[partySlot].hp == 0)
+                status = AILMENT_FNT;
+            else
+                status = GetAilmentFromStatus(gMultiPartnerParty[partySlot].status);
+            CreatePartyMonStatusSpriteParameterized(gMultiPartnerParty[partySlot].species, status, &sPartyMenuBoxes[slot]);
+        }
+    }
+    else if (GetMonData(&party[partySlot], MON_DATA_SPECIES) != SPECIES_NONE)
+    {
+        CreatePartyMonIconSprite(&party[partySlot], &sPartyMenuBoxes[slot]);
+        CreatePartyMonHeldItemSprite(&party[partySlot], &sPartyMenuBoxes[slot]);
+        CreatePartyMonStatusSprite(&party[partySlot], &sPartyMenuBoxes[slot]);
     }
 }
 
@@ -1929,6 +1974,20 @@ void Task_HandleChooseMonInput(u8 taskId)
                 PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
                 Task_ClosePartyMenu(taskId);
             }
+            else
+            {
+                PlaySE(SE_M_HARDEN);
+                UpdatePartyToFieldOrder();
+
+                if (gPartyMenu.layout == PARTY_LAYOUT_MULTI_FULL)
+                    gPartyMenu.layout = PARTY_LAYOUT_MULTI_FULL_PARTNER;
+                else
+                    gPartyMenu.layout = PARTY_LAYOUT_MULTI_FULL;
+
+                LoadBattlePartyCurrentOrderForLayout();
+                UpdatePartyToBattleOrder();
+                RefreshPartyMenu();
+            }
             break;
         }
     }
@@ -2042,9 +2101,13 @@ static void HandleChooseMonSelection(u8 taskId, s8 *slotPtr)
         case PARTY_ACTION_CHOOSE_FAINTED_MON:
         {
             u8 partyId = GetPartyIdFromBattleSlot((u8)*slotPtr);
-            if (GetMonData(&gParties[B_TRAINER_0][*slotPtr], MON_DATA_HP) > 0
-                || GetMonData(&gParties[B_TRAINER_0][*slotPtr], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG
-                || ((gBattleTypeFlags & BATTLE_TYPE_MULTI) && partyId >= (PARTY_SIZE / 2)))
+            struct Pokemon *party = NULL;
+            s8 partySlot = 0;
+            GetPartyAndSlotFromPartyMenuId(*slotPtr, &party, &partySlot);
+
+            if (GetMonData(&party[partySlot], MON_DATA_HP) > 0
+             || GetMonData(&party[partySlot], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG
+             || ((gBattleTypeFlags & BATTLE_TYPE_MULTI) && partyId >= (PARTY_SIZE / 2)))
             {
                 // Can't select if egg, alive, or doesn't belong to you
                 PlaySE(SE_FAILURE);
@@ -2289,12 +2352,18 @@ static void UpdatePartyMonSprite(u8 slotId)
 static void UpdateCurrentPartySelection(s8 *slotPtr, s8 movementDir)
 {
     s8 newSlotId = *slotPtr;
-    u8 layout = gPartyMenu.layout;
+    enum PartyMenuLayout layout = gPartyMenu.layout;
 
-    if (layout == PARTY_LAYOUT_SINGLE)
+    if (layout == PARTY_LAYOUT_SINGLE
+     || layout == PARTY_LAYOUT_MULTI_FULL
+     || layout == PARTY_LAYOUT_MULTI_FULL_PARTNER)
+    {
         UpdatePartySelectionSingleLayout(slotPtr, movementDir);
+    }
     else
+    {
         UpdatePartySelectionDoubleLayout(slotPtr, movementDir);
+    }
 
     if (*slotPtr != newSlotId)
     {
@@ -2815,8 +2884,8 @@ static void InitPartyMenuWindows(enum PartyMenuLayout layout)
 {
     switch (layout)
     {
-    case PARTY_LAYOUT_SINGLE:
-        InitWindows(sSinglePartyMenuWindowTemplate_SwSh);
+    case PARTY_LAYOUT_MULTI_SHOWCASE:
+        InitWindows(sShowcaseMultiPartyMenuWindowTemplate_SwSh);
         break;
     case PARTY_LAYOUT_DOUBLE:
         InitWindows(sDoublePartyMenuWindowTemplate_SwSh);
@@ -2824,8 +2893,8 @@ static void InitPartyMenuWindows(enum PartyMenuLayout layout)
     case PARTY_LAYOUT_MULTI:
         InitWindows(sMultiPartyMenuWindowTemplate_SwSh);
         break;
-    default: // PARTY_LAYOUT_MULTI_SHOWCASE
-        InitWindows(sShowcaseMultiPartyMenuWindowTemplate_SwSh);
+    default: // Singles and full-party multibattle menus
+        InitWindows(sSinglePartyMenuWindowTemplate_SwSh);
         break;
     }
     LoadPartyMenuWindows();
@@ -3796,6 +3865,7 @@ static u8 GetPartyMenuActionsType(struct Pokemon *mon)
     // PARTY_MENU_TYPE_CONTEST
     // PARTY_MENU_TYPE_CHOOSE_MON
     // PARTY_MENU_TYPE_MULTI_SHOWCASE
+    // PARTY_MENU_TYPE_MULTI_FULL_SHOWCASE
     // PARTY_MENU_TYPE_MOVE_RELEARNER
     // PARTY_MENU_TYPE_MINIGAME
     default:
@@ -3807,14 +3877,17 @@ static u8 GetPartyMenuActionsType(struct Pokemon *mon)
 
 static bool8 CreateSelectionWindow(u8 taskId)
 {
-    struct Pokemon *mon = &gParties[B_TRAINER_0][gPartyMenu.slotId];
+    struct Pokemon *party = NULL;
+    s8 partySlot = 0;
+    GetPartyAndSlotFromPartyMenuId(gPartyMenu.slotId, &party, &partySlot);
+    struct Pokemon *mon = &party[partySlot];
     enum Item item;
 
     GetMonNickname(mon, gStringVar1);
     PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
     if (gPartyMenu.menuType != PARTY_MENU_TYPE_STORE_PYRAMID_HELD_ITEMS)
     {
-        SetPartyMonSelectionActions(gParties[B_TRAINER_0], gPartyMenu.slotId, GetPartyMenuActionsType(mon));
+        SetPartyMonSelectionActions(party, gPartyMenu.slotId, GetPartyMenuActionsType(mon));
         DisplaySelectionWindow(SELECTWINDOW_ACTIONS);
         DisplayPartyMenuStdMessage(PARTY_MSG_DO_WHAT_WITH_MON);
     }
@@ -5235,7 +5308,7 @@ bool32 SetUpFieldMove_Dive(void)
     return FALSE;
 }
 
-static void CreatePartyMonIconSprite(struct Pokemon *mon, struct PartyMenuBox *menuBox, u32 slot)
+static void CreatePartyMonIconSprite(struct Pokemon *mon, struct PartyMenuBox *menuBox)
 {
     enum Species species = GetMonData(mon, MON_DATA_SPECIES);
     bool32 isEgg = GetMonData(mon, MON_DATA_IS_EGG);
@@ -9194,9 +9267,11 @@ void ChooseMonForWirelessMinigame(void)
 
 static u8 GetPartyLayoutFromBattleType(void)
 {
-    if (IsMultiBattle() == TRUE)
+    if (IsMultiBattle() == TRUE && !AreMultiPartiesFullTeams())
         return PARTY_LAYOUT_MULTI;
-    if (!IsDoubleBattle() || gPartiesCount[B_TRAINER_0] == 1) // Draw the single layout in a double battle where the player has only one pokemon.
+    if (IsMultiBattle() == TRUE && AreMultiPartiesFullTeams())
+        return PARTY_LAYOUT_MULTI_FULL;
+    if (!IsDoubleBattle() || gPartiesCount[B_TRAINER_0] == 1) // Draw the single layout in a double battle where the player has only one Pokémon.
         return PARTY_LAYOUT_SINGLE;
     return PARTY_LAYOUT_DOUBLE;
 }
@@ -9228,7 +9303,9 @@ void ChooseMonForInBattleItem(void)
 
 static u8 GetPartyMenuActionsTypeInBattle(struct Pokemon *mon)
 {
-    if (GetMonData(&gParties[B_TRAINER_0][1], MON_DATA_SPECIES) != SPECIES_NONE && GetMonData(mon, MON_DATA_IS_EGG) == FALSE)
+    if (GetMonData(&gParties[B_TRAINER_0][1], MON_DATA_SPECIES) != SPECIES_NONE
+     && GetMonData(mon, MON_DATA_IS_EGG) == FALSE
+     && gPartyMenu.layout != PARTY_LAYOUT_MULTI_FULL_PARTNER)
     {
         if (gPartyMenu.action == PARTY_ACTION_SEND_OUT)
             return ACTIONS_SEND_OUT;
@@ -9306,7 +9383,14 @@ static void BufferBattlePartyOrder(u8 *partyBattleOrder, u8 flankId)
     u8 partyIds[PARTY_SIZE];
     int i, j;
 
-    if (IsMultiBattle() == TRUE)
+    if (IsMultiBattle() == TRUE && AreMultiPartiesFullTeams() == TRUE)
+    {
+        partyBattleOrder[0] = (0 << 4) | 1;
+        partyBattleOrder[1] = (2 << 4) | 3;
+        partyBattleOrder[2] = (4 << 4) | 5;
+        return;
+    }
+    else if (IsMultiBattle() == TRUE)
     {
         // Party ids are packed in 4 bits at a time
         // i.e. the party id order below would be 0, 3, 5, 4, 2, 1, and the two parties would be 0,5,4 and 3,2,1
@@ -9372,7 +9456,14 @@ static void BufferBattlePartyOrderBySide(u8 *partyBattleOrder, u8 flankId, enum 
     else
         leftBattler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
 
-    if (IsMultiBattle() == TRUE)
+    if (IsMultiBattle() == TRUE && AreMultiPartiesFullTeams() == TRUE)
+    {
+        partyBattleOrder[0] = (0 << 4) | 1;
+        partyBattleOrder[1] = (2 << 4) | 3;
+        partyBattleOrder[2] = (4 << 4) | 5;
+        return;
+    }
+    else if (IsMultiBattle() == TRUE)
     {
         if (flankId != 0)
         {
@@ -9562,7 +9653,10 @@ static void CB2_SetUpExitToBattleScreen(void)
 
 void ShowPartyMenuToShowcaseMultiBattleParty(void)
 {
-    InitPartyMenu(PARTY_MENU_TYPE_MULTI_SHOWCASE, PARTY_LAYOUT_MULTI_SHOWCASE, PARTY_ACTION_CHOOSE_MON, FALSE, PARTY_MSG_NONE, Task_InitMultiPartnerPartySlideIn, gMain.savedCallback);
+    if (AreMultiPartiesFullTeams())
+        InitPartyMenu(PARTY_MENU_TYPE_MULTI_FULL_SHOWCASE, PARTY_LAYOUT_MULTI_FULL_SHOWCASE, PARTY_ACTION_CHOOSE_MON, FALSE, PARTY_MSG_NONE, Task_WaitBeforeMultiPartnerFullParty, gMain.savedCallback);
+    else
+        InitPartyMenu(PARTY_MENU_TYPE_MULTI_SHOWCASE, PARTY_LAYOUT_MULTI_SHOWCASE, PARTY_ACTION_CHOOSE_MON, FALSE, PARTY_MSG_NONE, Task_InitMultiPartnerPartySlideIn, gMain.savedCallback);
 }
 
 #define tXPos  data[0]
@@ -9598,12 +9692,42 @@ static void Task_MultiPartnerPartySlideIn(u8 taskId)
     }
 }
 
+static void Task_WaitAfterMultiPartnerFullParty(u8 taskId)
+{
+    s16 *data = gTasks[taskId].data;
+
+    if (data[0] == 0)
+        PlaySE(SE_M_HARDEN); // The Harden SE plays when the partner party is displayed
+
+    if (FollowerNPCIsBattlePartner())
+    {
+        if (++data[0] == 128)
+            Task_ClosePartyMenu(taskId);
+    }
+    else if (++data[0] == 256)
+        Task_ClosePartyMenu(taskId);
+}
+
+static void Task_WaitBeforeMultiPartnerFullParty(u8 taskId)
+{
+    s16 *data = gTasks[taskId].data;
+
+    if (++data[0] == 64)
+    {
+        RefreshPartyMenu();
+        gPartyMenu.layout = PARTY_LAYOUT_MULTI_FULL_SHOWCASE_PARTNER;
+        data[0] = 0;
+        gTasks[taskId].func = Task_WaitAfterMultiPartnerFullParty;
+    }
+}
+
 static void Task_WaitAfterMultiPartnerPartySlideIn(u8 taskId)
 {
     s16 *data = gTasks[taskId].data;
 
     // data[0] used as a timer afterwards rather than the x pos
-    if (FollowerNPCIsBattlePartner()) {
+    if (FollowerNPCIsBattlePartner())
+    {
         if (++data[0] == 128)
             Task_ClosePartyMenu(taskId);
     }
