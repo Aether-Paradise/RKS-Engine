@@ -584,6 +584,8 @@ static void Task_HideFollowerNPCForTeleport(u8);
 static void FieldCallback_RockClimb(void);
 static void GetPartyAndSlotFromPartyMenuId(s8 menuId, struct Pokemon **party, s8 *partySlot);
 static struct Pokemon *GetPartyMonFromPartyMenuId(s8 menuId);
+static void GetMultiPartyForSummaryScreen(void);
+static void RestoreMultiPartyFromSummaryScreen(void);
 static void SavePartyMenuStateForPC(void);
 static void CB2_ReopenPartyMenuFromPC(void);
 // Multiuse item code from Kasen
@@ -1442,6 +1444,10 @@ static void UpdatePartyMoveWindows(u8 slot)
     if (gPartyMenu.menuType != PARTY_MENU_TYPE_IN_BATTLE)
         return;
 
+    struct Pokemon *party = NULL;
+    s8 partySlot = 0;
+    GetPartyAndSlotFromPartyMenuId(slot, &party, &partySlot);
+
     DestroyMoveTypeSprites();
     for (m = 0; m < MAX_MON_MOVES; ++m)
     {
@@ -1449,10 +1455,10 @@ static void UpdatePartyMoveWindows(u8 slot)
             continue;
 
         FillWindowPixelBuffer(sMoveWindowIds[m], PIXEL_FILL(0));
-        tm = (GetMonData(&gParties[B_TRAINER_0][slot], MON_DATA_MOVE1 + m) != MOVE_NONE) ? sMoveTilemap_Main_SwSh : sMoveTilemap_Empty_SwSh;
+        tm = (GetMonData(&party[partySlot], MON_DATA_MOVE1 + m) != MOVE_NONE) ? sMoveTilemap_Main_SwSh : sMoveTilemap_Empty_SwSh;
         BlitBitmapToPartyWindow(sMoveWindowIds[m], tm, 14, 0, 0, 14, 2);
         {
-            struct Pokemon *mon = &gParties[B_TRAINER_0][slot];
+            struct Pokemon *mon = &party[partySlot];
             enum Move move = GetMonData(mon, MON_DATA_MOVE1 + m);
             if (move != MOVE_NONE)
             {
@@ -1476,12 +1482,15 @@ static void DisplayPartyPokemonAbility(u8 windowId, u8 slot)
     const u8 *name;
     int x;
     int y = 16;
+    struct Pokemon *party = NULL;
+    s8 partySlot = 0;
+    GetPartyAndSlotFromPartyMenuId(slot, &party, &partySlot);
 
     FillWindowPixelBuffer(windowId, PIXEL_FILL(0));
     BlitBitmapToPartyWindow(windowId, sAbilityTilemap_SwSh, 13, 0, 0, 13, 4);
 
     {
-        struct Pokemon *mon = &gParties[B_TRAINER_0][slot];
+        struct Pokemon *mon = &party[partySlot];
         if (GetMonData(mon, MON_DATA_SPECIES) != SPECIES_NONE && !GetMonData(mon, MON_DATA_IS_EGG))
         {
             abilityNum = GetMonData(mon, MON_DATA_ABILITY_NUM);
@@ -1835,6 +1844,9 @@ static u8 GetPartyBoxPaletteFlags(u8 slot, u8 animNum)
 
 static bool8 PartyBoxPal_ParnterOrDisqualifiedInArena(u8 slot)
 {
+    if (gPartyMenu.layout == PARTY_LAYOUT_MULTI_FULL_PARTNER || gPartyMenu.layout == PARTY_LAYOUT_MULTI_FULL_SHOWCASE_PARTNER)
+        return TRUE;
+
     if (gPartyMenu.layout == PARTY_LAYOUT_MULTI && (slot == 1 || slot == 4 || slot == 5))
         return TRUE;
 
@@ -3973,8 +3985,20 @@ static void CB2_ShowPokemonSummaryScreen(void)
 {
     if (gPartyMenu.menuType == PARTY_MENU_TYPE_IN_BATTLE)
     {
-        UpdatePartyToBattleOrder();
-        ShowPokemonSummaryScreen(SUMMARY_MODE_LOCK_MOVES, gParties[B_TRAINER_0], gPartyMenu.slotId, gPartiesCount[B_TRAINER_0] - 1, CB2_ReturnToPartyMenuFromSummaryScreen);
+        if (gBattleTypeFlags & BATTLE_TYPE_MULTI)
+        {
+            LoadBattlePartyCurrentOrderForLayout();
+            UpdatePartyToBattleOrder();
+            if (!AreMultiPartiesFullTeams())
+                GetMultiPartyForSummaryScreen();
+        }
+
+        if (gPartyMenu.layout == PARTY_LAYOUT_MULTI_FULL_PARTNER)
+            ShowPokemonSummaryScreen(SUMMARY_MODE_LOCK_MOVES, gParties[B_TRAINER_2], gPartyMenu.slotId, CalculatePartyCount(B_TRAINER_2) - 1, CB2_ReturnToPartyMenuFromSummaryScreen);
+        else if (gPartyMenu.layout == PARTY_LAYOUT_MULTI_FULL)
+            ShowPokemonSummaryScreen(SUMMARY_MODE_LOCK_MOVES, gParties[B_TRAINER_0], gPartyMenu.slotId, CalculatePartyCount(B_TRAINER_0) - 1, CB2_ReturnToPartyMenuFromSummaryScreen);
+        else
+            ShowPokemonSummaryScreen(SUMMARY_MODE_LOCK_MOVES, gParties[B_TRAINER_0], gPartyMenu.slotId, CalculatePartyCountOfSide(B_BATTLER_0) - 1, CB2_ReturnToPartyMenuFromSummaryScreen);
     }
     else if (gPartyMenu.menuType == PARTY_MENU_TYPE_CHOOSE_HALF)
     {
@@ -3988,6 +4012,8 @@ static void CB2_ShowPokemonSummaryScreen(void)
 
 void CB2_ReturnToPartyMenuFromSummaryScreen(void)
 {
+    if (gBattleTypeFlags & BATTLE_TYPE_MULTI && !AreMultiPartiesFullTeams() && gPartyMenu.menuType == PARTY_MENU_TYPE_IN_BATTLE)
+        RestoreMultiPartyFromSummaryScreen();
     gPaletteFade.bufferTransferDisabled = TRUE;
     gPartyMenu.slotId = gLastViewedMonIndex;
     InitPartyMenu(gPartyMenu.menuType, KEEP_PARTY_LAYOUT, gPartyMenu.action, TRUE, PARTY_MSG_DO_WHAT_WITH_MON, Task_TryCreateSelectionWindow, gPartyMenu.exitCallback);
@@ -10544,6 +10570,30 @@ static struct Pokemon *GetPartyMonFromPartyMenuId(s8 menuId)
     GetPartyAndSlotFromPartyMenuId(menuId, &party, &partySlot);
 
     return &party[partySlot];
+}
+
+static void GetMultiPartyForSummaryScreen(void)
+{
+    // Consolidate player and partner party into player party for summary screen
+    gParties[B_TRAINER_0][3] = gParties[B_TRAINER_0][2];
+    gParties[B_TRAINER_0][2] = gParties[B_TRAINER_0][1];
+    gParties[B_TRAINER_0][1] = gParties[B_TRAINER_2][0];
+    gParties[B_TRAINER_0][4] = gParties[B_TRAINER_2][1];
+    gParties[B_TRAINER_0][5] = gParties[B_TRAINER_2][2];
+}
+
+
+static void RestoreMultiPartyFromSummaryScreen(void)
+{
+    // Restore player mons
+    gParties[B_TRAINER_0][1] = gParties[B_TRAINER_0][2];
+    gParties[B_TRAINER_0][2] = gParties[B_TRAINER_0][3];
+
+    // Clear partner mons from back of player party
+    for (u32 i = MULTI_PARTY_SIZE; i < PARTY_SIZE; i++)
+    {
+        ZeroMonData(&gParties[B_TRAINER_0][i]);
+    }
 }
 
 static void PartyMenu_Oak_PrintText(u8 windowId, const u8 *str)
