@@ -10,6 +10,7 @@ enum Pocket
     POCKET_KEY_ITEMS,
     POCKETS_COUNT,
     POCKET_DUMMY = POCKETS_COUNT,
+    POCKET_MAX_SCROLL = POCKETS_COUNT - 1,
 };
 
 #define REPEL_LURE_MASK         (1 << 15)

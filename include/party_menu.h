@@ -3,6 +3,7 @@
 
 #include "main.h"
 #include "task.h"
+#include "constants/party_menu.h"
 
 enum PartyMenuLayout
 {
@@ -78,7 +79,7 @@ bool8 IsPartyMenuTextPrinterActive(void);
 void PartyMenuModifyHP(u8 taskId, u8 slot, s8 hpIncrement, s16 hpDifference, TaskFunc task);
 u8 GetAilmentFromStatus(u32 status);
 u8 GetMonAilment(struct Pokemon *mon);
-void DisplayPartyMenuStdMessage(u32 stringId);
+void DisplayPartyMenuStdMessage(enum PartyMsg stringId);
 bool8 FieldCallback_PrepareFadeInFromMenu(void);
 bool8 FieldCallback_PrepareFadeInForTeleport(void);
 void CB2_ReturnToPartyMenuFromFlyMap(void);
@@ -112,6 +113,9 @@ void ItemUseCB_Fusion(u8 taskId, TaskFunc task);
 enum ItemEffectType GetItemEffectType(enum Item item);
 void CB2_PartyMenuFromStartMenu(void);
 void CB2_ChooseMonToGiveItem(void);
+void CB2_ChooseMonToGiveItem_ItemPc_RG(void);
+void CB2_SelectBagItemToGive(void);
+void CB2_GiveHoldItem(void);
 void ChooseMonToGiveMailFromMailbox(void);
 void InitChooseHalfPartyForBattle(u8 unused);
 void ClearSelectedPartyOrder(void);
@@ -120,6 +124,7 @@ void ChooseMonForMoveTutor(void);
 void ChooseMonForWirelessMinigame(void);
 void OpenPartyMenuInBattle(u8 partyAction);
 void ChooseMonForInBattleItem(void);
+void ChooseMonForInBattleItem_BerryPouch(void);
 void BufferBattlePartyCurrentOrder(void);
 void BufferBattlePartyCurrentOrderBySide(enum BattlerId battler, u8 flankId);
 void SwitchPartyOrderLinkMulti(enum BattlerId battler, u8 slot, u8 slot2);

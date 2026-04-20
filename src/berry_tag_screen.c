@@ -1,6 +1,7 @@
 #include "global.h"
 #include "berry_tag_screen.h"
 #include "berry.h"
+#include "berry_pouch.h"
 #include "decompress.h"
 #include "event_object_movement.h"
 #include "item_menu.h"
@@ -47,6 +48,7 @@ struct BerryTagScreenStruct
     u8 berrySpriteId;
     u8 flavorCircleIds[FLAVOR_COUNT];
     u16 gfxState;
+    bool8 fromBerryPouch;
 };
 
 // EWRAM vars
@@ -182,11 +184,23 @@ static const u8 sText_BerryTag[] = _("BERRY TAG");
 static const u8 sText_ThreeMarks[] = _("???");
 
 // code
-void DoBerryTagScreen(void)
+static void DoBerryTagScreenCheckPouch(bool32 fromBerryPouch)
 {
     sBerryTag = AllocZeroed(sizeof(*sBerryTag));
     sBerryTag->berryId = ItemIdToBerryType(gSpecialVar_ItemId);
+    sBerryTag->fromBerryPouch = fromBerryPouch;
     SetMainCallback2(CB2_InitBerryTagScreen);
+}
+
+// code
+void DoBerryTagScreen(void)
+{
+    DoBerryTagScreenCheckPouch(FALSE);
+}
+
+void DoBerryTagScreenFromPouch(void)
+{
+    DoBerryTagScreenCheckPouch(TRUE);
 }
 
 static void CB2_BerryTagScreen(void)
@@ -530,15 +544,23 @@ static void PrepareToCloseBerryTagScreen(u8 taskId)
     gTasks[taskId].func = Task_CloseBerryTagScreen;
 }
 
+static void CB2_ReturnToBerryPouchMenu(void)
+{
+    InitBerryPouch(BERRYPOUCH_REOPENING, NULL, BERRYPOUCH_KEEP_PREV);
+}
+
 static void Task_CloseBerryTagScreen(u8 taskId)
 {
     if (!gPaletteFade.active)
     {
         DestroyBerrySprite();
         DestroyFlavorCircleSprites();
+        if (sBerryTag->fromBerryPouch)
+            SetMainCallback2(CB2_ReturnToBerryPouchMenu);
+        else
+            SetMainCallback2(CB2_ReturnToBagMenuPocket);
         Free(sBerryTag);
         FreeAllWindowBuffers();
-        SetMainCallback2(CB2_ReturnToBagMenuPocket);
         DestroyTask(taskId);
     }
 }
