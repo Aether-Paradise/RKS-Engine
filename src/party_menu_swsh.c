@@ -2945,7 +2945,8 @@ static void LoadPartyMenuWindows(void)
         int i;
         for (i = 0; i < MAX_MON_MOVES; ++i)
         {
-            sMoveWindowIds[i] = AddWindow(&sMoveInfoWindowTemplate_SwSh[i]);
+            if (sMoveWindowIds[i] == WINDOW_NONE)
+                sMoveWindowIds[i] = AddWindow(&sMoveInfoWindowTemplate_SwSh[i]);
             if (sMoveWindowIds[i] != WINDOW_NONE)
             {
                 FillWindowPixelBuffer(sMoveWindowIds[i], PIXEL_FILL(0));
@@ -2953,7 +2954,8 @@ static void LoadPartyMenuWindows(void)
                 CopyWindowToVram(sMoveWindowIds[i], COPYWIN_GFX);
             }
         }
-        sAbilityWindowId = AddWindow(&sAbilityInfoWindowTemplate);
+        if (sAbilityWindowId == WINDOW_NONE)
+            sAbilityWindowId = AddWindow(&sAbilityInfoWindowTemplate);
         if (sAbilityWindowId != WINDOW_NONE)
         {
             PutWindowTilemap(sAbilityWindowId);
