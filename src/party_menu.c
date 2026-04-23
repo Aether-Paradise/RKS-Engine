@@ -192,7 +192,7 @@ struct PartyMenuInternal
     u32 lastSelectedSlot:3;  // Used to return to same slot when going left/right bewtween columns
     u32 spriteIdConfirmPokeball:7;
     u32 spriteIdCancelPokeball:7;
-    u32 messageId:14;
+    enum PartyMsg messageId:14;
     u8 windowId[3];
     u8 actions[8];
     u8 numActions;
@@ -526,6 +526,13 @@ static const u8 sText_BasePointsResetToZero[] = _("{STR_VAR_1}'s base points\nwe
 static const u8 sText_CannotSendMonToBoxHM[] = _("Cannot send that mon to the box,\nbecause it knows a HM move.{PAUSE_UNTIL_PRESS}");
 static const u8 sText_CannotSendMonToBoxPartner[] = _("Cannot send a mon that doesn't\nbelong to you to the box.{PAUSE_UNTIL_PRESS}");
 
+#define tItemCount          data[5]
+#define tMaxItemQuantity    data[6]
+#define tQuantityInBag      data[7]
+#define tWindowId           data[8]
+#define tItemEffect         data[9]
+#define tHoldEffectParam    data[10]
+
 // static const data
 #include "data/party_menu.h"
 
@@ -748,16 +755,25 @@ static bool8 ShowPartyMenu(void)
         gMain.state++;
         break;
     case 20:
+        gMain.state++;
+        break;
+    case 21:
+        gMain.state++;
+        break;
+    case 22:
+        gMain.state++;
+        break;
+    case 23:
         CreateTask(sPartyMenuInternal->task, 0);
         DisplayPartyMenuStdMessage(sPartyMenuInternal->messageId);
         gMain.state++;
         break;
-    case 21:
+    case 24:
         BlendPalettes(PALETTES_ALL, 16, 0);
         gPaletteFade.bufferTransferDisabled = FALSE;
         gMain.state++;
         break;
-    case 22:
+    case 25:
         BeginNormalPaletteFade(PALETTES_ALL, 0, 16, 0, RGB_BLACK);
         gMain.state++;
         break;
@@ -779,83 +795,86 @@ static bool8 ReloadPartyMenu(void)
         gMain.state++;
         break;
     case 1:
-        ScanlineEffect_Stop();
         gMain.state++;
         break;
     case 2:
+        ScanlineEffect_Stop();
+        gMain.state++;
+        break;
+    case 3:
         ResetPaletteFade();
         gPaletteFade.bufferTransferDisabled = TRUE;
         gMain.state++;
         break;
-    case 3:
+    case 4:
         ResetSpriteData();
         gMain.state++;
         break;
-    case 4:
+    case 5:
         FreeAllSpritePalettes();
         gMain.state++;
         break;
-    case 5:
+    case 6:
         SetPartyMonsAllowedInMinigame();
         gMain.state++;
         break;
-    case 6:
+    case 7:
         sPartyMenuInternal->data[0] = 0;
         gMain.state++;
         break;
-    case 7:
+    case 8:
         LoadPartyMenuWindows();
         gMain.state++;
         break;
-    case 8:
+    case 9:
         LoadPartyMenuBoxes(gPartyMenu.layout);
         sPartyMenuInternal->data[0] = 0;
         gMain.state++;
         break;
-    case 9:
+    case 10:
         LoadHeldItemIcons();
         gMain.state++;
         break;
-    case 10:
+    case 11:
         LoadPartyMenuPokeballGfx();
         gMain.state++;
         break;
-    case 11:
+    case 12:
         LoadPartyMenuAilmentGfx();
         gMain.state++;
         break;
-    case 12:
+    case 13:
         LoadMonIconPalettes();
         gMain.state++;
         break;
-    case 13:
+    case 14:
         if (CreatePartyMonSpritesLoop())
         {
             sPartyMenuInternal->data[0] = 0;
             gMain.state++;
         }
         break;
-    case 14:
+    case 15:
         if (RenderPartyMenuBoxes())
         {
             sPartyMenuInternal->data[0] = 0;
             gMain.state++;
         }
         break;
-    case 15:
+    case 16:
         CreateCancelConfirmPokeballSprites();
         gMain.state++;
         break;
-    case 16:
+    case 17:
         CreateCancelConfirmWindows(sPartyMenuInternal->chooseHalf);
         gMain.state++;
         break;
-    case 17:
+    case 18:
         BlendPalettes(PALETTES_ALL, 16, RGB_WHITEALPHA);
         gPaletteFade.bufferTransferDisabled = FALSE;
         gMain.state++;
         break;
-    case 18:
+    case 19:
         BeginNormalPaletteFade(PALETTES_ALL, 0, 16, 0, RGB_WHITEALPHA);
         gMain.state++;
         break;
@@ -1357,6 +1376,11 @@ void AnimatePartySlot(u8 slot, u8 animNum)
         }
         return;
     case PARTY_SIZE: // Confirm
+        if (RKSE_PARTY_MENU_DESIGN == PARTY_MENU_DESIGN_SWSH)
+        {
+            spriteId = sPartyMenuInternal->spriteIdConfirmPokeball;
+            break;
+        }
         if (animNum == 0)
             SetBgTilemapPalette(1, 23, 16, 7, 2, 1);
         else
@@ -1364,6 +1388,11 @@ void AnimatePartySlot(u8 slot, u8 animNum)
         spriteId = sPartyMenuInternal->spriteIdConfirmPokeball;
         break;
     case PARTY_SIZE + 1: // Cancel
+        if (RKSE_PARTY_MENU_DESIGN == PARTY_MENU_DESIGN_SWSH)
+        {
+            spriteId = sPartyMenuInternal->spriteIdConfirmPokeball;
+            break;
+        }
         // The position of the Cancel button changes if Confirm is present
         if (!sPartyMenuInternal->chooseHalf)
         {
@@ -2503,6 +2532,8 @@ static void DrawEmptySlot(u8 windowId)
     LoadPalette(GetPartyMenuPalBufferPtr(paletteIds[2]), paletteOffsets[2] + palOffset, PLTT_SIZEOF(1));  \
 }
 
+#define LOAD_PARTY_TEXT_PAL(paletteIds, paletteOffsets)
+
 static void LoadPartyBoxPalette(struct PartyMenuBox *menuBox, u8 palFlags)
 {
     u8 palOffset = BG_PLTT_ID(GetWindowAttribute(menuBox->windowId, WINDOW_PALETTE_NUM));
@@ -2517,17 +2548,20 @@ static void LoadPartyBoxPalette(struct PartyMenuBox *menuBox, u8 palFlags)
         {
             LOAD_PARTY_BOX_PAL(sPartyBoxSelectedForActionPalIds1, sPartyBoxPalOffsets1);
             LOAD_PARTY_BOX_PAL(sPartyBoxCurrSelectionPalIds2, sPartyBoxPalOffsets2);
+            LOAD_PARTY_TEXT_PAL(sPartyBoxSelectedForActionPalIds3, sPartyBoxPalOffsets3);
         }
         else
         {
             LOAD_PARTY_BOX_PAL(sPartyBoxSelectedForActionPalIds1, sPartyBoxPalOffsets1);
             LOAD_PARTY_BOX_PAL(sPartyBoxSelectedForActionPalIds2, sPartyBoxPalOffsets2);
+            LOAD_PARTY_TEXT_PAL(sPartyBoxSelectedForActionPalIds3, sPartyBoxPalOffsets3);
         }
     }
     else if (palFlags & PARTY_PAL_SWITCHING)
     {
         LOAD_PARTY_BOX_PAL(sPartyBoxSelectedForActionPalIds1, sPartyBoxPalOffsets1);
         LOAD_PARTY_BOX_PAL(sPartyBoxSelectedForActionPalIds2, sPartyBoxPalOffsets2);
+        LOAD_PARTY_TEXT_PAL(sPartyBoxSelectedForActionPalIds3, sPartyBoxPalOffsets3);
     }
     else if (palFlags & PARTY_PAL_TO_SWITCH)
     {
@@ -2535,11 +2569,13 @@ static void LoadPartyBoxPalette(struct PartyMenuBox *menuBox, u8 palFlags)
         {
             LOAD_PARTY_BOX_PAL(sPartyBoxSelectedForActionPalIds1, sPartyBoxPalOffsets1);
             LOAD_PARTY_BOX_PAL(sPartyBoxCurrSelectionPalIds2, sPartyBoxPalOffsets2);
+            LOAD_PARTY_TEXT_PAL(sPartyBoxSelectedForActionPalIds3, sPartyBoxPalOffsets3);
         }
         else
         {
             LOAD_PARTY_BOX_PAL(sPartyBoxSelectedForActionPalIds1, sPartyBoxPalOffsets1);
             LOAD_PARTY_BOX_PAL(sPartyBoxSelectedForActionPalIds2, sPartyBoxPalOffsets2);
+            LOAD_PARTY_TEXT_PAL(sPartyBoxSelectedForActionPalIds3, sPartyBoxPalOffsets3);
         }
     }
     else if (palFlags & PARTY_PAL_FAINTED)
@@ -2548,11 +2584,13 @@ static void LoadPartyBoxPalette(struct PartyMenuBox *menuBox, u8 palFlags)
         {
             LOAD_PARTY_BOX_PAL(sPartyBoxCurrSelectionFaintedPalIds, sPartyBoxPalOffsets1);
             LOAD_PARTY_BOX_PAL(sPartyBoxCurrSelectionPalIds2, sPartyBoxPalOffsets2);
+            LOAD_PARTY_TEXT_PAL(sPartyBoxCurrSelectionFaintedPalIds3, sPartyBoxPalOffsets3);
         }
         else
         {
             LOAD_PARTY_BOX_PAL(sPartyBoxFaintedPalIds1, sPartyBoxPalOffsets1);
             LOAD_PARTY_BOX_PAL(sPartyBoxFaintedPalIds2, sPartyBoxPalOffsets2);
+            LOAD_PARTY_TEXT_PAL(sPartyBoxFaintedPalIds3, sPartyBoxPalOffsets3);
         }
     }
     else if (palFlags & PARTY_PAL_MULTI_ALT)
@@ -2561,22 +2599,26 @@ static void LoadPartyBoxPalette(struct PartyMenuBox *menuBox, u8 palFlags)
         {
             LOAD_PARTY_BOX_PAL(sPartyBoxCurrSelectionMultiPalIds, sPartyBoxPalOffsets1);
             LOAD_PARTY_BOX_PAL(sPartyBoxCurrSelectionPalIds2, sPartyBoxPalOffsets2);
+            LOAD_PARTY_TEXT_PAL(sPartyBoxCurrSelectionMultiPalIds3, sPartyBoxPalOffsets3);
         }
         else
         {
             LOAD_PARTY_BOX_PAL(sPartyBoxMultiPalIds1, sPartyBoxPalOffsets1);
             LOAD_PARTY_BOX_PAL(sPartyBoxMultiPalIds2, sPartyBoxPalOffsets2);
+            LOAD_PARTY_TEXT_PAL(sPartyBoxMultiPalIds3, sPartyBoxPalOffsets3);
         }
     }
     else if (palFlags & PARTY_PAL_SELECTED)
     {
         LOAD_PARTY_BOX_PAL(sPartyBoxCurrSelectionPalIds1, sPartyBoxPalOffsets1);
         LOAD_PARTY_BOX_PAL(sPartyBoxCurrSelectionPalIds2, sPartyBoxPalOffsets2);
+        LOAD_PARTY_TEXT_PAL(sPartyBoxCurrSelectionPalIds3, sPartyBoxPalOffsets3);
     }
     else
     {
         LOAD_PARTY_BOX_PAL(sPartyBoxEmptySlotPalIds1, sPartyBoxPalOffsets1);
         LOAD_PARTY_BOX_PAL(sPartyBoxEmptySlotPalIds2, sPartyBoxPalOffsets2);
+        LOAD_PARTY_TEXT_PAL(sPartyBoxEmptySlotPalIds3, sPartyBoxPalOffsets3);
     }
 }
 
@@ -2781,56 +2823,55 @@ static void PartyMenuRemoveWindow(u8 *ptr)
     }
 }
 
-void DisplayPartyMenuStdMessage(u32 stringId)
+void DisplayPartyMenuStdMessage(enum PartyMsg stringId)
 {
     u8 *windowPtr = &sPartyMenuInternal->windowId[1];
 
     if (*windowPtr != WINDOW_NONE)
         PartyMenuRemoveWindow(windowPtr);
 
-    if (stringId != PARTY_MSG_NONE)
+    switch (stringId)
     {
-        switch (stringId)
-        {
-        case PARTY_MSG_DO_WHAT_WITH_MON:
-            *windowPtr = AddWindow(&sDoWhatWithMonMsgWindowTemplate);
-            break;
-        case PARTY_MSG_DO_WHAT_WITH_ITEM:
-            *windowPtr = AddWindow(&sDoWhatWithItemMsgWindowTemplate);
-            break;
-        case PARTY_MSG_DO_WHAT_WITH_MAIL:
-            *windowPtr = AddWindow(&sDoWhatWithMailMsgWindowTemplate);
-            break;
-        case PARTY_MSG_RESTORE_WHICH_MOVE:
-        case PARTY_MSG_BOOST_PP_WHICH_MOVE:
-            *windowPtr = AddWindow(&sWhichMoveMsgWindowTemplate);
-            break;
-        case PARTY_MSG_ALREADY_HOLDING_ONE:
-            *windowPtr = AddWindow(&sAlreadyHoldingOneMsgWindowTemplate);
-            break;
-        case PARTY_MSG_WHICH_APPLIANCE:
-            *windowPtr = AddWindow(&sOrderWhichApplianceMsgWindowTemplate);
-            break;
-        default:
-            *windowPtr = AddWindow(&sDefaultPartyMsgWindowTemplate);
-            break;
-        }
-
-        if (stringId == PARTY_MSG_CHOOSE_MON)
-        {
-            if (sPartyMenuInternal->chooseHalf)
-                stringId = PARTY_MSG_CHOOSE_MON_AND_CONFIRM;
-            else if (!ShouldUseChooseMonText())
-                stringId = PARTY_MSG_CHOOSE_MON_OR_CANCEL;
-
-            if (gPartiesCount[B_TRAINER_0] == 0)
-                stringId = PARTY_MSG_NO_POKEMON;
-        }
-        DrawStdFrameWithCustomTileAndPalette(*windowPtr, FALSE, 0x4F, 13);
-        StringExpandPlaceholders(gStringVar4, sActionStringTable[stringId]);
-        AddTextPrinterParameterized(*windowPtr, FONT_NORMAL, gStringVar4, 0, 1, 0, 0);
-        ScheduleBgCopyTilemapToVram(2);
+    case PARTY_MSG_NONE:
+        return;
+    case PARTY_MSG_DO_WHAT_WITH_MON:
+        *windowPtr = AddWindow(&sDoWhatWithMonMsgWindowTemplate);
+        break;
+    case PARTY_MSG_DO_WHAT_WITH_ITEM:
+        *windowPtr = AddWindow(&sDoWhatWithItemMsgWindowTemplate);
+        break;
+    case PARTY_MSG_DO_WHAT_WITH_MAIL:
+        *windowPtr = AddWindow(&sDoWhatWithMailMsgWindowTemplate);
+        break;
+    case PARTY_MSG_RESTORE_WHICH_MOVE:
+    case PARTY_MSG_BOOST_PP_WHICH_MOVE:
+        *windowPtr = AddWindow(&sWhichMoveMsgWindowTemplate);
+        break;
+    case PARTY_MSG_ALREADY_HOLDING_ONE:
+        *windowPtr = AddWindow(&sAlreadyHoldingOneMsgWindowTemplate);
+        break;
+    case PARTY_MSG_WHICH_APPLIANCE:
+        *windowPtr = AddWindow(&sOrderWhichApplianceMsgWindowTemplate);
+        break;
+    default:
+        *windowPtr = AddWindow(&sDefaultPartyMsgWindowTemplate);
+        break;
     }
+
+    if (stringId == PARTY_MSG_CHOOSE_MON)
+    {
+        if (sPartyMenuInternal->chooseHalf)
+            stringId = PARTY_MSG_CHOOSE_MON_AND_CONFIRM;
+        else if (!ShouldUseChooseMonText())
+            stringId = PARTY_MSG_CHOOSE_MON_OR_CANCEL;
+
+        if (gPartiesCount[B_TRAINER_0] == 0)
+            stringId = PARTY_MSG_NO_POKEMON;
+    }
+    DrawStdFrameWithCustomTileAndPalette(*windowPtr, FALSE, 0x4F, 13);
+    StringExpandPlaceholders(gStringVar4, sActionStringTable[stringId]);
+    AddTextPrinterParameterized(*windowPtr, FONT_NORMAL, gStringVar4, 0, 1, 0, 0);
+    ScheduleBgCopyTilemapToVram(2);
 }
 
 static bool8 ShouldUseChooseMonText(void)
@@ -5036,7 +5077,7 @@ void Task_AbilityCapsule(u8 taskId)
             // Don't exit party selections screen, return to choosing a mon.
             ClearStdWindowAndFrameToTransparent(6, 0);
             ClearWindowTilemap(6);
-            DisplayPartyMenuStdMessage(5);
+            DisplayPartyMenuStdMessage(PARTY_MSG_USE_ON_WHICH_MON);
             gTasks[taskId].func = (void *)GetWordTaskArg(taskId, tOldFunc);
             return;
         }
@@ -5121,7 +5162,7 @@ void Task_AbilityPatch(u8 taskId)
             // Don't exit party selections screen, return to choosing a mon.
             ClearStdWindowAndFrameToTransparent(6, 0);
             ClearWindowTilemap(6);
-            DisplayPartyMenuStdMessage(5);
+            DisplayPartyMenuStdMessage(PARTY_MSG_USE_ON_WHICH_MON);
             gTasks[taskId].func = (void *)GetWordTaskArg(taskId, tOldFunc);
             return;
         }
@@ -5221,7 +5262,7 @@ void Task_Mint(u8 taskId)
             // Don't exit party selections screen, return to choosing a mon.
             ClearStdWindowAndFrameToTransparent(6, 0);
             ClearWindowTilemap(6);
-            DisplayPartyMenuStdMessage(5);
+            DisplayPartyMenuStdMessage(PARTY_MSG_USE_ON_WHICH_MON);
             gTasks[taskId].func = (void *)GetWordTaskArg(taskId, tOldFunc);
             return;
         }
@@ -6291,10 +6332,6 @@ void ItemUseCB_EvolutionStone(u8 taskId, TaskFunc task)
     }
 }
 
-#define FUSE_MON        1
-#define UNFUSE_MON      2
-#define SECOND_FUSE_MON 3
-
 #define tState          data[0]
 #define tTargetSpecies  data[1]
 #define tAnimWait       data[2]
@@ -6310,6 +6347,12 @@ void ItemUseCB_EvolutionStone(u8 taskId, TaskFunc task)
 #define tExtraMoveHandling   data[13]
 #define forgetMove           data[14]
 #define storageIndex         data[15]
+
+#define MOSAIC_ANIM_DURATION 10
+
+#define FUSE_MON        1
+#define UNFUSE_MON      2
+#define SECOND_FUSE_MON 3
 
 static void Task_TryItemUseFusionChange(u8 taskId);
 static void SpriteCB_FormChangeIconMosaic(struct Sprite *sprite);
@@ -6551,7 +6594,7 @@ static void Task_TryItemUseFusionChange(u8 taskId)
         if (gTasks[taskId].tAnimWait == 0)
         {
             icon->oam.mosaic = TRUE;
-            icon->data[0] = 10;
+            icon->data[0] = MOSAIC_ANIM_DURATION;
             icon->data[1] = 1;
             icon->data[2] = taskId;
             icon->callback = SpriteCB_FormChangeIconMosaic;
@@ -6559,7 +6602,7 @@ static void Task_TryItemUseFusionChange(u8 taskId)
             if (gTasks[taskId].fusionType == FUSE_MON)
             {
                 icon2->oam.mosaic = TRUE;
-                icon2->data[0] = 10;
+                icon2->data[0] = MOSAIC_ANIM_DURATION;
                 icon2->data[1] = 1;
                 icon2->data[2] = taskId;
                 icon2->callback = SpriteCB_FormChangeIconMosaic;
@@ -6769,7 +6812,7 @@ static void SpriteCB_FormChangeIconMosaic(struct Sprite *sprite)
         if (gTasks[taskId].tAnimWait == 60)
             sprite->data[0] = 0;
         else
-            sprite->data[0] = 10;
+            sprite->data[0] = MOSAIC_ANIM_DURATION;
     }
 
     SetGpuReg(REG_OFFSET_MOSAIC, (sprite->data[0] << 12) | (sprite->data[1] << 8));
@@ -6798,7 +6841,7 @@ static void Task_TryItemUseFormChange(u8 taskId)
             FreeAndDestroyMonIconSprite(icon);
             CreatePartyMonIconSpriteParameterized(gTasks[taskId].tTargetSpecies, GetMonData(mon, MON_DATA_PERSONALITY), FALSE, &sPartyMenuBoxes[gPartyMenu.slotId], 1);
             icon->oam.mosaic = TRUE;
-            icon->data[0] = 10;
+            icon->data[0] = MOSAIC_ANIM_DURATION;
             icon->data[1] = 1;
             icon->data[2] = taskId;
             icon->callback = SpriteCB_FormChangeIconMosaic;
@@ -7357,7 +7400,7 @@ static bool8 GetBattleEntryEligibility(struct Pokemon *mon)
     }
 }
 
-static u8 CheckBattleEntriesAndGetMessage(void)
+static enum PartyMsg CheckBattleEntriesAndGetMessage(void)
 {
     u8 maxBattlers;
     u8 i, j;
@@ -7376,7 +7419,7 @@ static u8 CheckBattleEntriesAndGetMessage(void)
 
     facility = VarGet(VAR_FRONTIER_FACILITY);
     if (facility == FACILITY_UNION_ROOM || facility == FACILITY_MULTI_OR_EREADER)
-        return 0xFF;
+        return PARTY_MSG_NONE;
 
     maxBattlers = GetMaxBattleEntries();
     for (i = 0; i < maxBattlers - 1; i++)
@@ -7392,7 +7435,7 @@ static u8 CheckBattleEntriesAndGetMessage(void)
         }
     }
 
-    return 0xFF;
+    return PARTY_MSG_NONE;
 }
 
 static bool8 HasPartySlotAlreadyBeenSelected(u8 slot)
@@ -7409,9 +7452,9 @@ static bool8 HasPartySlotAlreadyBeenSelected(u8 slot)
 
 static void Task_ValidateChosenHalfParty(u8 taskId)
 {
-    u8 msgId = CheckBattleEntriesAndGetMessage();
+    enum PartyMsg msgId = CheckBattleEntriesAndGetMessage();
 
-    if (msgId != 0xFF)
+    if (msgId != PARTY_MSG_NONE)
     {
         PlaySE(SE_FAILURE);
         DisplayPartyMenuStdMessage(msgId);
@@ -8519,6 +8562,13 @@ static void GetPartyAndSlotFromPartyMenuId(s8 menuId, struct Pokemon **party, s8
         break;
     }
 }
+
+#undef tItemCount
+#undef tMaxItemQuantity
+#undef tQuantityInBag
+#undef tWindowId
+#undef tItemEffect
+#undef tHoldEffectParam
 
 static struct Pokemon *GetPartyMonFromPartyMenuId(s8 menuId)
 {

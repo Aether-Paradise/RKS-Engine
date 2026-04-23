@@ -43,6 +43,8 @@ static const u8 sMenuText_Confirm[]                         = _("Confirm");
 static const u8 sMenuText_Switch[]                          = _("Switch");
 static const u8 sMenuText_Boxes[]                           = _("Boxes");
 static const u8 sText_SendThisMonToPC[]                     = _("Send {STR_VAR_1} to the PC?");
+static const u8 sMenuText_PartnerParty[]                    = _("Partner Party");
+static const u8 sMenuText_YourParty[]                       = _("Your Party");
 
 static const struct BgTemplate sPartyMenuBgTemplates[] =
 {
@@ -143,6 +145,42 @@ static const u8 sPartyMenuSpriteCoords[PARTY_LAYOUT_COUNT][PARTY_SIZE][4 * 2] =
         { 26,  42,  32,  52, 100,  51,  16,  41},
         { 34, 114,  40, 124, 108, 123, 102, 113},
         { 34, 138,  40, 148, 108, 147, 102, 137},
+    },
+    [PARTY_LAYOUT_MULTI_FULL] =
+    {
+        { 34,  18,  40,  28, 108,  27,  16,  34},
+        { 34,  42,  40,  52, 108,  51, 102,  25},
+        { 34,  66,  40,  76, 108,  75, 102,  49},
+        { 34,  90,  40, 100, 108,  99, 102,  73},
+        { 34, 114,  40, 124, 108, 123, 102,  97},
+        { 34, 138,  40, 148, 108, 147, 102, 121},
+    },
+    [PARTY_LAYOUT_MULTI_FULL_PARTNER] =
+    {
+        { 34,  18,  40,  28, 108,  27,  16,  34},
+        { 34,  42,  40,  52, 108,  51, 102,  25},
+        { 34,  66,  40,  76, 108,  75, 102,  49},
+        { 34,  90,  40, 100, 108,  99, 102,  73},
+        { 34, 114,  40, 124, 108, 123, 102,  97},
+        { 34, 138,  40, 148, 108, 147, 102, 121},
+    },
+    [PARTY_LAYOUT_MULTI_FULL_SHOWCASE] =
+    {
+        { 34,  18,  40,  28, 108,  27,  16,  34},
+        { 34,  42,  40,  52, 108,  51, 102,  25},
+        { 34,  66,  40,  76, 108,  75, 102,  49},
+        { 34,  90,  40, 100, 108,  99, 102,  73},
+        { 34, 114,  40, 124, 108, 123, 102,  97},
+        { 34, 138,  40, 148, 108, 147, 102, 121},
+    },
+    [PARTY_LAYOUT_MULTI_FULL_SHOWCASE_PARTNER] =
+    {
+        { 34,  18,  40,  28, 108,  27,  16,  34},
+        { 34,  42,  40,  52, 108,  51, 102,  25},
+        { 34,  66,  40,  76, 108,  75, 102,  49},
+        { 34,  90,  40, 100, 108,  99, 102,  73},
+        { 34, 114,  40, 124, 108, 123, 102,  97},
+        { 34, 138,  40, 148, 108, 147, 102, 121},
     },
 };
 
