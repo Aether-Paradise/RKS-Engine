@@ -249,6 +249,8 @@ enum {
     BUTTON_PROMPT_CONFIRM,
     BUTTON_PROMPT_SWITCH,
     BUTTON_PROMPT_BOXES,
+    BUTTON_PROMPT_MULTI_SWITCH,
+    BUTTON_PROMPT_MULTI_SWITCH_PARTNER,
 };
 
 // EWRAM vars
@@ -2926,7 +2928,9 @@ static void LoadPartyMenuWindows(void)
     for (i = 0; i < PARTY_SIZE; i++)
         FillWindowPixelBuffer(i, PIXEL_FILL(0));
 
-    if (gPartyMenu.layout == PARTY_LAYOUT_SINGLE)
+    if (gPartyMenu.layout == PARTY_LAYOUT_SINGLE
+    || gPartyMenu.layout == PARTY_LAYOUT_MULTI_FULL
+    || gPartyMenu.layout == PARTY_LAYOUT_MULTI_FULL_PARTNER)
     {
         sPartyMenuInternal->promptWindowId = PARTY_LABEL_WINDOW_PROMPT;
         FillWindowPixelBuffer(PARTY_LABEL_WINDOW_PROMPT, PIXEL_FILL(0));
@@ -3009,6 +3013,14 @@ static inline u8 GetButtonPromptType(void)
             || gPartyMenu.menuType == PARTY_MENU_TYPE_DAYCARE))
         return BUTTON_PROMPT_BOXES;
 
+    if (gPartyMenu.layout == PARTY_LAYOUT_MULTI_FULL
+     && gPartyMenu.menuType == PARTY_MENU_TYPE_IN_BATTLE)
+        return BUTTON_PROMPT_MULTI_SWITCH;
+
+    if (gPartyMenu.layout == PARTY_LAYOUT_MULTI_FULL_PARTNER
+     && gPartyMenu.menuType == PARTY_MENU_TYPE_IN_BATTLE)
+        return BUTTON_PROMPT_MULTI_SWITCH_PARTNER;
+
     return BUTTON_PROMPT_NONE;
 }
 
@@ -3022,6 +3034,8 @@ static const struct {
     [BUTTON_PROMPT_CONFIRM] = {BUTTON_START,  25, sMenuText_Confirm, 60},
     [BUTTON_PROMPT_SWITCH]  = {BUTTON_L,      15,  sMenuText_Switch, 45},
     [BUTTON_PROMPT_BOXES]   = {BUTTON_R,      15,   sMenuText_Boxes, 41},
+    [BUTTON_PROMPT_MULTI_SWITCH]         = {BUTTON_R,15,  sMenuText_PartnerParty, 60},
+    [BUTTON_PROMPT_MULTI_SWITCH_PARTNER] = {BUTTON_R,15,  sMenuText_YourParty, 45},
 };
 
 static void ShowButtonPrompt(u8 type)
@@ -3064,6 +3078,10 @@ static void ShowButtonPrompt(u8 type)
         drawList[drawCount++] = BUTTON_PROMPT_SWITCH;
     if (canShowBoxes)
         drawList[drawCount++] = BUTTON_PROMPT_BOXES;
+    if (gPartyMenu.layout == PARTY_LAYOUT_MULTI_FULL)
+        drawList[drawCount++] = BUTTON_PROMPT_MULTI_SWITCH;
+    if (gPartyMenu.layout == PARTY_LAYOUT_MULTI_FULL_PARTNER)
+        drawList[drawCount++] = BUTTON_PROMPT_MULTI_SWITCH_PARTNER;
 
     if (drawCount > 0)
     {

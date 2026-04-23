@@ -43,6 +43,8 @@ static const u8 sMenuText_Confirm[]                         = _("Confirm");
 static const u8 sMenuText_Switch[]                          = _("Switch");
 static const u8 sMenuText_Boxes[]                           = _("Boxes");
 static const u8 sText_SendThisMonToPC[]                     = _("Send {STR_VAR_1} to the PC?");
+static const u8 sMenuText_PartnerParty[]                    = _("Partner Party");
+static const u8 sMenuText_YourParty[]                       = _("Your Party");
 
 static const struct BgTemplate sPartyMenuBgTemplates[] =
 {
