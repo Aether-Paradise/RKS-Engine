@@ -45,11 +45,15 @@
 #define TEMP_FLAGS_END   FLAG_TEMP_1F
 #define NUM_TEMP_FLAGS   (TEMP_FLAGS_END - TEMP_FLAGS_START + 1)
 
-#define FLAG_DEMO_HIDE_DEOXYS_TRIANGLE  0x20
-#define FLAG_DEMO_HIDE_DEOXYS           0x21
-#define FLAG_DEMO_INGAME_TRADE          0x22
-#define FLAG_DEMO_RECEIVED_WEEKLY_TM    0x23
-#define FLAG_DEMO_ITEM_POKEBALL         0x24
+#define FLAG_DEMO_HIDE_DEOXYS_TRIANGLE  0x020
+#define FLAG_DEMO_HIDE_DEOXYS           0x021
+#define FLAG_DEMO_INGAME_TRADE          0x022
+#define FLAG_DEMO_RECEIVED_WEEKLY_TM    0x023
+#define FLAG_DEMO_ITEM_POKEBALL         0x024
+#define FLAG_DEMO_HIDE_ROWLET           0x025
+#define FLAG_DEMO_HIDE_OSHAWOTT         0x026
+#define FLAG_DEMO_HIDE_CYNDAQUIL        0x027
+#define FLAG_DEMO_CHOSE_STARTER         0x028
 
 #if IS_FRLG
 
@@ -57,10 +61,6 @@
 
 #else
 
-#define FLAG_UNUSED_0x025    0x25 // Unused Flag
-#define FLAG_UNUSED_0x026    0x26 // Unused Flag
-#define FLAG_UNUSED_0x027    0x27 // Unused Flag
-#define FLAG_UNUSED_0x028    0x28 // Unused Flag
 #define FLAG_UNUSED_0x029    0x29 // Unused Flag
 #define FLAG_UNUSED_0x02A    0x2A // Unused Flag
 #define FLAG_UNUSED_0x02B    0x2B // Unused Flag
@@ -1664,9 +1664,6 @@
 
 // FRLG flags
 
-#define FLAG_HIDE_BULBASAUR_BALL                           0
-#define FLAG_HIDE_SQUIRTLE_BALL                            0
-#define FLAG_HIDE_CHARMANDER_BALL                          0
 #define FLAG_HIDE_OAK_IN_HIS_LAB                           0
 #define FLAG_HIDE_OAK_IN_PALLET_TOWN                       0
 #define FLAG_HIDE_RIVAL_IN_LAB                             0
