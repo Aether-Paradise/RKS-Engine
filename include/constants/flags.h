@@ -49,6 +49,7 @@
 #define FLAG_DEMO_HIDE_DEOXYS           0x21
 #define FLAG_DEMO_INGAME_TRADE          0x22
 #define FLAG_DEMO_RECEIVED_WEEKLY_TM    0x23
+#define FLAG_DEMO_ITEM_POKEBALL         0x24
 
 #if IS_FRLG
 
@@ -56,7 +57,6 @@
 
 #else
 
-#define FLAG_UNUSED_0x024    0x24 // Unused Flag
 #define FLAG_UNUSED_0x025    0x25 // Unused Flag
 #define FLAG_UNUSED_0x026    0x26 // Unused Flag
 #define FLAG_UNUSED_0x027    0x27 // Unused Flag
