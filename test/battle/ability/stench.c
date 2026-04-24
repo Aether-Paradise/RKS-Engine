@@ -98,7 +98,7 @@ SINGLE_BATTLE_TEST("Stench is blocked by Shield Dust")
 SINGLE_BATTLE_TEST("Stench is blocked by Covert Cloak")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_COVERT_CLOAK].holdEffect == HOLD_EFFECT_COVERT_CLOAK);
+        ASSUME(GetItemHoldEffect(ITEM_COVERT_CLOAK) == HOLD_EFFECT_COVERT_CLOAK);
         PLAYER(SPECIES_GRIMER) { Ability(ABILITY_STENCH); }
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_COVERT_CLOAK); }
     } WHEN {

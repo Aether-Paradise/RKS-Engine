@@ -158,7 +158,7 @@ SINGLE_BATTLE_TEST("Toxic Chain is blocked by Shield Dust")
 SINGLE_BATTLE_TEST("Toxic Chain is blocked by Covert Cloak")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_COVERT_CLOAK].holdEffect == HOLD_EFFECT_COVERT_CLOAK);
+        ASSUME(GetItemHoldEffect(ITEM_COVERT_CLOAK) == HOLD_EFFECT_COVERT_CLOAK);
         ASSUME(GetMoveCategory(MOVE_SCRATCH) != DAMAGE_CATEGORY_STATUS);
         PLAYER(SPECIES_OKIDOGI) { Ability(ABILITY_TOXIC_CHAIN); }
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_COVERT_CLOAK); }
