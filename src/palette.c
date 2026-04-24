@@ -756,6 +756,7 @@ static bool32 IsSoftwarePaletteFadeFinishing(void)
             gPaletteFade.active = FALSE;
             gPaletteFade.softwareFadeFinishing = FALSE;
             gPaletteFade.softwareFadeFinishingCounter = 0;
+            gPaletteFade.objPaletteToggle = 0;
         }
         else
         {
@@ -1343,7 +1344,7 @@ void TimeMixBattleBgPalette(bool8 shadowOnly)
     if (!shadowOnly)
     {
         UpdatePalettesWithTime(PALETTES_BATTLE_BG);
-        LoadPalette(gPlttBufferFaded, 0, 4 * PLTT_SIZE_4BPP);
+        LoadPalette(&gPlttBufferFaded[BG_PLTT_ID(2)], BG_PLTT_ID(2), 2 * PLTT_SIZE_4BPP);
     }
     BlendPalette(OBJ_PLTT_ID(4) + 6, 1, gTimeOfDayBlend[gTimeOfDay].coeff, RGB(5, 5, 5));
     CpuCopy16(&gPlttBufferFaded[OBJ_PLTT_ID(4) + 6], &gPlttBufferUnfaded[OBJ_PLTT_ID(4) + 6], PLTT_SIZEOF(1));

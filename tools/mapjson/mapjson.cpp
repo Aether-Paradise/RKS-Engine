@@ -175,8 +175,13 @@ string generate_map_header_text(Json map_data, Json layouts_data) {
          << "\t.byte "  << json_to_string(map_data, "weather") << "\n"
          << "\t.byte "  << json_to_string(map_data, "map_type") << "\n";
 
-    if (version != "firered")
-        text << "\t.2byte 0\n";
+    string floor_number = json_to_string(map_data, "floor_number", true);
+    if (floor_number.empty())
+        text << "\t.byte 0\n";
+    else
+        text << "\t.byte " << floor_number << "\n";
+
+    text << "\t.byte 0\n";
 
     if (version == "ruby")
         text << "\t.byte " << json_to_string(map_data, "show_map_name") << "\n";
@@ -186,9 +191,6 @@ string generate_map_header_text(Json map_data, Json layouts_data) {
              << "allow_escaping=" << json_to_string(map_data, "allow_escaping") << ", "
              << "allow_running=" << json_to_string(map_data, "allow_running") << ", "
              << "show_map_name=" << json_to_string(map_data, "show_map_name") << "\n";
-
-    if (version == "firered")
-        text << "\t.byte " << json_to_string(map_data, "floor_number") << "\n";
 
      text << "\t.byte " << json_to_string(map_data, "battle_scene") << "\n\n";
 
@@ -734,6 +736,7 @@ void process_groups(string groups_filepath, vector<string> &map_filepaths, strin
         if (map_data == Json())
             FATAL_ERROR("Failed to read '%s' while processing groups: %s\n", filepath.c_str(), err.c_str());
 
+        /*
         string region = json_to_string(map_data, "region", true);
 
         if (region.empty()) {
@@ -745,6 +748,7 @@ void process_groups(string groups_filepath, vector<string> &map_filepaths, strin
          || (version == "firered" && region != "REGION_KANTO" && !EM_INCLUDE_HOENN_MAPS)) {
             invalid_maps.push_back(map_name);
         }
+        */
     }
 
     if (groups_data == Json())
@@ -776,7 +780,7 @@ string generate_layout_headers_text(Json layouts_data) {
         string layout_version = json_to_string(layout, "layout_version", true);
 
         if (layout_version.empty()) {
-            layout_version = "emerald";
+            layout_version = "frlg";
         }
         if ((version == "emerald" && layout_version != "emerald" && !FRLG_INCLUDE_KANTO_MAPS)
          || (version == "firered" && layout_version != "frlg" && !EM_INCLUDE_HOENN_MAPS))

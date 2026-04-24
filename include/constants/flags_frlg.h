@@ -2,10 +2,6 @@
 #define GUARD_CONSTANTS_FLAGS_FRLG_H
 
 
-#define FLAG_0x020               0x020
-#define FLAG_0x021               0x021
-#define FLAG_0x022               0x022
-#define FLAG_0x023               0x023
 #define FLAG_0x024               0x024
 #define FLAG_0x025               0x025
 #define FLAG_0x026               0x026
@@ -125,8 +121,8 @@
 #define FLAG_HIDE_SELPHYS_BUTLER                           0x096
 #define FLAG_HIDE_FOUR_ISLAND_RIVAL                        0x097
 #define FLAG_HIDE_SIX_ISLAND_POKECENTER_RIVAL              0x098
-#define FLAG_HIDE_DEOXYS                                   0x099
-#define FLAG_HIDE_BIRTH_ISLAND_METEORITE                   0x09A
+#define FLAG_UNUSED_0x099                                  0x099
+#define FLAG_UNUSED_0x09A                                  0x09A
 #define FLAG_HIDE_LUGIA                                    0x09B
 #define FLAG_HIDE_HO_OH                                    0x09C
 #define FLAG_HIDE_POSTGAME_GOSSIPERS                       0x09D
@@ -1532,7 +1528,7 @@
 #define FLAG_OCEANIC_MUSEUM_MET_REPORTER     0
 #define FLAG_RECEIVED_HM_STRENGTH            0
 #define FLAG_RECEIVED_HM_ROCK_SMASH          0
-#define FLAG_WHITEOUT_TO_LAVARIDGE           0 // Set after defeating Flannery, so the player cant white out from poison before receiving Go Goggles
+#define FLAG_WHITEOUT_TO_LAVARIDGE           0 // Set after defeating Flannery, so the player can't white out from poison before receiving Go Goggles
 #define FLAG_RECEIVED_HM_FLASH               0
 #define FLAG_RECEIVED_HM_FLY                 0
 #define FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT  0
@@ -1579,7 +1575,6 @@
 #define FLAG_RECEIVED_CASTFORM               0
 #define FLAG_RECEIVED_SUPER_ROD              0
 #define FLAG_RUSTBORO_NPC_TRADE_COMPLETED    0
-#define FLAG_PACIFIDLOG_NPC_TRADE_COMPLETED  0
 #define FLAG_FORTREE_NPC_TRADE_COMPLETED     0
 #define FLAG_BATTLE_FRONTIER_TRADE_DONE      0
 #define FLAG_FORCE_MIRAGE_TOWER_VISIBLE      0
@@ -1726,8 +1721,6 @@
 #define FLAG_PETALBURG_MART_EXPANDED_ITEMS   0
 #define FLAG_RECEIVED_MIRACLE_SEED           0
 #define FLAG_RECEIVED_BELDUM                 0
-#define FLAG_RECEIVED_FANCLUB_TM_THIS_WEEK   0
-#define FLAG_MET_FANCLUB_YOUNGER_BROTHER     0
 #define FLAG_RIVAL_LEFT_FOR_ROUTE103         0
 #define FLAG_OMIT_DIVE_FROM_STEVEN_LETTER    0
 #define FLAG_HAS_MATCH_CALL                  0

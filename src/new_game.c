@@ -134,10 +134,13 @@ static void ClearFrontierRecord(void)
 
 static void WarpToTruck(void)
 {
+    SetWarpDestination(MAP_GROUP(MAP_DEMO_TOWN_START_HOUSE_2F), MAP_NUM(MAP_DEMO_TOWN_START_HOUSE_2F), WARP_ID_NONE, 6, 6);
+    /*
     if (IS_FRLG)
         SetWarpDestination(MAP_GROUP(MAP_PALLET_TOWN_PLAYERS_HOUSE_2F), MAP_NUM(MAP_PALLET_TOWN_PLAYERS_HOUSE_2F), WARP_ID_NONE, 6, 6);
     else
         SetWarpDestination(MAP_GROUP(MAP_INSIDE_OF_TRUCK), MAP_NUM(MAP_INSIDE_OF_TRUCK), WARP_ID_NONE, -1, -1);
+    */
     WarpIntoMap();
 }
 
@@ -195,7 +198,7 @@ void NewGameInitData(void)
     ClearPlayerLinkBattleRecords();
     InitSeedotSizeRecord();
     InitLotadSizeRecord();
-    gPlayerPartyCount = 0;
+    gPartiesCount[B_TRAINER_0] = 0;
     ZeroPlayerPartyMons();
     ResetPokemonStorageSystem();
     DeactivateAllRoamers();

@@ -18,38 +18,6 @@ ViridianForest_EventScript_ItemPotion::
 	finditem ITEM_POTION
 	end
 
-MtMoon_1F_EventScript_ItemParalyzeHeal::
-	finditem ITEM_PARALYZE_HEAL
-	end
-
-MtMoon_1F_EventScript_ItemTM09::
-	finditem ITEM_TM09
-	end
-
-MtMoon_1F_EventScript_ItemPotion::
-	finditem ITEM_POTION
-	end
-
-MtMoon_1F_EventScript_ItemRareCandy::
-	finditem ITEM_RARE_CANDY
-	end
-
-MtMoon_1F_EventScript_ItemEscapeRope::
-	finditem ITEM_ESCAPE_ROPE
-	end
-
-MtMoon_1F_EventScript_ItemMoonStone::
-	finditem ITEM_MOON_STONE
-	end
-
-MtMoon_B2F_EventScript_ItemStarPiece::
-	finditem ITEM_STAR_PIECE
-	end
-
-MtMoon_B2F_EventScript_ItemTM46::
-	finditem ITEM_TM46
-	end
-
 Route4_EventScript_ItemTM05::
 	finditem ITEM_TM05
 	end
@@ -412,14 +380,6 @@ ThreeIsland_EventScript_ItemZinc::
 
 ViridianForest_EventScript_ItemPotion2::
 	finditem ITEM_POTION
-	end
-
-MtMoon_B2F_EventScript_ItemRevive::
-	finditem ITEM_REVIVE
-	end
-
-MtMoon_B2F_EventScript_ItemAntidote::
-	finditem ITEM_ANTIDOTE
 	end
 
 Route11_EventScript_ItemXDefend::

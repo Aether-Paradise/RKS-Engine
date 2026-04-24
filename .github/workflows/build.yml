@@ -47,7 +47,7 @@ jobs:
       - name: ROM (Emerald)
         env:
           GAME_VERSION: EMERALD
-        run: make -j$(nproc) -O all
+        run: make emerald -j$(nproc) -O all
 
       - name: ROM (Emerald) - Override RKSE_PARTY_MENU_DESIGN (SwSh)
         env:
@@ -55,7 +55,7 @@ jobs:
           OVR_RKSE_PARTY_MENU_DESIGN: PARTY_MENU_DESIGN_SWSH
         run: |
           make touch-config_party_menu
-          make -j${nproc} -O all
+          make emerald -j${nproc} -O all
 
       - name: ROM (Emerald) - Override save configs
         env:
@@ -63,7 +63,7 @@ jobs:
           OVR_RKSE_FREE_SAVE: FALSE
         run: |
           make touch-config_save
-          make -j${nproc} -O all
+          make emerald -j${nproc} -O all
 
   build-firered:
     if: github.actor != 'allcontributors[bot]'
@@ -197,7 +197,7 @@ jobs:
 
       - name: Release
         env:
-          GAME_VERSION: EMERALD
+          GAME_VERSION: LEAFGREEN
         run: make -j$(nproc) release
 
   test:
@@ -236,7 +236,7 @@ jobs:
 
       - name: Test
         env:
-          GAME_VERSION: EMERALD
+          GAME_VERSION: LEAFGREEN
           TEST: 1
         run: make -j$(nproc) check
 

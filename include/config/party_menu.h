@@ -5,7 +5,7 @@
 #define PARTY_MENU_DESIGN_SWSH    1
 
 // General party menu settings
-#define RKSE_PARTY_MENU_DESIGN            PARTY_MENU_DESIGN_EMERALD
+#define RKSE_PARTY_MENU_DESIGN            PARTY_MENU_DESIGN_SWSH
 
 // SwSh party menu settings
 #define SWSH_PARTY_MENU_PC_ACCESS         TRUE

@@ -385,14 +385,14 @@ static void Task_Hof_InitMonData(u8 taskId)
     gTasks[taskId].data[2] = 0;
     for (i = 0; i < PARTY_SIZE; i++)
     {
-        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES) != SPECIES_NONE)
+        if (GetMonData(&gParties[B_TRAINER_0][i], MON_DATA_SPECIES) != SPECIES_NONE)
         {
-            sHofMonPtr[0].mon[i].species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG);
-            sHofMonPtr[0].mon[i].tid = GetMonData(&gPlayerParty[i], MON_DATA_OT_ID);
-            sHofMonPtr[0].mon[i].personality = GetMonData(&gPlayerParty[i], MON_DATA_PERSONALITY);
-            sHofMonPtr[0].mon[i].lvl = GetMonData(&gPlayerParty[i], MON_DATA_LEVEL);
-            sHofMonPtr[0].mon[i].isShiny = GetMonData(&gPlayerParty[i], MON_DATA_IS_SHINY);
-            GetMonData(&gPlayerParty[i], MON_DATA_NICKNAME, nick);
+            sHofMonPtr[0].mon[i].species = GetMonData(&gParties[B_TRAINER_0][i], MON_DATA_SPECIES_OR_EGG);
+            sHofMonPtr[0].mon[i].tid = GetMonData(&gParties[B_TRAINER_0][i], MON_DATA_OT_ID);
+            sHofMonPtr[0].mon[i].personality = GetMonData(&gParties[B_TRAINER_0][i], MON_DATA_PERSONALITY);
+            sHofMonPtr[0].mon[i].lvl = GetMonData(&gParties[B_TRAINER_0][i], MON_DATA_LEVEL);
+            sHofMonPtr[0].mon[i].isShiny = GetMonData(&gParties[B_TRAINER_0][i], MON_DATA_IS_SHINY);
+            GetMonData(&gParties[B_TRAINER_0][i], MON_DATA_NICKNAME, nick);
             for (j = 0; j < POKEMON_NAME_LENGTH; j++)
                 sHofMonPtr[0].mon[i].nickname[j] = nick[j];
             gTasks[taskId].data[2]++;
@@ -549,7 +549,7 @@ static void Task_Hof_TryDisplayAnotherMon(u8 taskId)
     else
     {
         sSelectedPaletteIndices |= (0x10000 << gSprites[gTasks[taskId].data[5 + currPokeId]].oam.paletteNum);
-        if (gTasks[taskId].data[1] < PARTY_SIZE - 1 && currMon[1].species != SPECIES_NONE) // there is another pokemon to display
+        if (gTasks[taskId].data[1] < PARTY_SIZE - 1 && currMon[1].species != SPECIES_NONE) // there is another Pokémon to display
         {
             gTasks[taskId].data[1]++;
             BeginNormalPaletteFade(sSelectedPaletteIndices, 0, 12, 12, HALL_OF_FAME_BG_PAL);

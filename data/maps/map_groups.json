@@ -74,7 +74,8 @@
     "gMapGroup_IndoorFiveIslandRoute_Frlg",
     "gMapGroup_IndoorTwoIslandRoute_Frlg",
     "gMapGroup_IndoorSixIslandRoute_Frlg",
-    "gMapGroup_IndoorSevenIslandRoute_Frlg"
+    "gMapGroup_IndoorSevenIslandRoute_Frlg",
+    "gMapGroup_Demo"
   ],
   "gMapGroup_TownsAndRoutes": [
     "PetalburgCity",
@@ -189,12 +190,7 @@
   ],
   "gMapGroup_IndoorPacifidlog": [
     "PacifidlogTown_PokemonCenter_1F",
-    "PacifidlogTown_PokemonCenter_2F",
-    "PacifidlogTown_House1",
-    "PacifidlogTown_House2",
-    "PacifidlogTown_House3",
-    "PacifidlogTown_House4",
-    "PacifidlogTown_House5"
+    "PacifidlogTown_PokemonCenter_2F"
   ],
   "gMapGroup_IndoorPetalburg": [
     "PetalburgCity_WallysHouse",
@@ -594,7 +590,6 @@
     "BattleFrontier_Mart",
     "FarawayIsland_Entrance",
     "FarawayIsland_Interior",
-    "BirthIsland_Exterior",
     "BirthIsland_Harbor",
     "TrainerHill_Entrance",
     "TrainerHill_1F",
@@ -671,9 +666,6 @@
   ],
   "gMapGroup_Dungeons_Frlg": [
     "ViridianForest_Frlg",
-    "MtMoon_1F_Frlg",
-    "MtMoon_B1F_Frlg",
-    "MtMoon_B2F_Frlg",
     "SSAnne_Exterior_Frlg",
     "SSAnne_1F_Corridor_Frlg",
     "SSAnne_2F_Corridor_Frlg",
@@ -851,7 +843,6 @@
     "NavelRock_BasePath_B11F_Frlg",
     "NavelRock_B1F_Frlg",
     "NavelRock_Fork_Frlg",
-    "BirthIsland_Exterior_Frlg",
     "OneIsland_KindleRoad_EmberSpa_Frlg",
     "BirthIsland_Harbor_Frlg",
     "NavelRock_Harbor_Frlg"
@@ -921,8 +912,6 @@
     "SevenIsland_TanobyRuins_Frlg"
   ],
   "gMapGroup_IndoorPallet_Frlg": [
-    "PalletTown_PlayersHouse_1F_Frlg",
-    "PalletTown_PlayersHouse_2F_Frlg",
     "PalletTown_RivalsHouse_Frlg",
     "PalletTown_ProfessorOaksLab_Frlg"
   ],
@@ -1160,5 +1149,13 @@
   ],
   "gMapGroup_IndoorSevenIslandRoute_Frlg": [
     "SevenIsland_SevaultCanyon_House_Frlg"
+  ],
+  "gMapGroup_Demo": [
+    "DemoTown",
+    "DemoRoute",
+    "DemoDeoxysEvent",
+    "DemoCave1F",
+    "DemoTown_StartHouse_1F",
+    "DemoTown_StartHouse_2F"
   ]
 }

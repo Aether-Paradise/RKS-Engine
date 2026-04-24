@@ -14,27 +14,6 @@
 #define AILMENT_FNT   7
 #define AILMENT_FRB   8
 
-#define PARTY_LAYOUT_SINGLE          0
-#define PARTY_LAYOUT_DOUBLE          1
-#define PARTY_LAYOUT_MULTI           2
-#define PARTY_LAYOUT_MULTI_SHOWCASE  3  // The layout during the screen that appears just before a multi battle
-#define PARTY_LAYOUT_COUNT           4
-#define KEEP_PARTY_LAYOUT            0xFF
-
-#define PARTY_MENU_TYPE_FIELD                     0
-#define PARTY_MENU_TYPE_IN_BATTLE                 1
-#define PARTY_MENU_TYPE_CONTEST                   2
-#define PARTY_MENU_TYPE_CHOOSE_MON                3
-#define PARTY_MENU_TYPE_CHOOSE_HALF               4  // multi battles, eReader battles, and some battle facilities
-#define PARTY_MENU_TYPE_MULTI_SHOWCASE            5
-#define PARTY_MENU_TYPE_DAYCARE                   6
-#define PARTY_MENU_TYPE_MOVE_RELEARNER            7
-#define PARTY_MENU_TYPE_UNION_ROOM_REGISTER       8  // trading board
-#define PARTY_MENU_TYPE_UNION_ROOM_TRADE          9  // trading board
-#define PARTY_MENU_TYPE_SPIN_TRADE                10 // Unused beta for Gen IV's Spin Trade
-#define PARTY_MENU_TYPE_MINIGAME                  11
-#define PARTY_MENU_TYPE_STORE_PYRAMID_HELD_ITEMS  12
-
 #define PARTY_ACTION_CHOOSE_MON         0
 #define PARTY_ACTION_SEND_OUT           1
 #define PARTY_ACTION_CANT_SWITCH        2
@@ -55,43 +34,47 @@
 #define PARTY_ACTION_FUSION             17
 
 // IDs for DisplayPartyMenuStdMessage, to display the message at the bottom of the party menu
-#define PARTY_MSG_CHOOSE_MON                0
-#define PARTY_MSG_CHOOSE_MON_OR_CANCEL      1
-#define PARTY_MSG_CHOOSE_MON_AND_CONFIRM    2
-#define PARTY_MSG_MOVE_TO_WHERE             3
-#define PARTY_MSG_TEACH_WHICH_MON           4
-#define PARTY_MSG_USE_ON_WHICH_MON          5
-#define PARTY_MSG_GIVE_TO_WHICH_MON         6
-#define PARTY_MSG_NOTHING_TO_CUT            7
-#define PARTY_MSG_CANT_SURF_HERE            8
-#define PARTY_MSG_ALREADY_SURFING           9
-#define PARTY_MSG_CURRENT_TOO_FAST          10
-#define PARTY_MSG_ENJOY_CYCLING             11
-#define PARTY_MSG_ALREADY_IN_USE            12
-#define PARTY_MSG_CANT_USE_HERE             13
-#define PARTY_MSG_NO_MON_FOR_BATTLE         14
-#define PARTY_MSG_CHOOSE_MON_2              15
-#define PARTY_MSG_NOT_ENOUGH_HP             16
-#define PARTY_MSG_X_MONS_ARE_NEEDED         17
-#define PARTY_MSG_MONS_CANT_BE_SAME         18
-#define PARTY_MSG_NO_SAME_HOLD_ITEMS        19
-#define PARTY_MSG_UNUSED                    20
-#define PARTY_MSG_DO_WHAT_WITH_MON          21
-#define PARTY_MSG_RESTORE_WHICH_MOVE        22
-#define PARTY_MSG_BOOST_PP_WHICH_MOVE       23
-#define PARTY_MSG_DO_WHAT_WITH_ITEM         24
-#define PARTY_MSG_DO_WHAT_WITH_MAIL         25
-#define PARTY_MSG_ALREADY_HOLDING_ONE       26
-#define PARTY_MSG_WHICH_APPLIANCE           27
-#define PARTY_MSG_CHOOSE_SECOND_FUSION      28
-#define PARTY_MSG_NO_POKEMON                29
-#define PARTY_MSG_CHOOSE_MON_FOR_BOX        30
-#define PARTY_MSG_MOVE_ITEM_WHERE           31
-#define PARTY_MSG_SEND_MON_TO_BOX           32
+enum PartyMsg
+{
+    PARTY_MSG_CHOOSE_MON,
+    PARTY_MSG_CHOOSE_MON_OR_CANCEL,
+    PARTY_MSG_CHOOSE_MON_AND_CONFIRM,
+    PARTY_MSG_MOVE_TO_WHERE,
+    PARTY_MSG_TEACH_WHICH_MON,
+    PARTY_MSG_USE_ON_WHICH_MON,
+    PARTY_MSG_GIVE_TO_WHICH_MON,
+    PARTY_MSG_NOTHING_TO_CUT,
+    PARTY_MSG_CANT_SURF_HERE,
+    PARTY_MSG_ALREADY_SURFING,
+    PARTY_MSG_CURRENT_TOO_FAST,
+    PARTY_MSG_ENJOY_CYCLING,
+    PARTY_MSG_ALREADY_IN_USE,
+    PARTY_MSG_CANT_USE_HERE,
+    PARTY_MSG_NO_MON_FOR_BATTLE,
+    PARTY_MSG_CHOOSE_MON_2,
+    PARTY_MSG_NOT_ENOUGH_HP,
+    PARTY_MSG_X_MONS_ARE_NEEDED,
+    PARTY_MSG_MONS_CANT_BE_SAME,
+    PARTY_MSG_NO_SAME_HOLD_ITEMS,
+    PARTY_MSG_UNUSED,
+    PARTY_MSG_DO_WHAT_WITH_MON,
+    PARTY_MSG_RESTORE_WHICH_MOVE,
+    PARTY_MSG_BOOST_PP_WHICH_MOVE,
+    PARTY_MSG_DO_WHAT_WITH_ITEM,
+    PARTY_MSG_DO_WHAT_WITH_MAIL,
+    PARTY_MSG_ALREADY_HOLDING_ONE,
+    PARTY_MSG_WHICH_APPLIANCE,
+    PARTY_MSG_CHOOSE_SECOND_FUSION,
+    PARTY_MSG_NO_POKEMON,
+    PARTY_MSG_CHOOSE_MON_FOR_BOX,
+    PARTY_MSG_MOVE_ITEM_WHERE,
+    PARTY_MSG_SEND_MON_TO_BOX,
 
-#define PARTY_MSG_NONE                      127
+    PARTY_MSG_COUNT,
+    PARTY_MSG_NONE = 127,
+};
 
-// IDs for DisplayPartyPokemonDescriptionText, to display a message in the party pokemon's box
+// IDs for DisplayPartyPokemonDescriptionText, to display a message in the party Pokémon's box
 #define PARTYBOX_DESC_NO_USE      0
 #define PARTYBOX_DESC_ABLE_3      1
 #define PARTYBOX_DESC_FIRST       2
@@ -121,6 +104,7 @@ enum PcMonSelectionType
     SELECT_PC_MON_MOVE_TUTOR,
     SELECT_PC_MON_MOVE_DELETER,
     SELECT_PC_MON_MOVE_RELEARNER,
+    SELECT_PC_MON_EVOLUTION,
 };
 
 enum CanMoveBeLearned

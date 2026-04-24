@@ -1,0 +1,69 @@
+{
+  "id": "MAP_DEMO_DEOXYS_EVENT",
+  "name": "DemoDeoxysEvent",
+  "layout": "LAYOUT_DEMO_DEOXYS_EVENT",
+  "music": "MUS_DUMMY",
+  "region_map_section": "MAPSEC_DEMO_TOWN",
+  "requires_flash": false,
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_NONE",
+  "allow_cycling": true,
+  "allow_escaping": false,
+  "allow_running": true,
+  "show_map_name": true,
+  "floor_number": 0,
+  "battle_scene": "MAP_BATTLE_SCENE_NORMAL",
+  "connections": null,
+  "object_events": [
+    {
+      "local_id": "LOCALID_DEMO_DEOXYS_EVENT_ROCK",
+      "type": "object",
+      "graphics_id": "OBJ_EVENT_GFX_DEOXYS_TRIANGLE",
+      "x": 15,
+      "y": 12,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "DemoDeoxysEvent_EventScript_Triangle",
+      "flag": "FLAG_HIDE_BIRTH_ISLAND_DEOXYS_TRIANGLE"
+    },
+    {
+      "local_id": "LOCALID_DEMO_DEOXYS_EVENT_DEOXYS",
+      "type": "object",
+      "graphics_id": "OBJ_EVENT_GFX_DEOXYS_N",
+      "x": 15,
+      "y": 3,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "NULL",
+      "flag": "FLAG_DEMO_HIDE_DEOXYS"
+    }
+  ],
+  "warp_events": [
+    {
+      "x": 15,
+      "y": 10,
+      "elevation": 0,
+      "dest_map": "MAP_DEMO_ROUTE",
+      "dest_warp_id": "0"
+    }
+  ],
+  "coord_events": [],
+  "bg_events": [
+    {
+      "type": "sign",
+      "x": 16,
+      "y": 10,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "DemoDeoxysEvent_EventScript_DeoxysRockSign"
+    }
+  ]
+}

@@ -7,6 +7,7 @@
 // In-game Trade IDs
 enum InGameTradeID
 {
+    INGAME_TRADE_DEMO,
     INGAME_TRADE_SEEDOT,
     INGAME_TRADE_PLUSLE,
     INGAME_TRADE_HORSEA,
