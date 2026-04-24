@@ -545,7 +545,7 @@ void AnimFirePlume(struct Sprite *sprite)
 {
     SetSpriteCoordsToAnimAttackerCoords(sprite);
 
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
     {
         sprite->x -= gBattleAnimArgs[0];
         sprite->y += gBattleAnimArgs[1];
@@ -567,7 +567,7 @@ void AnimFirePlume(struct Sprite *sprite)
 
 static void AnimLargeFlame(struct Sprite *sprite)
 {
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
     {
         sprite->x -= gBattleAnimArgs[0];
         sprite->y += gBattleAnimArgs[1];
@@ -603,7 +603,7 @@ static void AnimUnusedSmallEmber(struct Sprite *sprite)
 {
     SetSpriteCoordsToAnimAttackerCoords(sprite);
 
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
     {
         sprite->x -= gBattleAnimArgs[0];
     }

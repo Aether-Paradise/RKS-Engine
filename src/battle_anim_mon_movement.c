@@ -668,7 +668,7 @@ static void SlideMonToOffsetAndBack(struct Sprite *sprite)
         battler = gBattleAnimTarget;
 
     spriteId = gBattlerSpriteIds[battler];
-    if (!IsOnPlayerSide(battler))
+    if (!IsBattlerShowingBackSprite(battler))
     {
         gBattleAnimArgs[1] = -gBattleAnimArgs[1];
         if (gBattleAnimArgs[3] == 1)
@@ -719,7 +719,7 @@ void AnimTask_WindUpLunge(u8 taskId)
 {
     s16 wavePeriod = 0x8000 / gBattleAnimArgs[3];
     enum AnimBattler animBattler = gBattleAnimArgs[0];
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
     {
         gBattleAnimArgs[1] = -gBattleAnimArgs[1];
         gBattleAnimArgs[5] = -gBattleAnimArgs[5];
@@ -784,7 +784,7 @@ void AnimTask_DuckDownHop(u8 taskId)
 {
     s16 wavePeriod = 0x8000 / gBattleAnimArgs[3];
     enum AnimBattler animBattler = gBattleAnimArgs[0];
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
     {
         gBattleAnimArgs[1] = -gBattleAnimArgs[1];
     }
@@ -866,13 +866,13 @@ void AnimTask_SlideOffScreen(u8 taskId)
         return;
     }
     gTasks[taskId].data[0] = spriteId;
-    if (!IsOnPlayerSide(gBattleAnimTarget))
+    if (!IsBattlerShowingBackSprite(gBattleAnimTarget))
     {
-        gTasks[taskId].data[1] = gBattleAnimArgs[1];
+        gTasks[taskId].data[1] = gBattleAnimArgs[1];    // slide right
     }
     else
     {
-        gTasks[taskId].data[1] = -gBattleAnimArgs[1];
+        gTasks[taskId].data[1] = -gBattleAnimArgs[1];   // slide left
     }
     gTasks[taskId].func = AnimTask_SlideOffScreen_Step;
 }
@@ -900,7 +900,7 @@ void AnimTask_SwayMon(u8 taskId)
 {
     u8 spriteId;
     enum AnimBattler animBattler = gBattleAnimArgs[4];
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
         gBattleAnimArgs[1] = -gBattleAnimArgs[1];
 
     spriteId = GetAnimBattlerSpriteId(animBattler);
@@ -943,7 +943,7 @@ static void AnimTask_SwayMonStep(u8 taskId)
     }
     else
     {
-        if (IsOnPlayerSide(gTasks[taskId].data[5]))
+        if (IsBattlerShowingBackSprite(gTasks[taskId].data[5]))
         {
             gSprites[spriteId].y2 = (sineValue >= 0) ? sineValue : -sineValue;
         }
@@ -1039,9 +1039,9 @@ void AnimTask_RotateMonSpriteToSide(u8 taskId)
     else
     {
         if (animBattler == ANIM_ATTACKER)
-            gTasks[taskId].data[7] = IsOnPlayerSide(gBattleAnimAttacker);
+            gTasks[taskId].data[7] = IsBattlerShowingBackSprite(gBattleAnimAttacker);
         else
-            gTasks[taskId].data[7] = IsOnPlayerSide(gBattleAnimTarget);
+            gTasks[taskId].data[7] = IsBattlerShowingBackSprite(gBattleAnimTarget);
     }
     if (gTasks[taskId].data[7])
     {
@@ -1064,12 +1064,12 @@ void AnimTask_RotateMonToSideAndRestore(u8 taskId)
     gTasks[taskId].data[2] = gBattleAnimArgs[0];
     if (animBattler == ANIM_ATTACKER)
     {
-        if (!IsOnPlayerSide(gBattleAnimAttacker))
+        if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
             gBattleAnimArgs[1] = -gBattleAnimArgs[1];
     }
     else
     {
-        if (!IsOnPlayerSide(gBattleAnimTarget))
+        if (!IsBattlerShowingBackSprite(gBattleAnimTarget))
             gBattleAnimArgs[1] = -gBattleAnimArgs[1];
     }
     if (gBattleAnimArgs[3] != 1)

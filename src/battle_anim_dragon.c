@@ -315,7 +315,7 @@ const struct SpriteTemplate gDragonPulseSpriteTemplate =
 // arg 1: initial y pixel offset
 static void AnimDragonRush(struct Sprite *sprite)
 {
-    if (IsOnPlayerSide(gBattleAnimTarget))
+    if (IsBattlerShowingBackSprite(gBattleAnimTarget))
     {
         sprite->x -= gBattleAnimArgs[0];
         sprite->y += gBattleAnimArgs[1];
@@ -343,7 +343,7 @@ static void AnimDragonRush(struct Sprite *sprite)
 static void AnimDragonRushStep(struct Sprite *sprite)
 {
     // These two cases are identical.
-    if (IsOnPlayerSide(gBattleAnimTarget))
+    if (IsBattlerShowingBackSprite(gBattleAnimTarget))
     {
         sprite->data[1] += sprite->data[0];
         sprite->data[1] &= 0xFF;
@@ -388,7 +388,7 @@ void AnimOutrageFlame(struct Sprite *sprite)
 
     sprite->x = GetBattlerSpriteCoord(gBattleAnimAttacker, BATTLER_COORD_X_2);
     sprite->y = GetBattlerSpriteCoord(gBattleAnimAttacker, BATTLER_COORD_Y_PIC_OFFSET);
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
     {
         sprite->x -= cmd->x;
         cmd->xVelocity = -cmd->xVelocity;
@@ -416,7 +416,7 @@ static void StartDragonFireTranslation(struct Sprite *sprite)
     SetSpriteCoordsToAnimAttackerCoords(sprite);
     sprite->data[2] = GetBattlerSpriteCoord(gBattleAnimTarget, BATTLER_COORD_X_2);
     sprite->data[4] = GetBattlerSpriteCoord(gBattleAnimTarget, BATTLER_COORD_Y_PIC_OFFSET);
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
     {
         sprite->x -= cmd->initialY;
         sprite->y += cmd->initialY;
@@ -464,7 +464,7 @@ void AnimDragonRageFirePlume(struct Sprite *sprite)
 // For Dragon Breath and Dragon Rage
 void AnimDragonFireToTarget(struct Sprite *sprite)
 {
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
         StartSpriteAffineAnim(sprite, 1);
 
     StartDragonFireTranslation(sprite);
@@ -646,7 +646,7 @@ static void AnimOverheatFlame_Step(struct Sprite *sprite)
 
 void AnimDracoMeteorRock(struct Sprite *sprite)
 {
-    if (IsOnPlayerSide(gBattleAnimTarget))
+    if (IsBattlerShowingBackSprite(gBattleAnimTarget))
     {
         sprite->data[0] = sprite->x - gBattleAnimArgs[0];
         sprite->data[2] = sprite->x - gBattleAnimArgs[2];
