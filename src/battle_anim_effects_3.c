@@ -3058,7 +3058,7 @@ static void AnimTask_FlailMovement_Step(u8 taskId)
         if (task->data[2] >= task->data[14])
         {
             s16 diff = task->data[14] - task->data[2];
-            s16 div = diff / (task->data[14] * 2);
+            s16 div = SAFE_DIV(diff, (task->data[14] * 2));
             s16 mod = diff % (task->data[14] * 2);
 
             if ((div & 1) == 0)
@@ -3077,7 +3077,7 @@ static void AnimTask_FlailMovement_Step(u8 taskId)
         if (task->data[2] <= -task->data[14])
         {
             s16 diff = task->data[14] - task->data[2];
-            s16 div = diff / (task->data[14] * 2);
+            s16 div = SAFE_DIV(diff, (task->data[14] * 2));
             s16 mod = diff % (task->data[14] * 2);
 
             if ((1 & div) == 0)
@@ -4277,8 +4277,8 @@ static void GetGlareEyeDotCoords(s16 startX, s16 startY, s16 endX, s16 endY, u8 
     }
 
     pairMax--;
-    x2 = (startX << 8) + pairNum * (((endX - startX) << 8) / pairMax);
-    y2 = (startY << 8) + pairNum * (((endY - startY) << 8) / pairMax);
+    x2 = (startX << 8) + pairNum * (SAFE_DIV(((endX - startX) << 8), pairMax));
+    y2 = (startY << 8) + pairNum * (SAFE_DIV(((endY - startY) << 8), pairMax));
     *x = x2 >> 8;
     *y = y2 >> 8;
 }
@@ -4914,8 +4914,8 @@ static void AnimForesightMagnifyingGlass_Step(struct Sprite *sprite)
 
 static void AnimMeteorMashStar_Step(struct Sprite *sprite)
 {
-    sprite->x2 = ((sprite->data[2] - sprite->data[0]) * sprite->data[5]) / sprite->data[4];
-    sprite->y2 = ((sprite->data[3] - sprite->data[1]) * sprite->data[5]) / sprite->data[4];
+    sprite->x2 = SAFE_DIV(((sprite->data[2] - sprite->data[0]) * sprite->data[5]), sprite->data[4]);
+    sprite->y2 = SAFE_DIV(((sprite->data[3] - sprite->data[1]) * sprite->data[5]), sprite->data[4]);
     if (!(sprite->data[5] & 1))
     {
         CreateSprite(

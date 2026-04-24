@@ -6953,7 +6953,7 @@ static void AnimWavyMusicNotes_CalcVelocity(s16 x, s16 y, s16 *velocX, s16 *velo
         xSpeedFactor = -xSpeedFactor;
 
     x2 = x * 256;
-    time = x2 / xSpeedFactor;
+    time = SAFE_DIV(x2, xSpeedFactor);
     if (time == 0)
         time = 1;
 
