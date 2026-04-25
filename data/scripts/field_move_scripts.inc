@@ -474,3 +474,65 @@ Text_MonUsedRockClimb:
 Text_CantRockClimb:
 	.string "The cliff is steep.\n"
 	.string "A Pokémon may be able to climb it.$"
+
+@ Use headbutt from party menu
+EventScript_UseHeadbutt::
+	lockall
+	goto EventScript_HeadbuttCommon
+
+@ Interact with headbuttable tree
+EventScript_Headbutt::
+	lockall
+	checkfieldmove FIELD_MOVE_HEADBUTT, TRUE
+	goto_if_eq VAR_RESULT, PARTY_SIZE, EventScript_CantHeadbutt
+	setfieldeffectargument 0, VAR_RESULT
+	bufferpartymonnick STR_VAR_1, VAR_RESULT
+	buffermovename STR_VAR_2, MOVE_HEADBUTT
+	msgbox Text_WantToHeadbutt, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, EventScript_CancelHeadbutt
+	msgbox Text_MonUsedFieldMove, MSGBOX_DEFAULT
+	closemessage
+EventScript_HeadbuttCommon:
+	@ check if follower should use the field move
+	isfollowerfieldmoveuser VAR_0x8004
+	setfieldeffectargument 3, VAR_0x8004 @ skip pose if so
+	dofieldeffect FLDEFF_USE_HEADBUTT
+	waitstate
+EventScript_HeadbuttTree:: @ fallthrough
+	setflag FLAG_SAFE_FOLLOWER_MOVEMENT
+	call_if_eq VAR_0x8004, TRUE, EventScript_FollowerFieldMove
+	setvar VAR_0x8004, 1  @ vertical pan
+	setvar VAR_0x8005, 1  @ horizontal pan
+	setvar VAR_0x8006, 8  @ num shakes
+	setvar VAR_0x8007, 5  @ shake delay
+	special ShakeCamera
+	waitstate
+	special HeadbuttWildEncounter
+	compare VAR_RESULT, FALSE
+	goto_if_eq EventScript_EndHeadbutt
+	waitstate
+	releaseall
+	end
+
+EventScript_CantHeadbutt::
+	msgbox Text_CantHeadbutt, MSGBOX_DEFAULT
+	releaseall
+	end
+
+EventScript_CancelHeadbutt::
+	closemessage
+	releaseall
+	end
+
+EventScript_EndHeadbutt::
+	releaseall
+	end
+
+Text_WantToHeadbutt:
+	.string "It's a moderately sized tree.\p"
+	.string "Would you like {STR_VAR_1}\n"
+	.string "to use {STR_VAR_2}?$"
+
+Text_CantHeadbutt:
+	.string "There's a large, formidable tree\n"
+	.string "that looks like it can be headbutted!$"

@@ -408,6 +408,7 @@ extern const u8 EventScript_UseRockSmash[];
 extern const u8 EventScript_UseDig[];
 extern const u8 EventScript_UseCutGrass[];
 extern const u8 EventScript_UseDefog[];
+extern const u8 EventScript_UseHeadbutt[];
 
 //player pc
 extern const u8 EventScript_DemoTown_StartHouse_2F_ShutDownPC[];
@@ -589,6 +590,7 @@ extern const u8 RustboroCity_Gym_EventScript_RegisterRoxanne[];
 extern const u8 MossdeepCity_SpaceCenter_2F_EventScript_RivalRayquazaCall[];
 extern const u8 SSTidalCorridor_EventScript_ReachedStepCount[];
 extern const u8 EventScript_FallDownHoleMtPyre[];
+extern const u8 EventScript_Headbutt[];
 
 // Secret Base
 extern const u8 SecretBase_EventScript_PC[];
