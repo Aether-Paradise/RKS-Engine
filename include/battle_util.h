@@ -411,6 +411,10 @@ bool32 IsNaturalEnemy(enum Species speciesAttacker, enum Species speciesTarget);
 enum Stat GetDownloadStat(enum BattlerId battler);
 bool32 BattlerJustSwitchedIn(enum BattlerId battler);
 bool32 IsBattlersFirstTurn(enum BattlerId battler);
+bool32 IsBattlerTormented(enum BattlerId battler);
+void SetBattlerTorment(enum BattlerId battler, u32 turns); // 0 turns = Infinite torment
+void UndoBattlerTorment(enum BattlerId battler);
+bool32 TryReduceTormentTimer(enum BattlerId battler);
 struct PartyState *GetBattlerPartyState(enum BattlerId battler);
 enum Species GetBattlerBaseSpecies(enum BattlerId battler);
 

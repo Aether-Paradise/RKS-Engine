@@ -2173,7 +2173,7 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
     case EFFECT_TORMENT:
         if (GetActiveGimmick(battlerDef) == GIMMICK_DYNAMAX)
             ADJUST_SCORE(-10);
-        else if (gBattleMons[battlerDef].volatiles.torment
+        else if (IsBattlerTormented(battlerDef)
           || DoesPartnerHaveSameMoveEffect(BATTLE_PARTNER(battlerAtk), battlerDef, move, aiData->partnerMove))
         {
             ADJUST_SCORE(-10);

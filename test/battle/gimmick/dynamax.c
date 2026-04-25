@@ -375,13 +375,18 @@ SINGLE_BATTLE_TEST("Dynamax: Dynamaxed Pokemon are immune to Torment")
 {
     GIVEN {
         PLAYER(SPECIES_WOBBUFFET);
-        OPPONENT(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_MELMETAL) { GigantamaxFactor(TRUE); }
     } WHEN {
         TURN { MOVE(player, MOVE_SCRATCH, gimmick: GIMMICK_DYNAMAX); MOVE(opponent, MOVE_TORMENT); }
+        TURN { MOVE(player, MOVE_SCRATCH); MOVE(opponent, MOVE_IRON_HEAD, gimmick: GIMMICK_DYNAMAX); }
     } SCENE {
         MESSAGE("Wobbuffet used Max Strike!");
-        MESSAGE("The opposing Wobbuffet used Torment!");
+        MESSAGE("The opposing Melmetal used Torment!");
         MESSAGE("But it failed!");
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_G_MAX_MELTDOWN, opponent);
+        NONE_OF {
+            MESSAGE("Wobbuffet was subjected to torment!");
+        }
     }
 }
 
@@ -1232,26 +1237,26 @@ DOUBLE_BATTLE_TEST("Dynamax: G-Max Meltdown torments both opponents for 3 turns"
         OPPONENT(SPECIES_WOBBUFFET) { Moves(MOVE_SPLASH, MOVE_CELEBRATE); }
         OPPONENT(SPECIES_WYNAUT) { Moves(MOVE_SPLASH, MOVE_CELEBRATE); }
     } WHEN {
-        TURN { MOVE(playerLeft, MOVE_IRON_HEAD, target: opponentLeft, gimmick: GIMMICK_DYNAMAX); \
+        TURN { MOVE(playerLeft, MOVE_IRON_HEAD, target: opponentLeft, gimmick: GIMMICK_DYNAMAX);
                MOVE(opponentLeft, MOVE_SPLASH); MOVE(opponentRight, MOVE_SPLASH); }
-        TURN { MOVE(playerLeft, MOVE_CELEBRATE, target: opponentLeft); \
-               MOVE(opponentLeft, MOVE_SPLASH, allowed: FALSE); \
-               MOVE(opponentLeft, MOVE_CELEBRATE); \
-               MOVE(opponentRight, MOVE_SPLASH, allowed: FALSE); \
+        TURN { MOVE(playerLeft, MOVE_CELEBRATE, target: opponentLeft);
+               MOVE(opponentLeft, MOVE_SPLASH, allowed: FALSE);
+               MOVE(opponentLeft, MOVE_CELEBRATE);
+               MOVE(opponentRight, MOVE_SPLASH, allowed: FALSE);
                MOVE(opponentRight, MOVE_CELEBRATE); }
-        TURN { MOVE(playerLeft, MOVE_CELEBRATE, target: opponentLeft); \
-               MOVE(opponentLeft, MOVE_SPLASH); \
+        TURN { MOVE(playerLeft, MOVE_CELEBRATE, target: opponentLeft);
+               MOVE(opponentLeft, MOVE_SPLASH);
                MOVE(opponentRight, MOVE_SPLASH); }
     } SCENE {
         // turn 1
-        MESSAGE("Melmetal used G-Max Meltdown!");
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_G_MAX_MELTDOWN, playerLeft);
         MESSAGE("The opposing Wobbuffet was subjected to torment!");
         MESSAGE("The opposing Wynaut was subjected to torment!");
-        MESSAGE("The opposing Wobbuffet used Splash!");
-        MESSAGE("The opposing Wynaut used Splash!");
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_SPLASH, opponentLeft);
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_SPLASH, opponentRight);
         // turn 2
-        MESSAGE("The opposing Wobbuffet used Celebrate!");
-        MESSAGE("The opposing Wynaut used Celebrate!");
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_CELEBRATE, opponentLeft);
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_CELEBRATE, opponentRight);
         // end of turn 3
         MESSAGE("The opposing Wobbuffet is no longer tormented!");
         MESSAGE("The opposing Wynaut is no longer tormented!");
