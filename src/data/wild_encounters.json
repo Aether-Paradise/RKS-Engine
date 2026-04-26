@@ -36173,6 +36173,40 @@
               }
             ]
           }
+        },
+        {
+          "map": "MAP_DEMO_ROUTE",
+          "base_label": "gDemoRoute",
+          "headbutt_mons": {
+            "encounter_rate": 75,
+            "mons": [
+              {
+                "min_level": 5,
+                "max_level": 5,
+                "species": "SPECIES_LEDYBA"
+              },
+              {
+                "min_level": 5,
+                "max_level": 5,
+                "species": "SPECIES_COMBEE"
+              },
+              {
+                "min_level": 5,
+                "max_level": 5,
+                "species": "SPECIES_SPIDOPS"
+              },
+              {
+                "min_level": 5,
+                "max_level": 5,
+                "species": "SPECIES_HERACROSS"
+              },
+              {
+                "min_level": 5,
+                "max_level": 5,
+                "species": "SPECIES_HERACROSS"
+              }
+            ]
+          }
         }
       ]
     },
