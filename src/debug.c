@@ -2471,7 +2471,7 @@ static void DebugAction_FlagsVars_SetValue(u8 taskId)
 
 static void DebugAction_FlagsVars_PokedexFlags_All(u8 taskId)
 {
-    u16 i;
+    enum Species i;
     for (i = 0; i < NUM_SPECIES; i++)
     {
         GetSetPokedexFlag(i + 1, FLAG_SET_CAUGHT);

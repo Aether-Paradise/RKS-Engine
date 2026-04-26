@@ -6810,6 +6810,30 @@ u8 *MonSpritesGfxManager_GetSpritePtr(u8 managerId, u8 spriteNum)
     }
 }
 
+enum Species GetFirstPokedexFlagSpecies(enum Species formSpeciesId, u8 caseID)
+{
+    switch (caseID)
+    {
+    case FLAG_SET_CAUGHT:
+    case FLAG_SET_SEEN:
+        return SPECIES_NONE;
+    default:
+        break;
+    }
+
+    const enum Species *formTable = GetSpeciesFormTable(formSpeciesId);
+    if (formTable != NULL)
+    {
+        for (u32 i = 0; formTable[i] != FORM_SPECIES_END; i++)
+        {
+            u32 flag = GetSetPokedexFlag(formTable[i], caseID);
+            if (flag)
+                return formTable[i];
+        }
+    }
+    return GetSetPokedexFlag(formSpeciesId, caseID) ? formSpeciesId : SPECIES_NONE;
+}
+
 u8 GetFormIdFromFormSpeciesId(enum Species formSpeciesId)
 {
     const enum Species *formTable = GetSpeciesFormTable(formSpeciesId);

@@ -2217,7 +2217,7 @@ static void CreatePokedexList(u8 dexMode, u8 order)
             for (i = 0; i < temp_dexCount; i++)
             {
                 temp_dexNum = RegionalToNationalOrder(i + 1);
-                species = NationalPokedexNumToSpecies(temp_dexNum);
+                species = GetFirstPokedexFlagSpecies(NationalPokedexNumToSpecies(temp_dexNum), FLAG_GET_SEEN);
                 sPokedexView->pokedexList[i].dexNum = temp_dexNum;
                 sPokedexView->pokedexList[i].species = species;
                 sPokedexView->pokedexList[i].seen = GetSetPokedexFlag(species, FLAG_GET_SEEN);
@@ -2232,8 +2232,8 @@ static void CreatePokedexList(u8 dexMode, u8 order)
             for (i = 0, r5 = 0, r10 = 0; i < temp_dexCount; i++)
             {
                 temp_dexNum = i + 1;
-                species = NationalPokedexNumToSpecies(temp_dexNum);
-                if (GetSetPokedexFlag(species, FLAG_GET_SEEN))
+                species = GetFirstPokedexFlagSpecies(NationalPokedexNumToSpecies(temp_dexNum), FLAG_GET_SEEN);
+                if (species)
                     r10 = 1;
                 if (r10)
                 {
@@ -2251,7 +2251,7 @@ static void CreatePokedexList(u8 dexMode, u8 order)
     case ORDER_ALPHABETICAL:
         for (i = 0; i < ARRAY_COUNT(gPokedexOrder_Alphabetical); i++)
         {
-            species = gPokedexOrder_Alphabetical[i];
+            species = GetFirstPokedexFlagSpecies(gPokedexOrder_Alphabetical[i], FLAG_GET_SEEN);
             temp_dexNum = SpeciesToNationalPokedexNum(species);
 
             if (temp_dexNum <= NATIONAL_DEX_COUNT && (!temp_isHoennDex || NationalToRegionalOrder(temp_dexNum) != 0) && GetSetPokedexFlag(species, FLAG_GET_SEEN))
@@ -4930,7 +4930,6 @@ static u16 CreateSizeScreenTrainerPic(u16 species, s16 x, s16 y, s8 paletteSlot)
 
 static int DoPokedexSearch(u8 dexMode, u8 order, u8 abcGroup, enum BodyColor bodyColor, enum Type type1, enum Type type2)
 {
-    enum Species species;
     u16 i;
     u16 resultsCount;
     enum Type types[2];

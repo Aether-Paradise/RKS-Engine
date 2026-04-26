@@ -731,6 +731,7 @@ bool8 HasTwoFramesAnimation(enum Species species);
 struct MonSpritesGfxManager *CreateMonSpritesGfxManager(u8 managerId, u8 mode);
 void DestroyMonSpritesGfxManager(u8 managerId);
 u8 *MonSpritesGfxManager_GetSpritePtr(u8 managerId, u8 spriteNum);
+enum Species GetFirstPokedexFlagSpecies(enum Species formSpeciesId, u8 caseID);
 u8 GetFormIdFromFormSpeciesId(enum Species formSpeciesId);
 enum Species GetFormChangeTargetSpecies(struct Pokemon *mon, enum FormChanges method);
 enum Species GetFormChangeTargetSpecies_Internal(struct FormChangeContext ctx);

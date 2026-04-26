@@ -10596,7 +10596,7 @@ static void ComputeBallData(u32 wildMonBattler, u32 playerBattler, struct BallDa
             ball->multiplier = (B_QUICK_BALL_MODIFIER >= GEN_5 ? 500 : 400);
         break;
     case BALL_REPEAT:
-        if (GetSetPokedexFlag(battleMon->species, FLAG_GET_CAUGHT))
+        if (GetFirstPokedexFlagSpecies(battleMon->species, FLAG_GET_CAUGHT))
             ball->multiplier = (B_REPEAT_BALL_MODIFIER >= GEN_7 ? 350 : 300);
         break;
     case BALL_LEVEL:

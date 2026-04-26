@@ -1,5 +1,5 @@
 // Only list base species here.
-static const u16 gPokedexOrder_Alphabetical[] =
+static const enum Species gPokedexOrder_Alphabetical[] =
 {
     SPECIES_ABOMASNOW,
     SPECIES_ABRA,
@@ -1053,7 +1053,7 @@ static const u16 gPokedexOrder_Alphabetical[] =
     SPECIES_ZYGARDE,
 };
 
-static const u16 gPokedexOrder_Weight[] =
+static const enum Species gPokedexOrder_Weight[] =
 {
     // 0.0 - 21.8 lbs / 0.0 - 9.9 kg
     SPECIES_GASTLY,
@@ -2934,7 +2934,7 @@ static const u16 gPokedexOrder_Weight[] =
     SPECIES_CELESTEELA,
 };
 
-static const u16 gPokedexOrder_Height[] =
+static const enum Species gPokedexOrder_Height[] =
 {
     // 0'04" / 0.1m
     SPECIES_JOLTIK,
