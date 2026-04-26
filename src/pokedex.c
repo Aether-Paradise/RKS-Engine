@@ -168,6 +168,7 @@ struct PokedexListItem
     enum Species species:14;
     u16 seen:1;
     u16 owned:1;
+    u32 form:7;
 };
 
 struct PokedexView
@@ -1540,11 +1541,13 @@ static void ResetPokedexView(struct PokedexView *pokedexView)
     {
         pokedexView->pokedexList[i].dexNum = 0xFFFF;
         pokedexView->pokedexList[i].species = 0;
+        pokedexView->pokedexList[i].form = 0;
         pokedexView->pokedexList[i].seen = FALSE;
         pokedexView->pokedexList[i].owned = FALSE;
     }
     pokedexView->pokedexList[NATIONAL_DEX_COUNT].dexNum = 0;
     pokedexView->pokedexList[NATIONAL_DEX_COUNT].species = 0;
+    pokedexView->pokedexList[NATIONAL_DEX_COUNT].form = 0;
     pokedexView->pokedexList[NATIONAL_DEX_COUNT].seen = FALSE;
     pokedexView->pokedexList[NATIONAL_DEX_COUNT].owned = FALSE;
     pokedexView->pokemonListCount = 0;
@@ -2220,6 +2223,7 @@ static void CreatePokedexList(u8 dexMode, u8 order)
                 species = GetFirstPokedexFlagSpecies(NationalPokedexNumToSpecies(temp_dexNum), FLAG_GET_SEEN);
                 sPokedexView->pokedexList[i].dexNum = temp_dexNum;
                 sPokedexView->pokedexList[i].species = species;
+                sPokedexView->pokedexList[i].form = GetFormIdFromFormSpeciesId(species);
                 sPokedexView->pokedexList[i].seen = GetSetPokedexFlag(species, FLAG_GET_SEEN);
                 sPokedexView->pokedexList[i].owned = GetSetPokedexFlag(species, FLAG_GET_CAUGHT);
                 if (sPokedexView->pokedexList[i].seen)
@@ -2239,6 +2243,7 @@ static void CreatePokedexList(u8 dexMode, u8 order)
                 {
                     sPokedexView->pokedexList[r5].dexNum = temp_dexNum;
                     sPokedexView->pokedexList[r5].species = species;
+                    sPokedexView->pokedexList[r5].form = GetFormIdFromFormSpeciesId(species);
                     sPokedexView->pokedexList[r5].seen = GetSetPokedexFlag(species, FLAG_GET_SEEN);
                     sPokedexView->pokedexList[r5].owned = GetSetPokedexFlag(species, FLAG_GET_CAUGHT);
                     if (sPokedexView->pokedexList[r5].seen)
@@ -2258,6 +2263,7 @@ static void CreatePokedexList(u8 dexMode, u8 order)
             {
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].dexNum = temp_dexNum;
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].species = species;
+                sPokedexView->pokedexList[sPokedexView->pokemonListCount].form = GetFormIdFromFormSpeciesId(species);
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].seen = TRUE;
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].owned = GetSetPokedexFlag(species, FLAG_GET_CAUGHT);
                 sPokedexView->pokemonListCount++;
@@ -2274,6 +2280,7 @@ static void CreatePokedexList(u8 dexMode, u8 order)
             {
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].dexNum = temp_dexNum;
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].species = species;
+                sPokedexView->pokedexList[sPokedexView->pokemonListCount].form = GetFormIdFromFormSpeciesId(species);
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].seen = TRUE;
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].owned = TRUE;
                 sPokedexView->pokemonListCount++;
@@ -2290,6 +2297,7 @@ static void CreatePokedexList(u8 dexMode, u8 order)
             {
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].dexNum = temp_dexNum;
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].species = species;
+                sPokedexView->pokedexList[sPokedexView->pokemonListCount].form = GetFormIdFromFormSpeciesId(species);
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].seen = TRUE;
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].owned = TRUE;
                 sPokedexView->pokemonListCount++;
@@ -2306,6 +2314,7 @@ static void CreatePokedexList(u8 dexMode, u8 order)
             {
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].dexNum = temp_dexNum;
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].species = species;
+                sPokedexView->pokedexList[sPokedexView->pokemonListCount].form = GetFormIdFromFormSpeciesId(species);
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].seen = TRUE;
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].owned = TRUE;
                 sPokedexView->pokemonListCount++;
@@ -2322,6 +2331,7 @@ static void CreatePokedexList(u8 dexMode, u8 order)
             {
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].dexNum = temp_dexNum;
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].species = species;
+                sPokedexView->pokedexList[sPokedexView->pokemonListCount].form = GetFormIdFromFormSpeciesId(species);
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].seen = TRUE;
                 sPokedexView->pokedexList[sPokedexView->pokemonListCount].owned = TRUE;
                 sPokedexView->pokemonListCount++;
@@ -2334,6 +2344,7 @@ static void CreatePokedexList(u8 dexMode, u8 order)
     {
         sPokedexView->pokedexList[i].dexNum = 0xFFFF;
         sPokedexView->pokedexList[i].species = 0;
+        sPokedexView->pokedexList[i].form = 0;
         sPokedexView->pokedexList[i].seen = FALSE;
         sPokedexView->pokedexList[i].owned = FALSE;
     }
@@ -2660,6 +2671,39 @@ static u16 TryDoPokedexScroll(u16 selectedMon, u16 ignored)
         ClearMonSprites();
         CreateMonSpritesAtPos(selectedMon, 0xE);
         PlaySE(SE_DEX_PAGE);
+    }
+    else if (JOY_NEW(R_BUTTON))
+    {
+        enum Species species = sPokedexView->pokedexList[selectedMon].species;
+        const enum Species *formTable = GetSpeciesFormTable(species);
+        // Only enable option for seen Pokémon
+        if (formTable != NULL && sPokedexView->pokedexList[selectedMon].seen)
+        {
+            enum Species newSpecies;
+            u32 form = sPokedexView->pokedexList[selectedMon].form;
+            u32 formCount;
+            for (formCount = 0; formTable[formCount] != FORM_SPECIES_END; formCount++);
+            do
+            {
+                if (form + 1 == formCount)
+                    form = 0;
+                else
+                    form += 1;
+                newSpecies = formTable[form];
+            } while (!IsSpeciesEnabled(newSpecies) || !GetSetPokedexFlag(newSpecies, FLAG_GET_SEEN));
+
+            if (newSpecies != species)
+            {
+                species = newSpecies;
+                sPokedexView->pokedexList[selectedMon].species = species;
+                sPokedexView->pokedexList[selectedMon].form = form;
+                sPokedexView->pokedexList[selectedMon].seen = GetSetPokedexFlag(species, FLAG_GET_SEEN);
+                sPokedexView->pokedexList[selectedMon].owned = GetSetPokedexFlag(species, FLAG_GET_CAUGHT);
+                ClearMonSprites();
+                CreateMonSpritesAtPos(selectedMon, 0xE);
+                PlaySE(SE_DEX_PAGE);
+            }
+        }
     }
 
     if (scrollDir == 0)
@@ -5025,6 +5069,7 @@ static int DoPokedexSearch(u8 dexMode, u8 order, u8 abcGroup, enum BodyColor bod
         {
             sPokedexView->pokedexList[i].dexNum = 0xFFFF;
             sPokedexView->pokedexList[i].species = 0;
+            sPokedexView->pokedexList[i].form = 0;
             sPokedexView->pokedexList[i].seen = FALSE;
             sPokedexView->pokedexList[i].owned = FALSE;
         }
