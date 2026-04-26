@@ -8658,6 +8658,11 @@ bool32 TryBattleFormChange(enum BattlerId battler, enum FormChanges method, enum
         if (GetBattlerPartyState(battler)->changedSpecies == SPECIES_NONE)
             GetBattlerPartyState(battler)->changedSpecies = gBattleMons[battler].species;
 
+        GetSetPokedexFlag(targetSpecies, FLAG_SET_SEEN);
+        // If the player has the caught flag for the current species, set it for the new form too.
+        if (GetFirstPokedexFlagSpecies(currentSpecies, FLAG_GET_CAUGHT))
+            GetSetPokedexFlag(targetSpecies, FLAG_SET_CAUGHT);
+
         TryToSetBattleFormChangeMoves(mon, method);
         SetMonData(mon, MON_DATA_SPECIES, &targetSpecies);
         gBattleMons[battler].species = targetSpecies;

@@ -3065,9 +3065,8 @@ static void UpdatePokedexForReceivedMon(u8 partyIdx)
     {
         enum Species species = GetMonData(mon, MON_DATA_SPECIES);
         u32 personality = GetMonData(mon, MON_DATA_PERSONALITY);
-        enum NationalDexOrder dexNum = SpeciesToNationalPokedexNum(species);
-        GetSetPokedexFlag(dexNum, FLAG_SET_SEEN);
-        HandleSetPokedexFlag(dexNum, FLAG_SET_CAUGHT, personality);
+        GetSetPokedexFlag(species, FLAG_SET_SEEN);
+        HandleSetPokedexFlag(species, FLAG_SET_CAUGHT, personality);
     }
 }
 

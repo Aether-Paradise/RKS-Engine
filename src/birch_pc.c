@@ -50,7 +50,8 @@ static const u8 *const sBirchDexRatingTexts[BIRCH_DEX_STRINGS] =
 // This shows your Hoenn Pokédex rating and not your National Dex.
 const u8 *GetPokedexRatingText(u32 count)
 {
-    u32 i, j;
+    u32 i;
+    enum Species j;
     u16 maxDex = REGIONAL_DEX_COUNT - 1;
     // doesNotCountForRegionalPokedex
     for (i = 0; i < REGIONAL_DEX_COUNT; i++)
@@ -108,7 +109,7 @@ static const u8 *GetProfOaksRatingMessageByCount(u16 count)
 {
     gSpecialVar_Result = FALSE;
 
-    if (count > 0 && GetSetPokedexFlag(NATIONAL_DEX_MEW, FLAG_GET_CAUGHT))
+    if (count > 0 && GetSetPokedexFlag(SPECIES_MEW, FLAG_GET_CAUGHT))
         count--;
 
     if (count < 10)
