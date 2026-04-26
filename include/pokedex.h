@@ -14,7 +14,7 @@ u32 Pokedex_CreateCaughtMonSprite(enum Species species, s32 x, s32 y);
 s8 GetSetPokedexFlag(enum Species species, u8 caseID);
 void DrawFootprint(u8 windowId, enum Species species);
 u32 GetPokedexMonPersonality(enum Species species);
-u16 CreateMonSpriteFromNationalDexNumber(enum NationalDexOrder nationalNum, s16 x, s16 y, u16 paletteSlot);
+u16 CreateMonSpriteFromSpecies(enum Species species, s16 x, s16 y, u16 paletteSlot);
 bool16 HasAllRegionalMons(void);
 bool16 HasAllHoennMons(void);
 bool16 HasAllKantoMons(void);
