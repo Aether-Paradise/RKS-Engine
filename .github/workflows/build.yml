@@ -278,7 +278,7 @@ jobs:
         env:
           GAME_VERSION: LEAFGREEN
           TEST: 1
-          T_SHOULD_RUN_MOVE_ANIM: 1
+          OVR_T_SHOULD_RUN_MOVE_ANIM: 1
         run: make -j$(nproc) check TESTS="test/battle/move_animations/all_anims.c"
 
   # Gate job: satisfies the "build" branch protection rule.
