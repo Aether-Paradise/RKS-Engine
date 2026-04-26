@@ -2,11 +2,37 @@
 
 **`RKS-Engine`** is NOT a game. It is a ROMHack base forked from [ROM-Hacking Hideout's `pokeemerald-expansion`](https://github.com/rh-hideout/pokeemerald-expansion). Please support their work, they've done amazing things for years now.
 
-***PLEASE NOTE: RKS-Engine is not yet ready for use. Any potential merge conflicts you may get will be your responsability.***
+> ***PLEASE NOTE: RKS-Engine is not yet ready for use. Any potential merge conflicts you may get will be your responsability.***
 
 The goal of this project is to introduce features and code changes that aren't within the scope of pokeemerald-expansion. I would highly recommend that any PRs for new features and changes should be discussed with the Expansion Senate over at the [ROM Hacking Hideout (RHH) Discord server](https://discord.gg/6CzjAG6GZk) before coming here, as there's the possibility that it may be accepted and then trickle down to this repo. I don't plan to remove any features from Expansion, but some implementations may differ.
 
-Documentation is WIP, since this is a fresh clone. 
+***Documentation is still work in progress.***
+
+## New Features in RKS-Engine
+- ***Blank slate:*** Hoenn and Kanto maps have been removed to make room for your new maps!
+- ***Demo Maps***: Try out all features available in environments that you play around in!
+- ***Extended Easy Chat Support***: Added support for Gen4+ Species, Moves and Abilities.
+  - Does not currently support Bard Songs.
+- ***Extended Pokédex support***: Forms are now integrated into Emerald's Pokédex.
+  - Flags now track species instead of National Dex number.
+  - If an alternate form is obtained before the base form, it will be shown in the list properly.
+  - You can press R to cycle between seen forms.
+  - Form changes will update the dex flag.
+  - Allows to switch what the "base" form is by changing the order in the form table.
+- ***More available Saveblock space by default:***
+  - Most features that utilize SaveBlock space have been disabled by default. Check `include/config/save.h` to reenable them.
+- ***Reordered Species and Item IDs***: Pokémon and Items are now sorted by their introduction order to the series.
+- ***Config cleanup***: Configs has been removed due to redundancy:
+  - Always `TRUE`:
+    - `FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK1`
+    - `FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK2`
+    - `EXPANSION_INTRO`
+- ***Integrated new feature branches:***
+  - [Day/Night System in battles](https://github.com/Kasenn/pokeemerald-expansion-kasen/tree/battle-dns) - *by Kasen*
+  - [Help Windows](https://github.com/LinathanZel/pokeemerald-expansion/tree/help_window) - *by LinathanZel*
+  - ***New UIs enabled via config:***
+    - [Sword and Shield Party Menu](https://github.com/montmoguri/pokeemerald-expansion/wiki/Sword-&-Shield-Party-Menu) - *by Montblanc*
+      - Includes extended support for Expansion 12v12 battles.
 
 <!--
 # About `pokeemerald-expansion`
