@@ -2586,7 +2586,7 @@ void PlantBerryTree(u8 id, enum BerryId berry, u8 stage, bool8 allowGrowth)
     if (OW_BERRY_ALWAYS_WATERABLE)
     {
         // We simulate a tree having grown without water
-        u32 berryTreeAge = GetBerryTreeAge(id, stage);
+        u32 berryTreeAge = GetBerryTreeAge(berry, stage);
         if (GetBerryInfo(berry)->maxYield - berryTreeAge * GetBerryInfo(berry)->maxYield / 5 < GetBerryInfo(berry)->minYield)
             tree->berryYield = GetBerryInfo(berry)->minYield;
         else
