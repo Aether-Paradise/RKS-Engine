@@ -182,6 +182,9 @@ enum DebugTrainerSelection
 #define DEBUG_MENU_WIDTH_FLAGVAR 4
 #define DEBUG_MENU_HEIGHT_FLAGVAR 2
 
+#define DEBUG_MENU_WIDTH_FLAGS 25
+#define DEBUG_MENU_HEIGHT_FLAGS 3
+
 #define DEBUG_NUMBER_DIGITS_FLAGS 4
 #define DEBUG_NUMBER_DIGITS_VARIABLES 5
 #define DEBUG_NUMBER_DIGITS_VARIABLE_VALUE 5
@@ -785,6 +788,17 @@ static const struct WindowTemplate sDebugMenuWindowTemplateSound =
     .tilemapTop = 1,
     .width = DEBUG_MENU_WIDTH_SOUND,
     .height = DEBUG_MENU_HEIGHT_SOUND,
+    .paletteNum = 15,
+    .baseBlock = 1,
+};
+
+static const struct WindowTemplate sDebugMenuWindowTemplateFlags =
+{
+    .bg = 0,
+    .tilemapLeft = 30 - DEBUG_MENU_WIDTH_FLAGS - 1,
+    .tilemapTop = 1,
+    .width = DEBUG_MENU_WIDTH_FLAGS,
+    .height = 2 * DEBUG_MENU_HEIGHT_FLAGS,
     .paletteNum = 15,
     .baseBlock = 1,
 };
@@ -2261,19 +2275,73 @@ static void DebugAction_Trainers_RechargeVsSeeker(u8 taskId)
     Debug_DestroyMenu_Full(taskId);
 }
 
+#define DEBUG_FLAG_LIST                 \
+    X(FLAG_TEMP_1)                      \
+    X(FLAG_TEMP_2)                      \
+    X(FLAG_TEMP_3)                      \
+    X(FLAG_TEMP_4)                      \
+    X(FLAG_TEMP_5)                      \
+    X(FLAG_TEMP_6)                      \
+    X(FLAG_TEMP_7)                      \
+    X(FLAG_TEMP_8)                      \
+    X(FLAG_TEMP_9)                      \
+    X(FLAG_TEMP_A)                      \
+    X(FLAG_TEMP_B)                      \
+    X(FLAG_TEMP_C)                      \
+    X(FLAG_TEMP_D)                      \
+    X(FLAG_TEMP_E)                      \
+    X(FLAG_TEMP_F)                      \
+    X(FLAG_TEMP_10)                     \
+    X(FLAG_TEMP_11)                     \
+    X(FLAG_TEMP_12)                     \
+    X(FLAG_TEMP_13)                     \
+    X(FLAG_TEMP_14)                     \
+    X(FLAG_TEMP_15)                     \
+    X(FLAG_TEMP_16)                     \
+    X(FLAG_TEMP_17)                     \
+    X(FLAG_TEMP_18)                     \
+    X(FLAG_TEMP_19)                     \
+    X(FLAG_TEMP_1A)                     \
+    X(FLAG_TEMP_1B)                     \
+    X(FLAG_TEMP_1C)                     \
+    X(FLAG_TEMP_1D)                     \
+    X(FLAG_TEMP_1E)                     \
+    X(FLAG_TEMP_1F)                     \
+    X(FLAG_DEMO_HIDE_DEOXYS_TRIANGLE)   \
+    X(FLAG_DEMO_HIDE_DEOXYS)            \
+    X(FLAG_DEMO_INGAME_TRADE)           \
+    X(FLAG_DEMO_RECEIVED_WEEKLY_TM)     \
+    X(FLAG_DEMO_ITEM_POKEBALL)          \
+    X(FLAG_DEMO_HIDE_ROWLET)            \
+    X(FLAG_DEMO_HIDE_OSHAWOTT)          \
+    X(FLAG_DEMO_HIDE_CYNDAQUIL)         \
+    X(FLAG_DEMO_CHOSE_STARTER)          \
+
+// Create flag list
+#define X(songId) [songId] = COMPOUND_STRING(#songId),
+static const u8 *const sFlagNames[] =
+{
+DEBUG_FLAG_LIST
+};
+#undef X
+
 // *******************************
 // Actions Flags and Vars
 static void Debug_Display_FlagInfo(u32 flag, u32 digit, u8 windowId)
 {
     ConvertIntToDecimalStringN(gStringVar1, flag, STR_CONV_MODE_LEADING_ZEROS, DEBUG_NUMBER_DIGITS_FLAGS);
     ConvertIntToHexStringN(gStringVar2, flag, STR_CONV_MODE_LEFT_ALIGN, 3);
-    StringExpandPlaceholders(gStringVar1, COMPOUND_STRING("{STR_VAR_1}{CLEAR_TO 90}\n0x{STR_VAR_2}{CLEAR_TO 90}"));
     if (FlagGet(flag))
-        StringCopyPadded(gStringVar2, sDebugText_True, CHAR_SPACE, 15);
+        StringCopyPadded(gStringVar3, sDebugText_Colored_True, CHAR_SPACE, 15);
     else
-        StringCopyPadded(gStringVar2, sDebugText_False, CHAR_SPACE, 15);
+        StringCopyPadded(gStringVar3, sDebugText_Colored_False, CHAR_SPACE, 15);
+    StringExpandPlaceholders(gStringVar1, COMPOUND_STRING("{STR_VAR_1} - 0x{STR_VAR_2} - {STR_VAR_3}{COLOR DARK_GRAY}{CLEAR_TO 200}"));
+    if (flag < ARRAY_COUNT(sFlagNames) && sFlagNames[flag] != NULL)
+        StringCopy(gStringVar2, sFlagNames[flag]);
+    else
+        StringCopy(gStringVar2, COMPOUND_STRING("???"));
     StringCopy(gStringVar3, gText_DigitIndicator[digit]);
-    StringExpandPlaceholders(gStringVar4, COMPOUND_STRING("Flag: {STR_VAR_1}{CLEAR_TO 90}\n{STR_VAR_2}{CLEAR_TO 90}\n{STR_VAR_3}"));
+    StringExpandPlaceholders(gStringVar4, COMPOUND_STRING("Flag: {STR_VAR_1}{CLEAR_TO 200}\n{STR_VAR_2}{CLEAR_TO 200}\n{STR_VAR_3}"));
     AddTextPrinterParameterized(windowId, DEBUG_MENU_FONT, gStringVar4, 0, 0, 0, NULL);
 }
 
@@ -2286,7 +2354,7 @@ static void DebugAction_FlagsVars_Flags(u8 taskId)
 
     HideMapNamePopUpWindow();
     LoadMessageBoxAndBorderGfx();
-    windowId = AddWindow(&sDebugMenuWindowTemplateExtra);
+    windowId = AddWindow(&sDebugMenuWindowTemplateFlags);
     DrawStdWindowFrame(windowId, FALSE);
 
     CopyWindowToVram(windowId, COPYWIN_FULL);
