@@ -58,6 +58,7 @@
 #include "constants/trainer_types.h"
 #include "constants/union_room.h"
 #include "constants/weather.h"
+#include "config/wild_encounter.h"
 
 #define SPECIAL_LOCALIDS_START (min(LOCALID_CAMERA, \
                                 min(LOCALID_PLAYER, \
@@ -10147,9 +10148,9 @@ void ScriptFaceEachOther(struct ScriptContext *ctx)
     u32 localIdTwo = VarGet(ScriptReadHalfword(ctx));
     struct ObjectEvent *objectOne = &gObjectEvents[GetObjectEventIdByLocalId(localIdOne)];
     struct ObjectEvent *objectTwo = &gObjectEvents[GetObjectEventIdByLocalId(localIdTwo)];
-    
+
     Script_RequestEffects(SCREFF_V1 | SCREFF_HARDWARE);
-    
+
     ObjectEventsTurnToEachOther(objectOne, objectTwo);
 }
 
@@ -11894,7 +11895,7 @@ bool8 MovementType_OverworldWildEncounter_WanderAround_Step2(struct ObjectEvent 
 {
     if (!ObjectEventExecSingleMovementAction(objectEvent, sprite))
         return FALSE;
-    
+
     SetMovementDelay(sprite, sMovementDelaysOWE[Random() % ARRAY_COUNT(sMovementDelaysOWE)]);
     sprite->sTypeFuncId = 3;
     return TRUE;
@@ -11909,13 +11910,13 @@ bool8 MovementType_OverworldWildEncounter_WanderAround_Step3(struct ObjectEvent 
         sprite->sTypeFuncId = 4;
         return TRUE;
     }
-    
+
     if (OW_MON_WANDER_WALK == TRUE && IS_OW_MON_OBJ(objectEvent))
         UpdateMonMoveInPlace(objectEvent, sprite);
 
     if (CanAwareOWESeePlayer(objectEvent))
         sprite->sTypeFuncId = 7;
-    
+
     return FALSE;
 }
 
@@ -11971,7 +11972,7 @@ bool8 MovementType_OverworldWildEncounter_Common_Step9(struct ObjectEvent *objec
 {
     if (ObjectEventExecSingleMovementAction(objectEvent, sprite))
         sprite->sTypeFuncId = 10;
-    
+
     return TRUE;
 }
 
@@ -12079,7 +12080,7 @@ bool8 MovementType_OverworldWildEncounter_FleePlayer_Step11(struct ObjectEvent *
         enum Direction newDirection = DirectionOfOWEToPlayerFromCollision(objectEvent);
         if (newDirection != objectEvent->movementDirection)
             newDirection = GetOppositeDirection(newDirection);
-        
+
         movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(newDirection, OWE_GetActiveSpeedFromSpecies(speciesId));
         if (CheckRestrictedOWEMovement(objectEvent, newDirection))
         {

@@ -31,6 +31,7 @@
 #include "constants/songs.h"
 #include "constants/vars.h"
 #include "constants/wild_encounter.h"
+#include "config/wild_encounter.h"
 
 
 #define sOverworldEncounterLevel        trainerRange_berryTreeId
