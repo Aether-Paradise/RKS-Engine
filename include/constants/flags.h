@@ -1793,6 +1793,8 @@
 #define FLAG_HIDE_MISC_KANTO_ROCKETS                       0
 #define FLAG_HIDE_SAFFRON_CITY_POKECENTER_SABRINA_JOURNALS 0
 
+#define FLAG_HIDE_SAFARI_ZONE_WEST_GOLD_TEETH                   0
+#define FLAG_HIDE_SILPH_CO_5F_CARD_KEY                          0
 #define FLAG_HIDE_POKEMON_MANSION_B1F_TM22                      0
 #define FLAG_HIDE_POKEMON_MANSION_B1F_SECRET_KEY                0
 #define FLAG_HIDE_VICTORY_ROAD_1F_RARE_CANDY                    0
