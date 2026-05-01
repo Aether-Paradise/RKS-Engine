@@ -219,7 +219,7 @@ SINGLE_BATTLE_TEST("Magician steals before switching with U-turn")
 SINGLE_BATTLE_TEST("Magician does not activate if user faints from Rocky Helmet recoil")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_ROCKY_HELMET].holdEffect == HOLD_EFFECT_ROCKY_HELMET);
+        ASSUME(GetItemHoldEffect(ITEM_ROCKY_HELMET) == HOLD_EFFECT_ROCKY_HELMET);
         PLAYER(SPECIES_DELPHOX) { HP(1); Ability(ABILITY_MAGICIAN); }
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_ROCKY_HELMET); }
     } WHEN {
