@@ -747,49 +747,49 @@ bool32 SpeciesHasDistinctOverworldFemalePalette(enum Species species)
 
 #endif // OW_POKEMON_OBJECT_EVENTS
 
-u32 OWE_GetMovementTypeFromSpecies(enum Species species)
+u32 GetSpeciesOWEMovementType(enum Species species)
 {
     species = SanitizeSpeciesId(species);
     enum OverworldWildEncounterBehaviors behavior = gSpeciesInfo[species].overworldEncounterBehavior;
     return gOWESpeciesBehavior[behavior].movementType;
 }
 
-u32 OWE_GetViewDistanceFromSpecies(enum Species species)
+u32 GetSpeciesOWEViewDistance(enum Species species)
 {
     species = SanitizeSpeciesId(species);
     enum OverworldWildEncounterBehaviors behavior = gSpeciesInfo[species].overworldEncounterBehavior;
     return gOWESpeciesBehavior[behavior].viewDistance;
 }
 
-u32 OWE_GetViewWidthFromSpecies(enum Species species)
+u32 GetSpeciesOWEViewWidth(enum Species species)
 {
     species = SanitizeSpeciesId(species);
     enum OverworldWildEncounterBehaviors behavior = gSpeciesInfo[species].overworldEncounterBehavior;
     return gOWESpeciesBehavior[behavior].viewWidth;
 }
 
-u32 OWE_GetViewActiveDistanceFromSpecies(enum Species species)
+u32 GetSpeciesOWEViewActiveDistance(enum Species species)
 {
     species = SanitizeSpeciesId(species);
     enum OverworldWildEncounterBehaviors behavior = gSpeciesInfo[species].overworldEncounterBehavior;
     return gOWESpeciesBehavior[behavior].activeDistance;
 }
 
-enum SpeedOWE OWE_GetIdleSpeedFromSpecies(enum Species species)
+enum SpeedOWE GetSpeciesOWEIdleSpeed(enum Species species)
 {
     species = SanitizeSpeciesId(species);
     enum OverworldWildEncounterBehaviors behavior = gSpeciesInfo[species].overworldEncounterBehavior;
     return gOWESpeciesBehavior[behavior].idleSpeed;
 }
 
-enum SpeedOWE OWE_GetActiveSpeedFromSpecies(enum Species species)
+enum SpeedOWE GetSpeciesOWEActiveSpeed(enum Species species)
 {
     species = SanitizeSpeciesId(species);
     enum OverworldWildEncounterBehaviors behavior = gSpeciesInfo[species].overworldEncounterBehavior;
     return gOWESpeciesBehavior[behavior].activeSpeed;
 }
 
-enum ReturnToIdleOWE OWE_GetReturnToIdleFromSpecies(enum Species species)
+enum ReturnToIdleOWE GetSpeciesOWEReturnToIdle(enum Species species)
 {
     species = SanitizeSpeciesId(species);
     enum OverworldWildEncounterBehaviors behavior = gSpeciesInfo[species].overworldEncounterBehavior;

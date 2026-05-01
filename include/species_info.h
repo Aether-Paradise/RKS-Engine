@@ -276,13 +276,13 @@ const u16 *GetSpeciesOverworldShinyPaletteFemale(enum Species species);
 bool32 SpeciesHasDistinctOverworldFemalePalette(enum Species species);
 #endif // OW_POKEMON_OBJECT_EVENTS
 
-u32 OWE_GetMovementTypeFromSpecies(enum Species species);
-u32 OWE_GetViewDistanceFromSpecies(enum Species species);
-u32 OWE_GetViewWidthFromSpecies(enum Species species);
-u32 OWE_GetViewActiveDistanceFromSpecies(enum Species species);
-enum SpeedOWE OWE_GetIdleSpeedFromSpecies(enum Species species);
-enum SpeedOWE OWE_GetActiveSpeedFromSpecies(enum Species species);
-enum ReturnToIdleOWE OWE_GetReturnToIdleFromSpecies(enum Species species);
+u32 GetSpeciesOWEMovementType(enum Species species);
+u32 GetSpeciesOWEViewDistance(enum Species species);
+u32 GetSpeciesOWEViewWidth(enum Species species);
+u32 GetSpeciesOWEViewActiveDistance(enum Species species);
+enum SpeedOWE GetSpeciesOWEIdleSpeed(enum Species species);
+enum SpeedOWE GetSpeciesOWEActiveSpeed(enum Species species);
+enum ReturnToIdleOWE GetSpeciesOWEReturnToIdle(enum Species species);
 
 #define gSpeciesInfo \
 _Pragma("GCC error \"Use getters instead of accessing gSpeciesInfo directly.\"") \
