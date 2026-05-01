@@ -15,6 +15,8 @@
   - [Help Windows](https://github.com/LinathanZel/pokeemerald-expansion/tree/help_window)
 - **Montblanc**
   - [Sword and Shield Party Menu](https://github.com/montmoguri/pokeemerald-expansion/wiki/Sword-&-Shield-Party-Menu)
+- **NidoKINGS**
+  - [Port](https://github.com/rh-hideout/pokeemerald-expansion/commit/3d8aef093d4fe553187a863848e6bd1df6bc2bc8) of **Lunos**' [Headbutt trees](https://github.com/LOuroboros/pokeemerald/tree/ow_headbutt)
 
 ## Expansion Credits ✨
 

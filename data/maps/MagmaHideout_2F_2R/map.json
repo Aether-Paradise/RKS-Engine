@@ -41,19 +41,6 @@
       "flag": "FLAG_HIDE_MAGMA_HIDEOUT_GRUNTS"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 21,
-      "y": 7,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_MAX_ELIXIR",
-      "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_MAGMA_HIDEOUT_2F_2R_MAX_ELIXIR"
-    },
-    {
       "graphics_id": "OBJ_EVENT_GFX_MAGMA_MEMBER_M",
       "x": 8,
       "y": 9,
@@ -78,19 +65,6 @@
       "trainer_sight_or_berry_tree_id": "1",
       "script": "MagmaHideout_2F_2R_EventScript_Grunt15",
       "flag": "FLAG_HIDE_MAGMA_HIDEOUT_GRUNTS"
-    },
-    {
-      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 14,
-      "y": 6,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_FULL_RESTORE",
-      "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_MAGMA_HIDEOUT_2F_2R_FULL_RESTORE"
     }
   ],
   "warp_events": [

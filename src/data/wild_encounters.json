@@ -73,6 +73,16 @@
               9
             ]
           }
+        },
+        {
+          "type": "headbutt_mons",
+          "encounter_rates": [
+            60,
+            30,
+            5,
+            4,
+            1
+          ]
         }
       ],
       "encounters": [
@@ -36160,6 +36170,40 @@
                 "min_level": 26,
                 "max_level": 26,
                 "species": "SPECIES_SMEARGLE"
+              }
+            ]
+          }
+        },
+        {
+          "map": "MAP_DEMO_ROUTE",
+          "base_label": "gDemoRoute",
+          "headbutt_mons": {
+            "encounter_rate": 75,
+            "mons": [
+              {
+                "min_level": 5,
+                "max_level": 5,
+                "species": "SPECIES_LEDYBA"
+              },
+              {
+                "min_level": 5,
+                "max_level": 5,
+                "species": "SPECIES_COMBEE"
+              },
+              {
+                "min_level": 5,
+                "max_level": 5,
+                "species": "SPECIES_SPIDOPS"
+              },
+              {
+                "min_level": 5,
+                "max_level": 5,
+                "species": "SPECIES_HERACROSS"
+              },
+              {
+                "min_level": 5,
+                "max_level": 5,
+                "species": "SPECIES_HERACROSS"
               }
             ]
           }

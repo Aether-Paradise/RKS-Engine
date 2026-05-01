@@ -84,6 +84,7 @@
 #define FLDEFF_HALL_OF_FAME_RECORD_FRLG  79
 #define FLDEFF_PHOTO_FLASH               80
 #define FLDEFF_OW_ENCOUNTER_SPAWN_ANIM   81
+#define FLDEFF_USE_HEADBUTT              82
 
 #define FLDEFFOBJ_SHADOW_S              0
 #define FLDEFFOBJ_SHADOW_M              1

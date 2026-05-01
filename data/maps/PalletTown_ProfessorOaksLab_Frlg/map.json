@@ -86,7 +86,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "PalletTown_ProfessorOaksLab_EventScript_BulbasaurBall",
-      "flag": "FLAG_HIDE_BULBASAUR_BALL"
+      "flag": "FLAG_DEMO_HIDE_ROWLET"
     },
     {
       "local_id": "LOCALID_SQUIRTLE_BALL",
@@ -101,7 +101,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "PalletTown_ProfessorOaksLab_EventScript_SquirtleBall",
-      "flag": "FLAG_HIDE_SQUIRTLE_BALL"
+      "flag": "FLAG_DEMO_HIDE_OSHAWOTT"
     },
     {
       "local_id": "LOCALID_CHARMANDER_BALL",
@@ -116,7 +116,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "PalletTown_ProfessorOaksLab_EventScript_CharmanderBall",
-      "flag": "FLAG_HIDE_CHARMANDER_BALL"
+      "flag": "FLAG_DEMO_HIDE_CYNDAQUIL"
     },
     {
       "local_id": "LOCALID_OAKS_LAB_RIVAL",

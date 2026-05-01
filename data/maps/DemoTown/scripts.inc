@@ -32,7 +32,9 @@ DemoTown_EventScript_NotRequestedMon::
 	end
 
 DemoTown_EventScript_TradeCompleted::
-	msgbox DemoTown_Text_ReallyWantedToGetBagon, MSGBOX_DEFAULT
+	setvar VAR_0x8005, INGAME_TRADE_DEMO
+	specialvar VAR_0x8009, GetInGameTradeSpeciesInfo
+	msgbox DemoTown_Text_ThankYouForTheTrade, MSGBOX_DEFAULT
 	release
 	end
 
