@@ -2,6 +2,7 @@
 ### Director
 - **AsparagusEduardo**
   - Extended Easy Chat Support
+  - Extended Pokédex Support
   - New configs
     - `FREE_SECRET_BASES`
     - `FREE_FRONTIER_APPRENTICES`

@@ -2152,7 +2152,7 @@ static void CheckPartyIneligibility(void)
             baseSpecies = GetBaseSpeciesId(i);
             if (baseSpecies == i && IsSpeciesFrontierBanned(baseSpecies))
             {
-                if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(baseSpecies), FLAG_GET_CAUGHT))
+                if (GetSetPokedexFlag(baseSpecies, FLAG_GET_CAUGHT))
                     totalCaughtBanned++;
             }
         }
@@ -3373,7 +3373,7 @@ static u16 *MakeCaughtBannesSpeciesList(u32 totalBannedSpecies)
         enum Species baseSpecies = GetBaseSpeciesId(i);
         if (baseSpecies == i && IsSpeciesFrontierBanned(baseSpecies))
         {
-            if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(baseSpecies), FLAG_GET_CAUGHT))
+            if (GetSetPokedexFlag(baseSpecies, FLAG_GET_CAUGHT))
             {
                 list[count] = i;
                 count++;

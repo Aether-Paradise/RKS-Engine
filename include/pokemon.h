@@ -4,6 +4,7 @@
 #include "contest_effect.h"
 #include "species_info.h"
 #include "sprite.h"
+#include "wild_encounter_ow.h"
 #include "constants/battle.h"
 #include "constants/form_change_types.h"
 #include "constants/hold_effects.h"
@@ -579,6 +580,7 @@ void ZeroPartyMons(struct Pokemon *party);
 void ZeroPlayerPartyMons(void);
 void ZeroEnemyPartyMons(void);
 u32 GetMonPersonality(enum Species species, u8 gender, u8 nature, u8 unownLetter);
+bool32 ComputePlayerShinyOdds(u32 personality, u32 value);
 void CreateMon(struct Pokemon *mon, enum Species species, u8 level, u32 personality, struct OriginalTrainerId);
 void CreateRandomMon(struct Pokemon *mon, enum Species species, u8 level);
 void CreateRandomMonWithIVs(struct Pokemon *mon, enum Species species, u8 level, u8 fixedIv);
@@ -725,12 +727,13 @@ void BattleAnimateBackSprite(struct Sprite *sprite, enum Species species);
 u8 GetOpposingLinkMultiBattlerId(bool8 rightSide, u8 multiplayerId);
 enum TrainerPicID FacilityClassToPicIndex(u16 facilityClass);
 enum TrainerPicID PlayerGenderToFrontTrainerPicId(enum Gender playerGender);
-void HandleSetPokedexFlag(enum NationalDexOrder nationalNum, u8 caseId, u32 personality);
+void HandleSetPokedexFlag(enum Species species, u8 caseId, u32 personality);
 void HandleSetPokedexFlagFromMon(struct Pokemon *mon, u32 caseId);
 bool8 HasTwoFramesAnimation(enum Species species);
 struct MonSpritesGfxManager *CreateMonSpritesGfxManager(u8 managerId, u8 mode);
 void DestroyMonSpritesGfxManager(u8 managerId);
 u8 *MonSpritesGfxManager_GetSpritePtr(u8 managerId, u8 spriteNum);
+enum Species GetFirstPokedexFlagSpecies(enum Species formSpeciesId, u8 caseID);
 u8 GetFormIdFromFormSpeciesId(enum Species formSpeciesId);
 enum Species GetFormChangeTargetSpecies(struct Pokemon *mon, enum FormChanges method);
 enum Species GetFormChangeTargetSpecies_Internal(struct FormChangeContext ctx);

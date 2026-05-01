@@ -2392,10 +2392,10 @@ static bool32 ShouldShowTypeEffectiveness(u32 targetId)
         return FALSE;
 
     if (B_SHOW_EFFECTIVENESS == SHOW_EFFECTIVENESS_CAUGHT)
-        return GetSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[targetId].species), FLAG_GET_CAUGHT);
+        return GetSetPokedexFlag(gBattleMons[targetId].species, FLAG_GET_CAUGHT);
 
     if (B_SHOW_EFFECTIVENESS == SHOW_EFFECTIVENESS_SEEN)
-        return GetSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[targetId].species), FLAG_GET_SEEN);
+        return GetSetPokedexFlag(gBattleMons[targetId].species, FLAG_GET_SEEN);
 
     return TRUE;
 }

@@ -2,7 +2,6 @@
 ## Table of Contents
 - [What features are included?](#what-features-are-included)
   - [Table of Contents](#table-of-contents)
-  - [New Features in RKS-Engine](#new-features-in-rks-engine)
   - [Configuration files](#configuration-files)
   - [Upgraded Battle Engine](#upgraded-battle-engine)
   - [Full Trainer customization](#full-trainer-customization)
@@ -11,24 +10,6 @@
   - [Engine improvements](#engine-improvements)
   - [Overworld improvements](#overworld-improvements)
   - [Developer tools](#developer-tools)
-
-## New Features in RKS-Engine
-- ***Blank slate:*** Hoenn and Kanto maps have been removed to make room for your new maps!
-- ***Extended Easy Chat Support***: Added support for Gen4+ Species, Moves and Abilities.
-- ***More available Saveblock space by default:***
-  - Most features that utilize SaveBlock space have been disabled by default. Check `include/config/save.h` to reenable them.
-- ***Reordered Species and Item IDs***: Pokémon and Items are now sorted by their introduction order to the series.
-- ***Integrated new eature branches:***
-  - [Day/Night System in battles](https://github.com/Kasenn/pokeemerald-expansion-kasen/tree/battle-dns) - *by Kasen*
-  - [Help Windows](https://github.com/LinathanZel/pokeemerald-expansion/tree/help_window) - *by LinathanZel*
-- ***New UI feature branches enabled via config:***
-  - [Sword and Shield Party Menu](https://github.com/montmoguri/pokeemerald-expansion/wiki/Sword-&-Shield-Party-Menu) - *by Montblanc*
-    - Extended support for Expansion 12v12 battles.
-- ***Config cleanup***: Configs has been removed due to redundancy:
-  - Always `TRUE`:
-    - `FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK1`
-    - `FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK2`
-    - `EXPANSION_INTRO`
 
 ## Configuration files
 A lot of features listed below can be turned off as desired. Check which ones in these files

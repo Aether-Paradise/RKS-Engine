@@ -8,6 +8,9 @@ endif
 ifneq (,$(OVR_RKSE_FREE_SAVE))
   override CPPFLAGS += -DOVR_RKSE_FREE_SAVE=$(OVR_RKSE_FREE_SAVE)
 endif
+ifneq (,$(OVR_T_SHOULD_RUN_MOVE_ANIM))
+  override CPPFLAGS += -DOVR_T_SHOULD_RUN_MOVE_ANIM=$(OVR_T_SHOULD_RUN_MOVE_ANIM)
+endif
 
 touch-config_party_menu:
 	@touch $(INCLUDE_DIRS)/config/override/party_menu.h
