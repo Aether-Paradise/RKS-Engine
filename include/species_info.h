@@ -6,6 +6,7 @@
 #include "constants/egg_ids.h"
 #include "constants/event_objects.h"
 #include "constants/pokemon_animation.h"
+#include "constants/wild_encounter.h"
 
 struct EvolutionParam
 {
@@ -272,7 +273,16 @@ const void *GetSpeciesOverworldPalette(enum Species species);
 const u16 *GetSpeciesOverworldPaletteFemale(enum Species species);
 const u16 *GetSpeciesOverworldShinyPalette(enum Species species);
 const u16 *GetSpeciesOverworldShinyPaletteFemale(enum Species species);
+bool32 SpeciesHasDistinctOverworldFemalePalette(enum Species species);
 #endif // OW_POKEMON_OBJECT_EVENTS
+
+u32 OWE_GetMovementTypeFromSpecies(enum Species species);
+u32 OWE_GetViewDistanceFromSpecies(enum Species species);
+u32 OWE_GetViewWidthFromSpecies(enum Species species);
+u32 OWE_GetViewActiveDistanceFromSpecies(enum Species species);
+enum SpeedOWE OWE_GetIdleSpeedFromSpecies(enum Species species);
+enum SpeedOWE OWE_GetActiveSpeedFromSpecies(enum Species species);
+enum ReturnToIdleOWE OWE_GetReturnToIdleFromSpecies(enum Species species);
 
 #define gSpeciesInfo \
 _Pragma("GCC error \"Use getters instead of accessing gSpeciesInfo directly.\"") \

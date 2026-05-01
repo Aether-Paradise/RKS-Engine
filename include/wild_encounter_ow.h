@@ -1,46 +1,7 @@
 #ifndef GUARD_WILD_ENCOUNTER_OW_H
 #define GUARD_WILD_ENCOUNTER_OW_H
 
-#define OWE_SPAWNS_MAX                  4
-#define OWE_APPROACH_DISTANCE           2
-#define OWE_APPROACH_JUMP_TIMER_MIN     16
-#define OWE_APPROACH_JUMP_TIMER_MAX     64
-#define OWE_FLEE_COLLISION_TIME         6   // If a fleeing mon is unable to take a step for this many tries it will despawn. (Multiply this value by 16 to get number of frames.)
-#define OWE_DESPAWN_FRAMES              30  // Number of frames before a mon despawns after noticing the player (OWE_BEHAVIOR_DESPAWN)
-
-enum SpawnDespawnTypeOWE
-{
-    OWE_SPAWN_ANIM_GRASS,
-    OWE_SPAWN_ANIM_LONG_GRASS,
-    OWE_SPAWN_ANIM_WATER,
-    OWE_SPAWN_ANIM_UNDERWATER,
-    OWE_SPAWN_ANIM_CAVE,
-    OWE_SPAWN_ANIM_SHINY
-};
-
-enum TypeOWE
-{
-    OWE_ANY,
-    OWE_GENERATED,
-    OWE_MANUAL,
-    OWE_NONE
-};
-
-// OWE_SPEED_FASTER seems to visually bug out sometimes.
-enum SpeedOWE
-{
-    OWE_SPEED_NORMAL,
-    OWE_SPEED_SLOW,
-    OWE_SPEED_FAST,
-    OWE_SPEED_FASTER
-};
-
-enum ReturnToIdleOWE
-{
-    NEVER_RETURN,
-    PLAYER_OUTSIDE_ACTIVE_RANGE,
-    PLAYER_CANT_BE_SEEN
-};
+#include "constants/wild_encounter.h"
 
 struct BehaviorOWE
 {
@@ -52,17 +13,6 @@ struct BehaviorOWE
     enum SpeedOWE activeSpeed:2;
     enum ReturnToIdleOWE returnToIdle:2;
     u32 padding:6;
-};
-
-enum __attribute__((packed)) OverworldWildEncounterBehaviors
-{
-    OWE_IGNORE_PLAYER,
-    OWE_CHASE_PLAYER_SLOW,
-    OWE_FLEE_PLAYER_NORMAL,
-    OWE_WATCH_PLAYER_NORMAL,
-    OWE_APPROACH_PLAYER_SLOW,
-    OWE_DESPAWN_ON_NOTICE,
-    OWE_SPECIES_BEHAVIOR_COUNT
 };
 
 struct FieldEffectInfoOWE

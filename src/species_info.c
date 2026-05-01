@@ -7,8 +7,11 @@
 #include "constants/event_objects.h"
 #include "constants/pokemon_animation.h"
 #include "constants/species.h"
+#include "constants/wild_encounter.h"
 
 #undef gSpeciesInfo
+
+extern const struct BehaviorOWE gOWESpeciesBehavior[OWE_SPECIES_BEHAVIOR_COUNT];
 
 bool32 IsSpeciesEnabled(enum Species species)
 {
@@ -733,7 +736,65 @@ const u16 *GetSpeciesOverworldShinyPaletteFemale(enum Species species)
     return GetSpeciesOverworldShinyPalette(species);
 }
 
+bool32 SpeciesHasDistinctOverworldFemalePalette(enum Species species)
+{
+#if P_GENDER_DIFFERENCES
+    return gSpeciesInfo[SanitizeSpeciesId(species)].overworldPaletteFemale != NULL;
+#else
+    return FALSE;
+#endif
+}
+
 #endif // OW_POKEMON_OBJECT_EVENTS
+
+u32 OWE_GetMovementTypeFromSpecies(enum Species species)
+{
+    species = SanitizeSpeciesId(species);
+    enum OverworldWildEncounterBehaviors behavior = gSpeciesInfo[species].overworldEncounterBehavior;
+    return gOWESpeciesBehavior[behavior].movementType;
+}
+
+u32 OWE_GetViewDistanceFromSpecies(enum Species species)
+{
+    species = SanitizeSpeciesId(species);
+    enum OverworldWildEncounterBehaviors behavior = gSpeciesInfo[species].overworldEncounterBehavior;
+    return gOWESpeciesBehavior[behavior].viewDistance;
+}
+
+u32 OWE_GetViewWidthFromSpecies(enum Species species)
+{
+    species = SanitizeSpeciesId(species);
+    enum OverworldWildEncounterBehaviors behavior = gSpeciesInfo[species].overworldEncounterBehavior;
+    return gOWESpeciesBehavior[behavior].viewWidth;
+}
+
+u32 OWE_GetViewActiveDistanceFromSpecies(enum Species species)
+{
+    species = SanitizeSpeciesId(species);
+    enum OverworldWildEncounterBehaviors behavior = gSpeciesInfo[species].overworldEncounterBehavior;
+    return gOWESpeciesBehavior[behavior].activeDistance;
+}
+
+enum SpeedOWE OWE_GetIdleSpeedFromSpecies(enum Species species)
+{
+    species = SanitizeSpeciesId(species);
+    enum OverworldWildEncounterBehaviors behavior = gSpeciesInfo[species].overworldEncounterBehavior;
+    return gOWESpeciesBehavior[behavior].idleSpeed;
+}
+
+enum SpeedOWE OWE_GetActiveSpeedFromSpecies(enum Species species)
+{
+    species = SanitizeSpeciesId(species);
+    enum OverworldWildEncounterBehaviors behavior = gSpeciesInfo[species].overworldEncounterBehavior;
+    return gOWESpeciesBehavior[behavior].activeSpeed;
+}
+
+enum ReturnToIdleOWE OWE_GetReturnToIdleFromSpecies(enum Species species)
+{
+    species = SanitizeSpeciesId(species);
+    enum OverworldWildEncounterBehaviors behavior = gSpeciesInfo[species].overworldEncounterBehavior;
+    return gOWESpeciesBehavior[behavior].returnToIdle;
+}
 
 #define gSpeciesInfo \
 _Pragma("GCC error \"Use getters instead of accessing gSpeciesInfo directly.\"") \

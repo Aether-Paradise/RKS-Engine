@@ -1870,18 +1870,18 @@ bool32 ComputePlayerShinyOdds(u32 personality, u32 value)
 {
     if (P_FLAG_FORCE_NO_SHINY != 0 && FlagGet(P_FLAG_FORCE_NO_SHINY))
         return FALSE;
-    
+
     if (P_FLAG_FORCE_SHINY != 0 && FlagGet(P_FLAG_FORCE_SHINY))
         return TRUE;
-    
+
     if (P_ONLY_OBTAINABLE_SHINIES && (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE || (B_FLAG_NO_CATCHING != 0 && FlagGet(B_FLAG_NO_CATCHING))))
         return FALSE;
-    
+
     if (P_NO_SHINIES_WITHOUT_POKEBALLS && !HasAtLeastOnePokeBall())
         return FALSE;
 
     u32 totalRerolls = 0;
-    
+
     if (CheckBagHasItem(ITEM_SHINY_CHARM, 1))
         totalRerolls += I_SHINY_CHARM_ADDITIONAL_ROLLS;
 
@@ -1988,7 +1988,7 @@ void CreateBoxMon(struct BoxPokemon *boxMon, enum Species species, u8 level, u32
     else // Player is the OT
     {
         value = READ_OTID_FROM_SAVE;
-        isShiny = ComputePlayerShinyOdds(personality, value);    
+        isShiny = ComputePlayerShinyOdds(personality, value);
     }
 
     SetBoxMonData(boxMon, MON_DATA_PERSONALITY, &personality);
@@ -2038,7 +2038,7 @@ static bool32 IsValidGender(u32 gender)
 
 static void CleanIncompatibleGenderSpecies(enum Species species, u8 *gender)
 {
-    switch (gSpeciesInfo[species].genderRatio)
+    switch (GetSpeciesGenderRatio(species))
     {
     case MON_MALE:
     case MON_FEMALE:
