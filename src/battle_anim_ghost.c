@@ -563,7 +563,7 @@ void AnimTask_NightmareClone(u8 taskId)
     SetGpuReg(REG_OFFSET_BLDCNT, (BLDCNT_EFFECT_BLEND | BLDCNT_TGT2_ALL));
     SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(task->data[2], task->data[3]));
     gSprites[task->data[0]].data[0] = 80;
-    if (IsOnPlayerSide(gBattleAnimTarget))
+    if (IsBattlerShowingBackSprite(gBattleAnimTarget))
     {
         gSprites[task->data[0]].data[1] = -144;
         gSprites[task->data[0]].data[2] = 112;
@@ -1015,7 +1015,7 @@ void AnimTask_CurseStretchingBlackBg(u8 taskId)
     SetGpuReg(REG_OFFSET_BLDCNT, (BLDCNT_TGT1_BG3 | BLDCNT_EFFECT_DARKEN));
     SetGpuReg(REG_OFFSET_BLDY, 16);
 
-    if (!IsOnPlayerSide(gBattleAnimAttacker) || IsContest())
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker) || IsContest())
         startX = 40;
     else
         startX = 200;
@@ -1098,7 +1098,7 @@ static void AnimCurseNail(struct Sprite *sprite)
     s16 xDelta2;
 
     InitSpritePosToAnimAttacker(sprite, TRUE);
-    if (IsOnPlayerSide(gBattleAnimAttacker))
+    if (IsBattlerShowingBackSprite(gBattleAnimAttacker))
     {
         xDelta = 24;
         xDelta2 = -2;
@@ -1189,7 +1189,7 @@ void AnimGhostStatusSprite(struct Sprite *sprite)
     u16 coeffA;
 
     sprite->x2 = Sin(sprite->data[0], 12);
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
         sprite->x2 = -sprite->x2;
 
     sprite->data[0] = (sprite->data[0] + 6) & 0xFF;

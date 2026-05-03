@@ -3389,7 +3389,7 @@ static void AnimMoveTrumpCardArc(struct Sprite *sprite)
 
 static void AnimMoveTrumpCard(struct Sprite *sprite)
 {
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
     {
         gBattleAnimArgs[0] = -gBattleAnimArgs[0];
     }
@@ -4134,7 +4134,7 @@ void AnimMimicOrb(struct Sprite *sprite)
     switch (sprite->data[0])
     {
     case 0:
-        if (IsOnPlayerSide(gBattleAnimTarget))
+        if (IsBattlerShowingBackSprite(gBattleAnimTarget))
             cmd->initialX *= -1;
 
         sprite->x = GetBattlerSpriteCoord(gBattleAnimTarget, BATTLER_COORD_X) + cmd->initialX;
