@@ -40,5 +40,6 @@ bool32 CheckObjectAtXY(u32, u32);
 bool32 CheckPartyHasSpecies(enum Species);
 bool8 CutMoveRuinValleyCheck(void);
 void CutMoveOpenDottedHoleDoor(void);
+u8 ContextNpcGetTextColor(void);
 
 #endif // GUARD_FIELD_SPECIALS_H
