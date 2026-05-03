@@ -19,6 +19,11 @@ The goal of this project is to introduce features and code changes that aren't w
   - You can press R to cycle between seen forms.
   - Form changes will update the dex flag.
   - Allows to switch what the "base" form is by changing the order in the form table.
+- ***Restored Features from FRLG***:
+  - NPC text colors.
+    - `textcolor` macro.
+    - Added text colors for RSE object events
+    - Config to turn the feature off.
 - ***More available Saveblock space by default:***
   - Most features that utilize SaveBlock space have been disabled by default. Check `include/config/save.h` to reenable them.
 - ***Reordered Species and Item IDs***: Pokémon and Items are now sorted by their introduction order to the series.
