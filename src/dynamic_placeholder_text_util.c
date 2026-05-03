@@ -7,6 +7,9 @@ static EWRAM_DATA const u8 *sStringPointers[8] = {};
 
 static const u8 sTextColorTable[] =
 {
+#if TEXT_NPC_COLORS == FALSE
+    [0] = 0,
+#else
     [OBJ_EVENT_GFX_BRENDAN_NORMAL]          = NPC_TEXT_COLOR_MALE,
     [OBJ_EVENT_GFX_BRENDAN_MACH_BIKE]       = NPC_TEXT_COLOR_MALE,
     [OBJ_EVENT_GFX_BRENDAN_SURFING]         = NPC_TEXT_COLOR_MALE,
@@ -235,6 +238,7 @@ static const u8 sTextColorTable[] =
     [OBJ_EVENT_GFX_GENTLEMAN_FRLG]          = NPC_TEXT_COLOR_MALE,
     [OBJ_EVENT_GFX_SAILOR_FRLG]             = NPC_TEXT_COLOR_MALE,
     [OBJ_EVENT_GFX_NURSE_FRLG]              = NPC_TEXT_COLOR_FEMALE,
+#endif
 };
 
 void DynamicPlaceholderTextUtil_Reset(void)

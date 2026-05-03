@@ -16,4 +16,7 @@
 // Text speed flag:
 #define FLAG_TEXT_SPEED_INSTANT      0       // Use this if you want to toggle instant text speed
 
+// NPC colored text
+#define TEXT_NPC_COLORS              TRUE    // If TRUE, NPCs will have specific colors based on their gender. Check sTextColorTable to set specific colors to NPCs.
+
 #endif // GUARD_CONFIG_TEXT_H
