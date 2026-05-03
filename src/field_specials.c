@@ -4708,28 +4708,6 @@ void SetSeenMon(void)
     GetSetPokedexFlag(gSpecialVar_0x8004, 2);
 }
 
-static u8 GetFollowerGender(void)
-{
-    struct Pokemon *firstLiveMon = GetFirstLiveMon();
-    if (firstLiveMon == NULL)
-        return MON_GENDERLESS;
-    return GetMonGender(firstLiveMon);
-}
-
-static u8 GetFollowerTextColor(void)
-{
-    switch (GetFollowerGender())
-    {
-    case MON_FEMALE:
-        return NPC_TEXT_COLOR_FEMALE;
-    case MON_MALE:
-        return NPC_TEXT_COLOR_MALE;
-    case MON_GENDERLESS:
-    default:
-        return NPC_TEXT_COLOR_NEUTRAL;
-    }
-}
-
 u8 ContextNpcGetTextColor(void)
 {
     u16 gfxId;
@@ -4755,9 +4733,6 @@ u8 ContextNpcGetTextColor(void)
             gfxId = gObjectEvents[objEventId].graphicsId;
         else
             gfxId = gObjectEvents[gSelectedObjectEvent].graphicsId;
-
-        if (gfxId & OBJ_EVENT_MON)
-            return GetFollowerTextColor();
 
         if (gfxId >= OBJ_EVENT_GFX_VAR_0)
             gfxId = VarGetObjectEventGraphicsId(gfxId - OBJ_EVENT_GFX_VAR_0);
