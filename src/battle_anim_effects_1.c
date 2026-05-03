@@ -3401,7 +3401,7 @@ static void AnimMoveTrumpCard(struct Sprite *sprite)
     sprite->data[3] = sprite->y;
     sprite->data[4] = sprite->y;
     sprite->data[5] = 128;
-    sprite->data[6] = 128 / sprite->data[0];
+    sprite->data[6] = SAFE_DIV(128, sprite->data[0]);
     InitAnimLinearTranslation(sprite);
     sprite->callback = AnimMoveTrumpCardArc;
 }
