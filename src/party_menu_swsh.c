@@ -84,6 +84,7 @@
 #include "constants/rgb.h"
 #include "constants/songs.h"
 #include "config/party_menu.h"
+#include "config/text.h"
 
 #if (RKSE_PARTY_MENU_DESIGN == PARTY_MENU_DESIGN_SWSH)
 

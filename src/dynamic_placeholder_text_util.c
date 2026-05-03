@@ -2,6 +2,7 @@
 #include "text.h"
 #include "dynamic_placeholder_text_util.h"
 #include "string_util.h"
+#include "config/text.h"
 
 static EWRAM_DATA const u8 *sStringPointers[8] = {};
 
