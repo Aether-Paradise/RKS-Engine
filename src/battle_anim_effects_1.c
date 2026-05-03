@@ -3038,7 +3038,7 @@ void AnimMovePowderParticle(struct Sprite *sprite)
     sprite->data[0] = cmd->duration;
     sprite->data[1] = cmd->yVelocity;
 
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
     {
         sprite->data[3] = -cmd->waveAmplitude;
     }
@@ -3196,7 +3196,7 @@ void AnimHyperBeamOrb(struct Sprite *sprite)
     StartSpriteAnim(sprite, animNum % ARRAY_COUNT(gSolarBeamBigOrbAnimTable));
     sprite->x = GetBattlerSpriteCoord(gBattleAnimAttacker, BATTLER_COORD_X_2);
     sprite->y = GetBattlerSpriteCoord(gBattleAnimAttacker, BATTLER_COORD_Y_PIC_OFFSET);
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
         sprite->x -= 20;
     else
         sprite->x += 20;
@@ -3350,7 +3350,7 @@ static void AnimMoveFeintSwipeStep(struct Sprite *sprite)
 
 static void AnimMoveFeintSwipe(struct Sprite *sprite)
 {
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
     {
         gBattleAnimArgs[0] = -gBattleAnimArgs[0];
     }
@@ -3438,7 +3438,7 @@ static void AnimMoveTrumpCardParticleAlive(struct Sprite *sprite)
 
 static void AnimMoveTrumpCardParticle(struct Sprite *sprite)
 {
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
     {
         gBattleAnimArgs[0] = -gBattleAnimArgs[0];
     }
@@ -3533,7 +3533,7 @@ static void AnimLeechSeed(struct Sprite *sprite)
     CMD_ARGS(initialX, initialY, targetX, targetY, duration, waveAmplitude);
 
     InitSpritePosToAnimAttacker(sprite, TRUE);
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
         cmd->targetX = -cmd->targetX;
 
     sprite->data[0] = cmd->duration;
@@ -3902,7 +3902,7 @@ void AnimTranslateLinearSingleSineWave(struct Sprite *sprite)
     CMD_ARGS(initialX, initialY, targetX, targetY, duration, waveAmplitude, targetBoth);
 
     InitSpritePosToAnimAttacker(sprite, TRUE);
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
         cmd->targetX = -cmd->targetX;
 
     sprite->data[0] = cmd->duration;
@@ -5741,7 +5741,7 @@ static void AnimBowMon(struct Sprite *sprite)
 static void AnimBowMon_Step1(struct Sprite *sprite)
 {
     sprite->data[0] = 6;
-    sprite->data[1] = (!IsOnPlayerSide(gBattleAnimAttacker)) ? 2 : -2;
+    sprite->data[1] = (!IsBattlerShowingBackSprite(gBattleAnimAttacker)) ? 2 : -2;
     sprite->data[2] = 0;
     sprite->data[3] = gBattlerSpriteIds[gBattleAnimAttacker];
     StoreSpriteCallbackInData6(sprite, AnimBowMon_Step1_Callback);
@@ -5754,7 +5754,7 @@ static void AnimBowMon_Step1_Callback(struct Sprite *sprite)
     {
         sprite->data[3] = gBattlerSpriteIds[gBattleAnimAttacker];
         PrepareBattlerSpriteForRotScale(sprite->data[3], ST_OAM_OBJ_NORMAL);
-        sprite->data[4] = (sprite->data[6] = !IsOnPlayerSide(gBattleAnimAttacker)) ? 768 : -768;
+        sprite->data[4] = (sprite->data[6] = !IsBattlerShowingBackSprite(gBattleAnimAttacker)) ? 768 : -768;
         sprite->data[5] = 0;
     }
 
@@ -5771,7 +5771,7 @@ static void AnimBowMon_Step1_Callback(struct Sprite *sprite)
 static void AnimBowMon_Step2(struct Sprite *sprite)
 {
     sprite->data[0] = 4;
-    sprite->data[1] = (!IsOnPlayerSide(gBattleAnimAttacker)) ? -3 : 3;
+    sprite->data[1] = (!IsBattlerShowingBackSprite(gBattleAnimAttacker)) ? -3 : 3;
     sprite->data[2] = 0;
     sprite->data[3] = gBattlerSpriteIds[gBattleAnimAttacker];
     StoreSpriteCallbackInData6(sprite, AnimBowMon_Step4);
@@ -6238,10 +6238,10 @@ static void UNUSED AnimTask_HideBattlersHealthbox(u8 taskId)
 
     for (enum BattlerId i = 0; i < gBattlersCount; i++)
     {
-        if (cmd->unk0 == TRUE && IsOnPlayerSide(i))
+        if (cmd->unk0 == TRUE && IsBattlerShowingBackSprite(i))
             SetHealthboxSpriteInvisible(gHealthboxSpriteIds[i]);
 
-        if (cmd->unk1 == TRUE && !IsOnPlayerSide(i))
+        if (cmd->unk1 == TRUE && !IsBattlerShowingBackSprite(i))
             SetHealthboxSpriteInvisible(gHealthboxSpriteIds[i]);
     }
 
@@ -6446,7 +6446,7 @@ static void AnimHornHit(struct Sprite *sprite)
         sprite->data[4] = sprite->y << 7;
         sprite->data[5] = SAFE_DIV(-0xA00, sprite->data[1]);
     }
-    else if (IsOnPlayerSide(gBattleAnimAttacker))
+    else if (IsBattlerShowingBackSprite(gBattleAnimAttacker))
     {
         sprite->x -= 40;
         sprite->y += 20;
