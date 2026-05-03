@@ -36,6 +36,7 @@ void ClearPoisonStepCounter(void);
 void CancelSignPostMessageBox(struct FieldInput *input);
 void HandleBoulderFallThroughHole(struct ObjectEvent *object);
 void HandleBoulderActivateVictoryRoadSwitch(u16 x, u16 y);
+void GetInFrontOfPlayerPosition(struct MapPosition *position);
 
 #define NOT_SIGNPOST 0
 #define WALK_AWAY_SIGNPOST_FRAMES 6

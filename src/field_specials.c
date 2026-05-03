@@ -8,10 +8,12 @@
 #include "daycare.h"
 #include "decoration.h"
 #include "diploma.h"
+#include "dynamic_placeholder_text_util.h"
 #include "event_data.h"
 #include "event_object_movement.h"
 #include "fieldmap.h"
 #include "field_camera.h"
+#include "field_control_avatar.h"
 #include "field_effect.h"
 #include "field_message_box.h"
 #include "field_player_avatar.h"
@@ -4704,6 +4706,38 @@ bool8 HasLearnedAllMovesFromCapeBrinkTutor(void)
 void SetSeenMon(void)
 {
     GetSetPokedexFlag(gSpecialVar_0x8004, 2);
+}
+
+u8 ContextNpcGetTextColor(void)
+{
+    u16 gfxId;
+    if (gSpecialVar_TextColor != NPC_TEXT_COLOR_DEFAULT)
+    {
+        // A text color has been specified, use that
+        return gSpecialVar_TextColor;
+    }
+    else if (gSelectedObjectEvent == 0)
+    {
+        // No text color specified and no object selected, use neutral
+        return NPC_TEXT_COLOR_NEUTRAL;
+    }
+    else
+    {
+        // An object is selected and no color has been specified.
+        // Use the text color normally associated with this object's sprite.
+        struct MapPosition position;
+        u8 objEventId;
+        GetInFrontOfPlayerPosition(&position);
+        objEventId = GetObjectEventIdByPosition(position.x, position.y, position.elevation);
+        if (objEventId < OBJECT_EVENTS_COUNT)
+            gfxId = gObjectEvents[objEventId].graphicsId;
+        else
+            gfxId = gObjectEvents[gSelectedObjectEvent].graphicsId;
+
+        if (gfxId >= OBJ_EVENT_GFX_VAR_0)
+            gfxId = VarGetObjectEventGraphicsId(gfxId - OBJ_EVENT_GFX_VAR_0);
+        return GetColorFromTextColorTable(gfxId);
+    }
 }
 
 #define tTimer data[0]

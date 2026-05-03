@@ -51,7 +51,6 @@ static EWRAM_DATA u16 sPrevMetatileBehavior = 0;
 COMMON_DATA u8 gSelectedObjectEvent = 0;
 
 static void GetPlayerPosition(struct MapPosition *);
-static void GetInFrontOfPlayerPosition(struct MapPosition *);
 static u16 GetPlayerCurMetatileBehavior(int);
 static bool8 TryStartInteractionScript(struct MapPosition *, u16, enum Direction);
 static const u8 *GetInteractionScript(struct MapPosition *, u8, enum Direction);
@@ -170,6 +169,7 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
     gSelectedObjectEvent = 0;
 
     gMsgIsSignPost = FALSE;
+    gSpecialVar_TextColor = NPC_TEXT_COLOR_DEFAULT;
     playerDirection = GetPlayerFacingDirection();
     GetPlayerPosition(&position);
     metatileBehavior = MapGridGetMetatileBehaviorAt(position.x, position.y);
@@ -266,7 +266,7 @@ static void GetPlayerPosition(struct MapPosition *position)
     position->elevation = PlayerGetElevation();
 }
 
-static void GetInFrontOfPlayerPosition(struct MapPosition *position)
+void GetInFrontOfPlayerPosition(struct MapPosition *position)
 {
     s16 x, y;
 

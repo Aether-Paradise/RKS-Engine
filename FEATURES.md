@@ -1,4 +1,7 @@
 # What features are included?
+
+> For RKS-Engine's specific features compared to Expansion, check the [ReadMe](README.md).
+
 ## Table of Contents
 - [What features are included?](#what-features-are-included)
   - [Table of Contents](#table-of-contents)

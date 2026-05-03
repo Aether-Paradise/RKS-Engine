@@ -5,6 +5,7 @@
 #include "dma3.h"
 #include "event_data.h"
 #include "field_name_box.h"
+#include "field_specials.h"
 #include "field_weather.h"
 #include "gpu_regs.h"
 #include "graphics.h"
@@ -192,8 +193,16 @@ u16 AddTextPrinterParameterized2(u8 windowId, u8 fontId, const u8 *str, u8 speed
 
 void AddTextPrinterForMessage(bool8 allowSkippingDelayWithButtonPress)
 {
+    u8 color;
+
     gTextFlags.canABSpeedUpPrint = allowSkippingDelayWithButtonPress;
-    AddTextPrinterParameterized2(0, FONT_NORMAL, gStringVar4, GetPlayerTextSpeedDelay(), NULL, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_WHITE, TEXT_COLOR_LIGHT_GRAY);
+    color = ContextNpcGetTextColor();
+    if (color == NPC_TEXT_COLOR_MALE)
+        AddTextPrinterParameterized2(0, FONT_MALE, gStringVar4, GetPlayerTextSpeedDelay(), NULL, TEXT_COLOR_BLUE, TEXT_COLOR_WHITE, TEXT_COLOR_LIGHT_GRAY);
+    else if (color == NPC_TEXT_COLOR_FEMALE)
+        AddTextPrinterParameterized2(0, FONT_FEMALE, gStringVar4, GetPlayerTextSpeedDelay(), NULL, TEXT_COLOR_RED, TEXT_COLOR_WHITE, TEXT_COLOR_LIGHT_GRAY);
+    else // NPC_TEXT_COLOR_MON / NPC_TEXT_COLOR_NEUTRAL
+        AddTextPrinterParameterized2(0, FONT_NORMAL, gStringVar4, GetPlayerTextSpeedDelay(), NULL, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_WHITE, TEXT_COLOR_LIGHT_GRAY);
 }
 
 void AddTextPrinterWithCustomSpeedForMessage(bool8 allowSkippingDelayWithButtonPress, u8 speed)
