@@ -2770,7 +2770,7 @@ void NativeFunc_SetMetatileInRange(struct ScriptContext *ctx)
     bool8 hasCollision = ScriptReadByte(ctx);
     u8 elevation = ScriptReadByte(ctx);
     u32 temp;
-    
+
     if (xmin > xmax)
         SWAP(xmin, xmax, temp);
 
@@ -3398,7 +3398,7 @@ bool8 ScrCmd_setstartingstatus(struct ScriptContext *ctx)
 bool8 ScrCmd_textcolor(struct ScriptContext * ctx)
 {
     // gSpecialVar_PrevTextColor = gSpecialVar_TextColor;
-    u16 UNUSED gSpecialVar_TextColor = ScriptReadByte(ctx);
+    gSpecialVar_TextColor = ScriptReadByte(ctx);
 
     Script_RequestEffects(SCREFF_V1 | SCREFF_HARDWARE);
 

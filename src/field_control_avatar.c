@@ -169,6 +169,7 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
     gSelectedObjectEvent = 0;
 
     gMsgIsSignPost = FALSE;
+    gSpecialVar_TextColor = NPC_TEXT_COLOR_DEFAULT;
     playerDirection = GetPlayerFacingDirection();
     GetPlayerPosition(&position);
     metatileBehavior = MapGridGetMetatileBehaviorAt(position.x, position.y);

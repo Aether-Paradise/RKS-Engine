@@ -303,6 +303,6 @@
 #define NPC_TEXT_COLOR_MALE         1                       // Blue, for male NPCs
 #define NPC_TEXT_COLOR_FEMALE       2                       // Red, for female NPCs
 #define NPC_TEXT_COLOR_MON          NPC_TEXT_COLOR_NEUTRAL  // Black, for Pokémon
-#define NPC_TEXT_COLOR_DEFAULT      NPC_TEXT_COLOR_NEUTRAL  // If an NPC is selected, use the color specified by GetColorFromTextColorTable, otherwise use Neutral.
+#define NPC_TEXT_COLOR_DEFAULT      255  // If an NPC is selected, use the color specified by GetColorFromTextColorTable, otherwise use Neutral.
 
 #endif // GUARD_CONSTANTS_VARS_FRLG_H
