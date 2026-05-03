@@ -3519,7 +3519,7 @@ static void AnimMoveWringOut(struct Sprite *sprite)
     {
         sprite->oam.objMode = ST_OAM_OBJ_BLEND;
     }
-    sprite->data[0] = 256 / gBattleAnimArgs[2]; //step size
+    sprite->data[0] = SAFE_DIV(256, gBattleAnimArgs[2]); //step size
     sprite->data[1] = gBattleAnimArgs[3]; //Number of circle spins
     sprite->data[2] = gBattleAnimArgs[4]; //radius
     sprite->data[3] = 64; //current angle 90°
@@ -4984,8 +4984,8 @@ void AnimNeedleArmSpike(struct Sprite *sprite)
         sprite->data[1] = x * 16;
         y = sprite->y;
         sprite->data[2] = y * 16;
-        sprite->data[3] = (sprite->data[5] - sprite->x) * 16 / cmd->unk4;
-        sprite->data[4] = (sprite->data[6] - sprite->y) * 16 / cmd->unk4;
+        sprite->data[3] = SAFE_DIV((sprite->data[5] - sprite->x) * 16, cmd->unk4);
+        sprite->data[4] = SAFE_DIV((sprite->data[6] - sprite->y) * 16, cmd->unk4);
         c = ArcTan2Neg(sprite->data[5] - x, sprite->data[6] - y);
         if (IsContest())
             c -= 0x8000;
@@ -6442,27 +6442,27 @@ static void AnimHornHit(struct Sprite *sprite)
         sprite->x += 40;
         sprite->y += 20;
         sprite->data[2] = sprite->x << 7;
-        sprite->data[3] = -0x1400 / sprite->data[1];
+        sprite->data[3] = SAFE_DIV(-0x1400, sprite->data[1]);
         sprite->data[4] = sprite->y << 7;
-        sprite->data[5] = -0xA00 / sprite->data[1];
+        sprite->data[5] = SAFE_DIV(-0xA00, sprite->data[1]);
     }
     else if (IsOnPlayerSide(gBattleAnimAttacker))
     {
         sprite->x -= 40;
         sprite->y += 20;
         sprite->data[2] = sprite->x << 7;
-        sprite->data[3] = 0x1400 / sprite->data[1];
+        sprite->data[3] = SAFE_DIV(0x1400, sprite->data[1]);
         sprite->data[4] = sprite->y << 7;
-        sprite->data[5] = -0xA00 / sprite->data[1];
+        sprite->data[5] = SAFE_DIV(-0xA00, sprite->data[1]);
     }
     else
     {
         sprite->x += 40;
         sprite->y -= 20;
         sprite->data[2] = sprite->x << 7;
-        sprite->data[3] = -0x1400 / sprite->data[1];
+        sprite->data[3] = SAFE_DIV(-0x1400, sprite->data[1]);
         sprite->data[4] = sprite->y << 7;
-        sprite->data[5] = 0xA00 / sprite->data[1];
+        sprite->data[5] = SAFE_DIV(0xA00, sprite->data[1]);
         sprite->oam.matrixNum = (ST_OAM_HFLIP | ST_OAM_VFLIP);
     }
 
