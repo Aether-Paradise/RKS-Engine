@@ -315,7 +315,7 @@ static void AnimConfusionDuck(struct Sprite *sprite)
     sprite->x += cmd->x;
     sprite->y += cmd->y;
     sprite->data[0] = cmd->waveOffset;
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
     {
         sprite->data[1] = -cmd->wavePeriod;
         sprite->data[4] = 1;

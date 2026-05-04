@@ -469,8 +469,8 @@ static void AnimShadowBall_Step(struct Sprite *sprite)
         sprite->data[2] = GetBattlerSpriteCoord(gBattleAnimTarget, BATTLER_COORD_Y_PIC_OFFSET);
         sprite->data[4] = sprite->x << 4;
         sprite->data[5] = sprite->y << 4;
-        sprite->data[6] = ((sprite->data[1] - sprite->x) << 4) / sprite->data[3];
-        sprite->data[7] = ((sprite->data[2] - sprite->y) << 4) / sprite->data[3];
+        sprite->data[6] = SAFE_DIV(((sprite->data[1] - sprite->x) << 4), sprite->data[3]);
+        sprite->data[7] = SAFE_DIV(((sprite->data[2] - sprite->y) << 4), sprite->data[3]);
         sprite->data[0] += 1;
         break;
     case 2:
@@ -563,7 +563,7 @@ void AnimTask_NightmareClone(u8 taskId)
     SetGpuReg(REG_OFFSET_BLDCNT, (BLDCNT_EFFECT_BLEND | BLDCNT_TGT2_ALL));
     SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(task->data[2], task->data[3]));
     gSprites[task->data[0]].data[0] = 80;
-    if (IsOnPlayerSide(gBattleAnimTarget))
+    if (IsBattlerShowingBackSprite(gBattleAnimTarget))
     {
         gSprites[task->data[0]].data[1] = -144;
         gSprites[task->data[0]].data[2] = 112;
@@ -799,8 +799,8 @@ static void AnimDestinyBondWhiteShadow(struct Sprite *sprite)
     yDiff = battler2Y - battler1Y;
     sprite->data[0] = battler1X * 16;
     sprite->data[1] = battler1Y * 16;
-    sprite->data[2] = ((battler2X - battler1X) * 16) / gBattleAnimArgs[1];
-    sprite->data[3] = (yDiff * 16) / gBattleAnimArgs[1];
+    sprite->data[2] = SAFE_DIV(((battler2X - battler1X) * 16), gBattleAnimArgs[1]);
+    sprite->data[3] = SAFE_DIV((yDiff * 16), gBattleAnimArgs[1]);
     sprite->data[4] = gBattleAnimArgs[1];
     sprite->data[5] = battler2X;
     sprite->data[6] = battler2Y;
@@ -1015,7 +1015,7 @@ void AnimTask_CurseStretchingBlackBg(u8 taskId)
     SetGpuReg(REG_OFFSET_BLDCNT, (BLDCNT_TGT1_BG3 | BLDCNT_EFFECT_DARKEN));
     SetGpuReg(REG_OFFSET_BLDY, 16);
 
-    if (!IsOnPlayerSide(gBattleAnimAttacker) || IsContest())
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker) || IsContest())
         startX = 40;
     else
         startX = 200;
@@ -1098,7 +1098,7 @@ static void AnimCurseNail(struct Sprite *sprite)
     s16 xDelta2;
 
     InitSpritePosToAnimAttacker(sprite, TRUE);
-    if (IsOnPlayerSide(gBattleAnimAttacker))
+    if (IsBattlerShowingBackSprite(gBattleAnimAttacker))
     {
         xDelta = 24;
         xDelta2 = -2;
@@ -1189,7 +1189,7 @@ void AnimGhostStatusSprite(struct Sprite *sprite)
     u16 coeffA;
 
     sprite->x2 = Sin(sprite->data[0], 12);
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
         sprite->x2 = -sprite->x2;
 
     sprite->data[0] = (sprite->data[0] + 6) & 0xFF;
@@ -1482,8 +1482,8 @@ void AnimTask_PulverizingPancakeWhiteShadow(u8 taskId)
             y = GetBattlerSpriteCoordAttr(gBattleAnimTarget, BATTLER_COORD_ATTR_BOTTOM);
             gSprites[spriteId].data[0] = baseX << 4;
             gSprites[spriteId].data[1] = baseY << 4;
-            gSprites[spriteId].data[2] = ((x - baseX) << 4) / gBattleAnimArgs[1];
-            gSprites[spriteId].data[3] = ((y - baseY) << 4) / gBattleAnimArgs[1];
+            gSprites[spriteId].data[2] = SAFE_DIV(((x - baseX) << 4), gBattleAnimArgs[1]);
+            gSprites[spriteId].data[3] = SAFE_DIV(((y - baseY) << 4), gBattleAnimArgs[1]);
             gSprites[spriteId].data[4] = gBattleAnimArgs[1];
             gSprites[spriteId].data[5] = x;
             gSprites[spriteId].data[6] = y;
@@ -1502,8 +1502,8 @@ void AnimTask_PulverizingPancakeWhiteShadow(u8 taskId)
             y = 40;
             gSprites[spriteId].data[0] = baseX << 4;
             gSprites[spriteId].data[1] = baseY << 4;
-            gSprites[spriteId].data[2] = ((x - baseX) << 4) / gBattleAnimArgs[1];
-            gSprites[spriteId].data[3] = ((y - baseY) << 4) / gBattleAnimArgs[1];
+            gSprites[spriteId].data[2] = SAFE_DIV(((x - baseX) << 4), gBattleAnimArgs[1]);
+            gSprites[spriteId].data[3] = SAFE_DIV(((y - baseY) << 4), gBattleAnimArgs[1]);
             gSprites[spriteId].data[4] = gBattleAnimArgs[1];
             gSprites[spriteId].data[5] = x;
             gSprites[spriteId].data[6] = y;

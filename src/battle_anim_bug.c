@@ -207,7 +207,7 @@ static void AnimLeechLifeNeedle(struct Sprite *sprite)
         cmd->x = -cmd->x;
         StartSpriteAffineAnim(sprite, 2);
     }
-    else if (IsOnPlayerSide(gBattleAnimTarget))
+    else if (IsBattlerShowingBackSprite(gBattleAnimTarget))
     {
         cmd->y = -cmd->y;
         cmd->x = -cmd->x;
@@ -360,7 +360,7 @@ void AnimTranslateStinger(struct Sprite *sprite)
     }
     else
     {
-        if (!IsOnPlayerSide(gBattleAnimAttacker))
+        if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
         {
             cmd->targetX = -cmd->targetX;
             cmd->intialY = -cmd->intialY;
@@ -401,7 +401,7 @@ void AnimMissileArc(struct Sprite *sprite)
 
     InitSpritePosToAnimAttacker(sprite, TRUE);
 
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
         cmd->targetX = -cmd->targetX;
 
     sprite->data[0] = cmd->duration;

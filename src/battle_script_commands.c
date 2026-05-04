@@ -9594,14 +9594,13 @@ static void Cmd_settorment(void)
 {
     CMD_ARGS(const u8 *failInstr);
 
-    if (gBattleMons[gBattlerTarget].volatiles.torment == TRUE
-        || (GetActiveGimmick(gBattlerTarget) == GIMMICK_DYNAMAX))
+    if (IsBattlerTormented(gBattlerTarget) || GetActiveGimmick(gBattlerTarget) == GIMMICK_DYNAMAX)
     {
         gBattlescriptCurrInstr = cmd->failInstr;
     }
     else
     {
-        gBattleMons[gBattlerTarget].volatiles.torment = TRUE;
+        SetBattlerTorment(gBattlerTarget, 0);
         gBattlescriptCurrInstr = cmd->nextInstr;
     }
 }
@@ -13154,11 +13153,11 @@ void BS_TrySetTorment(void)
 {
     NATIVE_ARGS(const u8 *failInstr);
 
-    if (!(gBattleMons[gBattlerTarget].volatiles.torment == TRUE)
+    if (!IsBattlerTormented(gBattlerTarget)
+     && GetActiveGimmick(gBattlerTarget) != GIMMICK_DYNAMAX
      && !IsAbilityOnSide(gBattlerTarget, ABILITY_AROMA_VEIL))
     {
-        gBattleMons[gBattlerTarget].volatiles.torment = TRUE;
-        gBattleMons[gBattlerTarget].volatiles.tormentTimer = B_TORMENT_TIMER;
+        SetBattlerTorment(gBattlerTarget, B_TORMENT_TIMER);
         gEffectBattler = gBattlerTarget;
         gBattlescriptCurrInstr = cmd->nextInstr;
     }

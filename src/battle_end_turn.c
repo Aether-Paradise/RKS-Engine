@@ -746,9 +746,9 @@ static bool32 HandleEndTurnTorment(enum BattlerId battler)
 
     gBattleStruct->eventState.endTurnBattler++;
 
-    if (gBattleMons[battler].volatiles.tormentTimer > 0 && --gBattleMons[battler].volatiles.tormentTimer == 0)
+    if (TryReduceTormentTimer(battler))
     {
-        gBattleMons[battler].volatiles.torment = FALSE;
+        UndoBattlerTorment(battler);
         gBattleScripting.battler = battler;
         BattleScriptCall(BattleScript_TormentEnds);
         effect = TRUE;

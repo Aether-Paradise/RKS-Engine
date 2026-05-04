@@ -1382,7 +1382,7 @@ u32 TrySetCantSelectMoveBattleScript(enum BattlerId battler)
         }
     }
 
-    if (DYNAMAX_BYPASS_CHECK && GetActiveGimmick(battler) != GIMMICK_Z_MOVE && move == gLastMoves[battler] && move != MOVE_STRUGGLE && (gBattleMons[battler].volatiles.torment == TRUE))
+    if (DYNAMAX_BYPASS_CHECK && GetActiveGimmick(battler) != GIMMICK_Z_MOVE && move == gLastMoves[battler] && move != MOVE_STRUGGLE && IsBattlerTormented(battler))
     {
         CancelMultiTurnMoves(battler);
         if (gBattleTypeFlags & BATTLE_TYPE_PALACE)
@@ -1632,7 +1632,7 @@ u32 CheckMoveLimitations(enum BattlerId battler, u8 unusableMoves, u16 check)
         else if (check & MOVE_LIMITATION_DISABLED && move == gBattleMons[battler].volatiles.disabledMove)
             unusableMoves |= 1u << i;
         // Torment
-        else if (check & MOVE_LIMITATION_TORMENTED && move == gLastMoves[battler] && gBattleMons[battler].volatiles.torment == TRUE)
+        else if (check & MOVE_LIMITATION_TORMENTED && move == gLastMoves[battler] && IsBattlerTormented(battler))
             unusableMoves |= 1u << i;
         // Taunt
         else if (check & MOVE_LIMITATION_TAUNT
@@ -10985,6 +10985,31 @@ bool32 IsBattlersFirstTurn(enum BattlerId battler)
 {
     return gBattleStruct->battlerState[battler].isFirstTurn == 1
         || gBattleStruct->battlerState[battler].isFirstTurn == 2;
+}
+
+bool32 IsBattlerTormented(enum BattlerId battler)
+{
+    return gBattleMons[battler].volatiles.torment;
+}
+
+// 0 turns = Infinite torment
+void SetBattlerTorment(enum BattlerId battler, u32 turns)
+{
+    gBattleMons[battler].volatiles.torment = TRUE;
+    gBattleMons[battler].volatiles.tormentTimer = turns;
+}
+
+void UndoBattlerTorment(enum BattlerId battler)
+{
+    gBattleMons[battler].volatiles.torment = FALSE;
+    gBattleMons[battler].volatiles.tormentTimer = 0;
+}
+
+bool32 TryReduceTormentTimer(enum BattlerId battler)
+{
+    if (gBattleMons[battler].volatiles.tormentTimer > 0 && --gBattleMons[battler].volatiles.tormentTimer == 0)
+        return TRUE;
+    return FALSE;
 }
 
 struct PartyState *GetBattlerPartyState(enum BattlerId battler)

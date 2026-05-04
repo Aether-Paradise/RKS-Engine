@@ -212,5 +212,36 @@ DOUBLE_BATTLE_TEST("Aroma Veil prevents Psychic Noise's effect")
     }
 }
 
-// Marked in Bulbapedia as need of research
-//TO_DO_BATTLE_TEST("Aroma Veil prevents G-Max Meltdown's effect");
+DOUBLE_BATTLE_TEST("Aroma Veil prevents G-Max Meltdown's torment effect")
+{
+    GIVEN {
+        ASSUME(MoveHasAdditionalEffect(MOVE_G_MAX_MELTDOWN, MOVE_EFFECT_TORMENT_SIDE));
+        PLAYER(SPECIES_MELMETAL) { GigantamaxFactor(TRUE); }
+        PLAYER(SPECIES_MELTAN);
+        OPPONENT(SPECIES_OINKOLOGNE_F) { Ability(ABILITY_AROMA_VEIL); Moves(MOVE_SPLASH, MOVE_CELEBRATE); }
+        OPPONENT(SPECIES_WYNAUT) { Moves(MOVE_SPLASH, MOVE_CELEBRATE); }
+    } WHEN {
+        TURN { MOVE(playerLeft, MOVE_IRON_HEAD, target: opponentLeft, gimmick: GIMMICK_DYNAMAX);
+               MOVE(opponentLeft, MOVE_SPLASH); MOVE(opponentRight, MOVE_SPLASH); }
+        TURN { MOVE(playerLeft, MOVE_CELEBRATE, target: opponentLeft);
+               MOVE(opponentLeft, MOVE_SPLASH);
+               MOVE(opponentRight, MOVE_SPLASH); }
+    } SCENE {
+        // turn 1
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_G_MAX_MELTDOWN, playerLeft);
+        NONE_OF {
+            MESSAGE("The opposing Oinkologne was subjected to torment!");
+            MESSAGE("The opposing Wynaut was subjected to torment!");
+        }
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_SPLASH, opponentLeft);
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_SPLASH, opponentRight);
+        // turn 2
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_SPLASH, opponentLeft);
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_SPLASH, opponentRight);
+        // Make sure that timers were not set
+        NONE_OF {
+            MESSAGE("The opposing Oinkologne is no longer tormented!");
+            MESSAGE("The opposing Wynaut is no longer tormented!");
+        }
+    }
+}

@@ -423,7 +423,7 @@ static void AnimForcePalm(struct Sprite *sprite)
 {
     StartSpriteAffineAnim(sprite, gBattleAnimArgs[3]);
     if (gBattleAnimArgs[2] == 0)
-        InitSpritePosToAnimAttacker(sprite, 1);
+        InitSpritePosToAnimAttacker(sprite, TRUE);
     else
         InitSpritePosToAnimTarget(sprite, TRUE);
 
@@ -442,7 +442,7 @@ static void AnimUnusedHumanoidFoot(struct Sprite *sprite)
 
 static void AnimSlideHandOrFootToTarget(struct Sprite *sprite)
 {
-    if (gBattleAnimArgs[7] == 1 && !IsOnPlayerSide(gBattleAnimAttacker))
+    if (gBattleAnimArgs[7] == 1 && !IsBattlerShowingBackSprite(gBattleAnimAttacker))
     {
         gBattleAnimArgs[1] = -gBattleAnimArgs[1];
         gBattleAnimArgs[3] = -gBattleAnimArgs[3];
@@ -520,7 +520,7 @@ static void AnimFistOrFootRandomPos(struct Sprite *sprite)
     if (Random2() & 1)
         y *= -1;
 
-    if (IsOnPlayerSide(battler))
+    if (IsBattlerShowingBackSprite(battler))
         y -= 16;
 
     sprite->x += x;
@@ -600,7 +600,7 @@ static void AnimSlidingKick(struct Sprite *sprite)
 
     InitSpritePosToAnimTarget(sprite, TRUE);
 
-    if (!IsOnPlayerSide(gBattleAnimAttacker))
+    if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
         gBattleAnimArgs[2] = -gBattleAnimArgs[2];
 
     sprite->data[0] = gBattleAnimArgs[3];
@@ -940,7 +940,7 @@ void AnimSuperpowerFireball(struct Sprite *sprite)
 
     if (IsContest())
         sprite->oam.matrixNum |= ST_OAM_HFLIP;
-    else if (IsOnPlayerSide(battler))
+    else if (IsBattlerShowingBackSprite(battler))
         sprite->oam.matrixNum |= (ST_OAM_HFLIP | ST_OAM_VFLIP);
 
     sprite->data[0] = 16;
@@ -1000,7 +1000,7 @@ void AnimRevengeScratch(struct Sprite *sprite)
     {
         StartSpriteAnim(sprite, 2);
     }
-    else if (!IsOnPlayerSide(gBattleAnimAttacker))
+    else if (!IsBattlerShowingBackSprite(gBattleAnimAttacker))
     {
         StartSpriteAnim(sprite, 1);
     }

@@ -38,6 +38,28 @@ SINGLE_BATTLE_TEST("Mental Herb cures Torment volatile status (Gen 5+)")
     }
 }
 
+SINGLE_BATTLE_TEST("Mental Herb resets G-Max Meltdown's torment timer (Gen 5+)")
+{
+    GIVEN {
+        WITH_CONFIG(B_MENTAL_HERB, GEN_5);
+        ASSUME(GetItemHoldEffect(ITEM_MENTAL_HERB) == HOLD_EFFECT_MENTAL_HERB);
+        PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_MENTAL_HERB); }
+        OPPONENT(SPECIES_MELMETAL) { GigantamaxFactor(TRUE); }
+    } WHEN {
+        TURN { MOVE(player, MOVE_SCRATCH); MOVE(opponent, MOVE_IRON_HEAD, gimmick: GIMMICK_DYNAMAX); }
+        TURN { }
+        TURN { }
+    } SCENE {
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_G_MAX_MELTDOWN, opponent);
+        MESSAGE("Wobbuffet was subjected to torment!");
+        ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, player);
+        MESSAGE("Wobbuffet is no longer tormented!");
+        NONE_OF {
+            MESSAGE("Wobbuffet is no longer tormented!"); // Message doesn't appear twice
+        }
+    }
+}
+
 SINGLE_BATTLE_TEST("Mental Herb cures Disable volatile status (Gen 5+)")
 {
     GIVEN {
