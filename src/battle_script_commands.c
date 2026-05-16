@@ -74,6 +74,7 @@
 #include "test/battle.h"
 #include "follower_npc.h"
 #include "load_save.h"
+#include "config/wild_encounter.h"
 
 // Helper for accessing command arguments and advancing gBattlescriptCurrInstr.
 //

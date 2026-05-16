@@ -76,6 +76,7 @@
 #include "vs_seeker.h"
 #include "load_save.h"
 #include "battle_partner.h"
+#include "config/wild_encounter.h"
 
 enum FollowerNPCCreateDebugMenu
 {

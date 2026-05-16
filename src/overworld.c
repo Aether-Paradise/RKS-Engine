@@ -82,6 +82,7 @@
 #include "constants/songs.h"
 #include "constants/trainer_hill.h"
 #include "constants/weather.h"
+#include "config/wild_encounter.h"
 
 STATIC_ASSERT((B_FLAG_FOLLOWERS_DISABLED == 0 || OW_FOLLOWERS_ENABLED), FollowersFlagAssignedWithoutEnablingThem);
 
@@ -1417,7 +1418,7 @@ static void PlayAmbientCry(void)
 {
     if (!ShouldPlayVanillaAmbientCry())
         return;
-    
+
     s16 x, y;
     s8 pan;
     s8 volume;

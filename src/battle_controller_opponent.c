@@ -42,6 +42,7 @@
 #include "trainer_tower.h"
 #include "test_runner.h"
 #include "test/battle.h"
+#include "config/wild_encounter.h"
 
 static void OpponentHandleDrawTrainerPic(enum BattlerId battler);
 static void OpponentHandleTrainerSlideBack(enum BattlerId battler);

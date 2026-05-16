@@ -115,9 +115,9 @@ TEST("Forms have the appropriate species form changes")
     EXPECT(hasBattleEnd);
 
     // Primal Reversion don't change forms upon fainting
-    if (IsSpeciesMegaEvolution(i)
-        || IsSpeciesGigantamax(i)
-        || IsSpeciesUltraBurst(i))
+    if (IsSpeciesMegaEvolution(species)
+        || IsSpeciesGigantamax(species)
+        || IsSpeciesUltraBurst(species))
     {
         EXPECT(hasFaint);
     }

@@ -30,6 +30,7 @@
 #include "constants/moves.h"
 #include "constants/items.h"
 #include "constants/trainers.h"
+#include "config/wild_encounter.h"
 
 #if TESTING
 #include "test/battle.h"

@@ -4,6 +4,7 @@
 #include "constants/config_changes.h"
 #include "config/pokerus.h"
 #include "config/ai.h"
+#include "config/wild_encounter.h"
 
 #define UNPACK_BATTLE_CONFIG_GEN_CHANGES(_name, _field, ...) ._field = _name,
 #define UNPACK_POKEMON_CONFIG_GEN_CHANGES(_name, _field, ...) ._field = P_##_name,
