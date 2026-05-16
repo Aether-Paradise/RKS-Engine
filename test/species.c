@@ -29,15 +29,15 @@ TEST("Form species ID tables fit within RANDOM_MON_MAX_FORMS")
 {
     u32 formCount;
     u32 species = SPECIES_NONE;
-    const u16 *formSpeciesIdTable;
+    const enum Species *formSpeciesIdTable;
 
     for (u32 i = 0; i < NUM_SPECIES; i++)
     {
-        if (gSpeciesInfo[i].formSpeciesIdTable)
-            PARAMETRIZE_LABEL("ID:%d - %S", i, gSpeciesInfo[i].speciesName) { species = i; }
+        if (IsSpeciesEnabled(i) && GetSpeciesFormTable(i))
+            PARAMETRIZE_LABEL("ID:%d - %S", i, GetSpeciesName(i)) { species = i; }
     }
 
-    formSpeciesIdTable = gSpeciesInfo[species].formSpeciesIdTable;
+    formSpeciesIdTable = GetSpeciesFormTable(species);
     for (formCount = 0; formSpeciesIdTable[formCount] != FORM_SPECIES_END; formCount++)
         ;
 

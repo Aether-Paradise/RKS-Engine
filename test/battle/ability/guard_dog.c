@@ -30,7 +30,7 @@ SINGLE_BATTLE_TEST("Guard Dog raises Attack when intimidated", s16 damage)
 SINGLE_BATTLE_TEST("Guard Dog raises Attack before Adrenaline Orb when Intimidated")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_ADRENALINE_ORB].holdEffect == HOLD_EFFECT_ADRENALINE_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_ADRENALINE_ORB) == HOLD_EFFECT_ADRENALINE_ORB);
         PLAYER(SPECIES_OKIDOGI) { Ability(ABILITY_GUARD_DOG); Item(ITEM_ADRENALINE_ORB); }
         OPPONENT(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_ARBOK) { Ability(ABILITY_INTIMIDATE); }
@@ -53,7 +53,7 @@ SINGLE_BATTLE_TEST("Guard Dog raises Attack before Adrenaline Orb when Intimidat
 SINGLE_BATTLE_TEST("Guard Dog still raises Attack against Intimidate when holding Clear Amulet")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_CLEAR_AMULET].holdEffect == HOLD_EFFECT_CLEAR_AMULET);
+        ASSUME(GetItemHoldEffect(ITEM_CLEAR_AMULET) == HOLD_EFFECT_CLEAR_AMULET);
         PLAYER(SPECIES_OKIDOGI) { Ability(ABILITY_GUARD_DOG); Item(ITEM_CLEAR_AMULET); }
         OPPONENT(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_ARBOK) { Ability(ABILITY_INTIMIDATE); }
