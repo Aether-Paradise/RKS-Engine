@@ -11,7 +11,26 @@
 #include "constants/abilities.h"
 #include "random.h"
 #include "battle_scripts.h"
+#include "window.h"
 #include "constants/battle_string_ids.h"
+
+void AllocateBattleGfxResources(void)
+{
+    gBattleAnimBgTileBuffer = AllocZeroed(0x2000);
+    gBattleAnimBgTilemapBuffer = AllocZeroed(0x1000);
+}
+
+static void FreeBattleGfxResources(void)
+{
+    FREE_AND_SET_NULL(gBattleAnimBgTileBuffer);
+    FREE_AND_SET_NULL(gBattleAnimBgTilemapBuffer);
+}
+
+void CloseMainBattleScreen(void)
+{
+    FreeBattleGfxResources();
+    FreeAllWindowBuffers();
+}
 
 void AllocateBattleResources(void)
 {
@@ -40,8 +59,7 @@ void AllocateBattleResources(void)
     gLinkBattleSendBuffer = AllocZeroed(BATTLE_BUFFER_LINK_SIZE);
     gLinkBattleRecvBuffer = AllocZeroed(BATTLE_BUFFER_LINK_SIZE);
 
-    gBattleAnimBgTileBuffer = AllocZeroed(0x2000);
-    gBattleAnimBgTilemapBuffer = AllocZeroed(0x1000);
+    AllocateBattleGfxResources();
 
 #if FREE_SECRET_BASES == FALSE
     if (gBattleTypeFlags & BATTLE_TYPE_SECRET_BASE)
@@ -78,8 +96,7 @@ void FreeBattleResources(void)
         FREE_AND_SET_NULL(gLinkBattleSendBuffer);
         FREE_AND_SET_NULL(gLinkBattleRecvBuffer);
 
-        FREE_AND_SET_NULL(gBattleAnimBgTileBuffer);
-        FREE_AND_SET_NULL(gBattleAnimBgTilemapBuffer);
+        FreeBattleGfxResources();
     }
 }
 
