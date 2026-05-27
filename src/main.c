@@ -129,7 +129,7 @@ void MainLoop()
     WaitForVBlank();
 }
 
-void AgbMain()
+void AgbMain(void)
 {
     // Modern compilers are liberal with the stack on entry to this function,
     // so RegisterRamReset may crash if it resets IWRAM.
@@ -172,7 +172,7 @@ void AgbMain()
 #if (LOG_HANDLER == LOG_HANDLER_MGBA_PRINT)
     (void) MgbaOpen();
 #elif (LOG_HANDLER == LOG_HANDLER_AGB_PRINT)
-    AGBPrintfInit();
+    AGBPrintInit();
 #endif
 #endif
 #ifdef THREAD_LOOP
