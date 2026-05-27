@@ -22,6 +22,7 @@
 #include "gba/flash_internal.h"
 #include "platform/dma.h"
 #include "platform/framedraw.h"
+#include "platform/system.h"
 
 extern void (*const gIntrTable[])(void);
 
@@ -510,13 +511,7 @@ int main(int argc, char **argv)
 						VDraw();
 						isFrameAvailable = 0;
 
-						REG_DISPSTAT |= INTR_FLAG_VBLANK;
-
-						RunDMAs(DMA_HBLANK);
-
-						if (REG_DISPSTAT & DISPSTAT_VBLANK_INTR)
-							gIntrTable[4]();
-						REG_DISPSTAT &= ~INTR_FLAG_VBLANK;
+						RunDMAsAndVBlank();
 
 						#ifdef THREAD_LOOP
 						if(!SetEvent(vBlankSemaphore))
@@ -543,13 +538,7 @@ int main(int argc, char **argv)
 					VDraw();
 					isFrameAvailable = 0;
 
-					REG_DISPSTAT |= INTR_FLAG_VBLANK;
-
-					RunDMAs(DMA_HBLANK);
-
-					if (REG_DISPSTAT & DISPSTAT_VBLANK_INTR)
-						gIntrTable[4]();
-					REG_DISPSTAT &= ~INTR_FLAG_VBLANK;
+					RunDMAsAndVBlank();
 
 					#ifdef THREAD_LOOP
 					if(!SetEvent(vBlankSemaphore))
