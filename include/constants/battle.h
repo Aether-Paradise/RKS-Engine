@@ -188,7 +188,7 @@ enum BattlerId
 #define HITMARKER_NO_PPDEDUCT           (1 << 11)
 #define HITMARKER_SWAP_ATTACKER_TARGET  (1 << 12)
 #define HITMARKER_STATUS_ABILITY_EFFECT (1 << 13)
-#define HITMARKER_SYNCHRONISE_EFFECT    (1 << 14)
+#define HITMARKER_SYNCHRONIZE_EFFECT    (1 << 14)
 #define HITMARKER_RUN                   (1 << 15)
 #define HITMARKER_IGNORE_ON_AIR         (1 << 16)
 #define HITMARKER_IGNORE_UNDERGROUND    (1 << 17)
@@ -199,7 +199,7 @@ enum BattlerId
 #define HITMARKER_PLAYER_FAINTED        (1 << 22)
 #define HITMARKER_ALLOW_NO_PP           (1 << 23)
 #define HITMARKER_GRUDGE                (1 << 24)
-#define HITMARKER_OBEYS                 (1 << 25)
+#define HITMARKER_OBEYS                 (1 << 25) // Set after obedience check has been performed
 #define HITMARKER_NEVER_SET             (1 << 26) // Cleared as part of a large group. Never set or checked
 #define HITMARKER_CHARGING              (1 << 27)
 #define HITMARKER_FAINTED(battler)      (gBitTable[battler] << 28)
