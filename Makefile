@@ -3,15 +3,18 @@ TITLE       := POKEMON EMER
 GAME_CODE   := BPEE
 MAKER_CODE  := 01
 REVISION    := 0
-MODERN      ?= 0
+MODERN      ?= 1
 KEEP_TEMPS  ?= 0
+PORTABLE    ?= 1
+TARGET_PLATFORM := PLATFORM_SDL2
+TILE_RENDERER   := RENDERER_FAST_DRAW
 
 # `File name`.gba ('_modern' will be appended to the modern builds)
 FILE_NAME := pokeemerald
 BUILD_DIR := build
 
 # Builds the ROM using a modern compiler
-MODERN      ?= 0
+MODERN      ?= 1
 # Compares the ROM to a checksum of the original - only makes sense using when non-modern
 COMPARE     ?= 0
 
@@ -39,7 +42,12 @@ ifneq (,$(TOOLCHAIN))
   endif
 endif
 
-PREFIX := arm-none-eabi-
+ifeq ($(PORTABLE),1)
+  PREFIX := i686-w64-mingw32-
+else
+  PREFIX := arm-none-eabi-
+endif
+
 OBJCOPY := $(PREFIX)objcopy
 OBJDUMP := $(PREFIX)objdump
 AS := $(PREFIX)as
@@ -48,6 +56,31 @@ LD := $(PREFIX)ld
 EXE :=
 ifeq ($(OS),Windows_NT)
   EXE := .exe
+endif
+
+ifeq ($(PORTABLE),1)
+  SDL_DIR := /home/pokeemerald/SDL2-2.0.14/i686-w64-mingw32
+  ASM_PSEUDO_OP_CONV := sed -e 's/\.4byte/\.int/g;s/\.2byte/\.short/g'
+  #FIX_UNDERSCORE is required for 32 bit windows
+  FIX_UNDERSCORE := $(OBJCOPY) --prefix-symbol _
+  PLATFORM_INCLUDES :=
+
+  #Windows only
+  ifneq ($(NO_STD_LIB),1)
+    PLATFORM_INCLUDES += -lmingw32
+  endif
+
+  ifeq ($(TARGET_PLATFORM), PLATFORM_SDL2)
+    PLATFORM_INCLUDES += -lSDL2main -lSDL2.dll
+  endif
+
+  ifeq ($(TARGET_PLATFORM), PLATFORM_WIN32)
+    ifeq ($(NO_STD_LIB),1)
+      PLATFORM_INCLUDES += -Wl,-e__main -nostdlib
+      CPPFLAGS += -D NO_STD_LIB_ENABLED
+    endif
+    PLATFORM_INCLUDES += -lkernel32 -luser32 -lgdi32
+  endif
 endif
 
 # use arm-none-eabi-cpp for macOS
@@ -68,9 +101,12 @@ else
 endif
 
 ROM_NAME := $(FILE_NAME).gba
+
 OBJ_DIR_NAME := $(BUILD_DIR)/emerald
 MODERN_ROM_NAME := $(FILE_NAME)_modern.gba
 MODERN_OBJ_DIR_NAME := $(BUILD_DIR)/modern
+PORTABLE_ROM_NAME := $(FILE_NAME).exe
+PORTABLE_OBJ_DIR_NAME := $(BUILD_DIR)/pc
 ASSETS_DIR_NAME := $(BUILD_DIR)/assets
 
 ELF_NAME := $(ROM_NAME:.gba=.elf)
@@ -82,6 +118,9 @@ MODERN_MAP_NAME := $(MODERN_ROM_NAME:.gba=.map)
 ifeq ($(MODERN),0)
   ROM := $(ROM_NAME)
   OBJ_DIR := $(OBJ_DIR_NAME)
+else ifeq ($(PORTABLE),1)
+  ROM := $(PORTABLE_ROM_NAME)
+  OBJ_DIR := $(PORTABLE_OBJ_DIR_NAME)
 else
   ROM := $(MODERN_ROM_NAME)
   OBJ_DIR := $(MODERN_OBJ_DIR_NAME)
@@ -105,7 +144,11 @@ MID_BUILDDIR = $(OBJ_DIR)/$(MID_SUBDIR)
 SHELL := bash -o pipefail
 
 # Set flags for tools
-ASFLAGS := -mcpu=arm7tdmi --defsym MODERN=$(MODERN)
+ifeq ($(PORTABLE),1)
+  ASFLAGS := --32 --defsym MODERN=$(MODERN) --defsym PORTABLE=1 --defsym UBFIX=1
+else
+  ASFLAGS := -mcpu=arm7tdmi --defsym MODERN=$(MODERN)
+endif
 
 INCLUDE_DIRS := include
 INCLUDE_CPP_ARGS := $(INCLUDE_DIRS:%=-iquote %)
@@ -119,6 +162,13 @@ ifeq ($(MODERN),0)
   override CFLAGS += -mthumb-interwork -Wimplicit -Wparentheses -Werror -O$(O_LEVEL) -fhex-asm -g
   LIBPATH := -L ../../tools/agbcc/lib
   LIB := $(LIBPATH) -lgcc -lc -L../../libagbsyscall -lagbsyscall
+else ifeq ($(PORTABLE),1)
+  CPPFLAGS += -D NONMATCHING -D PORTABLE -D $(TARGET_PLATFORM) -D $(TILE_RENDERER) -D UBFIX -I$(SDL_DIR)/include -L$(SDL_DIR)/lib
+  MODERNCC := $(PREFIX)gcc
+  PATH_MODERNCC := PATH="$(PATH)" $(MODERNCC)
+  CC1 	:= $(shell $(PREFIX)gcc --print-prog-name=cc1) -quiet
+  override CFLAGS += -Wno-trigraphs -Wimplicit -Wparentheses -Wunused -m32 -std=gnu99 -fleading-underscore -fno-dce -fno-builtin -Wno-unused-function -DPORTABLE -DNONMATCHING -D UBFIX -DMODERN=$(MODERN)
+  LIB := $(LIBPATH) -lgcc -lc
 else
   # Note: The makefile must be set up to not call these if modern == 0
   MODERNCC := $(PREFIX)gcc
@@ -131,6 +181,14 @@ endif
 # Enable debug info if set
 ifeq ($(DINFO),1)
   override CFLAGS += -g
+endif
+
+ifeq ($(PORTABLE),1)
+  ifeq ($(DINFO),1)
+    override CFLAGS += -O0
+  else
+    override CFLAGS += -O3
+  endif
 endif
 
 # Variable filled out in other make files
@@ -210,7 +268,12 @@ DATA_ASM_OBJS := $(patsubst $(DATA_ASM_SUBDIR)/%.s,$(DATA_ASM_BUILDDIR)/%.o,$(DA
 MID_SRCS := $(wildcard $(MID_SUBDIR)/*.mid)
 MID_OBJS := $(patsubst $(MID_SUBDIR)/%.mid,$(MID_BUILDDIR)/%.o,$(MID_SRCS))
 
-OBJS     := $(C_OBJS) $(C_ASM_OBJS) $(ASM_OBJS) $(DATA_ASM_OBJS) $(MID_OBJS)
+ifeq ($(PORTABLE),1)
+  OBJS     := $(C_OBJS) $(ASM_OBJS) $(DATA_ASM_OBJS) $(MID_OBJS)
+else
+  OBJS     := $(C_OBJS) $(C_ASM_OBJS) $(ASM_OBJS) $(DATA_ASM_OBJS) $(MID_OBJS)
+endif
+
 OBJS_REL := $(patsubst $(OBJ_DIR)/%,%,$(OBJS))
 
 SUBDIRS  := $(sort $(dir $(OBJS)))
@@ -240,7 +303,7 @@ clean-assets:
 	find . \( -iname '*.1bpp' -o -iname '*.4bpp' -o -iname '*.8bpp' -o -iname '*.gbapal' -o -iname '*.lz' -o -iname '*.rl' -o -iname '*.latfont' -o -iname '*.hwjpnfont' -o -iname '*.fwjpnfont' \) -exec rm {} +
 	find $(DATA_ASM_SUBDIR)/maps \( -iname 'connections.inc' -o -iname 'events.inc' -o -iname 'header.inc' \) -exec rm {} +
 
-tidy: tidynonmodern tidymodern
+tidy: tidynonmodern tidymodern tidyportable
 
 tidynonmodern:
 	rm -f $(ROM_NAME) $(ELF_NAME) $(MAP_NAME)
@@ -249,6 +312,14 @@ tidynonmodern:
 tidymodern:
 	rm -f $(MODERN_ROM_NAME) $(MODERN_ELF_NAME) $(MODERN_MAP_NAME)
 	rm -rf $(MODERN_OBJ_DIR_NAME)
+
+tidyportable:
+	rm -f $(PORTABLE_ROM_NAME)
+	rm -rf $(PORTABLE_OBJ_DIR_NAME)
+
+clean-platform:
+	rm -f $(PORTABLE_ROM_NAME)
+	rm -rf $(PORTABLE_OBJ_DIR_NAME)/src/platform
 
 # Other rules
 include graphics_file_rules.mk
@@ -290,7 +361,7 @@ $(C_BUILDDIR)/m4a.o: CC1 := tools/agbcc/bin/old_agbcc$(EXE)
 $(C_BUILDDIR)/record_mixing.o: CFLAGS += -ffreestanding
 $(C_BUILDDIR)/librfu_intr.o: CC1 := $(TOOLS_DIR)/agbcc/bin/agbcc_arm$(EXE)
 $(C_BUILDDIR)/librfu_intr.o: CFLAGS := -O2 -mthumb-interwork -quiet
-else
+else ifneq ($(PORTABLE),1)
 $(C_BUILDDIR)/librfu_intr.o: CFLAGS := -mthumb-interwork -O2 -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -fno-toplevel-reorder -Wno-pointer-to-int-cast
 $(C_BUILDDIR)/berry_crush.o: override CFLAGS += -Wno-address-of-packed-member
 endif
@@ -321,6 +392,7 @@ endif
 
 $(ASM_BUILDDIR)/%.o: $(ASM_SUBDIR)/%.s
 	$(AS) $(ASFLAGS) -o $@ $<
+	$(FIX_UNDERSCORE) $@
 
 $(ASM_BUILDDIR)/%.d: $(ASM_SUBDIR)/%.s
 	$(SCANINC) -M $@ -g $(ASSETS_DIR_NAME) $(INCLUDE_SCANINC_ARGS) -I "" $<
@@ -340,7 +412,8 @@ ifneq ($(NODEP),1)
 endif
 
 $(DATA_ASM_BUILDDIR)/%.o: $(DATA_ASM_SUBDIR)/%.s
-	$(PREPROC) $< charmap.txt | $(CPP) $(INCLUDE_SCANINC_ARGS) - | $(PREPROC) -ie $< charmap.txt | $(AS) $(ASFLAGS) -o $@
+	$(PREPROC) $< charmap.txt | $(CPP) $(INCLUDE_SCANINC_ARGS) - | $(PREPROC) -ie $< charmap.txt | $(ASM_PSEUDO_OP_CONV) | $(AS) $(ASFLAGS) -o $@
+	$(FIX_UNDERSCORE) $@
 
 $(DATA_ASM_BUILDDIR)/%.d: $(DATA_ASM_SUBDIR)/%.s
 	$(SCANINC) -M $@ -g $(ASSETS_DIR_NAME) $(INCLUDE_SCANINC_ARGS) -I "" $<
@@ -372,6 +445,7 @@ endif
 libagbsyscall:
 	@$(MAKE) -C libagbsyscall TOOLCHAIN=$(TOOLCHAIN) MODERN=$(MODERN)
 
+ifneq ($(PORTABLE),1)
 # Elf from object files
 LDFLAGS = -Map ../../$(MAP)
 $(ELF): $(LD_SCRIPT) $(LD_SCRIPT_DEPS) $(OBJS) libagbsyscall
@@ -387,3 +461,7 @@ $(ROM): $(ELF)
 # Symbol file (`make syms`)
 $(SYM): $(ELF)
 	$(OBJDUMP) -t $< | sort -u | grep -E "^0[2389]" | $(PERL) -p -e 's/^(\w{8}) (\w).{6} \S+\t(\w{8}) (\S+)$$/\1 \2 \3 \4/g' > $@
+else
+$(ROM): $(OBJS)
+	$(MODERNCC) $(CFLAGS) -Wl,--demangle $^ -static-libgcc -L$(SDL_DIR)/lib $(PLATFORM_INCLUDES) -lwinmm -lxinput -o $@
+endif
