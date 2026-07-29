@@ -150,7 +150,7 @@ u16 ChooseMoveAndTargetInBattlePalace(void)
     {
         if (moveInfo->moves[i] == MOVE_NONE)
             break;
-        if (selectedGroup == GetBattlePalaceMoveGroup(moveInfo->moves[i]) && moveInfo->currentPp[i] != 0)
+        if (selectedGroup == GetBattlePalaceMoveGroup(moveInfo->moves[i]) && moveInfo->currentPP[i] != 0)
             selectedMoves |= gBitTable[i];
     }
 
@@ -710,9 +710,17 @@ void DecompressTrainerFrontPic(u16 frontPicId, u8 battler)
 void DecompressTrainerBackPic(u16 backPicId, u8 battler)
 {
     u8 position = GetBattlerPosition(battler);
+#ifdef BUGFIX
+    CpuCopy32(gTrainerBackPicTable[backPicId].data, gMonSpritesGfxPtr->sprites.ptr[position], gTrainerBackPicTable[backPicId].size);
+#else
+    // Trainer back pics aren't compressed!
+    // Attempting to decompress the uncompressed data can softlock or crash the game.
+    // This is ok in vanilla by chance, because the pixels in the trainer back sprites that correspond
+    // to the compressed data's header are all 0, so the decompression does nothing.
     DecompressPicFromTable_2(&gTrainerBackPicTable[backPicId],
                              gMonSpritesGfxPtr->sprites.ptr[position],
                              SPECIES_NONE);
+#endif
     LoadCompressedPalette(gTrainerBackPicPaletteTable[backPicId].data,
                           OBJ_PLTT_ID(battler), PLTT_SIZE_4BPP);
 }
@@ -947,8 +955,6 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool8 castform)
     }
     else
     {
-        const void *src;
-        void *dst;
         u16 targetSpecies;
 
         if (IsContest())
@@ -994,9 +1000,7 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool8 castform)
             }
         }
 
-        src = gMonSpritesGfxPtr->sprites.ptr[position];
-        dst = (void *)(OBJ_VRAM0 + gSprites[gBattlerSpriteIds[battlerAtk]].oam.tileNum * 32);
-        DmaCopy32(3, src, dst, MON_PIC_SIZE);
+        DmaCopy32Defvars(3, gMonSpritesGfxPtr->sprites.ptr[position], (void *)(OBJ_VRAM0 + gSprites[gBattlerSpriteIds[battlerAtk]].oam.tileNum * 32), MON_PIC_SIZE);
         paletteOffset = OBJ_PLTT_ID(battlerAtk);
         lzPaletteData = GetMonSpritePalFromSpeciesAndPersonality(targetSpecies, otId, personalityValue);
         LZDecompressWram(lzPaletteData, gDecompressionBuffer);

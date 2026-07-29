@@ -131,7 +131,7 @@ static void UpdateAllLinkPlayers(u16 *, s32);
 static u8 FlipVerticalAndClearForced(u8, u8);
 static u8 LinkPlayerGetCollision(u8, u8, s16, s16);
 static void CreateLinkPlayerSprite(u8, u8);
-static void GetLinkPlayerCoords(u8, u16 *, u16 *);
+static void GetLinkPlayerCoords(u8, s16 *, s16 *);
 static u8 GetLinkPlayerFacingDirection(u8);
 static u8 GetLinkPlayerElevation(u8);
 static u8 GetLinkPlayerIdAt(s16, s16);
@@ -194,7 +194,7 @@ EWRAM_DATA struct WarpData gLastUsedWarp = {0};
 EWRAM_DATA static struct WarpData sWarpDestination = {0};  // new warp position
 EWRAM_DATA static struct WarpData sFixedDiveWarp = {0};
 EWRAM_DATA static struct WarpData sFixedHoleWarp = {0};
-EWRAM_DATA static u16 sLastMapSectionId = 0;
+EWRAM_DATA static mapsec_u16_t sLastMapSectionId = 0;
 EWRAM_DATA static struct InitialPlayerAvatarState sInitialPlayerAvatarState = {0};
 EWRAM_DATA static u16 sAmbientCrySpecies = 0;
 EWRAM_DATA static bool8 sIsAmbientCryWaterMon = FALSE;
@@ -1049,7 +1049,7 @@ static bool16 ShouldLegendaryMusicPlayAtLocation(struct WarpData *warp)
     return FALSE;
 }
 
-static bool16 NoMusicInSotopolisWithLegendaries(struct WarpData *warp)
+static bool16 NoMusicInSootopolisWithLegendaries(struct WarpData *warp)
 {
     if (VarGet(VAR_SKY_PILLAR_STATE) != 1)
         return FALSE;
@@ -1074,7 +1074,7 @@ static bool16 IsInfiltratedWeatherInstitute(struct WarpData *warp)
         return FALSE;
 }
 
-static bool16 IsInflitratedSpaceCenter(struct WarpData *warp)
+static bool16 IsInfiltratedSpaceCenter(struct WarpData *warp)
 {
     if (VarGet(VAR_MOSSDEEP_CITY_STATE) == 0)
         return FALSE;
@@ -1090,11 +1090,11 @@ static bool16 IsInflitratedSpaceCenter(struct WarpData *warp)
 
 u16 GetLocationMusic(struct WarpData *warp)
 {
-    if (NoMusicInSotopolisWithLegendaries(warp) == TRUE)
+    if (NoMusicInSootopolisWithLegendaries(warp) == TRUE)
         return MUS_NONE;
     else if (ShouldLegendaryMusicPlayAtLocation(warp) == TRUE)
         return MUS_ABNORMAL_WEATHER;
-    else if (IsInflitratedSpaceCenter(warp) == TRUE)
+    else if (IsInfiltratedSpaceCenter(warp) == TRUE)
         return MUS_ENCOUNTER_MAGMA;
     else if (IsInfiltratedWeatherInstitute(warp) == TRUE)
         return MUS_MT_CHIMNEY;
@@ -1392,12 +1392,12 @@ bool8 IsMapTypeIndoors(u8 mapType)
         return FALSE;
 }
 
-u8 GetSavedWarpRegionMapSectionId(void)
+mapsec_u8_t GetSavedWarpRegionMapSectionId(void)
 {
     return Overworld_GetMapHeaderByGroupAndId(gSaveBlock1Ptr->dynamicWarp.mapGroup, gSaveBlock1Ptr->dynamicWarp.mapNum)->regionMapSectionId;
 }
 
-u8 GetCurrentRegionMapSectionId(void)
+mapsec_u8_t GetCurrentRegionMapSectionId(void)
 {
     return Overworld_GetMapHeaderByGroupAndId(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum)->regionMapSectionId;
 }
@@ -2101,7 +2101,7 @@ static void ResetScreenForMapLoad(void)
     ScanlineEffect_Stop();
 
     DmaClear16(3, PLTT + 2, PLTT_SIZE - 2);
-    DmaFillLarge16(3, 0, (void *)VRAM, VRAM_SIZE, 0x1000);
+    DmaClearLarge16(3, (void *)VRAM, VRAM_SIZE, 0x1000);
     ResetOamRange(0, 128);
     LoadOam();
 }
@@ -2774,7 +2774,7 @@ static const u8 *TryInteractWithPlayer(struct CableClubPlayer *player)
     otherPlayerPos = player->pos;
     otherPlayerPos.x += gDirectionToVectors[player->facing].x;
     otherPlayerPos.y += gDirectionToVectors[player->facing].y;
-    otherPlayerPos.elevation = 0;
+    otherPlayerPos.elevation = ELEVATION_TRANSITION;
     linkPlayerId = GetLinkPlayerIdAt(otherPlayerPos.x, otherPlayerPos.y);
 
     if (linkPlayerId != MAX_LINK_PLAYERS)
@@ -3016,7 +3016,7 @@ static u8 GetSpriteForLinkedPlayer(u8 linkPlayerId)
     return objEvent->spriteId;
 }
 
-static void GetLinkPlayerCoords(u8 linkPlayerId, u16 *x, u16 *y)
+static void GetLinkPlayerCoords(u8 linkPlayerId, s16 *x, s16 *y)
 {
     u8 objEventId = gLinkPlayerObjectEvents[linkPlayerId].objEventId;
     struct ObjectEvent *objEvent = &gObjectEvents[objEventId];
@@ -3038,7 +3038,7 @@ static u8 GetLinkPlayerElevation(u8 linkPlayerId)
     return objEvent->currentElevation;
 }
 
-static s32 UNUSED GetLinkPlayerObjectStepTimer(u8 linkPlayerId)
+static s16 UNUSED GetLinkPlayerObjectStepTimer(u8 linkPlayerId)
 {
     u8 objEventId = gLinkPlayerObjectEvents[linkPlayerId].objEventId;
     struct ObjectEvent *objEvent = &gObjectEvents[objEventId];
@@ -3067,26 +3067,18 @@ static void SetPlayerFacingDirection(u8 linkPlayerId, u8 facing)
     u8 objEventId = linkPlayerObjEvent->objEventId;
     struct ObjectEvent *objEvent = &gObjectEvents[objEventId];
 
-    if (linkPlayerObjEvent->active)
+    if (!linkPlayerObjEvent->active)
+        return;
+
+    if (facing > FACING_FORCED_RIGHT)
     {
-        if (facing > FACING_FORCED_RIGHT)
-        {
-            objEvent->triggerGroundEffectsOnMove = TRUE;
-        }
-        else
-        {
-            // This is a hack to split this code onto two separate lines, without declaring a local variable.
-            // C++ style inline variables would be nice here.
-            #define TEMP sLinkPlayerMovementModes[linkPlayerObjEvent->movementMode](linkPlayerObjEvent, objEvent, facing)
-
-            sMovementStatusHandler[TEMP](linkPlayerObjEvent, objEvent);
-
-            // Clean up the hack.
-            #undef TEMP
-        }
+        objEvent->triggerGroundEffectsOnMove = TRUE;
+        return;
     }
-}
 
+    sMovementStatusHandler[sLinkPlayerMovementModes[linkPlayerObjEvent->movementMode](
+        linkPlayerObjEvent, objEvent, facing)](linkPlayerObjEvent, objEvent);
+}
 
 static u8 MovementEventModeCB_Normal(struct LinkPlayerObjectEvent *linkPlayerObjEvent, struct ObjectEvent *objEvent, u8 dir)
 {

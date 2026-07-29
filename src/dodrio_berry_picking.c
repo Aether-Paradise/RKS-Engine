@@ -10,7 +10,6 @@
 #include "link.h"
 #include "link_rfu.h"
 #include "m4a.h"
-#include "main.h"
 #include "palette.h"
 #include "minigame_countdown.h"
 #include "random.h"
@@ -223,7 +222,7 @@ struct DodrioGame_ScoreResults
 
 struct DodrioGame
 {
-    /*0x0000*/ void (*exitCallback)(void);
+    /*0x0000*/ MainCallback exitCallback;
     /*0x0004*/ u8 ALIGNED(4) taskId;
     /*0x0008*/ u8 ALIGNED(4) playersReceived;
     /*0x000C*/ u8 ALIGNED(4) startState;
@@ -661,7 +660,7 @@ static void (*const sMemberFuncs[])(void) =
     [FUNC_WAIT_END_GAME]  = WaitEndGame_Member
 };
 
-void StartDodrioBerryPicking(u16 partyId, void (*exitCallback)(void))
+void StartDodrioBerryPicking(u16 partyId, MainCallback exitCallback)
 {
     sExitingGame = FALSE;
 
@@ -3594,20 +3593,20 @@ static const u8 sUnsharedColumns_Duplicate[MAX_RFU_PLAYERS][MAX_RFU_PLAYERS] =
 
 static const u16 sBg_Pal[]                  = INCBIN_U16("graphics/dodrio_berry_picking/tree_border.gbapal",
                                                          "graphics/dodrio_berry_picking/bg.gbapal");
-static const u16 sDodrioNormal_Pal[]        = INCBIN_U16("graphics/dodrio_berry_picking/dodrio.gbapal");
-static const u16 sDodrioShiny_Pal[]         = INCBIN_U16("graphics/dodrio_berry_picking/shiny.gbapal");
-static const u16 sStatus_Pal[]              = INCBIN_U16("graphics/dodrio_berry_picking/status.gbapal");
-static const u16 sBerries_Pal[]             = INCBIN_U16("graphics/dodrio_berry_picking/berries.gbapal");
-static const u32 sBerries_Gfx[]             = INCBIN_U32("graphics/dodrio_berry_picking/berries.4bpp.lz");
-static const u16 sCloud_Pal[]               = INCBIN_U16("graphics/dodrio_berry_picking/cloud.gbapal");
-static const u32 sBg_Gfx[]                  = INCBIN_U32("graphics/dodrio_berry_picking/bg.4bpp.lz");
-static const u32 sTreeBorder_Gfx[]          = INCBIN_U32("graphics/dodrio_berry_picking/tree_border.4bpp.lz");
-static const u32 sStatus_Gfx[]              = INCBIN_U32("graphics/dodrio_berry_picking/status.4bpp.lz");
-static const u32 sCloud_Gfx[]               = INCBIN_U32("graphics/dodrio_berry_picking/cloud.4bpp.lz");
-static const u32 sDodrio_Gfx[]              = INCBIN_U32("graphics/dodrio_berry_picking/dodrio.4bpp.lz");
-static const u32 sBg_Tilemap[]              = INCBIN_U32("graphics/dodrio_berry_picking/bg.bin.lz");
-static const u32 sTreeBorderRight_Tilemap[] = INCBIN_U32("graphics/dodrio_berry_picking/tree_border_right.bin.lz");
-static const u32 sTreeBorderLeft_Tilemap[]  = INCBIN_U32("graphics/dodrio_berry_picking/tree_border_left.bin.lz");
+static const u16 sDodrioNormal_Pal[]        = INCGFX_U16("graphics/dodrio_berry_picking/dodrio.png", ".gbapal");
+static const u16 sDodrioShiny_Pal[]         = INCGFX_U16("graphics/dodrio_berry_picking/shiny.pal", ".gbapal");
+static const u16 sStatus_Pal[]              = INCGFX_U16("graphics/dodrio_berry_picking/status.png", ".gbapal");
+static const u16 sBerries_Pal[]             = INCGFX_U16("graphics/dodrio_berry_picking/berries.png", ".gbapal");
+static const u32 sBerries_Gfx[]             = INCGFX_U32("graphics/dodrio_berry_picking/berries.png", ".4bpp.lz");
+static const u16 sCloud_Pal[]               = INCGFX_U16("graphics/dodrio_berry_picking/cloud.png", ".gbapal");
+static const u32 sBg_Gfx[]                  = INCGFX_U32("graphics/dodrio_berry_picking/bg.png", ".4bpp.lz");
+static const u32 sTreeBorder_Gfx[]          = INCGFX_U32("graphics/dodrio_berry_picking/tree_border.png", ".4bpp.lz");
+static const u32 sStatus_Gfx[]              = INCGFX_U32("graphics/dodrio_berry_picking/status.png", ".4bpp.lz");
+static const u32 sCloud_Gfx[]               = INCGFX_U32("graphics/dodrio_berry_picking/cloud.png", ".4bpp.lz");
+static const u32 sDodrio_Gfx[]              = INCGFX_U32("graphics/dodrio_berry_picking/dodrio.png", ".4bpp.lz");
+static const u32 sBg_Tilemap[]              = INCGFX_U32("graphics/dodrio_berry_picking/bg.bin", ".lz");
+static const u32 sTreeBorderRight_Tilemap[] = INCGFX_U32("graphics/dodrio_berry_picking/tree_border_right.bin", ".lz");
+static const u32 sTreeBorderLeft_Tilemap[]  = INCGFX_U32("graphics/dodrio_berry_picking/tree_border_left.bin", ".lz");
 
 static const struct OamData sOamData_Dodrio =
 {

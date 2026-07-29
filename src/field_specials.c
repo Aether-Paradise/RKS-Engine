@@ -1255,7 +1255,7 @@ void SpawnCameraObject(void)
                                                   LOCALID_CAMERA,
                                                   gSaveBlock1Ptr->pos.x + MAP_OFFSET,
                                                   gSaveBlock1Ptr->pos.y + MAP_OFFSET,
-                                                  3); // elevation
+                                                  ELEVATION_DEFAULT);
     gObjectEvents[obj].invisible = TRUE;
     CameraObjectSetFollowedSpriteId(gObjectEvents[obj].spriteId);
 }
@@ -2555,7 +2555,7 @@ static void Task_ShowScrollableMultichoice(u8 taskId)
     sScrollableMultichoice_ItemSpriteId = MAX_SPRITES;
     FillFrontierExchangeCornerWindowAndItemIcon(task->tScrollMultiId, 0);
     ShowBattleFrontierTutorWindow(task->tScrollMultiId, 0);
-    sScrollableMultichoice_ListMenuItem = AllocZeroed(task->tNumItems * 8);
+    sScrollableMultichoice_ListMenuItem = AllocZeroed(task->tNumItems * sizeof(struct ListMenuItem));
     sFrontierExchangeCorner_NeverRead = 0;
     InitScrollableMultichoice();
 
@@ -3267,17 +3267,17 @@ void DoDeoxysRockInteraction(void)
 }
 
 static const u16 sDeoxysRockPalettes[DEOXYS_ROCK_LEVELS][16] = {
-    INCBIN_U16("graphics/field_effects/palettes/deoxys_rock_1.gbapal"),
-    INCBIN_U16("graphics/field_effects/palettes/deoxys_rock_2.gbapal"),
-    INCBIN_U16("graphics/field_effects/palettes/deoxys_rock_3.gbapal"),
-    INCBIN_U16("graphics/field_effects/palettes/deoxys_rock_4.gbapal"),
-    INCBIN_U16("graphics/field_effects/palettes/deoxys_rock_5.gbapal"),
-    INCBIN_U16("graphics/field_effects/palettes/deoxys_rock_6.gbapal"),
-    INCBIN_U16("graphics/field_effects/palettes/deoxys_rock_7.gbapal"),
-    INCBIN_U16("graphics/field_effects/palettes/deoxys_rock_8.gbapal"),
-    INCBIN_U16("graphics/field_effects/palettes/deoxys_rock_9.gbapal"),
-    INCBIN_U16("graphics/field_effects/palettes/deoxys_rock_10.gbapal"),
-    INCBIN_U16("graphics/field_effects/palettes/deoxys_rock_11.gbapal"),
+    INCGFX_U16("graphics/field_effects/palettes/deoxys_rock_1.pal", ".gbapal"),
+    INCGFX_U16("graphics/field_effects/palettes/deoxys_rock_2.pal", ".gbapal"),
+    INCGFX_U16("graphics/field_effects/palettes/deoxys_rock_3.pal", ".gbapal"),
+    INCGFX_U16("graphics/field_effects/palettes/deoxys_rock_4.pal", ".gbapal"),
+    INCGFX_U16("graphics/field_effects/palettes/deoxys_rock_5.pal", ".gbapal"),
+    INCGFX_U16("graphics/field_effects/palettes/deoxys_rock_6.pal", ".gbapal"),
+    INCGFX_U16("graphics/field_effects/palettes/deoxys_rock_7.pal", ".gbapal"),
+    INCGFX_U16("graphics/field_effects/palettes/deoxys_rock_8.pal", ".gbapal"),
+    INCGFX_U16("graphics/field_effects/palettes/deoxys_rock_9.pal", ".gbapal"),
+    INCGFX_U16("graphics/field_effects/palettes/deoxys_rock_10.pal", ".gbapal"),
+    INCGFX_U16("graphics/field_effects/palettes/deoxys_rock_11.pal", ".gbapal"),
 };
 
 static const u8 sDeoxysRockCoords[DEOXYS_ROCK_LEVELS][2] = {

@@ -1354,10 +1354,10 @@ static const u16 sHoennToNationalOrder[NUM_SPECIES - 1] =
 
 const struct SpindaSpot gSpindaSpotGraphics[] =
 {
-    {.x = 16, .y =  7, .image = INCBIN_U16("graphics/pokemon/spinda/spots/spot_0.1bpp")},
-    {.x = 40, .y =  8, .image = INCBIN_U16("graphics/pokemon/spinda/spots/spot_1.1bpp")},
-    {.x = 22, .y = 25, .image = INCBIN_U16("graphics/pokemon/spinda/spots/spot_2.1bpp")},
-    {.x = 34, .y = 26, .image = INCBIN_U16("graphics/pokemon/spinda/spots/spot_3.1bpp")}
+    {.x = 16, .y =  7, .image = INCGFX_U16("graphics/pokemon/spinda/spots/spot_0.png", ".1bpp", "-plain -data_width 2")},
+    {.x = 40, .y =  8, .image = INCGFX_U16("graphics/pokemon/spinda/spots/spot_1.png", ".1bpp", "-plain -data_width 2")},
+    {.x = 22, .y = 25, .image = INCGFX_U16("graphics/pokemon/spinda/spots/spot_2.png", ".1bpp", "-plain -data_width 2")},
+    {.x = 34, .y = 26, .image = INCGFX_U16("graphics/pokemon/spinda/spots/spot_3.png", ".1bpp", "-plain -data_width 2")}
 };
 
 #include "data/pokemon/item_effects.h"
@@ -3707,7 +3707,14 @@ u32 GetMonData3(struct Pokemon *mon, s32 field, u8 *data)
     return ret;
 }
 
+#ifndef UBFIX
 u32 GetMonData2(struct Pokemon *mon, s32 field) __attribute__((alias("GetMonData3")));
+#else
+u32 GetMonData2(struct Pokemon *mon, s32 field)
+{
+    return GetMonData3(mon, field, NULL);
+}
+#endif
 
 /* GameFreak called GetBoxMonData with either 2 or 3 arguments, for type
  * safety we have a GetBoxMonData macro (in include/pokemon.h) which
@@ -4069,11 +4076,31 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
     return retVal;
 }
 
+#ifndef UBFIX
 u32 GetBoxMonData2(struct BoxPokemon *boxMon, s32 field) __attribute__((alias("GetBoxMonData3")));
+#else
+u32 GetBoxMonData2(struct BoxPokemon *boxMon, s32 field)
+{
+    return GetBoxMonData3(boxMon, field, NULL);
+}
+#endif
 
 #define SET8(lhs) (lhs) = *data
 #define SET16(lhs) (lhs) = data[0] + (data[1] << 8)
 #define SET32(lhs) (lhs) = data[0] + (data[1] << 8) + (data[2] << 16) + (data[3] << 24)
+//
+// Prefer SET_BY_WIDTH for fields whose types might be extended (e.g. 
+// anything whose typedef is in gametypes.h).
+//
+#define SET_BY_WIDTH(lhs) \
+    do { \
+       if (sizeof(lhs) == 1) \
+          SET8(lhs); \
+       else if (sizeof(lhs) == 2) \
+          SET16(lhs); \
+       else if (sizeof(lhs) == 4) \
+          SET32(lhs); \
+   } while (0)
 
 void SetMonData(struct Pokemon *mon, s32 field, const void *dataArg)
 {
@@ -4263,7 +4290,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
         SET8(substruct3->pokerus);
         break;
     case MON_DATA_MET_LOCATION:
-        SET8(substruct3->metLocation);
+        SET_BY_WIDTH(substruct3->metLocation);
         break;
     case MON_DATA_MET_LEVEL:
     {

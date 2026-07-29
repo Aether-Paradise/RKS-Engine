@@ -1643,6 +1643,15 @@ static void Cmd_if_status_not_in_party(void)
 
 static void Cmd_get_weather(void)
 {
+    // BUG: due to the lack of an assignment in the case of there not being any
+    //      weather set any previously set value could possibly be interpreted
+    //      as a result of this function.
+    //      Assigning AI_WEATHER_NONE here matches the fix implemented in future
+    //      generations.
+    #ifdef BUGFIX
+        AI_THINKING_STRUCT->funcResult = AI_WEATHER_NONE;
+    #endif
+
     if (gBattleWeather & B_WEATHER_RAIN)
         AI_THINKING_STRUCT->funcResult = AI_WEATHER_RAIN;
     if (gBattleWeather & B_WEATHER_SANDSTORM)
@@ -1794,7 +1803,13 @@ static void Cmd_if_cant_faint(void)
 static void Cmd_if_has_move(void)
 {
     s32 i;
+
+#ifdef BUGFIX
+    const u16 move = T1_READ_16(gAIScriptPtr + 2);
+    const u16 *movePtr = &move;    
+#else
     const u16 *movePtr = (u16 *)(gAIScriptPtr + 2);
+#endif
 
     switch (gAIScriptPtr[1])
     {
@@ -1846,7 +1861,13 @@ static void Cmd_if_has_move(void)
 static void Cmd_if_doesnt_have_move(void)
 {
     s32 i;
+
+#ifdef BUGFIX
+    const u16 move = T1_READ_16(gAIScriptPtr + 2);
+    const u16 *movePtr = &move;    
+#else
     const u16 *movePtr = (u16 *)(gAIScriptPtr + 2);
+#endif
 
     switch(gAIScriptPtr[1])
     {

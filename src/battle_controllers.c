@@ -57,6 +57,11 @@ void SetUpBattleVarsAndBirchZigzagoon(void)
     gBattleControllerExecFlags = 0;
     ClearBattleAnimationVars();
     ClearBattleMonForms();
+// UB: at the start of a battle CheckMoveLimitations is called with gActiveBattler 
+// from the previous battle, which can lead to multiple arrays being accessed out of bounds
+#ifdef UBFIX
+    gActiveBattler = 0;
+#endif
     BattleAI_HandleItemUseBeforeAISetup(0xF);
 
     if (gBattleTypeFlags & BATTLE_TYPE_FIRST_BATTLE)
@@ -1210,17 +1215,17 @@ void BtlController_EmitYesNoBox(u8 bufferId)
     PrepareBufferDataTransfer(bufferId, sBattleBuffersTransferData, 4);
 }
 
-void BtlController_EmitChooseMove(u8 bufferId, bool8 isDoubleBattle, bool8 NoPpNumber, struct ChooseMoveStruct *movePpData)
+void BtlController_EmitChooseMove(u8 bufferId, bool8 isDoubleBattle, bool8 noPPNumber, struct ChooseMoveStruct *movePPData)
 {
     s32 i;
 
     sBattleBuffersTransferData[0] = CONTROLLER_CHOOSEMOVE;
     sBattleBuffersTransferData[1] = isDoubleBattle;
-    sBattleBuffersTransferData[2] = NoPpNumber;
+    sBattleBuffersTransferData[2] = noPPNumber;
     sBattleBuffersTransferData[3] = 0;
-    for (i = 0; i < sizeof(*movePpData); i++)
-        sBattleBuffersTransferData[4 + i] = *((u8 *)(movePpData) + i);
-    PrepareBufferDataTransfer(bufferId, sBattleBuffersTransferData, sizeof(*movePpData) + 4);
+    for (i = 0; i < sizeof(*movePPData); i++)
+        sBattleBuffersTransferData[4 + i] = *((u8 *)(movePPData) + i);
+    PrepareBufferDataTransfer(bufferId, sBattleBuffersTransferData, sizeof(*movePPData) + 4);
 }
 
 void BtlController_EmitChooseItem(u8 bufferId, u8 *battlePartyOrder)

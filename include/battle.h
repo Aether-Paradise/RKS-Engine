@@ -12,6 +12,7 @@
 #include "battle_util2.h"
 #include "battle_bg.h"
 #include "pokeball.h"
+#include "main.h"
 
 #define GET_BATTLER_SIDE(battler)         (GetBattlerPosition(battler) & BIT_SIDE)
 #define GET_BATTLER_SIDE2(battler)        (gBattlerPositions[battler] & BIT_SIDE)
@@ -38,6 +39,8 @@
 #define B_ACTION_FINISHED               12
 #define B_ACTION_CANCEL_PARTNER         12 // when choosing an action
 #define B_ACTION_NOTHING_FAINTED        13 // when choosing an action
+#define B_ACTION_UNK_14                 14
+#define B_ACTION_UNK_15                 15
 #define B_ACTION_NONE                   0xFF
 
 #define MOVE_TARGET_SELECTED            0
@@ -430,7 +433,7 @@ struct BattleStruct
     u8 wishPerishSongState;
     u8 wishPerishSongBattlerId;
     bool8 overworldWeatherDone;
-    u8 atkCancellerTracker;
+    u8 atkCancelerTracker;
     struct BattleTvMovePoints tvMovePoints;
     struct BattleTv tv;
     u8 unused_7[0x28];
@@ -716,7 +719,7 @@ extern u16 gBattleMovePower;
 extern u16 gMoveToLearn;
 extern u8 gBattleMonForms[MAX_BATTLERS_COUNT];
 
-extern void (*gPreBattleCallback1)(void);
+extern MainCallback gPreBattleCallback1;
 extern void (*gBattleMainFunc)(void);
 extern struct BattleResults gBattleResults;
 extern u8 gLeveledUpInBattle;
