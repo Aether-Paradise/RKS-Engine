@@ -14,13 +14,15 @@
     .space 4  /* Padding*/
 	.endm
 
+	.equiv voice_size, 0x18 /* should be 0xC for 32 bit */
+
 	.macro voice_group label:req, starting_note
 	.align 2
 	.ifb \starting_note
 		.global voicegroup_\label 
 		voicegroup_\label:
 	.else
-		.set voicegroup_\label, . - \starting_note * 0xC
+		.set voicegroup_\label, . - \starting_note * voice_size
 	.endif
 	.endm
 
