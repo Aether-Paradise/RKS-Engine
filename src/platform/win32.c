@@ -659,16 +659,17 @@ u16 Platform_GetKeyInput(void)
 
 void VDraw()
 {
-    DrawFrame(lpBitmapBits);
-    
-    
     if (frameskipCounter == 0)
     {
+        DrawFrame(lpBitmapBits);
+
         //convert pixels to to the correct format
-        for (int x = 0; x < DISPLAY_HEIGHT * DISPLAY_WIDTH ; x++)
+        uint32_t* bitmap32 = (uint32_t*)lpBitmapBits; //cast to 32bit so we could convert two pixels at once
+        while (bitmap32 != &lpBitmapBits[DISPLAY_HEIGHT * DISPLAY_WIDTH])
         {
-            uint16_t color = lpBitmapBits[x];
-            lpBitmapBits[x] = ((color & 0x001F) << 10) | (color & 0x03E0) | ((color & 0x7C00) >> 10);
+            uint32_t color32 = *bitmap32;
+            *bitmap32 = ((color32 & 0x1F001F) << 10) | (color32 & 0x83E083E0) | ((color32 & 0x7C007C00) >> 10);
+            bitmap32++;
         }
         
         if (bitBltEnabled)
