@@ -63,24 +63,6 @@ ifeq ($(PORTABLE),1)
   ASM_PSEUDO_OP_CONV := sed -e 's/\.4byte/\.int/g;s/\.2byte/\.short/g'
   #FIX_UNDERSCORE is required for 32 bit windows
   FIX_UNDERSCORE := $(OBJCOPY) --prefix-symbol _
-  PLATFORM_INCLUDES :=
-
-  #Windows only
-  ifneq ($(NO_STD_LIB),1)
-    PLATFORM_INCLUDES += -lmingw32
-  endif
-
-  ifeq ($(TARGET_PLATFORM), PLATFORM_SDL2)
-    PLATFORM_INCLUDES += -lSDL2main -lSDL2.dll
-  endif
-
-  ifeq ($(TARGET_PLATFORM), PLATFORM_WIN32)
-    ifeq ($(NO_STD_LIB),1)
-      PLATFORM_INCLUDES += -Wl,-e__main -nostdlib
-      CPPFLAGS += -D NO_STD_LIB_ENABLED
-    endif
-    PLATFORM_INCLUDES += -lkernel32 -luser32 -lgdi32
-  endif
 endif
 
 # use arm-none-eabi-cpp for macOS
@@ -178,6 +160,28 @@ else
   LIBPATH := -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libgcc.a))" -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libnosys.a))" -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libc.a))"
   LIB := $(LIBPATH) -lc -lnosys -lgcc -L../../libagbsyscall -lagbsyscall
 endif
+
+ifeq ($(PORTABLE),1)
+  PLATFORM_INCLUDES :=
+
+  #Windows only
+  ifneq ($(NO_STD_LIB),1)
+    PLATFORM_INCLUDES += -lmingw32
+  endif
+
+  ifeq ($(TARGET_PLATFORM), PLATFORM_SDL2)
+    PLATFORM_INCLUDES += -lSDL2main -lSDL2.dll
+  endif
+
+  ifeq ($(TARGET_PLATFORM), PLATFORM_WIN32)
+    ifeq ($(NO_STD_LIB),1)
+      PLATFORM_INCLUDES += -Wl,-e__main -nostdlib
+      CPPFLAGS += -D NO_STD_LIB_ENABLED
+    endif
+    PLATFORM_INCLUDES += -lkernel32 -luser32 -lgdi32
+  endif
+endif
+
 # Enable debug info if set
 ifeq ($(DINFO),1)
   override CFLAGS += -g
