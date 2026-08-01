@@ -781,7 +781,7 @@ u32 FieldEffectScript_ReadPtr(u8 **script)
     return (*script)[0]
          + ((*script)[1] << 8)
          + ((*script)[2] << 16)
-         + ((*script)[3] << 24)
+         + ((*script)[3] << 24);
 }
 #endif
 

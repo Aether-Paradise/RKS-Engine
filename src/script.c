@@ -199,7 +199,7 @@ u32 ScriptReadPointer(struct ScriptContext *ctx)
     #ifdef VER_64BIT
     u64 value0 = *((u64*)ctx->scriptPtr);
     #else
-    u32 value0 = *((u32*)ctx->scriptPtr)
+    u32 value0 = *((u32*)ctx->scriptPtr);
     #endif
     ctx->scriptPtr += DSIZEPTR;
     return value0;
