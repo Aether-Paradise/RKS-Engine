@@ -59,7 +59,7 @@ CPPFLAGS64 :=
 ifeq ($(IS64BIT),1)
   BIT_WIDTH := 64
   OTHER_BIT_WIDTH := 32
-  ASFLAGS64 := --defsym VER_64BIT=1
+  ASFLAGS64 :=
   CPPFLAGS64 := -D VER_64BIT
 endif
 
@@ -184,7 +184,7 @@ SHELL := bash -o pipefail
 
 # Set flags for tools
 ifeq ($(PORTABLE),1)
-  ASFLAGS := --$(BIT_WIDTH) $(ASFLAGS64) --defsym MODERN=$(MODERN) --defsym PORTABLE=1 --defsym UBFIX=1
+  ASFLAGS := --$(BIT_WIDTH) $(ASFLAGS64) --defsym VER_64BIT=$(IS64BIT) --defsym MODERN=$(MODERN) --defsym PORTABLE=1 --defsym UBFIX=1
 else
   ASFLAGS := -mcpu=arm7tdmi --defsym MODERN=$(MODERN)
 endif
