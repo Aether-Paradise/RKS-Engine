@@ -1,3 +1,4 @@
+#ifdef PORTABLE
 #include "global.h"
 // BIOS function implementations are based on the VBA-M source code.
 
@@ -542,3 +543,4 @@ u16 Sqrt(u32 num)
     }
     return bound;
 }
+#endif //PORTABLE

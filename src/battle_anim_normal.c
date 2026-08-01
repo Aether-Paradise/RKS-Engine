@@ -877,7 +877,7 @@ static void AnimShakeMonOrBattlePlatforms(struct Sprite *sprite)
     }
 
 #ifndef PORTABLE
-    sprite->sOriginalValue = *(u16 *)(sprite->sShakePtrLo | sprite->sShakePtrHi << 16));
+    sprite->sOriginalValue = *(u16 *)(sprite->sShakePtrLo | sprite->sShakePtrHi << 16);
 #else
     sprite->sOriginalValue = *(u16 *)LoadPointerFromVars(sprite->sShakePtrLo, sprite->sShakePtrHi);
 #endif

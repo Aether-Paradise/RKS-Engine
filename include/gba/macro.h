@@ -68,7 +68,7 @@ extern void DmaSet(int dmaNum, const void * src, void * dest, u32 control);
 }
 #endif
 
-#if defined MODERN && !defined PORTABLE
+#if MODERN && !defined PORTABLE
 // NOTE: Assumes 16-bit DMAs.
 #define DmaSet(dmaNum, src, dest, control) \
     do \
