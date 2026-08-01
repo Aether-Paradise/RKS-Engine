@@ -2,7 +2,7 @@
 	.set SCRIPT_CMD_TABLE_ENTRY_MACRO, 1
 	.macro script_cmd_table_entry constant:req, value:req
 	.if ALLOCATE_SCRIPT_CMD_TABLE
-	.quad \value
+	ptrvalue \value
 	.else
 	enum \constant
 	.endif
@@ -245,5 +245,5 @@ gScriptCmdTable::
 
 	.if ALLOCATE_SCRIPT_CMD_TABLE
 gScriptCmdTableEnd::
-	.quad ScrCmd_nop
+	ptrvalue ScrCmd_nop
 	.endif

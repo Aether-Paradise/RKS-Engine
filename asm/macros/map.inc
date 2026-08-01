@@ -13,14 +13,14 @@
 	/* Defines a map script. 'type' is any MAP_SCRIPT_* constant (see include/constants/map_scripts.h)*/
 	.macro map_script type:req, script:req
 	.byte \type
-	.quad \script
+	ptrvalue \script
 	.endm
 
 	/* Defines an entry in a map script table (for either ON_WARP_INTO_MAP_TABLE or ON_FRAME_TABLE)*/
 	.macro map_script_2 var:req, compare:req, script:req
 	.short \var
 	.short \compare
-	.quad \script
+	ptrvalue \script
 	.endm
 
 	/* Defines an object event template for map data, to be used by a normal object. Mirrors the struct layout of ObjectEventTemplate in include/global.fieldmap.h*/
@@ -36,8 +36,7 @@
 	.space 1  /* Padding*/
 	.short \trainer_type
 	.short \sight_radius_tree_etc
-    /*.space 4*/
-	.quad \script
+	ptrvalue \script
 	.short \event_flag
 	.space 6  /* Padding*/
 	inc _num_npcs
@@ -76,8 +75,9 @@
 	.space 1  /* Padding*/
 	.2byte \var
 	.2byte \varValue
-	.space 6  /* Padding*/
-	.quad \script
+	.space 2  /* Padding*/
+	space64 4
+	ptrvalue \script
 	inc _num_traps
 	.endm
 
@@ -95,11 +95,11 @@
 	.byte \kind
 	.space 2  /* Padding*/
 	.if \kind != BG_EVENT_HIDDEN_ITEM
-		.quad \arg6
+		ptrvalue \arg6
 	.else
 		.short \arg6
 		.short \arg7
-        .space 4
+        space64 4
 	.endif
 	inc _num_signs
 	.endm
@@ -125,8 +125,8 @@
 	/* Defines the table of event data for a map. Mirrors the struct layout of MapEvents in include/global.fieldmap.h*/
 	.macro map_events npcs:req, warps:req, traps:req, signs:req
 	.byte _num_npcs, _num_warps, _num_traps, _num_signs
-    .space 4
-	.quad \npcs, \warps, \traps, \signs
+    space64 4
+	ptrvalue \npcs, \warps, \traps, \signs
 	reset_map_events
 	.endm
 
@@ -154,10 +154,12 @@
 	/* Defines a map connection. Mirrors the struct layout of MapConnection in include/global.fieldmap.h*/
 	.macro connection direction:req, offset:req, map:req
 	.byte connection_\direction
-	.space 7  /* Padding*/
-	.quad \offset
+	.space 3  /* Padding*/
+	space64 4
+	ptrvalue \offset
 	map \map
-	.space 6  /* Padding*/
+	.space 2  /* Padding*/
+	space64 4
 	.endm
 
 	/* Defines the flags for a map header. Mirrors the layout of the bitfield in struct MapHeader in include/global.fieldmap.h*/

@@ -4,7 +4,7 @@
 		.endif
 	.endm
 
-	.macro ptrvalue x:req
+	.macro ptrvalue x:vararg
 		.if VER_64BIT == 1
 			.quad \x
 		.else

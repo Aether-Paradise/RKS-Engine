@@ -29,27 +29,27 @@
 	/* Jumps to destination and continues script execution from there. The location of the calling script is remembered and can be returned to later.*/
 	.macro call destination:req
 	.byte SCR_OP_CALL
-	.quad \destination
+	ptrvalue \destination
 	.endm
 
 	/* Jumps to destination and continues script execution from there.*/
 	.macro goto destination:req
 	.byte SCR_OP_GOTO
-	.quad \destination
+	ptrvalue \destination
 	.endm
 
 	/* If the result of the last comparison matches condition (see Comparison operators), jumps to destination and continues script execution from there.*/
 	.macro goto_if condition:req, destination:req
 	.byte SCR_OP_GOTO_IF
 	.byte \condition
-	.quad \destination
+	ptrvalue \destination
 	.endm
 
 	/* If the result of the last comparison matches condition (see Comparison operators), calls destination.*/
 	.macro call_if condition:req, destination:req
 	.byte SCR_OP_CALL_IF
 	.byte \condition
-	.quad \destination
+	ptrvalue \destination
 	.endm
 
 	/* Jumps to the script in gStdScripts at index function.*/
@@ -104,7 +104,7 @@
 	.macro loadword destIndex:req, value:req
 	.byte SCR_OP_LOAD_WORD
 	.byte \destIndex
-	.quad \value
+	ptrvalue \value
 	.endm
 
 	/* Sets the value at the specified script data index to a fixed byte value.*/
@@ -118,21 +118,21 @@
 	.macro setptr value:req, ptr:req
 	.byte SCR_OP_SETPTR
 	.byte \value
-	.quad \ptr
+	ptrvalue \ptr
 	.endm
 
 	/* Sets the value at the specified script data index to the value at pointer 'source'.*/
 	.macro loadbytefromptr destIndex:req, source:req
 	.byte SCR_OP_LOADBYTEFROMPTR
 	.byte \destIndex
-	.quad \source
+	ptrvalue \source
 	.endm
 
 	/* Sets the value at pointer 'destination' to the contents of the script data at 'srcIndex'.*/
 	.macro setptrbyte srcIndex:req, destination:req
 	.byte SCR_OP_SETPTRBYTE
 	.byte \srcIndex
-	.quad \destination
+	ptrvalue \destination
 	.endm
 
 	/* Copies the contents of the script data from one index to another.*/
@@ -145,8 +145,8 @@
 	/* Copies the byte at source to destination, replacing whatever byte was previously there.*/
 	.macro copybyte destination:req, source:req
 	.byte SCR_OP_COPYBYTE
-	.quad \destination
-	.quad \source
+	ptrvalue \destination
+	ptrvalue \source
 	.endm
 
 	@ Changes the value of destination to value.
@@ -211,14 +211,14 @@
 	.macro compare_local_to_ptr local:req, ptr:req
 	.byte SCR_OP_COMPARE_LOCAL_TO_PTR
 	.byte \local
-	.quad \ptr
+	ptrvalue \ptr
 	.endm
 
 	/* Compares the value at 'ptr' to the value of the script data at index 'local'.*/
 	/* The result is stored in comparisonResult to be acted on by goto_if / call_if*/
 	.macro compare_ptr_to_local ptr:req, local:req
 	.byte SCR_OP_COMPARE_PTR_TO_LOCAL
-	.quad \ptr
+	ptrvalue \ptr
 	.byte \local
 	.endm
 
@@ -226,7 +226,7 @@
 	/* The result is stored in comparisonResult to be acted on by goto_if / call_if*/
 	.macro compare_ptr_to_value ptr:req, value:req
 	.byte SCR_OP_COMPARE_PTR_TO_VALUE
-	.quad \ptr
+	ptrvalue \ptr
 	.byte \value
 	.endm
 
@@ -234,8 +234,8 @@
 	/* The result is stored in comparisonResult to be acted on by goto_if / call_if*/
 	.macro compare_ptr_to_ptr ptr1:req, ptr2:req
 	.byte SCR_OP_COMPARE_PTR_TO_PTR
-	.quad \ptr1
-	.quad \ptr2
+	ptrvalue \ptr1
+	ptrvalue \ptr2
 	.endm
 
 	/* Compares the value of 'var' to a fixed value.*/
@@ -267,13 +267,13 @@
 	/* Calls the native C function stored at func.*/
 	.macro callnative func:req
 	.byte SCR_OP_CALLNATIVE
-	.quad \func
+	ptrvalue \func
 	.endm
 
 	/* Replaces the script with the function stored at func. Execution returns to the bytecode script when func returns TRUE.*/
 	.macro gotonative func:req
 	.byte SCR_OP_GOTONATIVE
-	.quad \func
+	ptrvalue \func
 	.endm
 
 	/* Calls a function listed in the table in data/specials.inc.*/
@@ -623,12 +623,12 @@
 		.ifb \map
 			.byte SCR_OP_APPLYMOVEMENT
 			.short \localId
-			.quad \movements
+			ptrvalue \movements
 		.else
 			@ Really only useful if the object has followed from one map to another (e.g. Wally during the catching event).
 			.byte SCR_OP_APPLYMOVEMENTAT
 			.short \localId
-			.quad \movements
+			ptrvalue \movements
 			map \map
 		.endif
 	.endm
@@ -733,51 +733,51 @@
 	.short \trainer
 	.short \local_id
 	.if \type == TRAINER_BATTLE_SINGLE
-		.quad \pointer1 /* text*/
-		.quad \pointer2 /* text*/
+		ptrvalue \pointer1 /* text*/
+		ptrvalue \pointer2 /* text*/
 	.elseif \type == TRAINER_BATTLE_CONTINUE_SCRIPT_NO_MUSIC
-		.quad \pointer1 /* text*/
-		.quad \pointer2 /* text*/
-		.quad \pointer3 /* event script*/
+		ptrvalue \pointer1 /* text*/
+		ptrvalue \pointer2 /* text*/
+		ptrvalue \pointer3 /* event script*/
 	.elseif \type == TRAINER_BATTLE_CONTINUE_SCRIPT
-		.quad \pointer1 /* text*/
-		.quad \pointer2 /* text*/
-		.quad \pointer3 /* event script*/
+		ptrvalue \pointer1 /* text*/
+		ptrvalue \pointer2 /* text*/
+		ptrvalue \pointer3 /* event script*/
 	.elseif \type == TRAINER_BATTLE_SINGLE_NO_INTRO_TEXT
-		.quad \pointer1 /* text*/
+		ptrvalue \pointer1 /* text*/
 	.elseif \type == TRAINER_BATTLE_DOUBLE
-		.quad \pointer1 /* text*/
-		.quad \pointer2 /* text*/
-		.quad \pointer3 /* text*/
+		ptrvalue \pointer1 /* text*/
+		ptrvalue \pointer2 /* text*/
+		ptrvalue \pointer3 /* text*/
 	.elseif \type == TRAINER_BATTLE_REMATCH
-		.quad \pointer1 /* text*/
-		.quad \pointer2 /* text*/
+		ptrvalue \pointer1 /* text*/
+		ptrvalue \pointer2 /* text*/
 	.elseif \type == TRAINER_BATTLE_CONTINUE_SCRIPT_DOUBLE
-		.quad \pointer1 /* text*/
-		.quad \pointer2 /* text*/
-		.quad \pointer3 /* text*/
-		.quad \pointer4 /* event script*/
+		ptrvalue \pointer1 /* text*/
+		ptrvalue \pointer2 /* text*/
+		ptrvalue \pointer3 /* text*/
+		ptrvalue \pointer4 /* event script*/
 	.elseif \type == TRAINER_BATTLE_REMATCH_DOUBLE
-		.quad \pointer1 /* text*/
-		.quad \pointer2 /* text*/
-		.quad \pointer3 /* text*/
+		ptrvalue \pointer1 /* text*/
+		ptrvalue \pointer2 /* text*/
+		ptrvalue \pointer3 /* text*/
 	.elseif \type == TRAINER_BATTLE_CONTINUE_SCRIPT_DOUBLE_NO_MUSIC
-		.quad \pointer1 /* text*/
-		.quad \pointer2 /* text*/
-		.quad \pointer3 /* text*/
-		.quad \pointer4 /* event script*/
+		ptrvalue \pointer1 /* text*/
+		ptrvalue \pointer2 /* text*/
+		ptrvalue \pointer3 /* text*/
+		ptrvalue \pointer4 /* event script*/
 	.elseif \type == TRAINER_BATTLE_PYRAMID
-		.quad \pointer1 /* text*/
-		.quad \pointer2 /* text*/
+		ptrvalue \pointer1 /* text*/
+		ptrvalue \pointer2 /* text*/
 	.elseif \type == TRAINER_BATTLE_SET_TRAINER_A
-		.quad \pointer1 /* text*/
-		.quad \pointer2 /* text*/
+		ptrvalue \pointer1 /* text*/
+		ptrvalue \pointer2 /* text*/
 	.elseif \type == TRAINER_BATTLE_SET_TRAINER_B
-		.quad \pointer1 /* text*/
-		.quad \pointer2 /* text*/
+		ptrvalue \pointer1 /* text*/
+		ptrvalue \pointer2 /* text*/
 	.elseif \type == TRAINER_BATTLE_HILL
-		.quad \pointer1 /* text*/
-		.quad \pointer2 /* text*/
+		ptrvalue \pointer1 /* text*/
+		ptrvalue \pointer2 /* text*/
 	.endif
 	.endm
 
@@ -891,7 +891,7 @@
 	/* a pointer to the text. The 'loadword 0' in msgbox sets this value, for instance.*/
 	.macro message text:req
 	.byte SCR_OP_MESSAGE
-	.quad \text
+	ptrvalue \text
 	.endm
 
 	/* Closes the current message box.*/
@@ -1016,7 +1016,7 @@
 	/* bytes determined the box's size and position, but in Emerald these are calculated automatically).*/
 	.macro braillemessage text:req
 	.byte SCR_OP_BRAILLEMESSAGE
-	.quad \text
+	ptrvalue \text
 	.endm
 
 	/* Formatting for the braille window, to be put at the start of a pointer used by braillemessage.*/
@@ -1144,14 +1144,14 @@
 	.macro bufferstring stringVarId:req, text:req
 	.byte SCR_OP_BUFFERSTRING
 	stringvar \stringVarId
-	.quad \text
+	ptrvalue \text
 	.endm
 
 	/* Opens the Pokemart system, offering the specified products for sale.*/
 	/* Products should be a list of .short item values preceded by an .align 2*/
 	.macro pokemart products:req
 	.byte SCR_OP_POKEMART
-	.quad \products
+	ptrvalue \products
 	.endm
 
 	@ Used as the endpoint for a Pokemart item list
@@ -1165,13 +1165,13 @@
 	@ Products should be a list of .short decoration values preceded by an .align 2
 	.macro pokemartdecoration products:req
 	.byte SCR_OP_POKEMARTDECORATION
-	.quad \products
+	ptrvalue \products
 	.endm
 
 	/* Identical to pokemartdecoration, but with slight changes to the clerk dialogue. See uses of MART_TYPE_DECOR2.*/
 	.macro pokemartdecoration2 products:req
 	.byte SCR_OP_POKEMARTDECORATION2
-	.quad \products
+	ptrvalue \products
 	.endm
 
 	/* Starts up the slot machine minigame. id is a SLOT_MACHINE_* value that influences probabilities of certain reel outcomes.*/
@@ -1219,7 +1219,7 @@
 	/* If 'disable' is set to anything but 0 then this command does nothing.*/
 	.macro addmoney value:req, disable=0
 	.byte SCR_OP_ADDMONEY
-	.quad \value
+	ptrvalue \value
 	.byte \disable
 	.endm
 
@@ -1227,7 +1227,7 @@
 	/* If 'disable' is set to anything but 0 then this command does nothing.*/
 	.macro removemoney value:req, disable=0
 	.byte SCR_OP_REMOVEMONEY
-	.quad \value
+	ptrvalue \value
 	.byte \disable
 	.endm
 
@@ -1235,7 +1235,7 @@
 	/* If 'disable' is set to anything but 0 then this command does nothing.*/
 	.macro checkmoney value:req, disable=0
 	.byte SCR_OP_CHECKMONEY
-	.quad \value
+	ptrvalue \value
 	.byte \disable
 	.endm
 
@@ -1300,7 +1300,7 @@
 	/* Automatically scrolls through the message without player input and at a fixed speed.*/
 	.macro messageautoscroll text:req
 	.byte SCR_OP_MESSAGEAUTOSCROLL
-	.quad \text
+	ptrvalue \text
 	.endm
 
 	/* Executes the specified field effect animation (FLDEFF_*).*/
@@ -1500,52 +1500,52 @@
 	/* Sets a relative address to be used by the other vcommands as part of a Mystery Gift script.*/
 	.macro setvaddress pointer:req
 	.byte SCR_OP_SETVADDRESS
-	.quad \pointer
+	ptrvalue \pointer
 	.endm
 
 	/* Equivalent to goto using the relative address set by setvaddress.*/
 	.macro vgoto destination:req
 	.byte SCR_OP_VGOTO
-	.quad \destination
+	ptrvalue \destination
 	.endm
 
 	/* Equivalent to call using the relative address set by setvaddress.*/
 	.macro vcall destination:req
 	.byte SCR_OP_VCALL
-	.quad \destination
+	ptrvalue \destination
 	.endm
 
 	/* Equivalent to goto_if using the relative address set by setvaddress.*/
 	.macro vgoto_if condition:req, destination:req
 	.byte SCR_OP_VGOTO_IF
 	.byte \condition
-	.quad \destination
+	ptrvalue \destination
 	.endm
 
 	/* Equivalent to call_if using the relative address set by setvaddress.*/
 	.macro vcall_if condition:req, destination:req
 	.byte SCR_OP_VCALL_IF
 	.byte \condition
-	.quad \destination
+	ptrvalue \destination
 	.endm
 
 	/* Equivalent to message using the relative address set by setvaddress.*/
 	.macro vmessage text:req
 	.byte SCR_OP_VMESSAGE
-	.quad \text
+	ptrvalue \text
 	.endm
 
 	/* Expands the given text at the pointer (- the relative address set by setvaddress) into gStringVar4*/
 	.macro vbuffermessage text:req
 	.byte SCR_OP_VBUFFERMESSAGE
-	.quad \text
+	ptrvalue \text
 	.endm
 
 	/* Equivalent to bufferstring using the relative address set by setvaddress.*/
 	.macro vbufferstring stringVarIndex:req, text:req
 	.byte SCR_OP_VBUFFERSTRING
 	stringvar \stringVarIndex
-	.quad \text
+	ptrvalue \text
 	.endm
 
 	/* Create a window showing how many Coins the player has.*/
@@ -1604,7 +1604,7 @@
 	/* Used only in FireRed/LeafGreen, does nothing in Emerald.*/
 	.macro loadhelp text:req
 	.byte SCR_OP_LOADHELP
-	.quad \text
+	ptrvalue \text
 	.endm
 
 	/* Used only in FireRed/LeafGreen, does nothing in Emerald.*/
@@ -1626,7 +1626,7 @@
 	.macro comparehiddenvar a:req, value:req
 	.byte SCR_OP_COMPAREHIDDENVAR
 	.byte \a
-	.quad \value
+	ptrvalue \value
 	.endm
 
 	/* Sets the modernFatefulEncounter bit for the Pokemon in the specified slot of the player's party.*/
@@ -1724,7 +1724,7 @@
 	/* Does not wait for player input to continue.*/
 	.macro messageinstant text:req
 	.byte SCR_OP_MESSAGEINSTANT
-	.quad \text
+	ptrvalue \text
 	.endm
 
 	/* Equivalent to fadescreen but copies gPlttBufferUnfaded to gPaletteDecompressionBuffer on the fade out*/
@@ -1753,7 +1753,7 @@
 	/* Starts a Pokenav call with the given text.*/
 	.macro pokenavcall text:req
 	.byte SCR_OP_POKENAVCALL
-	.quad \text
+	ptrvalue \text
 	.endm
 
 	/* Warp with a fade to white. Used during the Sootopolis legendary fight.*/
