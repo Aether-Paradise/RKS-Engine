@@ -1,9 +1,17 @@
 #ifndef GUARD_GBA_M4A_INTERNAL_H
 #define GUARD_GBA_M4A_INTERNAL_H
 
+#ifdef PORTABLE
 #include "global.h"
-#include "gba/gba.h"
 #include "music_player.h"
+#endif
+#include "gba/gba.h"
+
+#ifdef PORTABLE
+typedef float sampleTyping;
+#else
+typedef u32 sampleTyping;
+#endif
 
 // ASCII encoding of 'Smsh' in reverse
 // This is presumably short for SMASH, the developer of MKS4AGB.
@@ -154,7 +162,7 @@ struct SoundChannel
     u8 rhythmPan;
     u8 dummy3[3];
     u32 count;
-    float fw;
+    sampleTyping fw;
     u32 frequency;
     struct WaveData *wav;
     s8 *currentPointer;
@@ -162,11 +170,20 @@ struct SoundChannel
     void *prevChannelPointer;
     void *nextChannelPointer;
     u32 dummy4;
+    #ifndef PORTABLE
+    u16 xpi;
+    u16 xpc;
+    #else
     u32 blockCount;
+    #endif
 };
 
 #define MAX_DIRECTSOUND_CHANNELS 12
-#define PCM_DMA_BUF_SIZE 4907 // size of Direct Sound buffer
+#ifndef PORTABLE
+#define PCM_DMA_BUF_SIZE 1584 // size of Direct Sound buffer
+#else
+#define PCM_DMA_BUF_SIZE 4907
+#endif
 
 struct MusicPlayerInfo;
 
@@ -205,7 +222,7 @@ struct SoundInfo
     u8 gap[3];
     s32 pcmSamplesPerVBlank;
     s32 pcmFreq;
-    float divFreq;
+    sampleTyping divFreq;
     struct CgbChannel *cgbChans;
     MPlayMainFunc MPlayMainHead;
     struct MusicPlayerInfo *musicPlayerHead;
@@ -217,7 +234,11 @@ struct SoundInfo
     ExtVolPitFunc ExtVolPit;
     u8 gap2[16];
     struct SoundChannel chans[MAX_DIRECTSOUND_CHANNELS];
+    #ifndef PORTABLE
+    s8 ALIGNED(4) pcmBuffer[PCM_DMA_BUF_SIZE * 2];
+    #else
     float pcmBuffer[PCM_DMA_BUF_SIZE * 2];
+    #endif
 };
 
 struct SongHeader
@@ -399,7 +420,9 @@ extern const u8 gCgbScaleTable[];
 extern const s16 gCgbFreqTable[];
 extern const u8 gNoiseTable[];
 
+#ifdef PORTABLE
 extern const s8 gDeltaEncodingTable[];
+#endif
 
 extern const struct PokemonCrySong gPokemonCrySongTemplate;
 
@@ -417,10 +440,17 @@ extern char gMaxLines[];
 
 u32 umul3232H32(u32 multiplier, u32 multiplicand);
 void SoundMain(void);
+#ifndef PORTABLE
+void SoundMainBTM(void);
+void TrackStop(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track);
+void MPlayMain(struct MusicPlayerInfo *);
+void RealClearChain(void *x);
+#else
 void SoundMainBTM(void *ptr);
 void TrackStop(struct MP2KPlayerState *player, struct MP2KTrack *track);
 void MPlayMain(struct MusicPlayerInfo *);
 void MP2KClearChain(struct MixerSource *chan);
+#endif
 
 void MPlayContinue(struct MusicPlayerInfo *mplayInfo);
 void MPlayStart(struct MusicPlayerInfo *mplayInfo, struct SongHeader *songHeader);
@@ -439,7 +469,11 @@ void CgbOscOff(u8);
 void CgbModVol(struct CgbChannel *chan);
 u32 MidiKeyToCgbFreq(u8, u8, u8);
 void DummyFunc(void);
+#ifndef PORTABLE
+void MPlayJumpTableCopy(MPlayFunc *mplayJumpTable);
+#else
 void MPlayJumpTableCopy(void **mplayJumpTable);
+#endif
 void SampleFreqSet(u32 freq);
 void m4aSoundVSyncOn(void);
 void m4aSoundVSyncOff(void);
@@ -465,6 +499,31 @@ void SetPokemonCryStereo(u32 val);
 void SetPokemonCryPriority(u8 val);
 
 // sound command handler functions
+#ifndef PORTABLE
+void ply_fine(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_goto(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_patt(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_pend(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_rept(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_memacc(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_prio(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_tempo(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_keysh(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_voice(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_vol(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_pan(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_bend(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_bendr(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_lfos(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_lfodl(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_mod(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_modt(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_tune(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_port(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_xcmd(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_endtie(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_note(u32 note_cmd, struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+#else
 void MP2K_event_fine(struct MP2KPlayerState *, struct MP2KTrack *);
 void MP2K_event_goto(struct MP2KPlayerState *, struct MP2KTrack *);
 void MP2K_event_patt(struct MP2KPlayerState *, struct MP2KTrack *);
@@ -488,6 +547,7 @@ void MP2K_event_port(struct MP2KPlayerState *, struct MP2KTrack *);
 void ply_xcmd(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void MP2K_event_endtie(struct MP2KPlayerState *, struct MP2KTrack *);
 void ply_note(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+#endif
 
 // extended sound command handler functions
 void ply_xxx(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
