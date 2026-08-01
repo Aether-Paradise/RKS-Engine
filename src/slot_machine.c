@@ -1115,7 +1115,7 @@ static void SlotMachine_VBlankCB(void)
 }
 
 #define tMachineId    data[0]
-#define tExitCallback genericPtr[0]
+#define tExitCallback ptr.genericPtr[0]
 
 static void PlaySlotMachine_Internal(u8 machineId, MainCallback exitCallback)
 {

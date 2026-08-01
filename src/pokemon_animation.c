@@ -898,7 +898,7 @@ u8 GetSpeciesBackAnimSet(u16 species)
 static void Task_HandleMonAnimation(u8 taskId)
 {
     u32 i;
-    struct Sprite *sprite = gTasks[taskId].spritePtr;
+    struct Sprite *sprite = gTasks[taskId].ptr.spritePtr;
 
     if (gTasks[taskId].tState == 0)
     {
@@ -928,7 +928,7 @@ static void Task_HandleMonAnimation(u8 taskId)
 void LaunchAnimationTaskForFrontSprite(struct Sprite *sprite, u8 frontAnimId)
 {
     u8 taskId = CreateTask(Task_HandleMonAnimation, 128);
-    gTasks[taskId].spritePtr = sprite;
+    gTasks[taskId].ptr.spritePtr = sprite;
     gTasks[taskId].tAnimId = frontAnimId;
 }
 
@@ -944,7 +944,7 @@ void LaunchAnimationTaskForBackSprite(struct Sprite *sprite, u8 backAnimSet)
     u8 nature, taskId, animId, battler;
 
     taskId = CreateTask(Task_HandleMonAnimation, 128);
-    gTasks[taskId].spritePtr = sprite;
+    gTasks[taskId].ptr.spritePtr = sprite;
 
     battler = sprite->data[0];
     nature = GetNature(&gPlayerParty[gBattlerPartyIndexes[battler]]);

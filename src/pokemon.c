@@ -6767,9 +6767,9 @@ const u8 *GetTrainerPartnerName(void)
     }
 }
 
-#define READ_PTR_FROM_TASK(taskId) gTasks[taskId].genericPtr[0]
+#define READ_PTR_FROM_TASK(taskId) gTasks[taskId].ptr.genericPtr[0]
 
-#define STORE_PTR_IN_TASK(ptr, taskId) gTasks[taskId].genericPtr[0] = (void*)(ptr)
+#define STORE_PTR_IN_TASK(pointer, taskId) gTasks[taskId].ptr.genericPtr[0] = (void*)(pointer)
 
 #define sAnimId    data[2]
 #define sAnimDelay data[3]

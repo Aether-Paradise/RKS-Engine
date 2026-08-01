@@ -5,10 +5,10 @@
 #include <string.h>
 #include <limits.h>
 
-#ifndef NO_STD_LIB_ENABLED
-#define DBGPRINTF(...) printf(__VA_ARGS__)
+#if !defined NO_STD_LIB_ENABLED && defined PORTABLE
+    #define DBGPRINTF(...) printf(__VA_ARGS__)
 #else
-#define DBGPRINTF(...)
+    #define DBGPRINTF(...)
 #endif
 
 #include "config.h" // we need to define config before gba headers as print stuff needs the functions nulled before defines.

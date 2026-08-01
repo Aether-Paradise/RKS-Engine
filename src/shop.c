@@ -413,14 +413,14 @@ static void Task_ShopMenu(u8 taskId)
 
 static void Task_HandleShopMenuBuy(u8 taskId)
 {
-    gTasks[taskId].funcPtr = CB2_InitBuyMenu;
+    gTasks[taskId].ptr.funcPtr = CB2_InitBuyMenu;
     gTasks[taskId].func = Task_GoToBuyOrSellMenu;
     FadeScreen(FADE_TO_BLACK, 0);
 }
 
 static void Task_HandleShopMenuSell(u8 taskId)
 {
-    gTasks[taskId].funcPtr = CB2_GoToSellMenu;
+    gTasks[taskId].ptr.funcPtr = CB2_GoToSellMenu;
     gTasks[taskId].func = Task_GoToBuyOrSellMenu;
     FadeScreen(FADE_TO_BLACK, 0);
 }
@@ -449,7 +449,7 @@ static void Task_GoToBuyOrSellMenu(u8 taskId)
     if (!gPaletteFade.active)
     {
         DestroyTask(taskId);
-        SetMainCallback2(gTasks[taskId].funcPtr);
+        SetMainCallback2(gTasks[taskId].ptr.funcPtr);
     }
 }
 

@@ -94,7 +94,7 @@ static void FieldCallback_Flash(void)
 {
     u8 taskId = CreateFieldMoveTask();
     gFieldEffectArguments[0] = GetCursorSelectionMonId();
-    gTasks[taskId].funcPtr = FldEff_UseFlash;
+    gTasks[taskId].ptr.funcPtr = FldEff_UseFlash;
 }
 
 static void FldEff_UseFlash(void)

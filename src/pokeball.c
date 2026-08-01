@@ -667,7 +667,7 @@ static void Task_PlayCryWhenReleasedFromBall(u8 taskId)
     u16 species = gTasks[taskId].tCryTaskSpecies;
     u8 battler = gTasks[taskId].tCryTaskBattler;
     u8 monSpriteId = gTasks[taskId].tCryTaskMonSpriteId;
-    struct Pokemon *mon = gTasks[taskId].monPtr;
+    struct Pokemon *mon = gTasks[taskId].ptr.monPtr;
 
     switch (gTasks[taskId].tCryTaskState)
     {
@@ -805,7 +805,7 @@ static void SpriteCB_ReleaseMonFromBall(struct Sprite *sprite)
         gTasks[taskId].tCryTaskWantedCry = wantedCryCase;
         gTasks[taskId].tCryTaskBattler = battler;
         gTasks[taskId].tCryTaskMonSpriteId = gBattlerSpriteIds[sprite->sBattler];
-        gTasks[taskId].monPtr = mon;
+        gTasks[taskId].ptr.monPtr = mon;
         gTasks[taskId].tCryTaskState = 0;
     }
 

@@ -620,7 +620,7 @@ static bool8 WaitRevealBuriedTrainer(u8 taskId, struct Task *task, struct Object
 #undef tOutOfAshSpriteId
 #undef tTrainerObjectEventId
 
-#define tObjEvent genericPtr[0]
+#define tObjEvent ptr.genericPtr[0]
 
 static void Task_SetBuriedTrainerMovement(u8 taskId)
 {

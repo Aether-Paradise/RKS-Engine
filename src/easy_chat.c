@@ -1286,8 +1286,8 @@ static const u16 sRestrictedWordSpecies[] = {
 
 #define tState        data[0]
 #define tType         data[1]
-#define tWords        intPtr[TASKIDX_WORDS]
-#define tExitCallback intPtr[TASKIDX_EXIT_CALLBACK]
+#define tWords        ptr.intPtr[TASKIDX_WORDS]
+#define tExitCallback ptr.intPtr[TASKIDX_EXIT_CALLBACK]
 #define tFuncId       data[6]
 #define tPersonType   data[7]
 
@@ -1299,8 +1299,8 @@ void DoEasyChatScreen(u8 type, u16 *words, MainCallback exitCallback, u8 display
     taskId = CreateTask(Task_InitEasyChatScreen, 0);
     gTasks[taskId].tType = type;
     gTasks[taskId].tPersonType = displayedPersonType;
-    SetWordTaskArg(taskId, TASKIDX_WORDS, words);
-    SetWordTaskArg(taskId, TASKIDX_EXIT_CALLBACK, exitCallback);
+    SetWordTaskArg(taskId, TASKIDX_WORDS, (uintptr_t)words);
+    SetWordTaskArg(taskId, TASKIDX_EXIT_CALLBACK, (uintptr_t)exitCallback);
     SetMainCallback2(CB2_EasyChatScreen);
 }
 

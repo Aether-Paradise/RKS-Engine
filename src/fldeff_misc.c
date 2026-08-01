@@ -593,7 +593,7 @@ bool8 FldEff_UseSecretPowerCave(void)
 {
     u8 taskId = CreateFieldMoveTask();
 
-    gTasks[taskId].funcPtr = StartSecretBaseCaveFieldEffect;
+    gTasks[taskId].ptr.funcPtr = StartSecretBaseCaveFieldEffect;
 
     return FALSE;
 }
@@ -652,7 +652,7 @@ bool8 FldEff_UseSecretPowerTree(void)
 {
     u8 taskId = CreateFieldMoveTask();
 
-    gTasks[taskId].funcPtr = StartSecretBaseTreeFieldEffect;
+    gTasks[taskId].ptr.funcPtr = StartSecretBaseTreeFieldEffect;
 
     return FALSE;
 }
@@ -725,7 +725,7 @@ bool8 FldEff_UseSecretPowerShrub(void)
 {
     u8 taskId = CreateFieldMoveTask();
 
-    gTasks[taskId].funcPtr = StartSecretBaseShrubFieldEffect;
+    gTasks[taskId].ptr.funcPtr = StartSecretBaseShrubFieldEffect;
 
     return FALSE;
 }

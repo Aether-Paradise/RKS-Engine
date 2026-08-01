@@ -267,11 +267,11 @@ bool8 FldEff_UsePuzzleEffect(void)
 
     if (sIsRegisteelPuzzle == TRUE)
     {
-        gTasks[taskId].funcPtr = UseRegisteelHm_Callback;
+        gTasks[taskId].ptr.funcPtr = UseRegisteelHm_Callback;
     }
     else
     {
-        gTasks[taskId].funcPtr = UseRegirockHm_Callback;
+        gTasks[taskId].ptr.funcPtr = UseRegirockHm_Callback;
     }
     return FALSE;
 }

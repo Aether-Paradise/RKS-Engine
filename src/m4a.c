@@ -678,9 +678,13 @@ void MPlayOpen(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track
         // NULL assignment semantically useless, but required for match
         soundInfo->MPlayMainHead = NULL;
     }
-
+#ifndef PORTABLE
+    soundInfo->musicPlayerHead = mplayInfo;
+    soundInfo->MPlayMainHead = MPlayMain;
+#else
     soundInfo->musicPlayerHead = mplayInfo;
     soundInfo->MPlayMainHead = MP2KPlayerMain;
+#endif
     soundInfo->ident = ID_NUMBER;
     mplayInfo->ident = ID_NUMBER;
 }

@@ -185,14 +185,14 @@ void SetWordTaskArg(u8 taskId, u8 dataElem, uintptr_t value)
 {
     if (dataElem < NUM_TASK_DATA - 1)
     {
-        gTasks[taskId].intPtr[dataElem] = value;
+        gTasks[taskId].ptr.intPtr[dataElem] = value;
     }
 }
 
 uintptr_t GetWordTaskArg(u8 taskId, u8 dataElem)
 {
     if (dataElem < NUM_TASK_DATA - 1)
-        return gTasks[taskId].intPtr[dataElem];
+        return gTasks[taskId].ptr.intPtr[dataElem];
     else
         return 0;
 }

@@ -545,7 +545,7 @@ bool8 SetWindowAttribute(u8 windowId, u8 attributeId, u32 value)
         gWindows[windowId].window.baseBlock = value;
         return FALSE;
     case WINDOW_TILE_DATA:
-        printf("WINDOW_TILE_DATA attribute can no longer be accessed by SetWindowAttribute");
+        DBGPRINTF("WINDOW_TILE_DATA attribute can no longer be accessed by SetWindowAttribute");
         return TRUE;
     case WINDOW_BG:
     case WINDOW_WIDTH:
@@ -580,7 +580,7 @@ u32 GetWindowAttribute(u8 windowId, u8 attributeId)
     case WINDOW_BASE_BLOCK:
         return gWindows[windowId].window.baseBlock;
     case WINDOW_TILE_DATA:
-        printf("WINDOW_TILE_DATA attribute can no longer be accessed by GetWindowAttribute");
+        DBGPRINTF("WINDOW_TILE_DATA attribute can no longer be accessed by GetWindowAttribute");
     default:
         return 0;
     }

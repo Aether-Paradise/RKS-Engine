@@ -106,7 +106,7 @@ void InitAnimLinearTranslation(struct Sprite *sprite);
 void AnimTranslateLinear_WithFollowup(struct Sprite *sprite);
 u8 GetBattlerSpriteBGPriority(u8 battler);
 void *LoadPointerFromVars(intptr_t dest);
-void StorePointerInVars(intptr_t *dest, const void *ptr);
+void StorePointerInVars(uintptr_t *dest, const void *ptr);
 void InitPrioritiesForVisibleBattlers(void);
 void GetBattleAnimBg1Data(struct BattleAnimBgData *out);
 void GetBattleAnimBgData(struct BattleAnimBgData *out, u32 bgId);
