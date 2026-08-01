@@ -45,6 +45,7 @@ static int s_memaccParam2;
 
 void PrintAgbHeader()
 {
+    std::fprintf(g_outputFile, "\t.include \"asm/macros/bit_width.inc\"\n\n");
     std::fprintf(g_outputFile, "\t.include \"MPlayDef.s\"\n\n");
     std::fprintf(g_outputFile, "\t.equ\t%s_grp, voicegroup%s\n", g_asmLabel.c_str(), g_voiceGroup.c_str());
     std::fprintf(g_outputFile, "\t.equ\t%s_pri, %u\n", g_asmLabel.c_str(), g_priority);
@@ -147,7 +148,7 @@ void PrintQuad(const char *format, ...)
 {
     std::va_list args;
     va_start(args, format);
-    std::fprintf(g_outputFile, "\t .quad\t");
+    std::fprintf(g_outputFile, "\t ptrvalue\t");
     std::vfprintf(g_outputFile, format, args);
     std::fprintf(g_outputFile, "\n");
     va_end(args);
@@ -545,13 +546,13 @@ void PrintAgbFooter()
     std::fprintf(g_outputFile, "\t.byte\t%u\n", 0);
     std::fprintf(g_outputFile, "\t.byte\t%s_pri\n", g_asmLabel.c_str());
     std::fprintf(g_outputFile, "\t.byte\t%s_rev\n", g_asmLabel.c_str());
-    std::fprintf(g_outputFile, ".space 4\n");
-    std::fprintf(g_outputFile, "\t.quad\t%s_grp\n", g_asmLabel.c_str());
+    std::fprintf(g_outputFile, "space64 4\n");
+    std::fprintf(g_outputFile, "\tptrvalue\t%s_grp\n", g_asmLabel.c_str());
     std::fprintf(g_outputFile, "\n");
 
     // track pointers
     for (int i = 1; i <= trackCount; i++)
-        std::fprintf(g_outputFile, "\t.quad\t%s_%u\n", g_asmLabel.c_str(), i);
+        std::fprintf(g_outputFile, "\tptrvalue\t%s_%u\n", g_asmLabel.c_str(), i);
 
     std::fprintf(g_outputFile, "\n\t.end\n");
 }
