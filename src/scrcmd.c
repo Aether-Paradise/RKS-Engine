@@ -319,7 +319,7 @@ bool8 ScrCmd_loadword(struct ScriptContext *ctx)
 {
     u8 index = ScriptReadByte(ctx);
 
-    ctx->data[index] = ScriptReadQuadWord(ctx);
+    ctx->data[index] = ScriptReadPointer(ctx);
     return FALSE;
 }
 
@@ -1558,7 +1558,11 @@ bool8 ScrCmd_closebraillemessage(struct ScriptContext *ctx)
 
 bool8 ScrCmd_vmessage(struct ScriptContext *ctx)
 {
+    #ifdef VER_64BIT
     u64 msg = ScriptReadPointer(ctx);
+    #else
+    u32 msg = ScriptReadPointer(ctx);
+    #endif
 
     ShowFieldMessage((u8 *)(msg - sAddressOffset));
     return FALSE;
@@ -1679,7 +1683,11 @@ bool8 ScrCmd_vbuffermessage(struct ScriptContext *ctx)
 bool8 ScrCmd_vbufferstring(struct ScriptContext *ctx)
 {
     u8 stringVarIndex = ScriptReadByte(ctx);
+    #ifdef VER_64BIT
     u64 addr = ScriptReadPointer(ctx);
+    #else
+    u32 addr = ScriptReadPointer(ctx);
+    #endif
 
     const u8 *src = (u8 *)(addr - sAddressOffset);
     u8 *dest = sScriptStringVars[stringVarIndex];

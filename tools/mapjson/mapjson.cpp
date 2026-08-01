@@ -205,7 +205,7 @@ string generate_map_connections_text(Json map_data) {
 
     text << "\n" << mapName << "_MapConnections:\n"
          << "\t.4byte " << map_data["connections"].array_items().size() << "\n"
-         << "\t.space 4" << "\n"
+         << "\tspace64 4" << "\n"
          << "\tptrvalue " << mapName << "_MapConnectionsList\n\n";
 
     return text.str();

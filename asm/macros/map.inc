@@ -38,7 +38,8 @@
 	.short \sight_radius_tree_etc
 	ptrvalue \script
 	.short \event_flag
-	.space 6  /* Padding*/
+	.space 2  /* Padding*/
+	space64 4
 	inc _num_npcs
 	.endm
 

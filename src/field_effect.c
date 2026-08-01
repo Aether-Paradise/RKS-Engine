@@ -34,6 +34,12 @@
 
 #define subsprite_table(ptr) {.subsprites = ptr, .subspriteCount = (sizeof ptr) / (sizeof(struct Subsprite))}
 
+#ifdef VER_64BIT
+	#define ptrSize 8
+#else
+	#define ptrSize 4
+#endif
+
 EWRAM_DATA s32 gFieldEffectArguments[8] = {0};
 
 // Static type declarations
@@ -791,7 +797,7 @@ void FieldEffectScript_LoadTiles(u8 **script)
     struct SpriteSheet *sheet = (struct SpriteSheet *)FieldEffectScript_ReadPtr(script);
     if (GetSpriteTileStartByTag(sheet->tag) == 0xFFFF)
         LoadSpriteSheet(sheet);
-    (*script) += 8;
+    (*script) += ptrSize;
 }
 
 void FieldEffectScript_LoadFadedPalette(u8 **script)
@@ -799,21 +805,21 @@ void FieldEffectScript_LoadFadedPalette(u8 **script)
     struct SpritePalette *palette = (struct SpritePalette *)FieldEffectScript_ReadPtr(script);
     LoadSpritePalette(palette);
     UpdateSpritePaletteWithWeather(IndexOfSpritePaletteTag(palette->tag));
-    (*script) += 8;
+    (*script) += ptrSize;
 }
 
 void FieldEffectScript_LoadPalette(u8 **script)
 {
     struct SpritePalette *palette = (struct SpritePalette *)FieldEffectScript_ReadPtr(script);
     LoadSpritePalette(palette);
-    (*script) += 8;
+    (*script) += ptrSize;
 }
 
 void FieldEffectScript_CallNative(u8 **script, u32 *val)
 {
     u32 (*func)(void) = (u32 (*)(void))FieldEffectScript_ReadPtr(script);
     *val = func();
-    (*script) += 8;
+    (*script) += ptrSize;
 }
 
 void FieldEffectFreeGraphicsResources(struct Sprite *sprite)

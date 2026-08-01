@@ -157,7 +157,7 @@ struct MapEvents
 struct MapConnection
 {
     u8 direction;
-    u64 offset;
+    uintptr_t offset;
     u8 mapGroup;
     u8 mapNum;
 };
