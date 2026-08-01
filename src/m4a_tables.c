@@ -3,6 +3,47 @@
 // Some of these functions have different signatures, so we need to make this
 // an array of void pointers or a struct. It's simpler to just make it an array
 // for now.
+#ifndef PORTABLE
+void *const gMPlayJumpTableTemplate[] =
+{
+    ply_fine,
+    ply_goto,
+    ply_patt,
+    ply_pend,
+    ply_rept,
+    ply_fine,
+    ply_fine,
+    ply_fine,
+    ply_fine,
+    ply_prio,
+    ply_tempo,
+    ply_keysh,
+    ply_voice,
+    ply_vol,
+    ply_pan,
+    ply_bend,
+    ply_bendr,
+    ply_lfos,
+    ply_lfodl,
+    ply_mod,
+    ply_modt,
+    ply_fine,
+    ply_fine,
+    ply_tune,
+    ply_fine,
+    ply_fine,
+    ply_fine,
+    ply_port,
+    ply_fine,
+    ply_endtie,
+    SampleFreqSet,
+    TrackStop,
+    FadeOutBody,
+    TrkVolPitSet,
+    RealClearChain,
+    SoundMainBTM,
+};
+#else
 void *const gMPlayJumpTableTemplate[] =
 {
     MP2K_event_fine,
@@ -42,6 +83,7 @@ void *const gMPlayJumpTableTemplate[] =
     MP2KClearChain,
     SoundMainBTM,
 };
+#endif
 
 // This is a table of deltas between sample values in compressed PCM data.
 const s8 gDeltaEncodingTable[] =
@@ -112,7 +154,11 @@ const u16 gPcmSamplesPerVBlankTable[] =
     528,
     608,
     672,
+    #ifndef PORTABLE
+    704,
+    #else
     701,
+    #endif
 };
 
 const u8 gCgbScaleTable[] =

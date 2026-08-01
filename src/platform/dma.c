@@ -1,3 +1,4 @@
+#ifdef PORTABLE
 #include "global.h"
 #include "platform/dma.h"
 
@@ -117,3 +118,4 @@ void DmaSet(int dmaNum, const void *src, void *dest, u32 control)
 
     RunDMAs(DMA_NOW);
 }
+#endif //PORTABLE

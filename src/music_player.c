@@ -1,3 +1,4 @@
+#ifdef PORTABLE
 #include "mp2k_common.h"
 #include "music_player.h"
 #include "gba/types.h"
@@ -813,3 +814,4 @@ u32 MidiKeyToFreq(struct WaveData2 *wav, u8 key, u8 pitch) {
     return umul3232H32(freq, baseFreq1 + freqDifference);
 }
 #endif
+#endif //PORTABLE

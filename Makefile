@@ -3,7 +3,7 @@ TITLE       := POKEMON EMER
 GAME_CODE   := BPEE
 MAKER_CODE  := 01
 REVISION    := 0
-MODERN      ?= 1
+MODERN      ?= 0
 KEEP_TEMPS  ?= 0
 PORTABLE    ?= 1
 IS64BIT		?= 1
@@ -15,7 +15,7 @@ FILE_NAME := pokeemerald
 BUILD_DIR := build
 
 # Builds the ROM using a modern compiler
-MODERN      ?= 1
+MODERN      ?= 0
 # Compares the ROM to a checksum of the original - only makes sense using when non-modern
 COMPARE     ?= 0
 
@@ -24,6 +24,13 @@ ifeq (modern,$(MAKECMDGOALS))
 endif
 ifeq (compare,$(MAKECMDGOALS))
   COMPARE := 1
+endif
+ifeq (gba,$(MAKECMDGOALS))
+  PORTABLE := 0
+endif
+#Enable MODERN if compiling portable version
+ifeq ($(PORTABLE), 1)
+  MODERN := 1
 endif
 
 # Default make rule
@@ -108,6 +115,9 @@ ifeq ($(PORTABLE),1)
     endif
     PLATFORM_INCLUDES += -lkernel32 -luser32 -lgdi32
   endif
+else
+  ASM_PSEUDO_OP_CONV := cat
+  FIX_UNDERSCORE := $(OBJCOPY)
 endif
 
 # use arm-none-eabi-cpp for macOS
@@ -247,7 +257,7 @@ MAKEFLAGS += --no-print-directory
 .DELETE_ON_ERROR:
 
 RULES_NO_SCAN += libagbsyscall clean clean-assets tidy tidymodern tidynonmodern generated clean-generated
-.PHONY: all rom modern compare
+.PHONY: all rom modern compare gba
 .PHONY: $(RULES_NO_SCAN)
 
 infoshell = $(foreach line, $(shell $1 | sed "s/ /__SPACE__/g"), $(info $(subst __SPACE__, ,$(line))))
@@ -311,6 +321,7 @@ $(shell mkdir -p $(SUBDIRS))
 # Pretend rules that are actually flags defer to `make all`
 modern: all
 compare: all
+gba: all
 
 # Other rules
 rom: $(ROM)
