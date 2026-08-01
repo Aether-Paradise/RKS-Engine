@@ -27,7 +27,7 @@
 	.byte \decay
 	.byte \sustain
 	.byte \release
-	.space 4
+	space64 4
 	.endm
 
 	.macro voice_square_1 base_midi_key:req, pan:req, sweep:req, duty_cycle:req, attack:req, decay:req, sustain:req, release:req

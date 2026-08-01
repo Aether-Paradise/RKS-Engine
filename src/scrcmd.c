@@ -192,10 +192,11 @@ bool8 ScrCmd_setvaddress(struct ScriptContext *ctx)
 {
     #ifdef VER_64BIT
     u64 addr1 = (u64)ctx->scriptPtr - 1;
+    u64 addr2 = ScriptReadPointer(ctx);
     #else
     u32 addr1 = (u32)ctx->scriptPtr - 1;
-    #endif
     u32 addr2 = ScriptReadPointer(ctx);
+    #endif
 
     sAddressOffset = addr2 - addr1;
     return FALSE;

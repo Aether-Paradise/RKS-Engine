@@ -14,7 +14,11 @@
 	space64 4  /* Padding*/
 	.endm
 
-	.equiv voice_size, 0x18 /* should be 0xC for 32 bit */
+	.if VER_64BIT == 1
+	.equiv voice_size, 0x18
+	.else
+	.equiv voice_size, 0xC
+	.endif
 
 	.macro voice_group label:req, starting_note
 	.align 2
