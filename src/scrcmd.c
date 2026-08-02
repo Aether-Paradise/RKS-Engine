@@ -190,13 +190,8 @@ bool8 ScrCmd_call_if(struct ScriptContext *ctx)
 
 bool8 ScrCmd_setvaddress(struct ScriptContext *ctx)
 {
-    #ifdef VER_64BIT
-    u64 addr1 = (u64)ctx->scriptPtr - 1;
-    u64 addr2 = ScriptReadPointer(ctx);
-    #else
-    u32 addr1 = (u32)ctx->scriptPtr - 1;
-    u32 addr2 = ScriptReadPointer(ctx);
-    #endif
+    uintptr_t addr1 = (uintptr_t)ctx->scriptPtr - 1;
+    uintptr_t addr2 = ScriptReadPointer(ctx);
 
     sAddressOffset = addr2 - addr1;
     return FALSE;
@@ -204,11 +199,7 @@ bool8 ScrCmd_setvaddress(struct ScriptContext *ctx)
 
 bool8 ScrCmd_vgoto(struct ScriptContext *ctx)
 {
-	#ifdef VER_64BIT
-    u64 addr = ScriptReadPointer(ctx);
-	#else
-	u32 addr = ScriptReadPointer(ctx);
-	#endif
+    uintptr_t addr = ScriptReadPointer(ctx);
 
     ScriptJump(ctx, (u8 *)(addr - sAddressOffset));
     return FALSE;
@@ -216,11 +207,7 @@ bool8 ScrCmd_vgoto(struct ScriptContext *ctx)
 
 bool8 ScrCmd_vcall(struct ScriptContext *ctx)
 {
-	#ifdef VER_64BIT
-    u64 addr = ScriptReadPointer(ctx);
-	#else
-	u32 addr = ScriptReadPointer(ctx);
-	#endif
+    uintptr_t addr = ScriptReadPointer(ctx);
 
     ScriptCall(ctx, (u8 *)(addr - sAddressOffset));
     return FALSE;
@@ -1558,11 +1545,7 @@ bool8 ScrCmd_closebraillemessage(struct ScriptContext *ctx)
 
 bool8 ScrCmd_vmessage(struct ScriptContext *ctx)
 {
-    #ifdef VER_64BIT
-    u64 msg = ScriptReadPointer(ctx);
-    #else
-    u32 msg = ScriptReadPointer(ctx);
-    #endif
+    uintptr_t msg = ScriptReadPointer(ctx);
 
     ShowFieldMessage((u8 *)(msg - sAddressOffset));
     return FALSE;
@@ -1683,11 +1666,7 @@ bool8 ScrCmd_vbuffermessage(struct ScriptContext *ctx)
 bool8 ScrCmd_vbufferstring(struct ScriptContext *ctx)
 {
     u8 stringVarIndex = ScriptReadByte(ctx);
-    #ifdef VER_64BIT
-    u64 addr = ScriptReadPointer(ctx);
-    #else
-    u32 addr = ScriptReadPointer(ctx);
-    #endif
+    uintptr_t addr = ScriptReadPointer(ctx);
 
     const u8 *src = (u8 *)(addr - sAddressOffset);
     u8 *dest = sScriptStringVars[stringVarIndex];

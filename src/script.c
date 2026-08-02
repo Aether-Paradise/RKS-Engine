@@ -190,16 +190,12 @@ u64 ScriptReadQuadWord(struct ScriptContext *ctx)
     return value0;
 }
 
-#ifdef VER_64BIT
-u64 ScriptReadPointer(struct ScriptContext *ctx)
-#else
-u32 ScriptReadPointer(struct ScriptContext *ctx)
-#endif
+uintptr_t ScriptReadPointer(struct ScriptContext *ctx)
 {
     #ifdef VER_64BIT
-    u64 value0 = *((u64*)ctx->scriptPtr);
+    uintptr_t value0 = *((u64*)ctx->scriptPtr);
     #else
-    u32 value0 = T2_READ_32(ctx->scriptPtr);
+    uintptr_t value0 = T2_READ_32(ctx->scriptPtr);
     #endif
     ctx->scriptPtr += DSIZEPTR;
     return value0;
