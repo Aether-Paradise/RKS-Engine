@@ -14,6 +14,7 @@ extern void (*const gIntrTable[])(void);
 
 void RunDMAsAndVBlank(void)
 {
+	REG_VCOUNT = 161; // prep for being in VBlank period
 	REG_DISPSTAT |= INTR_FLAG_VBLANK;
 
 	RunDMAs(DMA_HBLANK);
@@ -21,5 +22,4 @@ void RunDMAsAndVBlank(void)
 	if (REG_DISPSTAT & DISPSTAT_VBLANK_INTR)
 		gIntrTable[4]();
 	REG_DISPSTAT &= ~INTR_FLAG_VBLANK;
-
 }

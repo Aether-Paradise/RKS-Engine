@@ -27,7 +27,6 @@
 extern void (*const gIntrTable[])(void);
 
 HANDLE vBlankSemaphore;
-bool isFrameAvailable;
 bool speedUp = false;
 unsigned int videoScale = 1;
 bool videoScaleChanged = false;
@@ -430,6 +429,7 @@ int main(int argc, char **argv)
         DBGPRINTF("Creating win32 window failed!\n");
         return FALSE;
     }
+
     DBGPRINTF("Window Init done!\n");
     window_hdc = GetDC(ghwnd);
     win32CreateBitmap();
@@ -438,30 +438,13 @@ int main(int argc, char **argv)
     //todo: convert these to int64
     QueryPerformanceCounter(&largeint);
     simTime = curGameTime = lastGameTime = largeint.QuadPart;
-
-    #ifdef THREAD_LOOP
-    isFrameAvailable = 0;
-    vBlankSemaphore = CreateEvent(NULL, TRUE, FALSE, TEXT("vBlankEvent")); 
-    if (vBlankSemaphore == NULL) 
-    {
-        DBGPRINTF("Could not create a event!\n");
-        return 1;
-    }
-    #endif
     
     DBGPRINTF("Event Init done!\n");
 
     cgb_audio_init(42048);
     DBGPRINTF("cgb_audio_init Init done!\n");
     
-    VDraw();
-    #ifdef THREAD_LOOP
-    int ThreadID;
-    CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)DoMain, (LPVOID)&nCmdShow, 0, &ThreadID);
-    DBGPRINTF("Thread Init done!\n");
-    #else
     AgbMain();
-    #endif
 
     double accumulator = 0.0;
 
@@ -474,15 +457,8 @@ int main(int argc, char **argv)
     unsigned int fpsseconds = GetTickCount()+1000;
     while (isRunning)
     {
-        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-
         if (!paused)
         {
-            double dt = fixedTimestep / timeScale; // TODO: Fix speedup
 			double deltaTime;
 
 			if (frameLimitEnabled)
@@ -491,84 +467,50 @@ int main(int argc, char **argv)
 				curGameTime = largeint.QuadPart;
 				QueryPerformanceFrequency(&largeint);
 				deltaTime = (double)((curGameTime - lastGameTime) / largeint.QuadPart);
-				if (deltaTime > (dt * 5))
-					deltaTime = dt;
+				deltaTime *= timeScale; //apply speedup
 				lastGameTime = curGameTime;
 
 				accumulator += deltaTime;
 			}
-
-			if (frameLimitEnabled)
-			{
-				while (accumulator >= dt)
-				{
-					#ifndef THREAD_LOOP
-					MainLoop();
-					#else
-					if (isFrameAvailable)
-					#endif
-					{
-						VDraw();
-						isFrameAvailable = 0;
-
-						RunDMAsAndVBlank();
-
-						#ifdef THREAD_LOOP
-						if(!SetEvent(vBlankSemaphore))
-						{
-							DBGPRINTF("Could not set vBlankSemaphore!");
-							return 1;
-						}
-						#endif
-						accumulator -= dt;
-					}
-					#ifdef THREAD_LOOP
-					Sleep(0);
-					#endif
-				}
-			}
 			else
 			{
-				#ifndef THREAD_LOOP
-				MainLoop();
-				#else
-				if (isFrameAvailable)
-				#endif
-				{
-					VDraw();
-					isFrameAvailable = 0;
-
-					RunDMAsAndVBlank();
-
-					#ifdef THREAD_LOOP
-					if(!SetEvent(vBlankSemaphore))
-					{
-						DBGPRINTF("Could not set vBlankSemaphore!");
-						return 1;
-					}
-					#endif
-				}
-				#ifdef THREAD_LOOP
-				Sleep(0);
-				#endif
+				accumulator = fixedTimestep;
 			}
-           if (GetTickCount() > fpsseconds)
-           {
-                char titlebar[128] = {0};
-                char fpscount[10] = {0};
-                memcpy(titlebar, "win32 emerald fps:  ", sizeof("win32 emerald fps: "));
-                intToStr(&titlebar[sizeof("win32 emerald fps: ")-1], framesDrawn, 10);
-                SetWindowTextA(ghwnd, titlebar);
-                framesDrawn = 0;
-                fpsseconds = GetTickCount()+1000;
-            }
-        }
 
-        if (videoScaleChanged)
-        {
-            videoScaleChanged = false;
-        }
+			while (accumulator >= fixedTimestep)
+			{
+				//win32 event loop
+				while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+				{
+					TranslateMessage(&msg);
+					DispatchMessage(&msg);
+				}
 
+				//run game logic, draw frame and process DMAs and vblank
+				MainLoop();
+				VDraw();
+				RunDMAsAndVBlank();
+
+				accumulator -= fixedTimestep;
+				
+				//calculate framerate
+				if (GetTickCount() > fpsseconds)
+				{
+					char titlebar[128] = {0};
+					char fpscount[10] = {0};
+					memcpy(titlebar, "win32 emerald fps:  ", sizeof("win32 emerald fps: "));
+					intToStr(&titlebar[sizeof("win32 emerald fps: ")-1], framesDrawn, 10);
+					SetWindowTextA(ghwnd, titlebar);
+					framesDrawn = 0;
+					fpsseconds = GetTickCount()+1000;
+				}
+
+				if (videoScaleChanged)
+				{
+					videoScaleChanged = false;
+				}
+			}
+		}
     }
 
     CloseSaveFile();
@@ -756,8 +698,6 @@ void VDraw()
 	
 	if (gameTickFPSToggle)
 		framesDrawn++;
-    
-    REG_VCOUNT = 161; // prep for being in VBlank period
 }
 
 DWORD WINAPI DoMain(LPVOID lpParam)
@@ -768,11 +708,7 @@ DWORD WINAPI DoMain(LPVOID lpParam)
 
 void VBlankIntrWait(void)
 {
-    #ifdef THREAD_LOOP
-    isFrameAvailable = 1;
-    WaitForSingleObject(vBlankSemaphore, INFINITE);
-    ResetEvent(vBlankSemaphore);
-    #endif
+    return;
 }
 
 u8 BinToBcd(u8 bin)

@@ -136,6 +136,9 @@ void AgbMain(void)
 #if !MODERN
     RegisterRamReset(RESET_ALL);
 #endif //MODERN
+#ifdef PORTABLE
+    REG_VCOUNT = 161; // prep for being in VBlank period
+#endif
     *(vu16 *)BG_PLTT = RGB_WHITE; // Set the backdrop to white on startup
     InitGpuRegManager();
     REG_WAITCNT = WAITCNT_PREFETCH_ENABLE | WAITCNT_WS0_S_1 | WAITCNT_WS0_N_3;
@@ -175,7 +178,7 @@ void AgbMain(void)
     AGBPrintInit();
 #endif
 #endif
-#ifdef THREAD_LOOP
+#ifndef PORTABLE
     for (;;)
     {
         MainLoop();
