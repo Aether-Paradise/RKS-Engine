@@ -434,11 +434,11 @@ int main(int argc, char **argv)
     window_hdc = GetDC(ghwnd);
     win32CreateBitmap();
     DBGPRINTF("Bitmap Init done!\n");
-    
+
     //todo: convert these to int64
     QueryPerformanceCounter(&largeint);
     simTime = curGameTime = lastGameTime = largeint.QuadPart;
-    
+
     DBGPRINTF("Event Init done!\n");
 
     cgb_audio_init(42048);
@@ -451,66 +451,74 @@ int main(int argc, char **argv)
     memset(&internalClock, 0, sizeof(internalClock));
     internalClock.status = SIIRTCINFO_24HOUR;
     UpdateInternalClock();
-    
+
     DBGPRINTF("Clock init done!\n");
-    
+
     unsigned int fpsseconds = GetTickCount()+1000;
+    bool isGameStepDrawn = false;
     while (isRunning)
     {
+		double deltaTime;
+
+		//win32 event loop
+		while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+
+		QueryPerformanceCounter(&largeint); //todo error checking
+		curGameTime = largeint.QuadPart;
+		QueryPerformanceFrequency(&largeint);
+		deltaTime = (double)((curGameTime - lastGameTime) / largeint.QuadPart);
+		deltaTime *= timeScale; //apply speedup
+
         if (!paused)
         {
-			double deltaTime;
-
 			if (frameLimitEnabled)
-			{
-				QueryPerformanceCounter(&largeint); //todo error checking
-				curGameTime = largeint.QuadPart;
-				QueryPerformanceFrequency(&largeint);
-				deltaTime = (double)((curGameTime - lastGameTime) / largeint.QuadPart);
-				deltaTime *= timeScale; //apply speedup
-				lastGameTime = curGameTime;
-
 				accumulator += deltaTime;
-			}
 			else
-			{
 				accumulator = fixedTimestep;
-			}
+
+			isGameStepDrawn = false;
 
 			while (accumulator >= fixedTimestep)
 			{
-				//win32 event loop
-				while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-				{
-					TranslateMessage(&msg);
-					DispatchMessage(&msg);
-				}
-
 				//run game logic, draw frame and process DMAs and vblank
+				ENTER_VBLANK(); //you must be in VBlank before running a game tick
 				MainLoop();
-				VDraw();
+				if (!isGameStepDrawn)
+				{
+					VDraw();
+					isGameStepDrawn = true;
+				}
 				RunDMAsAndVBlank();
 
-				accumulator -= fixedTimestep;
-				
-				//calculate framerate
-				if (GetTickCount() > fpsseconds)
-				{
-					char titlebar[128] = {0};
-					char fpscount[10] = {0};
-					memcpy(titlebar, "win32 emerald fps:  ", sizeof("win32 emerald fps: "));
-					intToStr(&titlebar[sizeof("win32 emerald fps: ")-1], framesDrawn, 10);
-					SetWindowTextA(ghwnd, titlebar);
-					framesDrawn = 0;
-					fpsseconds = GetTickCount()+1000;
-				}
+				if (gameTickFPSToggle)
+					framesDrawn++;
 
-				if (videoScaleChanged)
-				{
-					videoScaleChanged = false;
-				}
+				accumulator -= fixedTimestep;
+			}
+
+			//calculate framerate
+			if (GetTickCount() > fpsseconds)
+			{
+				char titlebar[128] = {0};
+				char fpscount[10] = {0};
+				memcpy(titlebar, "win32 emerald fps:  ", sizeof("win32 emerald fps: "));
+				intToStr(&titlebar[sizeof("win32 emerald fps: ")-1], framesDrawn, 10);
+				SetWindowTextA(ghwnd, titlebar);
+				framesDrawn = 0;
+				fpsseconds = GetTickCount()+1000;
+			}
+
+			if (videoScaleChanged)
+			{
+				videoScaleChanged = false;
 			}
 		}
+
+		lastGameTime = curGameTime;
     }
 
     CloseSaveFile();
@@ -695,9 +703,6 @@ void VDraw()
     frameskipCounter++;
     if (frameskipCounter == frameSkipSet)
         frameskipCounter = 0;
-	
-	if (gameTickFPSToggle)
-		framesDrawn++;
 }
 
 DWORD WINAPI DoMain(LPVOID lpParam)
