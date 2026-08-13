@@ -1,3 +1,4 @@
+#ifdef PORTABLE
 #include "global.h"
 #include "platform/dma.h"
 #include "m4a.h"
@@ -32,3 +33,4 @@ void AudioUpdate(void)
 	m4aSoundMain();
 	m4aSoundVSync();
 }
+#endif
