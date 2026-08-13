@@ -81,12 +81,12 @@ u32 GetSpeciesBaseStat(enum Species species, u32 statIndex)
 
 u32 GetSpeciesBaseStatTotal(enum Species species)
 {
-    return GetSpeciesBaseHP(species)
-         + GetSpeciesBaseAttack(species)
-         + GetSpeciesBaseDefense(species)
-         + GetSpeciesBaseSpeed(species)
-         + GetSpeciesBaseSpAttack(species)
-         + GetSpeciesBaseSpDefense(species);
+    u32 total = 0;
+
+    for (u32 i = 0; i < NUM_STATS; i++)
+        total += GetSpeciesBaseStat(species, i);
+
+    return total;
 }
 
 enum Type GetSpeciesType(enum Species species, u8 slot)

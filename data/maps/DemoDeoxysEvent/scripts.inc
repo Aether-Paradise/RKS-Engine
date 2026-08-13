@@ -48,7 +48,6 @@ DemoDeoxysEvent_EventScript_Triangle::
 	lock
 	faceplayer
 	special DoDeoxysRockInteraction
-	waitstate
 	switch VAR_RESULT
 @ The actual rock triangle movement is handled by DoDeoxysRockInteraction.
 @ Unless the player has solved the puzzle and needs to encounter Deoxys,
@@ -76,7 +75,6 @@ DemoDeoxysEvent_EventScript_Deoxys::
 	seteventmon SPECIES_DEOXYS_NORMAL, 30
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	special BattleSetup_StartLegendaryBattle
-	waitstate
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE
 	specialvar VAR_RESULT, GetBattleOutcome
 	goto_if_eq VAR_RESULT, B_OUTCOME_WON, DemoDeoxysEvent_EventScript_DefeatedDeoxys

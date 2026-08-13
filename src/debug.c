@@ -30,6 +30,7 @@
 #include "mauville_old_man.h"
 #include "malloc.h"
 #include "map_name_popup.h"
+#include "mass_outbreak.h"
 #include "menu.h"
 #include "money.h"
 #include "naming_screen.h"
@@ -163,6 +164,14 @@ enum DebugTrainerSelection
     TRAINERS_DEBUG_SELECTION_PARTNER,
 };
 
+enum DebugMenuTypes
+{
+    DEBUG_BASIC_MENU,
+    DEBUG_FLAGS_MENU,
+    DEBUG_TRAINERS_MENU,
+    DEBUG_OUTBREAK_MENU,
+};
+
 // *******************************
 // Constants
 #define DEBUG_MENU_FONT FONT_NORMAL
@@ -192,6 +201,7 @@ enum DebugTrainerSelection
 #define DEBUG_NUMBER_DIGITS_ITEM_QUANTITY 3
 #define DEBUG_NUMBER_DIGITS_LOCALID 2
 #define DEBUG_NUMBER_DIGITS_TRAINERS MAX_DIGITS(TRAINERS_COUNT)
+#define DEBUG_NUMBER_DIGITS_OUTBREAKS 2
 
 #define DEBUG_NUMBER_ICON_X 210
 #define DEBUG_NUMBER_ICON_Y 50
@@ -199,11 +209,13 @@ enum DebugTrainerSelection
 #define DEBUG_MAX_MENU_ITEMS 20
 #define DEBUG_MAX_SUB_MENU_LEVELS 4
 
+#define DEBUG_OPTION_CANT_BE_TOGGLED 0xFF
+
 // *******************************
 struct DebugMenuOption;
 
 typedef void (*DebugFunc)(u8 taskId);
-typedef void (*DebugSubmenuFunc)(u8 taskId, const struct DebugMenuOption *items);
+typedef void (*DebugFuncWithParams)(u8 taskId, const void *params);
 
 struct DebugMenuOption
 {
@@ -232,7 +244,8 @@ struct DebugMenuListData
     const struct DebugMenuOption *subMenuItems[DEBUG_MAX_SUB_MENU_LEVELS];
     struct ListMenuItem listItems[DEBUG_MAX_MENU_ITEMS + 1];
     u8 itemNames[DEBUG_MAX_MENU_ITEMS + 1][26];
-    u8 listId;
+    enum DebugMenuTypes menuType:2;
+    u32 padding:30;
     s16 data[8];
 };
 
@@ -245,22 +258,24 @@ EWRAM_DATA u64 gDebugAIFlags = 0;
 // *******************************
 // Define functions
 static void Debug_ShowMenu(DebugFunc HandleInput, const struct DebugMenuOption *items);
-static u8  Debug_GenerateListTrainerMenu(void);
-static u8 Debug_GenerateListMenuNames(void);
+static u32 Debug_GenerateListBasicMenu(const struct DebugMenuOption *items);
+static u32 Debug_GenerateListTrainerMenu(const struct DebugMenuOption *items);
+static u32 Debug_GenerateListFlagsMenu(const struct DebugMenuOption *items);
+static u32 Debug_GenerateListOutbreakMenu(const struct DebugMenuOption *items);
 static void Debug_DestroyMenu(u8 taskId);
 static void DebugAction_Cancel(u8 taskId);
 static void DebugAction_DestroyExtraWindow(u8 taskId);
-static void Debug_RefreshListMenu(u8 taskId);
 static u8 DebugNativeStep_CreateDebugWindow(void);
 static void DebugNativeStep_CloseDebugWindow(u8 taskId);
 
 static void DebugAction_OpenSubMenu(u8 taskId, const struct DebugMenuOption *items);
 static void DebugAction_OpenSubMenuTrainers(u8 taskId, const struct DebugMenuOption *items);
 static void DebugAction_OpenSubMenuFlagsVars(u8 taskId, const struct DebugMenuOption *items);
+static void DebugAction_OpenOutbreakMenu(u8 taskId, const struct DebugMenuOption *items);
 static void DebugAction_OpenSubMenuFakeRTC(u8 taskId, const struct DebugMenuOption *items);
 static void DebugAction_OpenSubMenuCreateFollowerNPC(u8 taskId, const struct DebugMenuOption *items);
-static void DebugAction_ExecuteScript(u8 taskId, const u8 *script);
-static void DebugAction_ToggleFlag(u8 taskId);
+static void DebugAction_ExecuteScript(u8 taskId, void *script);
+static void DebugAction_ToggleFlag(u8 taskId, void *flagToggleFunc);
 
 static void DebugTask_HandleMenuInput_General(u8 taskId);
 
@@ -298,12 +313,22 @@ static void DebugAction_Party_SetParty(u8 taskId);
 static void DebugAction_Party_BattleSingle(u8 taskId);
 
 static void DebugAction_Trainers_ChooseFromMap(u8 taskId);
-static void DebugAction_Trainers_ChooseTrainer(u8 taskId, u32 selection);
+static void DebugAction_Trainers_ChooseTrainer(u8 taskId, void *selection);
 static void DebugAction_Trainers_SwitchDoublesFlag(u8 taskId);
 static void DebugAction_Trainers_SetRematch(u8 taskId);
 static void DebugAction_Trainers_SetRematchReadiness(u8 taskId);
 static void DebugAction_Trainers_TryBattle(u8 taskId);
 static void DebugAction_Trainers_RechargeVsSeeker(u8 taskId);
+
+static void DebugAction_Outbreak_SetStatic(u8 taskId);
+static void DebugAction_Outbreak_ClearActive(u8 taskId);
+static void DebugAction_Outbreak_SetSpecies(u8 taskId);
+static void DebugAction_Outbreak_SetMap(u8 taskId);
+static void DebugAction_Outbreak_SetLevel(u8 taskId);
+static void DebugAction_Outbreak_SetMoves(u8 taskId);
+static void DebugAction_Outbreak_SetProbability(u8 taskId);
+static void DebugAction_Outbreak_SetDaysLeft(u8 taskId);
+static void DebugAction_Outbreak_SetDynamic(u8 taskId);
 
 static void DebugAction_FlagsVars_Flags(u8 taskId);
 static void DebugAction_FlagsVars_FlagsSelect(u8 taskId);
@@ -367,6 +392,17 @@ static void DebugAction_BerryFunctions_Weeds(u8 taskId);
 static void DebugAction_Player_Name(u8 taskId);
 static void DebugAction_Player_Gender(u8 taskId);
 static void DebugAction_Player_Id(u8 taskId);
+
+static void Debug_Display_SpeciesInfo(enum Species species, u32 number, u32 digit, u8 windowId);
+static void Debug_Display_Level(u32 level, u32 digit, u8 windowId);
+static void Debug_Display_MoveInfo(enum Move moveId, u32 iteration, u32 digit, u8 windowId);
+static void Debug_Display_Probability(u32 probability, u32 digit, u8 windowId);
+static void Debug_Display_OutbreakDaysLeft(u32 daysLeft, u32 digit, u8 windowId);
+static void DebugAction_Outbreak_ApplyLocation(u8 taskId);
+static void DebugAction_ChooseOutbreakLevel_Select(u8 taskId);
+static void DebugAction_OutbreakMove_Select(u8 taskId);
+static void DebugAction_ChooseOutbreakProbability_Select(u8 taskId);
+static void DebugAction_ChooseOutbreakDaysLeft_Select(u8 taskId);
 
 extern const u8 Debug_FlagsNotSetOverworldConfigMessage[];
 extern const u8 Debug_FlagsNotSetBattleConfigMessage[];
@@ -504,6 +540,14 @@ static const s32 sPowersOfTen[] =
       10000000,
      100000000,
     1000000000,
+};
+
+static const u32 (*generateListFunctions[])(const struct DebugMenuOption *) =
+{
+    [DEBUG_BASIC_MENU] = Debug_GenerateListBasicMenu,
+    [DEBUG_FLAGS_MENU] = Debug_GenerateListFlagsMenu,
+    [DEBUG_TRAINERS_MENU] = Debug_GenerateListTrainerMenu,
+    [DEBUG_OUTBREAK_MENU] = Debug_GenerateListOutbreakMenu
 };
 
 // *******************************
@@ -682,6 +726,26 @@ static const struct DebugMenuOption sDebugMenu_Actions_Trainers[] =
     { NULL }
 };
 
+static const struct DebugMenuOption sDebugMenu_Actions_MassOutbreak[] =
+{
+    { COMPOUND_STRING("Set Static Outbreak"), DebugAction_Outbreak_SetStatic },
+    { COMPOUND_STRING("Clear Active Outbreak"), DebugAction_Outbreak_ClearActive },
+    { COMPOUND_STRING("Species: {STR_VAR_1}"), DebugAction_Outbreak_SetSpecies },
+    { COMPOUND_STRING("Map: {STR_VAR_1}"), DebugAction_Outbreak_SetMap },
+    { COMPOUND_STRING("Level: {STR_VAR_1}"), DebugAction_Outbreak_SetLevel },
+    { COMPOUND_STRING("Moves"), DebugAction_Outbreak_SetMoves },
+    { COMPOUND_STRING("Probability: {STR_VAR_1}"), DebugAction_Outbreak_SetProbability },
+    { COMPOUND_STRING("Days Left: {STR_VAR_1}"), DebugAction_Outbreak_SetDaysLeft },
+    { COMPOUND_STRING("Set Dynamic Outbreak"), DebugAction_Outbreak_SetDynamic },
+    { NULL }
+};
+
+static const struct DebugMenuOption sDebugMenu_Actions_Encounters[] =
+{
+    { COMPOUND_STRING("Mass outbreak…"), DebugAction_OpenOutbreakMenu, sDebugMenu_Actions_MassOutbreak },
+    { NULL }
+};
+
 static const struct DebugMenuOption sDebugMenu_Actions_Sound[] =
 {
     { COMPOUND_STRING("SFX…"),           DebugAction_Sound_SE },
@@ -739,6 +803,7 @@ static const struct DebugMenuOption sDebugMenu_Actions_Main[] =
     { COMPOUND_STRING("Player…"),       DebugAction_OpenSubMenu, sDebugMenu_Actions_Player, },
     { COMPOUND_STRING("Scripts…"),      DebugAction_OpenSubMenu, sDebugMenu_Actions_Scripts, },
     { COMPOUND_STRING("Trainers…"),     DebugAction_OpenSubMenuTrainers, sDebugMenu_Actions_Trainers, },
+    { COMPOUND_STRING("Encounters…"),   DebugAction_OpenSubMenu, sDebugMenu_Actions_Encounters, },
     { COMPOUND_STRING("Flags & Vars…"), DebugAction_OpenSubMenuFlagsVars, sDebugMenu_Actions_Flags, },
     { COMPOUND_STRING("Sound…"),        DebugAction_OpenSubMenu, sDebugMenu_Actions_Sound, },
     { COMPOUND_STRING("ROM Info…"),     DebugAction_OpenSubMenu, sDebugMenu_Actions_ROMInfo2, },
@@ -810,7 +875,7 @@ static bool32 Debug_SaveCallbackMenu(struct DebugMenuOption *callbackItems);
 void Debug_ShowMainMenu(void)
 {
     sDebugMenuListData = AllocZeroed(sizeof(*sDebugMenuListData));
-    sDebugMenuListData->listId = 0;
+    sDebugMenuListData->menuType = DEBUG_BASIC_MENU;
     Debug_ShowMenu(DebugTask_HandleMenuInput_General, sDebugMenu_Actions_Main);
 }
 
@@ -819,6 +884,7 @@ void Debug_ShowMainMenu(void)
 #define tSubWindowId         data[2]
 #define tInput               data[3]
 #define tDigit               data[4]
+#define tSpriteId            data[5]
 
 static bool32 Debug_SaveCallbackMenu(struct DebugMenuOption *callbackItems)
 {
@@ -870,7 +936,24 @@ static bool32 IsSubMenuAction(const void *action)
         || action == DebugAction_OpenSubMenuFlagsVars
         || action == DebugAction_OpenSubMenuFakeRTC
         || action == DebugAction_OpenSubMenuCreateFollowerNPC
-        || action == DebugAction_OpenSubMenuTrainers;
+        || action == DebugAction_OpenSubMenuTrainers
+        || action == DebugAction_OpenOutbreakMenu;
+}
+
+static u32 Debug_GenerateListBasicMenu(const struct DebugMenuOption *items)
+{
+    u32 totalItems = 0;
+    for (u32 i = 0; items[i].text != NULL; i++)
+    {
+        sDebugMenuListData->listItems[i].id = i;
+        StringExpandPlaceholders(gStringVar4, items[i].text);
+        if (IsSubMenuAction(items[i].action))
+            StringAppend(gStringVar4, sDebugText_Arrow);
+        StringCopy(&sDebugMenuListData->itemNames[i][0], gStringVar4);
+        sDebugMenuListData->listItems[i].name = &sDebugMenuListData->itemNames[i][0];
+        totalItems++;
+    }
+    return totalItems;
 }
 
 static void Debug_ShowMenu(DebugFunc HandleInput, const struct DebugMenuOption *items)
@@ -890,30 +973,9 @@ static void Debug_ShowMenu(DebugFunc HandleInput, const struct DebugMenuOption *
     LoadMessageBoxAndBorderGfx();
     windowId = AddWindow(&sDebugMenuWindowTemplateMain);
     DrawStdWindowFrame(windowId, FALSE);
+    CopyWindowToVram(windowId, COPYWIN_GFX);
 
-    u32 totalItems = 0;
-
-    if (sDebugMenuListData->listId == 2)
-    {
-        totalItems = Debug_GenerateListTrainerMenu();
-    }
-    else if (sDebugMenuListData->listId == 1)
-    {
-        totalItems = Debug_GenerateListMenuNames();
-    }
-    else
-    {
-        for (u32 i = 0; items[i].text != NULL; i++)
-        {
-            sDebugMenuListData->listItems[i].id = i;
-            StringExpandPlaceholders(gStringVar4, items[i].text);
-            if (IsSubMenuAction(items[i].action))
-                StringAppend(gStringVar4, sDebugText_Arrow);
-            StringCopy(&sDebugMenuListData->itemNames[i][0], gStringVar4);
-            sDebugMenuListData->listItems[i].name = &sDebugMenuListData->itemNames[i][0];
-            totalItems++;
-        }
-    }
+    u32 totalItems = generateListFunctions[sDebugMenuListData->menuType](items);
 
     // create list menu
     menuTemplate.items = sDebugMenuListData->listItems;
@@ -939,17 +1001,48 @@ static void Debug_ShowMenu(DebugFunc HandleInput, const struct DebugMenuOption *
     inputTaskId = CreateTask(HandleInput, 3);
     gTasks[inputTaskId].tMenuTaskId = menuTaskId;
     gTasks[inputTaskId].tWindowId = windowId;
-    gTasks[inputTaskId].tSubWindowId = 0;
-
-    Debug_RefreshListMenu(inputTaskId);
+    gTasks[inputTaskId].tSubWindowId = 0xFF;
+    gTasks[inputTaskId].tSpriteId = 0xFF;
 
     // draw everything
     CopyWindowToVram(windowId, COPYWIN_FULL);
 }
 
+static void Debug_CreateInputDisplayWindow(u8 taskId)
+{
+    u8 windowId;
+
+    ClearStdWindowAndFrame(gTasks[taskId].tWindowId, TRUE);
+    RemoveWindow(gTasks[taskId].tWindowId);
+    HideMapNamePopUpWindow();
+    LoadMessageBoxAndBorderGfx();
+    windowId = AddWindow(&sDebugMenuWindowTemplateExtra);
+    DrawStdWindowFrame(windowId, FALSE);
+    CopyWindowToVram(windowId, COPYWIN_FULL);
+    gTasks[taskId].tSubWindowId = windowId;
+}
+
+static void Debug_ResetInputDisplayMonIcon(u8 taskId, enum Species species)
+{
+    if (gTasks[taskId].tSpriteId != 0xFF)
+    {
+        FreeAndDestroyMonIconSprite(&gSprites[gTasks[taskId].tSpriteId]);
+        FreeMonIconPalettes();
+    }
+    LoadMonIconPalettePersonality(species, 0);
+    gTasks[taskId].tSpriteId = CreateMonIcon(species, SpriteCB_MonIcon, DEBUG_NUMBER_ICON_X, DEBUG_NUMBER_ICON_Y, 4, 0);
+    gSprites[gTasks[taskId].tSpriteId].oam.priority = 0;
+}
+
 static void Debug_DestroyMenu(u8 taskId)
 {
+    if (gTasks[taskId].tSubWindowId != 0xFF)
+    {
+        ClearStdWindowAndFrame(gTasks[taskId].tSubWindowId, TRUE);
+        RemoveWindow(gTasks[taskId].tSubWindowId);
+    }
     DestroyListMenuTask(gTasks[taskId].tMenuTaskId, NULL, NULL);
+    ClearStdWindowAndFrame(gTasks[taskId].tWindowId, TRUE);
     RemoveWindow(gTasks[taskId].tWindowId);
     DestroyTask(taskId);
 }
@@ -1075,7 +1168,7 @@ static void DebugNativeStep_CloseDebugWindow(u8 taskId)
     UnlockPlayerFieldControls();
 }
 
-static u8 Debug_GenerateListTrainerMenu(void)
+static u32 Debug_GenerateListTrainerMenu(const struct DebugMenuOption *items)
 {
     u32 trainer1Id = sDebugMenuListData->data[0];
     u32 trainer2Id = sDebugMenuListData->data[2];
@@ -1150,6 +1243,57 @@ static u8 Debug_GenerateListTrainerMenu(void)
         }
 
         StringExpandPlaceholders(gStringVar4, sDebugMenu_Actions_Trainers[i].text);
+        StringCopy(&sDebugMenuListData->itemNames[i][0], gStringVar4);
+
+        if (noDraw)
+        {
+            offset++;
+        }
+        else
+        {
+            sDebugMenuListData->listItems[i - offset].name = &sDebugMenuListData->itemNames[i][0];
+            sDebugMenuListData->listItems[i - offset].id = i;
+            totalItems++;
+        }
+    }
+    return totalItems;
+}
+
+static u32 Debug_GenerateListOutbreakMenu(const struct DebugMenuOption *items)
+{
+    u32 offset = 0;
+    u32 totalItems = 0;
+    bool32 noDraw;
+
+    for (u32 i = 0; i < (ARRAY_COUNT(sDebugMenu_Actions_MassOutbreak) - 1); i++)
+    {
+        noDraw = FALSE;
+        if (gSaveBlock1Ptr->outbreakDaysLeft == 0 && i >= 1 && i <= 7)
+            noDraw = TRUE;
+        switch (i)
+        {
+        case 0:
+            if (gSaveBlock1Ptr->outbreakDaysLeft > 0)
+                noDraw = TRUE;
+            break;
+        case 2:
+            StringCopy(gStringVar1, GetSpeciesName(gSaveBlock1Ptr->outbreakPokemonSpecies));
+            break;
+        case 3:
+            GetMapName(gStringVar1, Overworld_GetMapHeaderByGroupAndId(gSaveBlock1Ptr->outbreakLocationMapGroup, gSaveBlock1Ptr->outbreakLocationMapNum)->regionMapSectionId, 0);
+            break;
+        case 4:
+            ConvertIntToDecimalStringN(gStringVar1, gSaveBlock1Ptr->outbreakPokemonLevel, STR_CONV_MODE_RIGHT_ALIGN, 3);
+            break;
+        case 6:
+            ConvertIntToDecimalStringN(gStringVar1, gSaveBlock1Ptr->outbreakPokemonProbability, STR_CONV_MODE_RIGHT_ALIGN, 3);
+            break;
+        case 7:
+            ConvertIntToDecimalStringN(gStringVar1, gSaveBlock1Ptr->outbreakDaysLeft, STR_CONV_MODE_RIGHT_ALIGN, 3);
+            break;
+        }
+
+        StringExpandPlaceholders(gStringVar4, sDebugMenu_Actions_MassOutbreak[i].text);
         StringCopy(&sDebugMenuListData->itemNames[i][0], gStringVar4);
 
         if (noDraw)
@@ -1260,67 +1404,53 @@ static u32 Debug_CheckToggleFlags(u8 id)
     case DEBUG_FLAGVAR_MENU_ITEM_TOGGLE_FRONTIER_PASS:
         result = FlagGet(FLAG_SYS_FRONTIER_PASS);
         break;
-    #if OW_FLAG_NO_COLLISION != 0
     case DEBUG_FLAGVAR_MENU_ITEM_TOGGLE_COLLISION:
-        result = FlagGet(OW_FLAG_NO_COLLISION);
+        result = OW_FLAG_NO_COLLISION ? FlagGet(OW_FLAG_NO_COLLISION) : DEBUG_OPTION_CANT_BE_TOGGLED;
         break;
-    #endif
-    #if OW_FLAG_NO_ENCOUNTER != 0
     case DEBUG_FLAGVAR_MENU_ITEM_TOGGLE_ENCOUNTER:
-        result = FlagGet(OW_FLAG_NO_ENCOUNTER);
+        result = WE_FLAG_NO_ENCOUNTER ? FlagGet(WE_FLAG_NO_ENCOUNTER) : DEBUG_OPTION_CANT_BE_TOGGLED;
         break;
-    #endif
-    #if OW_FLAG_NO_TRAINER_SEE != 0
     case DEBUG_FLAGVAR_MENU_ITEM_TOGGLE_TRAINER_SEE:
-        result = FlagGet(OW_FLAG_NO_TRAINER_SEE);
+        result = OW_FLAG_NO_TRAINER_SEE ? FlagGet(OW_FLAG_NO_TRAINER_SEE) : DEBUG_OPTION_CANT_BE_TOGGLED;
         break;
-    #endif
-    #if B_FLAG_NO_CATCHING != 0
     case DEBUG_FLAGVAR_MENU_ITEM_TOGGLE_CATCHING:
-        result = FlagGet(B_FLAG_NO_CATCHING);
+        result = WE_FLAG_NO_CATCHING ? FlagGet(WE_FLAG_NO_CATCHING) : DEBUG_OPTION_CANT_BE_TOGGLED;
         break;
-    #endif
     case DEBUG_FLAGVAR_MENU_ITEM_TOGGLE_BAG_USE:
         result = VarGet(B_VAR_NO_BAG_USE);
         if (result >= NO_BAG_INVALID_VALUE)
             result = NO_BAG_INVALID_VALUE;
         break;
     default:
-        result = 0xFF;
+        result = DEBUG_OPTION_CANT_BE_TOGGLED;
         break;
     }
 
     return result;
 }
 
-static u8 Debug_GenerateListMenuNames(void)
+static u32 Debug_GenerateListFlagsMenu(const struct DebugMenuOption *items)
 {
     const u8 sColor_Red[] = _("{COLOR RED}");
     const u8 sColor_Green[] = _("{COLOR GREEN}");
     u32 i, flagResult = 0;
     u8 const *name = NULL;
 
-    u8 totalItems = 0;
-    if (sDebugMenuListData->listId == 1)
-        // Failsafe to prevent memory corruption
-        totalItems = min(ARRAY_COUNT(sDebugMenu_Actions_Flags) - 1, DEBUG_MAX_MENU_ITEMS);
+    u8 totalItems = min(ARRAY_COUNT(sDebugMenu_Actions_Flags) - 1, DEBUG_MAX_MENU_ITEMS);
 
     // Copy item names for all entries but the last (which is Cancel)
     for (i = 0; i < totalItems; i++)
     {
-        if (sDebugMenuListData->listId == 1)
-        {
-            flagResult = Debug_CheckToggleFlags(i);
-            if (i == DEBUG_FLAGVAR_MENU_ITEM_TOGGLE_BAG_USE)
-                name = sDebugMenu_Actions_BagUse_Options[flagResult];
-            else
-                name = sDebugMenu_Actions_Flags[i].text;
-        }
+        flagResult = Debug_CheckToggleFlags(i);
+        if (i == DEBUG_FLAGVAR_MENU_ITEM_TOGGLE_BAG_USE)
+            name = sDebugMenu_Actions_BagUse_Options[flagResult];
+        else
+            name = sDebugMenu_Actions_Flags[i].text;
 
         if (i == DEBUG_FLAGVAR_MENU_ITEM_TOGGLE_BAG_USE && flagResult == NO_BAG_INVALID_VALUE)
             flagResult = FALSE;
 
-        if (flagResult == 0xFF)
+        if (flagResult == DEBUG_OPTION_CANT_BE_TOGGLED)
         {
             StringCopy(&sDebugMenuListData->itemNames[i][0], name);
         }
@@ -1343,29 +1473,6 @@ static u8 Debug_GenerateListMenuNames(void)
     return totalItems;
 }
 
-static void Debug_RefreshListMenu(u8 taskId)
-{
-    u8 totalItems = Debug_GenerateListMenuNames();
-
-    // Set list menu data
-    gMultiuseListMenuTemplate.items = sDebugMenuListData->listItems;
-    gMultiuseListMenuTemplate.totalItems = totalItems;
-    gMultiuseListMenuTemplate.maxShowed = DEBUG_MENU_HEIGHT_MAIN;
-    gMultiuseListMenuTemplate.windowId = gTasks[taskId].tWindowId;
-    gMultiuseListMenuTemplate.header_X = 0;
-    gMultiuseListMenuTemplate.item_X = 8;
-    gMultiuseListMenuTemplate.cursor_X = 0;
-    gMultiuseListMenuTemplate.upText_Y = 1;
-    gMultiuseListMenuTemplate.cursorPal = 2;
-    gMultiuseListMenuTemplate.fillValue = 1;
-    gMultiuseListMenuTemplate.cursorShadowPal = 3;
-    gMultiuseListMenuTemplate.lettersSpacing = 1;
-    gMultiuseListMenuTemplate.itemVerticalPadding = 0;
-    gMultiuseListMenuTemplate.scrollMultiple = LIST_NO_MULTIPLE_SCROLL;
-    gMultiuseListMenuTemplate.fontId = 1;
-    gMultiuseListMenuTemplate.cursorKind = 0;
-}
-
 static void DebugTask_HandleMenuInput_General(u8 taskId)
 {
     const struct DebugMenuOption *options = Debug_GetCurrentCallbackMenu();
@@ -1377,27 +1484,10 @@ static void DebugTask_HandleMenuInput_General(u8 taskId)
         PlaySE(SE_SELECT);
         if (option.action != NULL)
         {
-            if (IsSubMenuAction(option.action))
-            {
-                ((DebugSubmenuFunc)option.action)(taskId, option.actionParams);
-            }
-            else if (option.action == DebugAction_ExecuteScript)
-            {
-                Debug_DestroyMenu_Full_Script(taskId, (const u8 *)option.actionParams);
-            }
-            else if (option.action == DebugAction_ToggleFlag)
-            {
-                ((DebugFunc)option.actionParams)(taskId);
-                DebugAction_ToggleFlag(taskId);
-            }
-            else if (option.action == DebugAction_Trainers_ChooseTrainer)
-            {
-                DebugAction_Trainers_ChooseTrainer(taskId, (u32)option.actionParams);
-            }
+            if (option.actionParams  != NULL)
+                 ((DebugFuncWithParams)option.action)(taskId, option.actionParams);
             else
-            {
                 ((DebugFunc)option.action)(taskId);
-            }
         }
     }
     else if (JOY_NEW(B_BUTTON))
@@ -1406,8 +1496,8 @@ static void DebugTask_HandleMenuInput_General(u8 taskId)
         if (Debug_GetCurrentCallbackMenu() != NULL && Debug_RemoveCallbackMenu() != 0)
         {
             Debug_DestroyMenu(taskId);
-            if (sDebugMenuListData->listId != 0)
-                sDebugMenuListData->listId = 0;
+            if (sDebugMenuListData->menuType != DEBUG_BASIC_MENU)
+                sDebugMenuListData->menuType = DEBUG_BASIC_MENU;
             Debug_ShowMenu(DebugTask_HandleMenuInput_General, NULL);
         }
         else
@@ -1418,67 +1508,60 @@ static void DebugTask_HandleMenuInput_General(u8 taskId)
     }
 }
 
+static void DebugAction_OpenSubMenuWithType(u8 taskId, const struct DebugMenuOption *items, enum DebugMenuTypes menuType)
+{
+    sDebugMenuListData->menuType = menuType;
+    Debug_DestroyMenu(taskId);
+    Debug_ShowMenu(DebugTask_HandleMenuInput_General, items);
+}
+
 static void DebugAction_OpenSubMenuTrainers(u8 taskId, const struct DebugMenuOption *items)
 {
-    Debug_DestroyMenu(taskId);
-    sDebugMenuListData->listId = 2;
     sDebugMenuListData->data[0] = TRAINER_NONE;
-    Debug_ShowMenu(DebugTask_HandleMenuInput_General, items);
+    DebugAction_OpenSubMenuWithType(taskId, items, DEBUG_TRAINERS_MENU);
 }
 
 static void DebugAction_OpenSubMenuFlagsVars(u8 taskId, const struct DebugMenuOption *items)
 {
-    Debug_DestroyMenu(taskId);
-    sDebugMenuListData->listId = 1;
-    Debug_ShowMenu(DebugTask_HandleMenuInput_General, items);
+    DebugAction_OpenSubMenuWithType(taskId, items, DEBUG_FLAGS_MENU);
+}
+
+static void DebugAction_OpenOutbreakMenu(u8 taskId, const struct DebugMenuOption *items)
+{
+    DebugAction_OpenSubMenuWithType(taskId, items, DEBUG_OUTBREAK_MENU);
 }
 
 static void DebugAction_OpenSubMenu(u8 taskId, const struct DebugMenuOption *items)
 {
-    Debug_DestroyMenu(taskId);
-    sDebugMenuListData->listId = 0;
-    Debug_ShowMenu(DebugTask_HandleMenuInput_General, items);
+    DebugAction_OpenSubMenuWithType(taskId, items, DEBUG_BASIC_MENU);
 }
 
 static void DebugAction_OpenSubMenuFakeRTC(u8 taskId, const struct DebugMenuOption *items)
 {
     if (!OW_USE_FAKE_RTC)
-    {
         Debug_DestroyMenu_Full_Script(taskId, Debug_EventScript_FakeRTCNotEnabled);
-    }
     else
-    {
-        Debug_DestroyMenu(taskId);
-        Debug_ShowMenu(DebugTask_HandleMenuInput_General, items);
-    }
+        DebugAction_OpenSubMenuWithType(taskId, items, DEBUG_BASIC_MENU);
 }
 
-static void DebugAction_ExecuteScript(u8 taskId, const u8 *script)
+static void DebugAction_ExecuteScript(u8 taskId, void *script)
 {
-    Debug_DestroyMenu_Full_Script(taskId, script);
+    Debug_DestroyMenu_Full_Script(taskId, (const u8 *)script);
 }
 
-static void DebugAction_ToggleFlag(u8 taskId)
+static void DebugAction_ToggleFlag(u8 taskId, void *flagToggleFunc)
 {
-    if (sDebugMenuListData->listId == 2)
-        Debug_GenerateListTrainerMenu();
-    else
-        Debug_GenerateListMenuNames();
-
+    ((DebugFunc)flagToggleFunc)(taskId);
+    generateListFunctions[sDebugMenuListData->menuType](NULL);
     RedrawListMenu(gTasks[taskId].tMenuTaskId);
 }
 
 static void DebugAction_OpenSubMenuCreateFollowerNPC(u8 taskId, const struct DebugMenuOption *items)
 {
     if (FNPC_ENABLE_NPC_FOLLOWERS)
-    {
-        Debug_DestroyMenu(taskId);
-        Debug_ShowMenu(DebugTask_HandleMenuInput_General, items);
-    }
+        DebugAction_OpenSubMenuWithType(taskId, items, DEBUG_BASIC_MENU);
     else
-    {
         Debug_DestroyMenu_Full_Script(taskId, Debug_Follower_NPC_Not_Enabled);
-    }
 }
 
 // *******************************
@@ -1490,11 +1573,33 @@ static void DebugAction_Util_Fly(u8 taskId)
     SetMainCallback2(CB2_OpenFlyMap);
 }
 
-#define tMapGroup  data[5]
-#define tMapNum    data[6]
-#define tWarp      data[7]
+#define tMapGroup  data[6]
+#define tMapNum    data[7]
+#define tWarp      data[8]
+#define tOrigin    data[9]
 
 #define LAST_MAP_GROUP (MAP_GROUPS_COUNT - 1)
+
+static void DebugAction_Util_DisplayMapGroup(u8 taskId)
+{
+    ConvertIntToDecimalStringN(gStringVar1, gTasks[taskId].tInput, STR_CONV_MODE_LEADING_ZEROS, 3);
+    ConvertIntToDecimalStringN(gStringVar2, LAST_MAP_GROUP, STR_CONV_MODE_LEADING_ZEROS, 3);
+    StringExpandPlaceholders(gStringVar1, sDebugText_Util_WarpToMap_SelMax);
+    StringCopy(gStringVar3, gText_DigitIndicator[0]);
+    StringExpandPlaceholders(gStringVar4, sDebugText_Util_WarpToMap_SelectMapGroup);
+    AddTextPrinterParameterized(gTasks[taskId].tSubWindowId, DEBUG_MENU_FONT, gStringVar4, 0, 0, 0, NULL);
+}
+
+static void DebugAction_Util_DisplayMapNum(u8 taskId)
+{
+    ConvertIntToDecimalStringN(gStringVar1, gTasks[taskId].tInput, STR_CONV_MODE_LEADING_ZEROS, (MAP_GROUP_COUNT[gTasks[taskId].tMapGroup] - 1 >= 100) ? 3 : 2);
+    ConvertIntToDecimalStringN(gStringVar2, MAP_GROUP_COUNT[gTasks[taskId].tMapGroup] - 1, STR_CONV_MODE_LEADING_ZEROS, (MAP_GROUP_COUNT[gTasks[taskId].tMapGroup] - 1 >= 100) ? 3 : 2);
+    StringExpandPlaceholders(gStringVar1, sDebugText_Util_WarpToMap_SelMax);
+    GetMapName(gStringVar2, Overworld_GetMapHeaderByGroupAndId(gTasks[taskId].tMapGroup, gTasks[taskId].tInput)->regionMapSectionId, 0);
+    StringCopy(gStringVar3, gText_DigitIndicator[gTasks[taskId].tDigit]);
+    StringExpandPlaceholders(gStringVar4, sDebugText_Util_WarpToMap_SelectMap);
+    AddTextPrinterParameterized(gTasks[taskId].tSubWindowId, DEBUG_MENU_FONT, gStringVar4, 0, 0, 0, NULL);
+}
 
 static void DebugAction_Util_Warp_Warp(u8 taskId)
 {
@@ -1510,13 +1615,6 @@ static void DebugAction_Util_Warp_Warp(u8 taskId)
 
     CopyWindowToVram(windowId, COPYWIN_FULL);
 
-    ConvertIntToDecimalStringN(gStringVar1, gTasks[taskId].tInput, STR_CONV_MODE_LEADING_ZEROS, 3);
-    ConvertIntToDecimalStringN(gStringVar2, LAST_MAP_GROUP, STR_CONV_MODE_LEADING_ZEROS, 3);
-    StringExpandPlaceholders(gStringVar1, sDebugText_Util_WarpToMap_SelMax);
-    StringCopy(gStringVar3, gText_DigitIndicator[0]);
-    StringExpandPlaceholders(gStringVar4, sDebugText_Util_WarpToMap_SelectMapGroup);
-    AddTextPrinterParameterized(windowId, DEBUG_MENU_FONT, gStringVar4, 0, 0, 0, NULL);
-
     gTasks[taskId].func = DebugAction_Util_Warp_SelectMapGroup;
     gTasks[taskId].tSubWindowId = windowId;
     gTasks[taskId].tInput = 0;
@@ -1524,6 +1622,9 @@ static void DebugAction_Util_Warp_Warp(u8 taskId)
     gTasks[taskId].tMapGroup = 0;
     gTasks[taskId].tMapNum = 0;
     gTasks[taskId].tWarp = 0;
+    gTasks[taskId].tOrigin = 0;
+
+    DebugAction_Util_DisplayMapGroup(taskId);
 }
 
 static void DebugAction_Util_Warp_SelectMapGroup(u8 taskId)
@@ -1532,13 +1633,7 @@ static void DebugAction_Util_Warp_SelectMapGroup(u8 taskId)
     {
         PlaySE(SE_SELECT);
         Debug_HandleInput_Numeric(taskId, 0, LAST_MAP_GROUP, 3);
-
-        ConvertIntToDecimalStringN(gStringVar1, gTasks[taskId].tInput, STR_CONV_MODE_LEADING_ZEROS, 3);
-        ConvertIntToDecimalStringN(gStringVar2, LAST_MAP_GROUP, STR_CONV_MODE_LEADING_ZEROS, 3);
-        StringExpandPlaceholders(gStringVar1, sDebugText_Util_WarpToMap_SelMax);
-        StringCopy(gStringVar3, gText_DigitIndicator[gTasks[taskId].tDigit]);
-        StringExpandPlaceholders(gStringVar4, sDebugText_Util_WarpToMap_SelectMapGroup);
-        AddTextPrinterParameterized(gTasks[taskId].tSubWindowId, DEBUG_MENU_FONT, gStringVar4, 0, 0, 0, NULL);
+        DebugAction_Util_DisplayMapGroup(taskId);
     }
 
     if (JOY_NEW(A_BUTTON))
@@ -1547,20 +1642,22 @@ static void DebugAction_Util_Warp_SelectMapGroup(u8 taskId)
         gTasks[taskId].tInput = 0;
         gTasks[taskId].tDigit = 0;
 
-        ConvertIntToDecimalStringN(gStringVar1, gTasks[taskId].tInput, STR_CONV_MODE_LEADING_ZEROS, (MAP_GROUP_COUNT[gTasks[taskId].tMapGroup] - 1 >= 100) ? 3 : 2);
-        ConvertIntToDecimalStringN(gStringVar2, MAP_GROUP_COUNT[gTasks[taskId].tMapGroup] - 1, STR_CONV_MODE_LEADING_ZEROS, (MAP_GROUP_COUNT[gTasks[taskId].tMapGroup] - 1 >= 100) ? 3 : 2);
-        StringExpandPlaceholders(gStringVar1, sDebugText_Util_WarpToMap_SelMax);
-        GetMapName(gStringVar2, Overworld_GetMapHeaderByGroupAndId(gTasks[taskId].tMapGroup, gTasks[taskId].tInput)->regionMapSectionId, 0);
-        StringCopy(gStringVar3, gText_DigitIndicator[gTasks[taskId].tDigit]);
-        StringExpandPlaceholders(gStringVar4, sDebugText_Util_WarpToMap_SelectMap);
-        AddTextPrinterParameterized(gTasks[taskId].tSubWindowId, DEBUG_MENU_FONT, gStringVar4, 0, 0, 0, NULL);
+        DebugAction_Util_DisplayMapNum(taskId);
 
         gTasks[taskId].func = DebugAction_Util_Warp_SelectMap;
     }
     else if (JOY_NEW(B_BUTTON))
     {
         PlaySE(SE_SELECT);
-        DebugAction_DestroyExtraWindow(taskId);
+        if (gTasks[taskId].tOrigin == 0)
+        {
+            DebugAction_DestroyExtraWindow(taskId);
+        }
+        else if (gTasks[taskId].tOrigin == 1)
+        {
+            Debug_RemoveCallbackMenu();
+            DebugAction_OpenOutbreakMenu(taskId, sDebugMenu_Actions_MassOutbreak);
+        }
     }
 }
 
@@ -1572,14 +1669,7 @@ static void DebugAction_Util_Warp_SelectMap(u8 taskId)
     {
         PlaySE(SE_SELECT);
         Debug_HandleInput_Numeric(taskId, 0, max_value - 1, 3);
-
-        ConvertIntToDecimalStringN(gStringVar1, gTasks[taskId].tInput, STR_CONV_MODE_LEADING_ZEROS, (max_value >= 100) ? 3 : 2);
-        ConvertIntToDecimalStringN(gStringVar2, MAP_GROUP_COUNT[gTasks[taskId].tMapGroup] - 1, STR_CONV_MODE_LEADING_ZEROS, (max_value >= 100) ? 3 : 2);
-        StringExpandPlaceholders(gStringVar1, sDebugText_Util_WarpToMap_SelMax);
-        GetMapName(gStringVar2, Overworld_GetMapHeaderByGroupAndId(gTasks[taskId].tMapGroup, gTasks[taskId].tInput)->regionMapSectionId, 0);
-        StringCopy(gStringVar3, gText_DigitIndicator[gTasks[taskId].tDigit]);
-        StringExpandPlaceholders(gStringVar4, sDebugText_Util_WarpToMap_SelectMap);
-        AddTextPrinterParameterized(gTasks[taskId].tSubWindowId, DEBUG_MENU_FONT, gStringVar4, 0, 0, 0, NULL);
+        DebugAction_Util_DisplayMapNum(taskId);
     }
 
     if (JOY_NEW(A_BUTTON))
@@ -1592,12 +1682,16 @@ static void DebugAction_Util_Warp_SelectMap(u8 taskId)
         ConvertIntToDecimalStringN(gStringVar1, gTasks[taskId].tInput, STR_CONV_MODE_LEADING_ZEROS, 3);
         StringExpandPlaceholders(gStringVar4, sDebugText_Util_WarpToMap_SelectWarp);
         AddTextPrinterParameterized(gTasks[taskId].tSubWindowId, DEBUG_MENU_FONT, gStringVar4, 0, 0, 0, NULL);
-        gTasks[taskId].func = DebugAction_Util_Warp_SelectWarp;
+
+        if (gTasks[taskId].tOrigin == 0)
+            gTasks[taskId].func = DebugAction_Util_Warp_SelectWarp;
+        else if (gTasks[taskId].tOrigin == 1)
+            gTasks[taskId].func = DebugAction_Outbreak_ApplyLocation;
     }
     else if (JOY_NEW(B_BUTTON))
     {
         PlaySE(SE_SELECT);
-        DebugAction_DestroyExtraWindow(taskId);
+        DebugAction_Util_DisplayMapGroup(taskId);
     }
 }
 
@@ -1638,13 +1732,14 @@ static void DebugAction_Util_Warp_SelectWarp(u8 taskId)
     else if (JOY_NEW(B_BUTTON))
     {
         PlaySE(SE_SELECT);
-        DebugAction_DestroyExtraWindow(taskId);
+        DebugAction_Util_DisplayMapNum(taskId);
     }
 }
 
 #undef tMapGroup
 #undef tMapNum
 #undef tWarp
+#undef tOrigin
 
 void CheckSaveBlock1Size(struct ScriptContext *ctx)
 {
@@ -1778,8 +1873,7 @@ static void DebugAction_Util_Weather_SelectId(u8 taskId)
     {
         if (gTasks[taskId].tInput <= 14 || gTasks[taskId].tInput >= 20)
         {
-            gTasks[taskId].data[5] = gTasks[taskId].tInput;
-            SetWeather(gTasks[taskId].data[5]);
+            SetWeather(gTasks[taskId].tInput);
         }
     }
     else if (JOY_NEW(B_BUTTON))
@@ -1968,7 +2062,6 @@ static void GetTrainerIdFromLocalId(u32 localId)
 }
 
 #define TRAINER_TAG 0xFDF3
-#define tSpriteId   data[5]
 #define LOCAL_ID_MIN 1
 #define LOCAL_ID_MAX (gMapHeader.events->objectEventCount)
 
@@ -2021,7 +2114,7 @@ static void DebugAction_ChooseFromMap_Select(u8 taskId)
         DestroyTask(taskId);
 
         PlaySE(SE_SELECT);
-        sDebugMenuListData->listId = 2;
+        sDebugMenuListData->menuType = DEBUG_TRAINERS_MENU;
         Debug_RemoveCallbackMenu();
         Debug_ShowMenu(DebugTask_HandleMenuInput_General, sDebugMenu_Actions_Trainers);
     }
@@ -2059,12 +2152,11 @@ static void DebugAction_Trainers_ChooseFromMap(u8 taskId)
 }
 
 #undef TRAINER_TAG
-#undef tSpriteId
 #undef LOCAL_ID_MIN
 #undef LOCAL_ID_MAX
 
-#define tSelection  data[5]
-#define tInitial    data[6]
+#define tSelection  data[6]
+#define tInitial    data[7]
 
 static void Debug_Display_TrainerID(u32 trainerID, u32 selection, u32 digit, u8 windowId)
 {
@@ -2130,13 +2222,13 @@ static void DebugAction_ChooseTrainerID_Select(u8 taskId)
         RemoveWindow(gTasks[taskId].tSubWindowId);
         DestroyListMenuTask(gTasks[taskId].tMenuTaskId, NULL, NULL);
         DestroyTask(taskId);
-        sDebugMenuListData->listId = 2;
+        sDebugMenuListData->menuType = DEBUG_TRAINERS_MENU;
         Debug_RemoveCallbackMenu();
         Debug_ShowMenu(DebugTask_HandleMenuInput_General, sDebugMenu_Actions_Trainers);
     }
 }
 
-static void DebugAction_Trainers_ChooseTrainer(u8 taskId, u32 selection)
+static void DebugAction_Trainers_ChooseTrainer(u8 taskId, void *selection)
 {
     ClearStdWindowAndFrame(gTasks[taskId].tWindowId, TRUE);
     RemoveWindow(gTasks[taskId].tWindowId);
@@ -2326,6 +2418,419 @@ DEBUG_FLAG_LIST
 #undef X
 
 // *******************************
+// Actions Encounters - Mass Outbreak
+
+static void Debug_Display_MassOutbreakId(u32 outbreakID, u32 digit, u8 windowId)
+{
+    ConvertIntToDecimalStringN(gStringVar1, outbreakID, STR_CONV_MODE_LEADING_ZEROS, DEBUG_NUMBER_DIGITS_OUTBREAKS);
+    GetStaticOutbreakMapName(gStringVar2, outbreakID);
+    StringCopy(gStringVar3, gText_DigitIndicator[digit]);
+    StringExpandPlaceholders(gStringVar4, COMPOUND_STRING("ID: {STR_VAR_1}\n{STR_VAR_2}{CLEAR_TO 90}\n\n{STR_VAR_3}{CLEAR_TO 90}"));
+    AddTextPrinterParameterized(windowId, DEBUG_MENU_FONT, gStringVar4, 0, 0, 0, NULL);
+}
+
+static void DebugAction_ChooseMassOutbreakId_Select(u8 taskId)
+{
+    if (JOY_NEW(DPAD_ANY))
+    {
+        PlaySE(SE_SELECT);
+        Debug_HandleInput_Numeric(taskId, 0, OUTBREAK_COUNT - 1, DEBUG_NUMBER_DIGITS_OUTBREAKS);
+        Debug_Display_MassOutbreakId(gTasks[taskId].tInput, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
+        Debug_ResetInputDisplayMonIcon(taskId, GetStaticOutbreakSpecies(gTasks[taskId].tInput));
+    }
+
+    if (JOY_NEW(A_BUTTON) || JOY_NEW(B_BUTTON))
+    {
+        if (JOY_NEW(A_BUTTON))
+            StartStaticMassOutbreak(gTasks[taskId].tInput);
+        PlaySE(SE_SELECT);
+
+        FreeAndDestroyMonIconSprite(&gSprites[gTasks[taskId].tSpriteId]);
+        FreeMonIconPalettes();
+        Debug_RemoveCallbackMenu();
+        DebugAction_OpenOutbreakMenu(taskId, sDebugMenu_Actions_MassOutbreak);
+
+    }
+}
+
+static void DebugAction_Outbreak_SetStatic(u8 taskId)
+{
+    Debug_CreateInputDisplayWindow(taskId);
+
+    gTasks[taskId].func = DebugAction_ChooseMassOutbreakId_Select;
+    gTasks[taskId].tDigit = 0;
+    gTasks[taskId].tInput = 0;
+
+    Debug_ResetInputDisplayMonIcon(taskId, GetStaticOutbreakSpecies(gTasks[taskId].tInput));
+    Debug_Display_MassOutbreakId(gTasks[taskId].tInput, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
+}
+
+static void DebugAction_Outbreak_ClearActive(u8 taskId)
+{
+    gSaveBlock1Ptr->outbreakDaysLeft = 0;
+    Debug_RemoveCallbackMenu();
+    DebugAction_OpenOutbreakMenu(taskId, sDebugMenu_Actions_MassOutbreak);
+}
+
+#define tMapGroup data[6]
+#define tMapNum data[7]
+#define tIsDynamic data[8]
+#define tOrigin data[9]
+
+static void DebugAction_ChooseOutbreakSpecies_Select(u8 taskId)
+{
+    if (JOY_NEW(DPAD_ANY))
+    {
+        PlaySE(SE_SELECT);
+        Debug_HandleInput_Numeric(taskId, 1, NUM_SPECIES - 1, DEBUG_NUMBER_DIGITS_ITEMS);
+        enum Species species = gTasks[taskId].tInput;
+        if (!IsSpeciesEnabled(species))
+            species = SPECIES_NONE;
+        Debug_Display_SpeciesInfo(species, gTasks[taskId].tInput, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
+        Debug_ResetInputDisplayMonIcon(taskId, species);
+    }
+
+    if (JOY_NEW(A_BUTTON))
+    {
+        gSaveBlock1Ptr->outbreakPokemonSpecies = gTasks[taskId].tInput;
+        PlaySE(SE_SELECT);
+        FreeAndDestroyMonIconSprite(&gSprites[gTasks[taskId].tSpriteId]);
+        FreeMonIconPalettes();
+        if (gTasks[taskId].tIsDynamic)
+        {
+            gTasks[taskId].tInput = 0;
+            gTasks[taskId].tDigit = 0;
+            gTasks[taskId].tMapGroup = gSaveBlock1Ptr->outbreakLocationMapGroup;
+            gTasks[taskId].tMapNum = gSaveBlock1Ptr->outbreakLocationMapNum;
+            gTasks[taskId].tOrigin = 1;
+
+            DebugAction_Util_DisplayMapGroup(taskId);
+            gTasks[taskId].func = DebugAction_Util_Warp_SelectMapGroup;
+        }
+        else
+        {
+            Debug_RemoveCallbackMenu();
+            DebugAction_OpenOutbreakMenu(taskId, sDebugMenu_Actions_MassOutbreak);
+        }
+
+    }
+    if (JOY_NEW(B_BUTTON))
+    {
+        FreeAndDestroyMonIconSprite(&gSprites[gTasks[taskId].tSpriteId]);
+        FreeMonIconPalettes();
+        Debug_RemoveCallbackMenu();
+        DebugAction_OpenOutbreakMenu(taskId, sDebugMenu_Actions_MassOutbreak);
+    }
+}
+
+static void DebugAction_Outbreak_SetSpecies(u8 taskId)
+{
+    Debug_CreateInputDisplayWindow(taskId);
+
+    gTasks[taskId].tDigit = 0;
+    if (gSaveBlock1Ptr->outbreakDaysLeft > 0)
+        gTasks[taskId].tInput = gSaveBlock1Ptr->outbreakPokemonSpecies;
+    else
+        gTasks[taskId].tInput = SPECIES_BULBASAUR;
+
+    enum Species species = gTasks[taskId].tInput;
+    if (!IsSpeciesEnabled(species))
+        species = SPECIES_NONE;
+
+    gTasks[taskId].func = DebugAction_ChooseOutbreakSpecies_Select;
+    Debug_Display_SpeciesInfo(species, gTasks[taskId].tInput, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
+    Debug_ResetInputDisplayMonIcon(taskId, species);
+}
+
+static void DebugAction_Outbreak_ApplyLocation(u8 taskId)
+{
+    gSaveBlock1Ptr->outbreakLocationMapGroup = gTasks[taskId].tMapGroup;
+    gSaveBlock1Ptr->outbreakLocationMapNum = gTasks[taskId].tMapNum;
+    if (gTasks[taskId].tIsDynamic)
+    {
+        gTasks[taskId].tInput = gSaveBlock1Ptr->outbreakPokemonLevel;
+        gTasks[taskId].tDigit = 0;
+        gTasks[taskId].func = DebugAction_ChooseOutbreakLevel_Select;
+        Debug_Display_Level(gTasks[taskId].tInput, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
+    }
+    else
+    {
+        Debug_RemoveCallbackMenu();
+        DebugAction_OpenOutbreakMenu(taskId, sDebugMenu_Actions_MassOutbreak);
+    }
+}
+
+static void DebugAction_Outbreak_SetMap(u8 taskId)
+{
+    Debug_CreateInputDisplayWindow(taskId);
+
+    gTasks[taskId].tInput = 0;
+    gTasks[taskId].tDigit = 0;
+    gTasks[taskId].tMapGroup = gSaveBlock1Ptr->outbreakLocationMapGroup;
+    gTasks[taskId].tMapNum = gSaveBlock1Ptr->outbreakLocationMapNum;
+    gTasks[taskId].tOrigin = 1;
+
+    DebugAction_Util_DisplayMapGroup(taskId);
+    gTasks[taskId].func = DebugAction_Util_Warp_SelectMapGroup;
+}
+
+#undef tMapGroup
+#undef tMapNum
+#undef tOrigin
+
+#define tIterator data[6]
+
+static void DebugAction_ChooseOutbreakLevel_Select(u8 taskId)
+{
+    if (JOY_NEW(DPAD_ANY))
+    {
+        PlaySE(SE_SELECT);
+        Debug_HandleInput_Numeric(taskId, 1, MAX_LEVEL, 3);
+        Debug_Display_Level(gTasks[taskId].tInput, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
+    }
+
+    if (JOY_NEW(A_BUTTON))
+    {
+        gSaveBlock1Ptr->outbreakPokemonLevel = gTasks[taskId].tInput;
+        PlaySE(SE_SELECT);
+        if (gTasks[taskId].tIsDynamic)
+        {
+            gTasks[taskId].tInput = gSaveBlock1Ptr->outbreakPokemonMoves[0];
+            gTasks[taskId].tDigit = 0;
+            gTasks[taskId].tIterator = 0;
+            gTasks[taskId].func = DebugAction_OutbreakMove_Select;
+            Debug_Display_MoveInfo(gTasks[taskId].tInput, gTasks[taskId].tIterator, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
+        }
+        else
+        {
+            Debug_RemoveCallbackMenu();
+            DebugAction_OpenOutbreakMenu(taskId, sDebugMenu_Actions_MassOutbreak);
+        }
+    }
+    if (JOY_NEW(B_BUTTON))
+    {
+        Debug_RemoveCallbackMenu();
+        DebugAction_OpenOutbreakMenu(taskId, sDebugMenu_Actions_MassOutbreak);
+    }
+}
+
+static void DebugAction_Outbreak_SetLevel(u8 taskId)
+{
+    Debug_CreateInputDisplayWindow(taskId);
+
+    gTasks[taskId].tInput = gSaveBlock1Ptr->outbreakPokemonLevel;
+    gTasks[taskId].tDigit = 0;
+
+    gTasks[taskId].func = DebugAction_ChooseOutbreakLevel_Select;
+    Debug_Display_Level(gTasks[taskId].tInput, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
+}
+
+static void DebugAction_OutbreakMove_Select(u8 taskId)
+{
+    if (JOY_NEW(DPAD_ANY))
+    {
+        PlaySE(SE_SELECT);
+        Debug_HandleInput_Numeric(taskId, 0, MOVES_COUNT, 4);
+        Debug_Display_MoveInfo(gTasks[taskId].tInput, gTasks[taskId].tIterator, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
+    }
+
+    if (JOY_NEW(A_BUTTON))
+    {
+        // Set current value
+        gSaveBlock1Ptr->outbreakPokemonMoves[gTasks[taskId].tIterator] = gTasks[taskId].tInput;
+        gTasks[taskId].tIterator++;
+
+        // If MOVE_NONE selected, stop asking for additional moves
+        if (gTasks[taskId].tInput == MOVE_NONE)
+        {
+            for (; gTasks[taskId].tIterator < MAX_MON_MOVES; gTasks[taskId].tIterator++)
+            {
+                gSaveBlock1Ptr->outbreakPokemonMoves[gTasks[taskId].tIterator] = MOVE_NONE;
+            }
+        }
+
+        //If NOT last move ask for next move
+        if (gTasks[taskId].tIterator < MAX_MON_MOVES)
+        {
+            gTasks[taskId].tInput = gSaveBlock1Ptr->outbreakPokemonMoves[gTasks[taskId].tIterator];
+            gTasks[taskId].tDigit = 0;
+
+            Debug_Display_MoveInfo(gTasks[taskId].tInput, gTasks[taskId].tIterator, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
+        }
+        else
+        {
+            if (gTasks[taskId].tIsDynamic)
+            {
+                gTasks[taskId].tInput = gSaveBlock1Ptr->outbreakPokemonProbability;
+                gTasks[taskId].tDigit = 0;
+                gTasks[taskId].func = DebugAction_ChooseOutbreakProbability_Select;
+                Debug_Display_Probability(gTasks[taskId].tInput, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
+            }
+            else
+            {
+                Debug_RemoveCallbackMenu();
+                DebugAction_OpenOutbreakMenu(taskId, sDebugMenu_Actions_MassOutbreak);
+            }
+        }
+    }
+    else if (JOY_NEW(B_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+        if (gTasks[taskId].tIterator == 0)
+        {
+            Debug_RemoveCallbackMenu();
+            DebugAction_OpenOutbreakMenu(taskId, sDebugMenu_Actions_MassOutbreak);
+        }
+        else
+        {
+            gTasks[taskId].tIterator--;
+            gTasks[taskId].tInput = gSaveBlock1Ptr->outbreakPokemonMoves[gTasks[taskId].tIterator];
+        }
+        DebugAction_DestroyExtraWindow(taskId);
+    }
+}
+
+static void DebugAction_Outbreak_SetMoves(u8 taskId)
+{
+    Debug_CreateInputDisplayWindow(taskId);
+
+    gTasks[taskId].tInput = gSaveBlock1Ptr->outbreakPokemonMoves[0];
+    gTasks[taskId].tDigit = 0;
+    gTasks[taskId].tIterator = 0;
+
+    gTasks[taskId].func = DebugAction_OutbreakMove_Select;
+    Debug_Display_MoveInfo(gTasks[taskId].tInput, gTasks[taskId].tIterator, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
+}
+
+#undef tIterator
+
+static void Debug_Display_Probability(u32 probability, u32 digit, u8 windowId)
+{
+    StringCopy(gStringVar2, gText_DigitIndicator[digit]);
+    ConvertIntToDecimalStringN(gStringVar1, probability, STR_CONV_MODE_LEADING_ZEROS, 3);
+    StringCopyPadded(gStringVar1, gStringVar1, CHAR_SPACE, 15);
+    StringExpandPlaceholders(gStringVar4, COMPOUND_STRING("Probability:{CLEAR_TO 90}\n{STR_VAR_1}{CLEAR_TO 90}\n{CLEAR_TO 90}\n{STR_VAR_2}{CLEAR_TO 90}"));
+    AddTextPrinterParameterized(windowId, DEBUG_MENU_FONT, gStringVar4, 0, 0, 0, NULL);
+}
+
+static void DebugAction_ChooseOutbreakProbability_Select(u8 taskId)
+{
+    if (JOY_NEW(DPAD_ANY))
+    {
+        PlaySE(SE_SELECT);
+        Debug_HandleInput_Numeric(taskId, 0, 100, 3);
+        Debug_Display_Probability(gTasks[taskId].tInput, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
+    }
+
+    if (JOY_NEW(A_BUTTON))
+    {
+        gSaveBlock1Ptr->outbreakPokemonProbability = gTasks[taskId].tInput;
+        PlaySE(SE_SELECT);
+
+        if (gTasks[taskId].tIsDynamic)
+        {
+            gTasks[taskId].tInput = gSaveBlock1Ptr->outbreakDaysLeft;
+            gTasks[taskId].tDigit = 0;
+            gTasks[taskId].func = DebugAction_ChooseOutbreakDaysLeft_Select;
+            Debug_Display_OutbreakDaysLeft(gTasks[taskId].tInput, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
+        }
+        else
+        {
+            Debug_RemoveCallbackMenu();
+            DebugAction_OpenOutbreakMenu(taskId, sDebugMenu_Actions_MassOutbreak);
+        }
+    }
+    if (JOY_NEW(B_BUTTON))
+    {
+        Debug_RemoveCallbackMenu();
+        DebugAction_OpenOutbreakMenu(taskId, sDebugMenu_Actions_MassOutbreak);
+    }
+}
+
+static void DebugAction_Outbreak_SetProbability(u8 taskId)
+{
+    Debug_CreateInputDisplayWindow(taskId);
+
+    gTasks[taskId].tInput = gSaveBlock1Ptr->outbreakPokemonProbability;
+    gTasks[taskId].tDigit = 0;
+
+    gTasks[taskId].func = DebugAction_ChooseOutbreakProbability_Select;
+    Debug_Display_Probability(gTasks[taskId].tInput, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
+}
+
+static void Debug_Display_OutbreakDaysLeft(u32 daysLeft, u32 digit, u8 windowId)
+{
+    StringCopy(gStringVar2, gText_DigitIndicator[digit]);
+    ConvertIntToDecimalStringN(gStringVar1, daysLeft, STR_CONV_MODE_LEADING_ZEROS, 3);
+    StringCopyPadded(gStringVar1, gStringVar1, CHAR_SPACE, 15);
+    StringExpandPlaceholders(gStringVar4, COMPOUND_STRING("Days Left:{CLEAR_TO 90}\n{STR_VAR_1}{CLEAR_TO 90}\n{CLEAR_TO 90}\n{STR_VAR_2}{CLEAR_TO 90}"));
+    AddTextPrinterParameterized(windowId, DEBUG_MENU_FONT, gStringVar4, 0, 0, 0, NULL);
+}
+
+static void DebugAction_ChooseOutbreakDaysLeft_Select(u8 taskId)
+{
+    if (JOY_NEW(DPAD_ANY))
+    {
+        PlaySE(SE_SELECT);
+        Debug_HandleInput_Numeric(taskId, 0, 100, 3);
+        Debug_Display_OutbreakDaysLeft(gTasks[taskId].tInput, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
+    }
+
+    if (JOY_NEW(A_BUTTON))
+    {
+        gSaveBlock1Ptr->outbreakDaysLeft = gTasks[taskId].tInput;
+        PlaySE(SE_SELECT);
+
+        if (gTasks[taskId].tIsDynamic)
+        {
+            Debug_DestroyMenu_Full(taskId);
+        }
+        else
+        {
+            Debug_RemoveCallbackMenu();
+            DebugAction_OpenOutbreakMenu(taskId, sDebugMenu_Actions_MassOutbreak);
+        }
+    }
+    if (JOY_NEW(B_BUTTON))
+    {
+        Debug_RemoveCallbackMenu();
+        DebugAction_OpenOutbreakMenu(taskId, sDebugMenu_Actions_MassOutbreak);
+    }
+}
+
+static void DebugAction_Outbreak_SetDaysLeft(u8 taskId)
+{
+    Debug_CreateInputDisplayWindow(taskId);
+
+    gTasks[taskId].tInput = gSaveBlock1Ptr->outbreakDaysLeft;
+    gTasks[taskId].tDigit = 0;
+
+    gTasks[taskId].func = DebugAction_ChooseOutbreakDaysLeft_Select;
+    Debug_Display_OutbreakDaysLeft(gTasks[taskId].tInput, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
+}
+
+static void DebugAction_Outbreak_SetDynamic(u8 taskId)
+{
+    Debug_CreateInputDisplayWindow(taskId);
+
+    gTasks[taskId].func = DebugAction_ChooseOutbreakSpecies_Select;
+    gTasks[taskId].tIsDynamic = TRUE;
+    gTasks[taskId].tDigit = 0;
+    if (gSaveBlock1Ptr->outbreakDaysLeft > 0)
+        gTasks[taskId].tInput = gSaveBlock1Ptr->outbreakPokemonSpecies;
+    else
+        gTasks[taskId].tInput = SPECIES_BULBASAUR;
+
+    enum Species species = gTasks[taskId].tInput;
+    if (!IsSpeciesEnabled(species))
+        species = SPECIES_NONE;
+    Debug_Display_SpeciesInfo(species, gTasks[taskId].tInput, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
+    Debug_ResetInputDisplayMonIcon(taskId, species);
+}
+
+#undef tIsDynamic
+
+// *******************************
 // Actions Flags and Vars
 static void Debug_Display_FlagInfo(u32 flag, u32 digit, u8 windowId)
 {
@@ -2390,7 +2895,8 @@ static void DebugAction_FlagsVars_FlagsSelect(u8 taskId)
     }
 }
 
-#define tVarValue  data[5]
+#define tVarValue  data[6]
+#define tTmpValue  data[7]
 
 static void DebugAction_FlagsVars_Vars(u8 taskId)
 {
@@ -2465,7 +2971,7 @@ static void DebugAction_FlagsVars_Select(u8 taskId)
         StringExpandPlaceholders(gStringVar4, sDebugText_FlagsVars_VariableValueSet);
         AddTextPrinterParameterized(gTasks[taskId].tSubWindowId, DEBUG_MENU_FONT, gStringVar4, 0, 0, 0, NULL);
 
-        gTasks[taskId].data[6] = gTasks[taskId].data[5]; //New value selector
+        gTasks[taskId].tTmpValue = gTasks[taskId].tVarValue; //New value selector
         gTasks[taskId].func = DebugAction_FlagsVars_SetValue;
     }
     else if (JOY_NEW(B_BUTTON))
@@ -2480,19 +2986,19 @@ static void DebugAction_FlagsVars_SetValue(u8 taskId)
 {
     if (JOY_NEW(DPAD_UP))
     {
-        if (gTasks[taskId].data[6] + sPowersOfTen[gTasks[taskId].tDigit] <= 32000)
-            gTasks[taskId].data[6] += sPowersOfTen[gTasks[taskId].tDigit];
+        if (gTasks[taskId].tTmpValue + sPowersOfTen[gTasks[taskId].tDigit] <= 32000)
+            gTasks[taskId].tTmpValue += sPowersOfTen[gTasks[taskId].tDigit];
         else
-            gTasks[taskId].data[6] = 32000 - 1;
+            gTasks[taskId].tTmpValue = 32000 - 1;
 
-        if (gTasks[taskId].data[6] >= 32000)
-            gTasks[taskId].data[6] = 32000 - 1;
+        if (gTasks[taskId].tTmpValue >= 32000)
+            gTasks[taskId].tTmpValue = 32000 - 1;
     }
     if (JOY_NEW(DPAD_DOWN))
     {
-        gTasks[taskId].data[6] -= sPowersOfTen[gTasks[taskId].tDigit];
-        if (gTasks[taskId].data[6] < 0)
-            gTasks[taskId].data[6] = 0;
+        gTasks[taskId].tTmpValue -= sPowersOfTen[gTasks[taskId].tDigit];
+        if (gTasks[taskId].tTmpValue < 0)
+            gTasks[taskId].tTmpValue = 0;
     }
     if (JOY_NEW(DPAD_LEFT))
     {
@@ -2510,7 +3016,7 @@ static void DebugAction_FlagsVars_SetValue(u8 taskId)
     if (JOY_NEW(A_BUTTON))
     {
         PlaySE(SE_SELECT);
-        VarSet(gTasks[taskId].tInput, gTasks[taskId].data[6]);
+        VarSet(gTasks[taskId].tInput, gTasks[taskId].tTmpValue);
     }
     else if (JOY_NEW(B_BUTTON))
     {
@@ -2527,7 +3033,7 @@ static void DebugAction_FlagsVars_SetValue(u8 taskId)
         ConvertIntToHexStringN(gStringVar2, gTasks[taskId].tInput, STR_CONV_MODE_LEFT_ALIGN, 4);
         StringExpandPlaceholders(gStringVar1, sDebugText_FlagsVars_VariableHex);
         StringCopyPadded(gStringVar1, gStringVar1, CHAR_SPACE, 15);
-        ConvertIntToDecimalStringN(gStringVar3, gTasks[taskId].data[6], STR_CONV_MODE_LEADING_ZEROS, DEBUG_NUMBER_DIGITS_VARIABLES);
+        ConvertIntToDecimalStringN(gStringVar3, gTasks[taskId].tTmpValue, STR_CONV_MODE_LEADING_ZEROS, DEBUG_NUMBER_DIGITS_VARIABLES);
         StringCopyPadded(gStringVar3, gStringVar3, CHAR_SPACE, 15);
         StringCopy(gStringVar2, gText_DigitIndicator[gTasks[taskId].tDigit]);
         StringExpandPlaceholders(gStringVar4, sDebugText_FlagsVars_VariableValueSet);
@@ -2536,6 +3042,7 @@ static void DebugAction_FlagsVars_SetValue(u8 taskId)
 }
 
 #undef tVarValue
+#undef tTmpValue
 
 static void DebugAction_FlagsVars_PokedexFlags_All(u8 taskId)
 {
@@ -2561,9 +3068,9 @@ static void DebugAction_FlagsVars_PokedexFlags_Reset(u8 taskId)
     // Add party Pokemon to Pokedex
     for (partyId = 0; partyId < PARTY_SIZE; partyId++)
     {
-        if (GetMonData(&gParties[B_TRAINER_0][partyId], MON_DATA_SANITY_HAS_SPECIES))
+        if (GetMonData(&gParties[B_TRAINER_PLAYER][partyId], MON_DATA_SANITY_HAS_SPECIES))
         {
-            species = GetMonData(&gParties[B_TRAINER_0][partyId], MON_DATA_SPECIES);
+            species = GetMonData(&gParties[B_TRAINER_PLAYER][partyId], MON_DATA_SPECIES);
             GetSetPokedexFlag(species, FLAG_SET_CAUGHT);
             GetSetPokedexFlag(species, FLAG_SET_SEEN);
         }
@@ -2711,14 +3218,14 @@ static void DebugAction_FlagsVars_CollisionOnOff(u8 taskId)
 
 static void DebugAction_FlagsVars_EncounterOnOff(u8 taskId)
 {
-#if OW_FLAG_NO_ENCOUNTER == 0
+#if WE_FLAG_NO_ENCOUNTER == 0
     Debug_DestroyMenu_Full_Script(taskId, Debug_FlagsNotSetOverworldConfigMessage);
 #else
-    if (FlagGet(OW_FLAG_NO_ENCOUNTER))
+    if (FlagGet(WE_FLAG_NO_ENCOUNTER))
         PlaySE(SE_PC_OFF);
     else
         PlaySE(SE_PC_LOGIN);
-    FlagToggle(OW_FLAG_NO_ENCOUNTER);
+    FlagToggle(WE_FLAG_NO_ENCOUNTER);
 #endif
 }
 
@@ -2747,22 +3254,21 @@ static void DebugAction_FlagsVars_BagUseOnOff(u8 taskId)
 
 static void DebugAction_FlagsVars_CatchingOnOff(u8 taskId)
 {
-#if B_FLAG_NO_CATCHING == 0
+#if WE_FLAG_NO_CATCHING == 0
     Debug_DestroyMenu_Full_Script(taskId, Debug_FlagsNotSetBattleConfigMessage);
 #else
-    if (FlagGet(B_FLAG_NO_CATCHING))
+    if (FlagGet(WE_FLAG_NO_CATCHING))
         PlaySE(SE_PC_OFF);
     else
         PlaySE(SE_PC_LOGIN);
-    FlagToggle(B_FLAG_NO_CATCHING);
+    FlagToggle(WE_FLAG_NO_CATCHING);
 #endif
 }
 
 // *******************************
 // Actions Give
 #define ITEM_TAG 0xFDF3
-#define tItemId    data[5]
-#define tSpriteId  data[6]
+#define tItemId    data[6]
 
 static void Debug_Display_ItemInfo(enum Item itemId, u32 digit, u8 windowId)
 {
@@ -2890,7 +3396,6 @@ static void DebugAction_Give_Item_SelectQuantity(u8 taskId)
 }
 
 #undef tItemId
-#undef tSpriteId
 
 //Pokemon
 static void ResetMonDataStruct(struct DebugMonData *sDebugMonData)
@@ -2910,8 +3415,7 @@ static void ResetMonDataStruct(struct DebugMonData *sDebugMonData)
     }
 }
 
-#define tIsComplex  data[5]
-#define tSpriteId   data[6]
+#define tIsComplex  data[6]
 #define tIterator   data[7]
 #define tIsEgg      data[8]
 
@@ -3506,7 +4010,7 @@ static void Debug_Display_MoveInfo(enum Move moveId, u32 iteration, u32 digit, u
     WrapFontIdToFit(gStringVar1, end, DEBUG_MENU_FONT, WindowWidthPx(windowId));
     StringCopyPadded(gStringVar1, gStringVar1, CHAR_SPACE, 15);
     StringCopy(gStringVar4, COMPOUND_STRING("Move "));
-    ConvertIntToDecimalStringN(gStringVar3, iteration, STR_CONV_MODE_LEADING_ZEROS, 1);
+    ConvertIntToDecimalStringN(gStringVar3, iteration + 1, STR_CONV_MODE_LEADING_ZEROS, 1);
     StringAppend(gStringVar4, gStringVar3);
     StringAppend(gStringVar4, COMPOUND_STRING(": "));
     ConvertIntToDecimalStringN(gStringVar3, moveId, STR_CONV_MODE_LEADING_ZEROS, 3);
@@ -3719,12 +4223,10 @@ static void DebugAction_Give_Pokemon_ComplexCreateMon(u8 taskId) //https://githu
 }
 
 #undef tIsComplex
-#undef tSpriteId
 #undef tIterator
 #undef tIsEgg
 
 //Decoration
-#define tSpriteId  data[6]
 
 static void Debug_Display_DecorationInfo(enum Item itemId, u32 digit, u8 windowId)
 {
@@ -3796,8 +4298,6 @@ static void DebugAction_Give_Decoration_SelectId(u8 taskId)
         DebugAction_DestroyExtraWindow(taskId);
     }
 }
-
-#undef tSpriteId
 
 static void DebugAction_Give_MaxMoney(u8 taskId)
 {
@@ -4020,7 +4520,7 @@ static void DebugAction_PCBag_ClearBoxes(u8 taskId)
 // Actions Sound
 static const u8 *const sSongNames[];
 
-#define tCurrentSong  data[5]
+#define tCurrentSong  data[6]
 
 static void DebugAction_Sound_SE(u8 taskId)
 {
@@ -4875,14 +5375,14 @@ static void DebugAction_Party_HealParty(u8 taskId)
 
 void DebugNative_GetAbilityNames(void)
 {
-    enum Species species = GetMonData(&gParties[B_TRAINER_0][gSpecialVar_0x8004], MON_DATA_SPECIES);
+    enum Species species = GetMonData(&gParties[B_TRAINER_PLAYER][gSpecialVar_0x8004], MON_DATA_SPECIES);
     StringCopy(gStringVar1, gAbilitiesInfo[GetAbilityBySpecies(species, 0)].name);
     StringCopy(gStringVar2, gAbilitiesInfo[GetAbilityBySpecies(species, 1)].name);
     StringCopy(gStringVar3, gAbilitiesInfo[GetAbilityBySpecies(species, 2)].name);
 }
 
-#define tPartyId               data[5]
-#define tFriendship            data[6]
+#define tPartyId               data[6]
+#define tFriendship            data[7]
 
 static void Debug_Display_FriendshipInfo(s32 oldFriendship, s32 newFriendship, u32 digit, u8 windowId)
 {
@@ -4899,7 +5399,7 @@ static void DebugNativeStep_Party_SetFriendshipSelect(u8 taskId)
     {
         PlaySE(SE_SELECT);
         gTasks[taskId].tFriendship = gTasks[taskId].tInput;
-        SetMonData(&gParties[B_TRAINER_0][gTasks[taskId].tPartyId], MON_DATA_FRIENDSHIP, &gTasks[taskId].tInput);
+        SetMonData(&gParties[B_TRAINER_PLAYER][gTasks[taskId].tPartyId], MON_DATA_FRIENDSHIP, &gTasks[taskId].tInput);
     }
     else if (JOY_NEW(B_BUTTON))
     {
@@ -4917,7 +5417,7 @@ static void DebugNativeStep_Party_SetFriendshipSelect(u8 taskId)
 static void DebugNativeStep_Party_SetFriendshipMain(u8 taskId)
 {
     u8 windowId = DebugNativeStep_CreateDebugWindow();
-    u32 friendship = GetMonData(&gParties[B_TRAINER_0][gTasks[taskId].tPartyId], MON_DATA_FRIENDSHIP);
+    u32 friendship = GetMonData(&gParties[B_TRAINER_PLAYER][gTasks[taskId].tPartyId], MON_DATA_FRIENDSHIP);
 
     // Display initial flag
     Debug_Display_FriendshipInfo(friendship, friendship, 0, windowId);
@@ -4941,7 +5441,7 @@ void DebugNative_Party_SetFriendship(void)
 
 #undef tFriendship
 
-#define tStrain            data[6]
+#define tStrain            data[7]
 
 static void Debug_Display_PokerusDaysLeftInfo(s32 daysLeft, s32 strain, u32 digit, u8 windowId)
 {
@@ -4963,7 +5463,7 @@ static void DebugNativeStep_Party_SetPokerusDaysLeftSelect(u8 taskId)
     if (JOY_NEW(A_BUTTON))
     {
         PlaySE(SE_SELECT);
-        SetMonData(&gParties[B_TRAINER_0][gTasks[taskId].tPartyId], MON_DATA_POKERUS_DAYS_LEFT, &gTasks[taskId].tInput);
+        SetMonData(&gParties[B_TRAINER_PLAYER][gTasks[taskId].tPartyId], MON_DATA_POKERUS_DAYS_LEFT, &gTasks[taskId].tInput);
         DebugNativeStep_CloseDebugWindow(taskId);
         return;
     }
@@ -4994,8 +5494,8 @@ static void DebugNativeStep_Party_SetPokerusStrainSelect(u8 taskId)
     {
         PlaySE(SE_SELECT);
         gTasks[taskId].tStrain = gTasks[taskId].tInput;
-        SetMonData(&gParties[B_TRAINER_0][gTasks[taskId].tPartyId], MON_DATA_POKERUS_STRAIN, &gTasks[taskId].tInput);
-        gTasks[taskId].tInput = GetMonData(&gParties[B_TRAINER_0][gTasks[taskId].tPartyId], MON_DATA_POKERUS_DAYS_LEFT);
+        SetMonData(&gParties[B_TRAINER_PLAYER][gTasks[taskId].tPartyId], MON_DATA_POKERUS_STRAIN, &gTasks[taskId].tInput);
+        gTasks[taskId].tInput = GetMonData(&gParties[B_TRAINER_PLAYER][gTasks[taskId].tPartyId], MON_DATA_POKERUS_DAYS_LEFT);
         Debug_Display_PokerusDaysLeftInfo(gTasks[taskId].tInput, gTasks[taskId].tStrain, gTasks[taskId].tDigit, gTasks[taskId].tSubWindowId);
         gTasks[taskId].func = DebugNativeStep_Party_SetPokerusDaysLeftSelect;
         return;
@@ -5016,7 +5516,7 @@ static void DebugNativeStep_Party_SetPokerusStrainSelect(u8 taskId)
 static void DebugNativeStep_Party_SetPokerusMain(u8 taskId)
 {
     u8 windowId = DebugNativeStep_CreateDebugWindow();
-    u32 strain = GetMonData(&gParties[B_TRAINER_0][gTasks[taskId].tPartyId], MON_DATA_POKERUS_STRAIN);
+    u32 strain = GetMonData(&gParties[B_TRAINER_PLAYER][gTasks[taskId].tPartyId], MON_DATA_POKERUS_STRAIN);
 
     // Display initial flag
     Debug_Display_PokerusStrainInfo(strain, 0, windowId);
@@ -5051,10 +5551,10 @@ static void DebugAction_Party_ClearPokerus(u8 taskId)
 {
     for (u32 i = 0; i < PARTY_SIZE; i++)
     {
-        if (!GetMonData(&gParties[B_TRAINER_0][i], MON_DATA_SPECIES))
+        if (!GetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_SPECIES))
             continue;
         u32 data = 0;
-        SetMonData(&gParties[B_TRAINER_0][i], MON_DATA_POKERUS, &data);
+        SetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_POKERUS, &data);
     }
     ScriptContext_Enable();
     Debug_DestroyMenu_Full(taskId);
@@ -5087,7 +5587,7 @@ const struct Trainer* GetDebugAiTrainer(void)
 static void DebugAction_Party_SetParty(u8 taskId)
 {
     ZeroPlayerPartyMons();
-    CreateNPCTrainerPartyFromTrainer(gParties[B_TRAINER_0], &sDebugTrainers[DIFFICULTY_NORMAL][DEBUG_TRAINER_PLAYER], TRUE, BATTLE_TYPE_TRAINER);
+    CreateNPCTrainerPartyFromTrainer(gParties[B_TRAINER_PLAYER], &sDebugTrainers[DIFFICULTY_NORMAL][DEBUG_TRAINER_PLAYER], TRUE, BATTLE_TYPE_TRAINER);
     ScriptContext_Enable();
     Debug_DestroyMenu_Full(taskId);
 }
@@ -5096,8 +5596,8 @@ static void DebugAction_Party_BattleSingle(u8 taskId)
 {
     ZeroPlayerPartyMons();
     ZeroEnemyPartyMons();
-    CreateNPCTrainerPartyFromTrainer(gParties[B_TRAINER_0], &sDebugTrainers[DIFFICULTY_NORMAL][DEBUG_TRAINER_PLAYER], TRUE, BATTLE_TYPE_TRAINER);
-    CreateNPCTrainerPartyFromTrainer(gParties[B_TRAINER_1], GetDebugAiTrainer(), FALSE, BATTLE_TYPE_TRAINER);
+    CreateNPCTrainerPartyFromTrainer(gParties[B_TRAINER_PLAYER], &sDebugTrainers[DIFFICULTY_NORMAL][DEBUG_TRAINER_PLAYER], TRUE, BATTLE_TYPE_TRAINER);
+    CreateNPCTrainerPartyFromTrainer(gParties[B_TRAINER_OPPONENT_A], GetDebugAiTrainer(), FALSE, BATTLE_TYPE_TRAINER);
 
     gBattleTypeFlags = BATTLE_TYPE_TRAINER;
     if (sDebugTrainers[DIFFICULTY_NORMAL][DEBUG_TRAINER_AI].battleType == TRAINER_BATTLE_TYPE_DOUBLES)
