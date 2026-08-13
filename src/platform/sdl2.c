@@ -20,6 +20,7 @@
 #include "gba/flash_internal.h"
 #include "platform/dma.h"
 #include "platform/framedraw.h"
+#include "platform/system.h"
 
 extern void (*const gIntrTable[])(void);
 
@@ -44,6 +45,7 @@ struct SiiRtcInfo internalClock;
 static FILE *sSaveFile = NULL;
 
 extern void AgbMain(void);
+extern void MainLoop(void);
 extern void DoSoftReset(void);
 
 int DoMain(void *param);
@@ -125,9 +127,8 @@ int main(int argc, char **argv)
             SDL_Log("We didn't get Float32 audio format.");
         SDL_PauseAudio(0);
     }
-    
-    VDraw(sdlTexture);
-    mainLoopThread = SDL_CreateThread(DoMain, "AgbMain", NULL);
+
+    AgbMain();
 
     double accumulator = 0.0;
 
@@ -135,56 +136,60 @@ int main(int argc, char **argv)
     internalClock.status = SIIRTCINFO_24HOUR;
     UpdateInternalClock();
 
+    bool isGameStepDrawn = false;
     while (isRunning)
     {
+        double deltaTime;
+
         ProcessEvents();
+
+        curGameTime = SDL_GetPerformanceCounter();
+        deltaTime = (double)((curGameTime - lastGameTime) / (double)SDL_GetPerformanceFrequency());
+        deltaTime *= timeScale; //apply speedup
 
         if (!paused)
         {
-            double dt = fixedTimestep / timeScale; // TODO: Fix speedup
-
-            curGameTime = SDL_GetPerformanceCounter();
-            double deltaTime = (double)((curGameTime - lastGameTime) / (double)SDL_GetPerformanceFrequency());
-            if (deltaTime > (dt * 5))
-                deltaTime = dt;
-            lastGameTime = curGameTime;
-
             accumulator += deltaTime;
 
-            while (accumulator >= dt)
+            isGameStepDrawn = false;
+
+            while (accumulator >= fixedTimestep)
             {
-                if (SDL_AtomicGet(&isFrameAvailable))
+                //run game logic, draw frame and process DMAs and vblank
+                ENTER_VBLANK(); //you must be in VBlank before running a game tick
+                MainLoop();
+                if (!isGameStepDrawn)
                 {
                     VDraw(sdlTexture);
-                    SDL_RenderClear(sdlRenderer);
-                    SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
-                    SDL_AtomicSet(&isFrameAvailable, 0);
-
-                    REG_DISPSTAT |= INTR_FLAG_VBLANK;
-
-                    RunDMAs(DMA_HBLANK);
-
-                    if (REG_DISPSTAT & DISPSTAT_VBLANK_INTR)
-                        gIntrTable[4]();
-                    REG_DISPSTAT &= ~INTR_FLAG_VBLANK;
-
-                    SDL_SemPost(vBlankSemaphore);
-
-                    accumulator -= dt;
+                    //SDL_RenderClear(sdlRenderer);
+                    isGameStepDrawn = true;
                 }
+                RunDMAsAndVBlank();
+
+                accumulator -= fixedTimestep;
+            }
+
+            //samples per frame is 701, that gets multipled by two when being queued and then multipled by four because samples are float32 which are 4 bytes long hence the divide by 8
+            //this number is then checked against samples per frame multipled by three rounded down to 2000 to give it enough margin of error while not desyncing
+            //this is all done to sync audio to gameplay
+            if (SDL_GetQueuedAudioSize(1)/8 < 2000)
+            {
+                AudioUpdate();
+            }
+
+            if (videoScaleChanged)
+            {
+                SDL_SetWindowSize(sdlWindow, DISPLAY_WIDTH * videoScale, DISPLAY_HEIGHT * videoScale);
+                videoScaleChanged = false;
             }
         }
 
-        if (videoScaleChanged)
-        {
-            SDL_SetWindowSize(sdlWindow, DISPLAY_WIDTH * videoScale, DISPLAY_HEIGHT * videoScale);
-            videoScaleChanged = false;
-        }
+        lastGameTime = curGameTime;
 
+        SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
         SDL_RenderPresent(sdlRenderer);
     }
 
-    //StoreSaveFile();
     CloseSaveFile();
 
     SDL_DestroyWindow(sdlWindow);
@@ -317,8 +322,8 @@ void ProcessEvents(void)
                 {
                     speedUp = false;
                     timeScale = 1.0;
-                    SDL_ClearQueuedAudio(1);
-                    SDL_PauseAudio(0);
+                    //SDL_ClearQueuedAudio(1);
+                    //SDL_PauseAudio(0);
                 }
                 break;
             }
@@ -353,7 +358,7 @@ void ProcessEvents(void)
                 {
                     speedUp = true;
                     timeScale = 5.0;
-                    SDL_PauseAudio(1);
+                    //SDL_PauseAudio(1);
                 }
                 break;
             }
@@ -463,8 +468,7 @@ int DoMain(void *data)
 
 void VBlankIntrWait(void)
 {
-    SDL_AtomicSet(&isFrameAvailable, 1);
-    SDL_SemWait(vBlankSemaphore);
+    return;
 }
 
 u8 BinToBcd(u8 bin)

@@ -1,5 +1,6 @@
 #include "global.h"
 #include "platform/dma.h"
+#include "m4a.h"
 
 u16 INTR_CHECK;
 void *INTR_VECTOR;
@@ -21,4 +22,13 @@ void RunDMAsAndVBlank(void)
 	if (REG_DISPSTAT & DISPSTAT_VBLANK_INTR)
 		gIntrTable[4]();
 	REG_DISPSTAT &= ~INTR_FLAG_VBLANK;
+}
+
+void AudioUpdate(void)
+{
+	if (gSoundInit == FALSE)
+		return;
+
+	m4aSoundMain();
+	m4aSoundVSync();
 }

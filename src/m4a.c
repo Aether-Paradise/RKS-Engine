@@ -30,6 +30,10 @@ struct MusicPlayerTrack gMPlayTrack_SE2[9];
 struct MusicPlayerTrack gMPlayTrack_SE3[1];
 u8 gMPlayMemAccArea[0x10];
 
+#ifdef PORTABLE
+bool8 gSoundInit = FALSE;
+#endif
+
 void MP2K_event_nxx();
 void MP2KPlayerMain();
 
@@ -111,6 +115,10 @@ void m4aSoundInit(void)
         MPlayOpen(mplayInfo, track, 2);
         track->chan = 0;
     }
+
+#ifdef PORTABLE
+    gSoundInit = TRUE;
+#endif
 }
 
 void m4aSoundMain(void)
