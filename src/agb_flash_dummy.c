@@ -1,3 +1,4 @@
+#ifdef PORTABLE
 #include "global.h"
 #include "gba/gba.h"
 #include "gba/flash_internal.h"
@@ -62,3 +63,4 @@ u16 ProgramFlashSector_DUMMY(u16 sectorNum, void *src)
     memcpy(&FLASH_BASE[sectorNum << gFlash->sector.shift], src, 0x1000);
     return 0;
 }
+#endif //PORTABLE

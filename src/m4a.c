@@ -13,6 +13,20 @@ extern const u8 gCgb3Vol[];
 BSS_CODE ALIGNED(4) char SoundMainRAM_Buffer[0x800] = {0};
 #endif
 
+#ifndef PORTABLE
+COMMON_DATA struct SoundInfo gSoundInfo = {0};
+COMMON_DATA struct PokemonCrySong gPokemonCrySongs[MAX_POKEMON_CRIES] = {0};
+COMMON_DATA struct MusicPlayerInfo gPokemonCryMusicPlayers[MAX_POKEMON_CRIES] = {0};
+COMMON_DATA struct MusicPlayerInfo gMPlayInfo_BGM = {0};
+COMMON_DATA MPlayFunc gMPlayJumpTable[36] = {0};
+COMMON_DATA struct CgbChannel gCgbChans[4] = {0};
+COMMON_DATA struct MusicPlayerInfo gMPlayInfo_SE1 = {0};
+COMMON_DATA struct MusicPlayerInfo gMPlayInfo_SE2 = {0};
+COMMON_DATA struct MusicPlayerTrack gPokemonCryTracks[MAX_POKEMON_CRIES * 2] = {0};
+COMMON_DATA struct PokemonCrySong gPokemonCrySong = {0};
+COMMON_DATA u8 gMPlayMemAccArea[0x10] = {0};
+COMMON_DATA struct MusicPlayerInfo gMPlayInfo_SE3 = {0};
+#else
 struct SoundInfo gSoundInfo;
 struct PokemonCrySong gPokemonCrySongs[MAX_POKEMON_CRIES];
 struct MusicPlayerInfo gPokemonCryMusicPlayers[MAX_POKEMON_CRIES];
@@ -36,6 +50,7 @@ bool8 gSoundInit = FALSE;
 
 void MP2K_event_nxx();
 void MP2KPlayerMain();
+#endif
 
 u32 MidiKeyToFreq(struct WaveData *wav, u8 key, u8 fineAdjust)
 {
@@ -316,15 +331,27 @@ void MPlayExtender(struct CgbChannel *cgbChans)
     soundInfo->ident++;
 
 #if __STDC_VERSION__ < 202311L
-    gMPlayJumpTable[8] = ply_memacc;
-    gMPlayJumpTable[17] = MP2K_event_lfos;
-    gMPlayJumpTable[19] = MP2K_event_mod;
-    gMPlayJumpTable[28] = ply_xcmd;
-    gMPlayJumpTable[29] = MP2K_event_endtie;
-    gMPlayJumpTable[30] = SampleFreqSet;
-    gMPlayJumpTable[31] = TrackStop;
-    gMPlayJumpTable[32] = FadeOutBody;
-    gMPlayJumpTable[33] = TrkVolPitSet;
+    #ifndef PORTABLE
+        gMPlayJumpTable[8] = ply_memacc;
+        gMPlayJumpTable[17] = ply_lfos;
+        gMPlayJumpTable[19] = ply_mod;
+        gMPlayJumpTable[28] = ply_xcmd;
+        gMPlayJumpTable[29] = ply_endtie;
+        gMPlayJumpTable[30] = SampleFreqSet;
+        gMPlayJumpTable[31] = TrackStop;
+        gMPlayJumpTable[32] = FadeOutBody;
+        gMPlayJumpTable[33] = TrkVolPitSet;
+    #else
+        gMPlayJumpTable[8] = ply_memacc;
+        gMPlayJumpTable[17] = MP2K_event_lfos;
+        gMPlayJumpTable[19] = MP2K_event_mod;
+        gMPlayJumpTable[28] = ply_xcmd;
+        gMPlayJumpTable[29] = MP2K_event_endtie;
+        gMPlayJumpTable[30] = SampleFreqSet;
+        gMPlayJumpTable[31] = TrackStop;
+        gMPlayJumpTable[32] = FadeOutBody;
+        gMPlayJumpTable[33] = TrkVolPitSet;
+    #endif
 #else
     gMPlayJumpTable[8] = (void (*)(...))ply_memacc;
     gMPlayJumpTable[17] = (void (*)(...))ply_lfos;
@@ -358,7 +385,6 @@ void MPlayExtender(struct CgbChannel *cgbChans)
 }
 
 #ifndef PORTABLE
-void MusicPlayerJumpTableCopy(void)
 static void UNUSED MusicPlayerJumpTableCopy(void)
 {
     asm("swi 0x2A");
@@ -417,7 +443,11 @@ void SoundInit(struct SoundInfo *soundInfo)
 
     soundInfo->maxChans = 8;
     soundInfo->masterVolume = 15;
+#ifndef PORTABLE
+    soundInfo->plynote = ply_note;
+#else
     soundInfo->plynote = MP2K_event_nxx;
+#endif
     soundInfo->CgbSound = DummyFunc;
     soundInfo->CgbOscOff = (CgbOscOffFunc)DummyFunc;
     soundInfo->MidiKeyToCgbFreq = (MidiKeyToCgbFreqFunc)DummyFunc;
@@ -445,9 +475,17 @@ void SampleFreqSet(u32 freq)
 #endif
     soundInfo->pcmDmaPeriod = PCM_DMA_BUF_SIZE / soundInfo->pcmSamplesPerVBlank;
 
+#ifndef PORTABLE
+    // LCD refresh rate 59.7275Hz
+    soundInfo->pcmFreq = (597275 * soundInfo->pcmSamplesPerVBlank + 5000) / 10000;
+
+    // CPU frequency 16.78Mhz
+    soundInfo->divFreq = (16777216 / soundInfo->pcmFreq + 1) >> 1;
+#else
     soundInfo->pcmFreq = 60.0f * soundInfo->pcmSamplesPerVBlank;
 
     soundInfo->divFreq = 1.0f / soundInfo->pcmFreq;
+#endif
 
     // Turn off timer 0.
     REG_TM0CNT_H = 0;
@@ -639,8 +677,13 @@ void MPlayOpen(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track
         soundInfo->MPlayMainHead = NULL;
     }
 
+#ifndef PORTABLE
+    soundInfo->musicPlayerHead = mplayInfo;
+    soundInfo->MPlayMainHead = MPlayMain;
+#else
     soundInfo->musicPlayerHead = (u32)mplayInfo;
     soundInfo->MPlayMainHead = (u32)MP2KPlayerMain;
+#endif
     soundInfo->ident = ID_NUMBER;
     mplayInfo->ident = ID_NUMBER;
 }

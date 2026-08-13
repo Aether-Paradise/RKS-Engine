@@ -1,3 +1,4 @@
+#ifdef PORTABLE
 #ifndef MUSIC_PLAYER_H
 #define MUSIC_PLAYER_H
 
@@ -125,3 +126,4 @@ void MP2K_event_endtie(struct MP2KPlayerState *unused, struct MP2KTrack *track);
 void MP2K_event_lfos(struct MP2KPlayerState *unused, struct MP2KTrack *track);
 void MP2K_event_mod(struct MP2KPlayerState *unused, struct MP2KTrack *track);
 #endif
+#endif //PORTABLE
