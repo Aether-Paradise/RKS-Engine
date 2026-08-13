@@ -90,6 +90,45 @@ void EnableVCountIntrAtLine150(void);
 
 #define B_START_SELECT (B_BUTTON | START_BUTTON | SELECT_BUTTON)
 
+void MainLoop()
+{
+    ReadKeys();
+
+    if (gSoftResetDisabled == FALSE
+     && JOY_HELD_RAW(A_BUTTON)
+     && JOY_HELD_RAW(B_START_SELECT) == B_START_SELECT)
+    {
+        rfu_REQ_stopMode();
+        rfu_waitREQComplete();
+        DoSoftReset();
+    }
+
+    if (Overworld_SendKeysToLinkIsRunning() == TRUE)
+    {
+        gLinkTransferringData = TRUE;
+        UpdateLinkAndCallCallbacks();
+        gLinkTransferringData = FALSE;
+    }
+    else
+    {
+        gLinkTransferringData = FALSE;
+        UpdateLinkAndCallCallbacks();
+
+        if (Overworld_RecvKeysFromLinkIsRunning() == TRUE)
+        {
+            gMain.newKeys = 0;
+            ClearSpriteCopyRequests();
+            gLinkTransferringData = TRUE;
+            UpdateLinkAndCallCallbacks();
+            gLinkTransferringData = FALSE;
+        }
+    }
+
+    PlayTimeCounter_Update();
+    MapMusicMain();
+    WaitForVBlank();
+}
+
 void AgbMain(void)
 {
     // Modern compilers are liberal with the stack on entry to this function,
@@ -97,6 +136,9 @@ void AgbMain(void)
 #if !MODERN
     RegisterRamReset(RESET_ALL);
 #endif //MODERN
+#ifdef PORTABLE
+    REG_VCOUNT = 161; // prep for being in VBlank period
+#endif
     *(vu16 *)BG_PLTT = RGB_WHITE; // Set the backdrop to white on startup
     InitGpuRegManager();
     REG_WAITCNT = WAITCNT_PREFETCH_ENABLE | WAITCNT_WS0_S_1 | WAITCNT_WS0_N_3;
@@ -136,44 +178,12 @@ void AgbMain(void)
     AGBPrintInit();
 #endif
 #endif
+#ifndef PORTABLE
     for (;;)
     {
-        ReadKeys();
-
-        if (gSoftResetDisabled == FALSE
-         && JOY_HELD_RAW(A_BUTTON)
-         && JOY_HELD_RAW(B_START_SELECT) == B_START_SELECT)
-        {
-            rfu_REQ_stopMode();
-            rfu_waitREQComplete();
-            DoSoftReset();
-        }
-
-        if (Overworld_SendKeysToLinkIsRunning() == TRUE)
-        {
-            gLinkTransferringData = TRUE;
-            UpdateLinkAndCallCallbacks();
-            gLinkTransferringData = FALSE;
-        }
-        else
-        {
-            gLinkTransferringData = FALSE;
-            UpdateLinkAndCallCallbacks();
-
-            if (Overworld_RecvKeysFromLinkIsRunning() == TRUE)
-            {
-                gMain.newKeys = 0;
-                ClearSpriteCopyRequests();
-                gLinkTransferringData = TRUE;
-                UpdateLinkAndCallCallbacks();
-                gLinkTransferringData = FALSE;
-            }
-        }
-
-        PlayTimeCounter_Update();
-        MapMusicMain();
-        WaitForVBlank();
+        MainLoop();
     }
+#endif
 }
 
 static void UpdateLinkAndCallCallbacks(void)
@@ -371,7 +381,9 @@ static void VBlankIntr(void)
 
     gPcmDmaCounter = gSoundInfo.pcmDmaCounter;
 
+#ifndef PORTABLE
     m4aSoundMain();
+#endif
     TryReceiveLinkBattleData();
 
     if (!gMain.inBattle || !(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_FRONTIER | BATTLE_TYPE_RECORDED)))
@@ -402,7 +414,9 @@ static void VCountIntr(void)
     if (gMain.vcountCallback)
         gMain.vcountCallback();
 
+#ifndef PORTABLE
     m4aSoundVSync();
+#endif
     INTR_CHECK |= INTR_FLAG_VCOUNT;
     gMain.intrCheck |= INTR_FLAG_VCOUNT;
 }
