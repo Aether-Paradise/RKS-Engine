@@ -1226,9 +1226,9 @@ void HeadbuttWildEncounter(void)
         {
             if (TryDoDoubleWildBattle())
             {
-                struct Pokemon mon1 = gEnemyParty[0];
+                struct Pokemon mon1 = gParties[B_TRAINER_OPPONENT_A][0];
                 TryGenerateWildMon(wildPokemonInfo, WILD_AREA_HEADBUTT, WILD_CHECK_REPEL | WILD_CHECK_KEEN_EYE);
-                gEnemyParty[1] = mon1;
+                gParties[B_TRAINER_OPPONENT_A][1] = mon1;
                 BattleSetup_StartDoubleWildBattle();
                 gSpecialVar_Result = TRUE;
             }

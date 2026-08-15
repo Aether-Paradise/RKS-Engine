@@ -33,11 +33,11 @@ TEST("Form species ID tables fit within RANDOM_MON_MAX_FORMS")
 
     for (u32 i = 0; i < NUM_SPECIES; i++)
     {
-        if (gSpeciesInfo[i].formSpeciesIdTable)
-            PARAMETRIZE_LABEL("ID:%d - %S", i, gSpeciesInfo[i].speciesName) { species = i; }
+        if (GetSpeciesFormTable(i))
+            PARAMETRIZE_LABEL("ID:%d - %S", i, GetSpeciesName(i)) { species = i; }
     }
 
-    formSpeciesIdTable = gSpeciesInfo[species].formSpeciesIdTable;
+    formSpeciesIdTable = GetSpeciesFormTable(species);
     for (formCount = 0; formSpeciesIdTable[formCount] != FORM_SPECIES_END; formCount++)
         ;
 
@@ -115,9 +115,9 @@ TEST("Forms have the appropriate species form changes")
     EXPECT(hasBattleEnd);
 
     // Primal Reversion don't change forms upon fainting
-    if (IsSpeciesMegaEvolution(i)
-        || IsSpeciesGigantamax(i)
-        || IsSpeciesUltraBurst(i))
+    if (IsSpeciesMegaEvolution(species)
+        || IsSpeciesGigantamax(species)
+        || IsSpeciesUltraBurst(species))
     {
         EXPECT(hasFaint);
     }

@@ -8647,8 +8647,6 @@ static u8 IndividualToCombinedPartyId(u8 index, enum BattlerId battler)
     return index;
 }
 
-#endif // (RKSE_PARTY_MENU_DESIGN == PARTY_MENU_DESIGN_EMERALD)
-
 #if TESTING
 s8 Test_UpdatePartySelectionSingleLayout(s8 slotId, s8 movementDir, bool8 chooseHalf, u8 lastSelectedSlot)
 {
@@ -8665,3 +8663,5 @@ s8 Test_UpdatePartySelectionSingleLayout(s8 slotId, s8 movementDir, bool8 choose
     return slotId;
 }
 #endif
+
+#endif // (RKSE_PARTY_MENU_DESIGN == PARTY_MENU_DESIGN_EMERALD)

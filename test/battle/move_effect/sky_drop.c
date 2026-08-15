@@ -302,7 +302,7 @@ DOUBLE_BATTLE_TEST("Sky Drop user and target can't activate Eject items while th
     GIVEN {
         ASSUME(GetItemHoldEffect(ITEM_EJECT_BUTTON) == HOLD_EFFECT_EJECT_BUTTON);
         ASSUME(GetItemHoldEffect(ITEM_EJECT_PACK) == HOLD_EFFECT_EJECT_PACK);
-        ASSUME(gSpeciesInfo[SPECIES_VULLABY].weight < 2000);
+        ASSUME(GetSpeciesWeight(SPECIES_VULLABY) < 2000);
         ASSUME(GetSpeciesType(SPECIES_VULLABY, 0) == TYPE_FLYING || GetSpeciesType(SPECIES_VULLABY, 1) == TYPE_FLYING);
         ASSUME(MoveHasAdditionalEffectWithChance(MOVE_BREAKING_SWIPE, MOVE_EFFECT_STAT_MINUS, 100));
         PLAYER(SPECIES_WOBBUFFET) { Item(item); }

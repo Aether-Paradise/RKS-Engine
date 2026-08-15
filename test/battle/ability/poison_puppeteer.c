@@ -134,7 +134,7 @@ SINGLE_BATTLE_TEST("Poison Puppeteer consumes its pending target after triggerin
     GIVEN {
         ASSUME(GetMoveStrikeCount(MOVE_TWINEEDLE) == 2);
         ASSUME(MoveHasAdditionalEffect(MOVE_TWINEEDLE, MOVE_EFFECT_POISON));
-        ASSUME(gItemsInfo[ITEM_PERSIM_BERRY].holdEffect == HOLD_EFFECT_CURE_CONFUSION);
+        ASSUME(GetItemHoldEffect(ITEM_PERSIM_BERRY) == HOLD_EFFECT_CURE_CONFUSION);
         PLAYER(SPECIES_PECHARUNT) { Ability(ABILITY_POISON_PUPPETEER); }
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_PERSIM_BERRY); }
     } WHEN {

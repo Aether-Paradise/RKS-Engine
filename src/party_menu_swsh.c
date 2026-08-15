@@ -5879,7 +5879,7 @@ void DrawHeldItemIconsForTrade(u8 *partyCounts, u8 *partySpriteIds, u8 whichPart
     case TRADE_PARTNER:
         for (i = 0; i < partyCounts[TRADE_PARTNER]; i++)
         {
-            item = GetMonData(&gEnemyParty[i], MON_DATA_HELD_ITEM);
+            item = GetMonData(&gParties[B_TRAINER_OPPONENT_A][i], MON_DATA_HELD_ITEM);
             if (item != ITEM_NONE)
                 CreateHeldItemSpriteForTrade(partySpriteIds[i + PARTY_SIZE], ItemIsMail(item));
         }
@@ -10632,5 +10632,22 @@ static u8 IndividualToCombinedPartyId(u8 index, enum BattlerId battler)
         return index + MULTI_PARTY_SIZE;
     return index;
 }
+
+#if TESTING
+s8 Test_UpdatePartySelectionSingleLayout(s8 slotId, s8 movementDir, bool8 chooseHalf, u8 lastSelectedSlot)
+{
+    struct PartyMenuInternal internal = {0};
+    struct PartyMenuInternal *savedInternal = sPartyMenuInternal;
+
+    internal.chooseHalf = chooseHalf;
+    internal.lastSelectedSlot = lastSelectedSlot;
+    sPartyMenuInternal = &internal;
+
+    UpdatePartySelectionSingleLayout(&slotId, movementDir);
+
+    sPartyMenuInternal = savedInternal;
+    return slotId;
+}
+#endif
 
 #endif // SWSH_PARTY_MENU

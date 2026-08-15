@@ -402,7 +402,7 @@ void StartWildBattleWithOWE(struct ScriptContext *ctx)
     if (StartWildBattleWithOWE_CheckBattleFrontier(headerId))
         return;
 
-    if (StartWildBattleWithOWE_CheckMassOutbreak(category, speciesId))
+    if (StartWildBattleWithOWE_CheckMassOutbreak(category, speciesId, level))
         return;
 
     if (StartWildBattleWithOWE_CheckDoubleBattle(owe, headerId))

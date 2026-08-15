@@ -1499,7 +1499,7 @@ void GenerateBattlePyramidWildMon(enum Species forceSpecies)
     }
     SetMonData(&gParties[B_TRAINER_OPPONENT_A][0],
                MON_DATA_EXP,
-               &gExperienceTables[gSpeciesInfo[species].growthRate][lvl]);
+               &gExperienceTables[GetSpeciesGrowthRate(species)][lvl]);
 
     // Give initial moves and replace one with desired move
     GiveBoxMonInitialMoveset(&gParties[B_TRAINER_OPPONENT_A][0].box);

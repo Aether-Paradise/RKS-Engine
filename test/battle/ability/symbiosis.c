@@ -181,7 +181,7 @@ DOUBLE_BATTLE_TEST("Symbiosis transfers its item after Gem consumption, but befo
 DOUBLE_BATTLE_TEST("Symbiosis does not transfer its item after an ally's Eject Button activates")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_EJECT_BUTTON].holdEffect == HOLD_EFFECT_EJECT_BUTTON);
+        ASSUME(GetItemHoldEffect(ITEM_EJECT_BUTTON) == HOLD_EFFECT_EJECT_BUTTON);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_EJECT_BUTTON); }
         PLAYER(SPECIES_ORANGURU) { Ability(ABILITY_SYMBIOSIS); Item(ITEM_POTION); }
         PLAYER(SPECIES_WOBBUFFET);
@@ -202,7 +202,7 @@ DOUBLE_BATTLE_TEST("Symbiosis does not transfer its item after an ally's Eject B
 DOUBLE_BATTLE_TEST("Symbiosis does not transfer its item after an ally's Eject Pack activates")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_EJECT_PACK].holdEffect == HOLD_EFFECT_EJECT_PACK);
+        ASSUME(GetItemHoldEffect(ITEM_EJECT_PACK) == HOLD_EFFECT_EJECT_PACK);
         ASSUME_STAT_CHANGE(MOVE_CHARM, attack: -2);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_EJECT_PACK); }
         PLAYER(SPECIES_ORANGURU) { Ability(ABILITY_SYMBIOSIS); Item(ITEM_POTION); }
