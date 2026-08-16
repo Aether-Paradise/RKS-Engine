@@ -86,6 +86,7 @@ endif
 
 OBJCOPY := $(PREFIX)objcopy
 OBJDUMP := $(PREFIX)objdump
+WINDRES := $(PREFIX)windres
 AS := $(PREFIX)as
 LD := $(PREFIX)ld
 
@@ -346,6 +347,10 @@ else
   OBJS     := $(C_OBJS) $(C_ASM_OBJS) $(ASM_OBJS) $(DATA_ASM_OBJS) $(MID_OBJS)
 endif
 
+ifeq ($(TARGET_OS),WINDOWS)
+  OBJS += $(OBJ_DIR)/res.o
+endif
+
 OBJS_REL := $(patsubst $(OBJ_DIR)/%,%,$(OBJS))
 
 SUBDIRS  := $(sort $(dir $(OBJS)))
@@ -508,6 +513,9 @@ $(OBJ_DIR)/sym_common.ld: sym_common.txt $(C_OBJS) $(wildcard common_syms/*.txt)
 
 $(OBJ_DIR)/sym_ewram.ld: sym_ewram.txt
 	$(RAMSCRGEN) ewram_data $< ENGLISH > $@
+
+$(OBJ_DIR)/res.o: $(C_SUBDIR)/platform/win32res/res.rc $(C_SUBDIR)/platform/win32res/icon.ico
+	$(WINDRES) $< -o $@
 
 # Linker script
 ifeq ($(MODERN),0)
