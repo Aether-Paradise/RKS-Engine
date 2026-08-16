@@ -104,7 +104,7 @@ ifeq ($(PORTABLE),1)
     FIX_UNDERSCORE := $(OBJCOPY)
     LEADING_UNDERSCORE_FLAG :=
   else
-    SDL_DIR := ./SDL2/x86_64-w64-mingw32/i686-w64-mingw32
+    SDL_DIR := ./SDL2/i686-w64-mingw32
     ASM_PSEUDO_OP_CONV := sed -e 's/\.4byte/\.int/g;s/\.2byte/\.short/g'
     #FIX_UNDERSCORE is required for 32 bit windows
     ifeq ($(TARGET_OS),WINDOWS)
@@ -238,7 +238,6 @@ else ifeq ($(PORTABLE),1)
   MODERNCC := $(PREFIX)gcc
   PATH_MODERNCC := PATH="$(PATH)" $(MODERNCC)
   CC1 	:= $(shell $(PREFIX)gcc --print-prog-name=cc1) -quiet
-  #override CFLAGS += -Wno-trigraphs -Wimplicit -Wparentheses -Wunused -m$(BIT_WIDTH) -std=gnu99 $(LEADING_UNDERSCORE_FLAG) -fno-dce -fno-builtin -Wno-unused-function -DPORTABLE -DNONMATCHING -D UBFIX -DMODERN=$(MODERN)
   override CFLAGS += $(OS_CFLAGS) -Wno-trigraphs -Wimplicit -Wparentheses -Wunused -m$(BIT_WIDTH) -std=gnu99 $(LEADING_UNDERSCORE_FLAG) -fno-dce -fno-builtin -Wno-unused-function -DPORTABLE -DNONMATCHING -D UBFIX -DMODERN=$(MODERN)
   LIB := $(LIBPATH) -lgcc -lc
 else
