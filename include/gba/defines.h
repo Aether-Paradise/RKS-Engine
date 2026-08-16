@@ -24,7 +24,11 @@
 #define KEEP_SECTION __attribute__((section(".text.consts")))
 #define DEPRECATED(msg) __attribute__((deprecated(msg)))
 
+#ifdef PORTABLE
+#define ARM_FUNC
+#else
 #define ARM_FUNC __attribute__((target("arm")))
+#endif
 
 #if MODERN
 #define NOINLINE __attribute__((noinline))

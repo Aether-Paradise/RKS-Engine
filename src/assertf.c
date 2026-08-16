@@ -1,4 +1,8 @@
+#ifndef PORTABLE
 #include <alloca.h>
+#else
+#include <malloc.h>
+#endif
 #include <stdarg.h>
 #include "global.h"
 #include "bg.h"
