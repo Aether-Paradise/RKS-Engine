@@ -8,7 +8,7 @@ KEEP_TEMPS  ?= 0
 PORTABLE    ?= 0
 IS64BIT     ?= 1
 TARGET_PLATFORM ?= PLATFORM_SDL2
-TARGET_OS       ?= WINDOWS
+TARGET_OS       ?= NONE
 TILE_RENDERER   ?= RENDERER_EASY_DRAW
 
 # `File name`.gba ('_modern' will be appended to the modern builds)
