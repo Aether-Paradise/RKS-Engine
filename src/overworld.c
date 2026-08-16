@@ -569,8 +569,14 @@ void LoadSaveblockObjEventScripts(void)
     struct ObjectEventTemplate *savObjTemplates = gSaveBlock1Ptr->objectEventTemplates;
     s32 i;
 
-    for (i = 0; i < OBJECT_EVENT_TEMPLATES_COUNT; i++)
-        savObjTemplates[i].script = mapHeaderObjTemplates[i].script;
+#ifdef UBFIX
+    if (mapHeaderObjTemplates != NULL &&
+        savObjTemplates != NULL)
+#endif
+    {
+        for (i = 0; i < OBJECT_EVENT_TEMPLATES_COUNT; i++)
+            savObjTemplates[i].script = mapHeaderObjTemplates[i].script;
+    }
 }
 
 static struct ObjectEventTemplate *GetObjectEventTemplate(u8 localId)
@@ -828,10 +834,13 @@ void SetContinueGameWarpToDynamicWarp(int unused)
 
 const struct MapConnection *GetMapConnection(u8 dir)
 {
+#ifdef UBFIX
+    if (gMapHeader.connections == NULL)
+        return NULL;
+#endif
     s32 i;
     s32 count = gMapHeader.connections->count;
     const struct MapConnection *connection = gMapHeader.connections->connections;
-
     if (connection == NULL)
         return NULL;
 
@@ -2135,12 +2144,24 @@ void CB2_ContinueSavedGame(void)
     UnfreezeObjectEvents();
     DoTimeBasedEvents();
     UpdateMiscOverworldStates();
+    
+    #ifdef UBFIX
+    //UBFIX hack: Prevent null pointer dereference when save continuing in petalburg gym
+    //InitMapFromSavedGame runs map scripts which in petalburg's gym case modifies tilemap data before its loaded when loaded from save continue
+    //the hacky solution is to temporarily initialize tileset and then free it so it wouldn't cause memory leaks
+    InitOverworldBgs();
+    #endif
+    
     if (gMapHeader.mapLayoutId == LAYOUT_BATTLE_FRONTIER_BATTLE_PYRAMID_FLOOR)
         InitBattlePyramidMap(TRUE);
     else if (trainerHillMapId != 0)
         InitTrainerHillMap();
     else
         InitMapFromSavedGame();
+    
+    #ifdef UBFIX
+    CleanupOverworldWindowsAndTilemaps();
+    #endif
 
     PlayTimeCounter_Start();
     ScriptContext_Init();

@@ -11,7 +11,7 @@ TrainerHill_Entrance_OnTransition:
 	getplayerxy VAR_TEMP_D, VAR_RESULT
 	end
 
-@ Unused
+/* Unused*/
 TrainerHill_Entrance_OnWarp:
 	end
 
@@ -53,7 +53,7 @@ TrainerHill_Entrance_OnFrame:
 	map_script_2 VAR_TEMP_D, 17, TrainerHill_Entrance_EventScript_ExitElevator
 	map_script_2 VAR_TEMP_5, 1, TrainerHill_Entrance_EventScript_EntryTrigger
 	map_script_2 VAR_TEMP_1, 1, TrainerHill_EventScript_WarpToEntranceCounter
-	.2byte 0
+	.short 0
 
 TrainerHill_Entrance_EventScript_ExitElevator::
 	lockall
@@ -202,7 +202,7 @@ TrainerHill_Entrance_Movement_PushPlayerBackFromCounter:
 	walk_down
 	step_end
 
-@ Unused
+/* Unused*/
 TrainerHill_Entrance_Movement_FaceUp:
 	face_up
 	step_end
@@ -361,7 +361,7 @@ TrainerHill_Entrance_Text_ExplainTrainerHill:
 	.string "neither Exp. Points nor money will\l"
 	.string "be awarded.$"
 
-@ Unused
+/* Unused*/
 TrainerHill_Entrance_Text_NeedAtLeastTwoPokemon:
 	.string "Oh, I'm sorry, but you appear to have\n"
 	.string "only one POKéMON with you.\p"
@@ -411,7 +411,7 @@ TrainerHill_Roof_Text_ArriveZippierNextTime:
 	.string "a tag team with you!\p"
 	.string "Until we meet again, amigo!$"
 
-@ Unused
+/* Unused*/
 TrainerHill_Roof_Text_BuiltTrainerHillToFindPartner:
 	.string "I had the TRAINER HILL built for but\n"
 	.string "one reason and one only!\p"

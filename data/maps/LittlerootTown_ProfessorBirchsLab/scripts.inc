@@ -4,20 +4,20 @@ LittlerootTown_ProfessorBirchsLab_MapScripts::
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, LittlerootTown_ProfessorBirchsLab_OnFrame
 	.byte 0
 
-	@ State descriptions for VAR_DEX_UPGRADE_JOHTO_STARTER_STATE
-	@ 1: Beat Elite Four, Dex upgrade ready
-	@ 2: Received National Dex
-	@ 3: Left lab after receiving National Dex
-	@ 4: Entered lab after catching all Hoenn mons
-	@ 5: Birch told player to choose Johto starter
-	@ 6: Chose Johto starter
+	/* State descriptions for VAR_DEX_UPGRADE_JOHTO_STARTER_STATE*/
+	/* 1: Beat Elite Four, Dex upgrade ready*/
+	/* 2: Received National Dex*/
+	/* 3: Left lab after receiving National Dex*/
+	/* 4: Entered lab after catching all Hoenn mons*/
+	/* 5: Birch told player to choose Johto starter*/
+	/* 6: Chose Johto starter*/
 
-	@ State descriptions for VAR_BIRCH_LAB_STATE
-	@ 1: Never occurs
-	@ 2: Chose starter
-	@ 3: Received starter in lab
-	@ 4: Defeated rival on Route 103
-	@ 5: Received pokedex
+	/* State descriptions for VAR_BIRCH_LAB_STATE*/
+	/* 1: Never occurs*/
+	/* 2: Chose starter*/
+	/* 3: Received starter in lab*/
+	/* 4: Defeated rival on Route 103*/
+	/* 5: Received pokedex*/
 
 LittlerootTown_ProfessorBirchsLab_OnTransition:
 	call Common_EventScript_SetupRivalGfxId
@@ -56,7 +56,7 @@ LittlerootTown_ProfessorBirchsLab_OnWarp:
 	map_script_2 VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 6, LittlerootTown_ProfessorBirchsLab_EventScript_AddRivalObject
 	map_script_2 VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 4, LittlerootTown_ProfessorBirchsLab_EventScript_SetObjectPosForJohtoStarters
 	map_script_2 VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 5, LittlerootTown_ProfessorBirchsLab_EventScript_SetObjectPosForJohtoStarters
-	.2byte 0
+	.short 0
 
 LittlerootTown_ProfessorBirchsLab_EventScript_SetPlayerPosForReceiveStarter::
 	turnobject LOCALID_PLAYER, DIR_NORTH
@@ -100,10 +100,10 @@ LittlerootTown_ProfessorBirchsLab_OnFrame:
 	map_script_2 VAR_BIRCH_LAB_STATE, 4, LittlerootTown_ProfessorBirchsLab_EventScript_GivePokedexEvent
 	map_script_2 VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 1, LittlerootTown_ProfessorBirchsLab_EventScript_UpgradeToNationalDex
 	map_script_2 VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 4, LittlerootTown_ProfessorBirchsLab_EventScript_ChooseJohtoStarter
-	.2byte 0
+	.short 0
 
-@ The starter is technically given prior to this on Route 101 by special ChooseStarter
-@ This is just where the game tells you its yours and lets you nickname it
+/* The starter is technically given prior to this on Route 101 by special ChooseStarter*/
+/* This is just where the game tells you its yours and lets you nickname it*/
 LittlerootTown_ProfessorBirchsLab_EventScript_GiveStarterEvent::
 	lockall
 	bufferleadmonspeciesname STR_VAR_1
@@ -920,7 +920,7 @@ LittlerootTown_ProfessorBirchsLab_Text_TakeYourTimeAllInvaluable:
 	.string "you decide.\p"
 	.string "They're all invaluable POKéMON.$"
 
-@ Unused
+/* Unused*/
 LittlerootTown_ProfessorBirchsLab_Text_PickedFinePokemon:
 	.string "PROF. BIRCH: I see!\n"
 	.string "You picked a fine POKéMON!$"
@@ -929,7 +929,7 @@ LittlerootTown_ProfessorBirchsLab_Text_ReceivedJohtoStarter:
 	.string "{PLAYER} received the {STR_VAR_1}\n"
 	.string "from PROF. BIRCH!$"
 
-@ Unused
+/* Unused*/
 LittlerootTown_ProfessorBirchsLab_Text_NicknameJohtoStarter:
 	.string "Want to give a nickname to\n"
 	.string "the {STR_VAR_1} you received?$"
@@ -947,7 +947,7 @@ LittlerootTown_ProfessorBirchsLab_Text_BetterLeaveOthersAlone:
 	.string "You received the promised POKéMON.\n"
 	.string "Better leave the others alone.$"
 
-@ Unused
+/* Unused*/
 LittlerootTown_ProfessorBirchsLab_Text_DontHaveAnyRoomForPokemon:
 	.string "Oh, you don't have any room for\n"
 	.string "this POKéMON.$"

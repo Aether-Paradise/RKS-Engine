@@ -9,7 +9,7 @@ BattleFrontier_ReceptionGate_OnTransition:
 
 BattleFrontier_ReceptionGate_OnFrame:
 	map_script_2 VAR_HAS_ENTERED_BATTLE_FRONTIER, 0, BattleFrontier_ReceptionGate_EventScript_FirstTimeEntering
-	.2byte 0
+	.short 0
 
 BattleFrontier_ReceptionGate_EventScript_FirstTimeEntering::
 	lockall
@@ -77,7 +77,7 @@ BattleFrontier_ReceptionGate_Movement_PlayerFaceScott:
 	walk_in_place_faster_right
 	step_end
 
-@ Unused
+/* Unused*/
 BattleFrontier_ReceptionGate_Movement_WalkDown:
 	walk_down
 	walk_down

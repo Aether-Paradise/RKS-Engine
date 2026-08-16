@@ -1545,7 +1545,7 @@ void DecompressAndLoadBgGfxUsingHeap(u8 bgId, const void *src, u32 size, u16 off
     {
         u8 taskId = CreateTask(task_free_buf_after_copying_tile_data_to_vram, 0);
         gTasks[taskId].data[0] = copy_decompressed_tile_data_to_vram(bgId, ptr, size, offset, mode);
-        SetWordTaskArg(taskId, 1, (u32)ptr);
+        SetWordTaskArg(taskId, 1, (uintptr_t)ptr);
     }
 }
 

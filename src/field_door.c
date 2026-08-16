@@ -1163,10 +1163,6 @@ static void DrawDoor(const struct DoorGraphics *gfx, const struct DoorAnimFrame 
     }
 }
 
-#define tFramesHi data[0]
-#define tFramesLo data[1]
-#define tGfxHi data[2]
-#define tGfxLo data[3]
 #define tFrameId data[4]
 #define tCounter data[5]
 #define tX data[6]
@@ -1195,8 +1191,8 @@ static bool32 AnimateDoorFrame(struct DoorGraphics *gfx, struct DoorAnimFrame *f
 static void Task_AnimateDoor(u8 taskId)
 {
     u16 *data = (u16*) gTasks[taskId].data;
-    struct DoorAnimFrame *frames = (struct DoorAnimFrame *)(tFramesHi << 16 | tFramesLo);
-    struct DoorGraphics *gfx = (struct DoorGraphics *)(tGfxHi << 16 | tGfxLo);
+    struct DoorAnimFrame *frames = gTasks[taskId].ptr.genericPtr[0];
+    struct DoorGraphics *gfx = gTasks[taskId].ptr.genericPtr[1];
 
     if (AnimateDoorFrame(gfx, frames, gTasks[taskId].data) == FALSE)
         DestroyTask(taskId);
@@ -1234,11 +1230,8 @@ static s8 StartDoorAnimationTask(const struct DoorGraphics *gfx, const struct Do
         tX = x;
         tY = y;
 
-        tFramesLo = (u32)frames;
-        tFramesHi = (u32)frames >> 16;
-
-        tGfxLo = (u32)gfx;
-        tGfxHi = (u32)gfx >> 16;
+        gTasks[taskId].ptr.genericPtr[0] = (void*)frames;
+        gTasks[taskId].ptr.genericPtr[1] = (void*)gfx;
 
         return taskId;
     }

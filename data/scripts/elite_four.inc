@@ -30,7 +30,7 @@ PokemonLeague_EliteFour_EventScript_WalkInCloseDoor::
 	special DrawWholeMapView
 	return
 
-@ Essentially unused, only necessary when re-entering an Elite Four room after defeating the member, which isnt normally possible
+/* Essentially unused, only necessary when re-entering an Elite Four room after defeating the member, which isnt normally possible*/
 PokemonLeague_EliteFour_EventScript_ResetAdvanceToNextRoom::
 	setmetatile 6, 1, METATILE_EliteFour_OpenDoor_Frame, FALSE
 	setmetatile 6, 2, METATILE_EliteFour_OpenDoor_Opening, FALSE

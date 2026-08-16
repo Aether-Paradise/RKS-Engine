@@ -12,31 +12,31 @@
 	.include "asm/macros/battle_script.inc"
 	.include "constants/constants.inc"
 
-	.section script_data, "aw", %progbits
+	.section script_data, "aw"
 
 	.align 2
 gBattlescriptsForUsingItem::
-	.4byte BattleScript_ItemRestoreHP                @ EFFECT_ITEM_RESTORE_HP
-	.4byte BattleScript_ItemCureStatus               @ EFFECT_ITEM_CURE_STATUS
-	.4byte BattleScript_ItemHealAndCureStatus        @ EFFECT_ITEM_HEAL_AND_CURE_STATUS
-	.4byte BattleScript_ItemIncreaseStat             @ EFFECT_ITEM_INCREASE_STAT
-	.4byte BattleScript_ItemSetMist                  @ EFFECT_ITEM_SET_MIST
-	.4byte BattleScript_ItemSetFocusEnergy           @ EFFECT_ITEM_SET_FOCUS_ENERGY
-	.4byte BattleScript_RunByUsingItem               @ EFFECT_ITEM_ESCAPE
-	.4byte BattleScript_BallThrow                    @ EFFECT_ITEM_THROW_BALL
-	.4byte BattleScript_ItemRestoreHP                @ EFFECT_ITEM_REVIVE
-	.4byte BattleScript_ItemRestorePP                @ EFFECT_ITEM_RESTORE_PP
-	.4byte BattleScript_ItemIncreaseStat             @ EFFECT_ITEM_INCREASE_ALL_STATS
-	.4byte BattleScript_UsePokeFlute                 @ EFFECT_ITEM_USE_POKE_FLUTE
+	ptrvalue BattleScript_ItemRestoreHP                @ EFFECT_ITEM_RESTORE_HP
+	ptrvalue BattleScript_ItemCureStatus               @ EFFECT_ITEM_CURE_STATUS
+	ptrvalue BattleScript_ItemHealAndCureStatus        @ EFFECT_ITEM_HEAL_AND_CURE_STATUS
+	ptrvalue BattleScript_ItemIncreaseStat             @ EFFECT_ITEM_INCREASE_STAT
+	ptrvalue BattleScript_ItemSetMist                  @ EFFECT_ITEM_SET_MIST
+	ptrvalue BattleScript_ItemSetFocusEnergy           @ EFFECT_ITEM_SET_FOCUS_ENERGY
+	ptrvalue BattleScript_RunByUsingItem               @ EFFECT_ITEM_ESCAPE
+	ptrvalue BattleScript_BallThrow                    @ EFFECT_ITEM_THROW_BALL
+	ptrvalue BattleScript_ItemRestoreHP                @ EFFECT_ITEM_REVIVE
+	ptrvalue BattleScript_ItemRestorePP                @ EFFECT_ITEM_RESTORE_PP
+	ptrvalue BattleScript_ItemIncreaseStat             @ EFFECT_ITEM_INCREASE_ALL_STATS
+	ptrvalue BattleScript_UsePokeFlute                 @ EFFECT_ITEM_USE_POKE_FLUTE
 
 	.align 2
 gBattlescriptsForSafariActions::
-	.4byte BattleScript_ActionWatchesCarefully
-	.4byte BattleScript_ActionGetNear
-	.4byte BattleScript_ActionThrowPokeblock
-	.4byte BattleScript_ActionWallyThrow
-	.4byte BattleScript_ActionThrowRock
-	.4byte BattleScript_ActionThrowBait
+	ptrvalue BattleScript_ActionWatchesCarefully
+	ptrvalue BattleScript_ActionGetNear
+	ptrvalue BattleScript_ActionThrowPokeblock
+	ptrvalue BattleScript_ActionWallyThrow
+	ptrvalue BattleScript_ActionThrowRock
+	ptrvalue BattleScript_ActionThrowBait
 
 BattleScript_ItemEnd:
 	end

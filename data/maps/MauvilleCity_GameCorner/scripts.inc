@@ -32,7 +32,7 @@ MauvilleCity_GameCorner_EventScript_ChooseCoinsDefault50::
 	goto MauvilleCity_GameCorner_EventScript_CancelBuyCoins
 	end
 
-@ Unused
+/* Unused*/
 MauvilleCity_GameCorner_EventScript_ChooseCoinsDefault500::
 	multichoicedefault 15, 0, MULTI_GAME_CORNER_COINS, 1, FALSE
 	switch VAR_RESULT
@@ -446,7 +446,7 @@ MauvilleCity_GameCorner_EventScript_PokefanM::
 MauvilleCity_GameCorner_EventScript_TryGive20Coins::
 	goto_if_set FLAG_RECEIVED_20_COINS, MauvilleCity_GameCorner_EventScript_PokefanMNormal
 	checkcoins VAR_TEMP_1
-	goto_if_ge VAR_TEMP_1, 1, MauvilleCity_GameCorner_EventScript_PokefanMNormal @ Only give 20 coins if player has no coins
+	goto_if_ge VAR_TEMP_1, 1, MauvilleCity_GameCorner_EventScript_PokefanMNormal /* Only give 20 coins if player has no coins*/
 	setflag FLAG_RECEIVED_20_COINS
 	addcoins 20
 	msgbox MauvilleCity_GameCorner_Text_LuckOnlyLastSoLongTakeCoins, MSGBOX_DEFAULT
@@ -675,7 +675,7 @@ MauvilleCity_GameCorner_Text_SendToYourHomePC:
 MauvilleCity_GameCorner_Text_NotEnoughCoins:
 	.string "You don't have enough COINS.$"
 
-@ Unused
+/* Unused*/
 MauvilleCity_GameCorner_Text_NoRoomForPlacingDecor:
 	.string "There isn't any room available for\n"
 	.string "placing {STR_VAR_1}.$"
@@ -691,7 +691,7 @@ MauvilleCity_GameCorner_Text_SoYourChoiceIsX:
 MauvilleCity_GameCorner_Text_HereYouGo:
 	.string "Here you go!$"
 
-@ Unused
+/* Unused*/
 MauvilleCity_GameCorner_Text_CantCarryAnyMore:
 	.string "Oh, you can't carry any more than that.$"
 

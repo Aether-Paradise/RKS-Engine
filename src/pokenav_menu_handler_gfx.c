@@ -1263,8 +1263,8 @@ static void Task_MoveBgDots(u8 taskId)
 static void CreateBgDotPurplePalTask(void)
 {
     u8 taskId = CreateTask(Task_UpdateBgDotsPalette, 3);
-    SetWordTaskArg(taskId, 1, (uintptr_t)(sPokenavBgDotsPal + 1));
-    SetWordTaskArg(taskId, 3, (uintptr_t)(sPokenavBgDotsPal + 7));
+    SetWordTaskArg(taskId, 0, (uintptr_t)(sPokenavBgDotsPal + 1));
+    SetWordTaskArg(taskId, 1, (uintptr_t)(sPokenavBgDotsPal + 7));
 }
 
 static void ChangeBgDotsColorToPurple(void)
@@ -1275,8 +1275,8 @@ static void ChangeBgDotsColorToPurple(void)
 static void CreateBgDotLightBluePalTask(void)
 {
     u8 taskId = CreateTask(Task_UpdateBgDotsPalette, 3);
-    SetWordTaskArg(taskId, 1, (uintptr_t)(sPokenavBgDotsPal + 7));
-    SetWordTaskArg(taskId, 3, (uintptr_t)(sPokenavBgDotsPal + 1));
+    SetWordTaskArg(taskId, 0, (uintptr_t)(sPokenavBgDotsPal + 7));
+    SetWordTaskArg(taskId, 1, (uintptr_t)(sPokenavBgDotsPal + 1));
 }
 
 static bool32 IsTaskActive_UpdateBgDotsPalette(void)
@@ -1288,8 +1288,8 @@ static void Task_UpdateBgDotsPalette(u8 taskId)
 {
     u16 sp8[2];
     s16 *data = gTasks[taskId].data;
-    const u16 *pal1 = (const u16 *)GetWordTaskArg(taskId, 1);
-    const u16 *pal2 = (const u16 *)GetWordTaskArg(taskId, 3);
+    const u16 *pal1 = (const u16 *)GetWordTaskArg(taskId, 0);
+    const u16 *pal2 = (const u16 *)GetWordTaskArg(taskId, 1);
 
     PokenavCopyPalette(pal1, pal2, 2, 12, ++data[0], sp8);
     LoadPalette(sp8, BG_PLTT_ID(3) + 1, PLTT_SIZEOF(2));

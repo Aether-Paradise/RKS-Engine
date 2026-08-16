@@ -5,7 +5,7 @@ SlateportCity_BattleTentLobby_MapScripts::
 
 SlateportCity_BattleTentLobby_OnWarp:
 	map_script_2 VAR_TEMP_1, 0, SlateportCity_BattleTentLobby_EventScript_TurnPlayerNorth
-	.2byte 0
+	.short 0
 
 SlateportCity_BattleTentLobby_EventScript_TurnPlayerNorth::
 	setvar VAR_TEMP_1, 1
@@ -18,7 +18,7 @@ SlateportCity_BattleTentLobby_OnFrame:
 	map_script_2 VAR_TEMP_CHALLENGE_STATUS, CHALLENGE_STATUS_PAUSED, SlateportCity_BattleTentLobby_EventScript_ResumeChallenge
 	map_script_2 VAR_TEMP_CHALLENGE_STATUS, CHALLENGE_STATUS_WON, SlateportCity_BattleTentLobby_EventScript_WonChallenge
 	map_script_2 VAR_TEMP_CHALLENGE_STATUS, CHALLENGE_STATUS_LOST, SlateportCity_BattleTentLobby_EventScript_LostChallenge
-	.2byte 0
+	.short 0
 
 SlateportCity_BattleTentLobby_EventScript_GetChallengeStatus::
 	frontier_getstatus
@@ -49,7 +49,7 @@ SlateportCity_BattleTentLobby_EventScript_GivePrize::
 	switch VAR_RESULT
 	case FALSE, SlateportCity_BattleTentLobby_EventScript_NoRoomForPrize
 	frontier_set FRONTIER_DATA_CHALLENGE_STATUS, 0
-	message BattleFrontier_BattleTowerLobby_Text_ReceivedPrize  @ Odd that it uses Tower's instead of Factory's or its own
+	message BattleFrontier_BattleTowerLobby_Text_ReceivedPrize  /* Odd that it uses Tower's instead of Factory's or its own*/
 	waitmessage
 	playfanfare MUS_OBTAIN_ITEM
 	waitfanfare
@@ -186,7 +186,7 @@ SlateportCity_BattleTentLobby_EventScript_CancelChallenge::
 	release
 	end
 
-@ Unused
+/* Unused*/
 SlateportCity_BattleTentLobby_Movement_UnusedEnterDoor::
 	walk_up
 	walk_up

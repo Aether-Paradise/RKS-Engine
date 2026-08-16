@@ -21,7 +21,7 @@
 	.include "asm/macros/battle_script.inc"
 	.include "constants/constants.inc"
 
-	.section script_data, "aw", %progbits
+	.section script_data, "aw"
 
 BattleScript_TryRevertWeatherform:
 	setbyte gEffectBattler, 0
@@ -2735,12 +2735,12 @@ BattleScript_HandleFaintedMon::
 	jumpifbyte CMP_NOT_EQUAL, gBattleOutcome, 0, BattleScript_FaintedMonEnd
 	jumpifbattletype BATTLE_TYPE_TRAINER | BATTLE_TYPE_DOUBLE, BattleScript_FaintedMonTryChoose
 	jumpifword CMP_NO_COMMON_BITS, gHitMarker, HITMARKER_PLAYER_FAINTED, BattleScript_FaintedMonTryChoose
-@ Yes/No for sending out a new Pokémon if one is defeated in a wild battle
+/* Yes/No for sending out a new Pokémon if one is defeated in a wild battle*/
 	printstring STRINGID_USENEXTPKMN
 	setbyte gBattleCommunication, 0
 	yesnobox
 	jumpifbyte CMP_EQUAL, gBattleCommunication + 1, 0, BattleScript_FaintedMonTryChoose
-@ Player said no, try to run
+/* Player said no, try to run*/
 	jumpifplayerran BattleScript_FaintedMonEnd
 	printstring STRINGID_CANTESCAPE2
 BattleScript_FaintedMonTryChoose:
@@ -2760,12 +2760,12 @@ BattleScript_FaintedMonTryChoose:
 	setbyte gBattleCommunication, 0
 	yesnobox
 	jumpifbyte CMP_EQUAL, gBattleCommunication + 1, 1, BattleScript_FaintedMonSendOutNew
-@ Player said yes, go to party screen (note optional flag, player may exit the menu instead)
+/* Player said yes, go to party screen (note optional flag, player may exit the menu instead)*/
 	setatktoplayer0
 	openpartyscreen BS_ATTACKER | PARTY_SCREEN_OPTIONAL, BattleScript_FaintedMonSendOutNew
 	switchhandleorder BS_ATTACKER, 2
 	jumpifbyte CMP_EQUAL, gBattleCommunication, PARTY_SIZE, BattleScript_FaintedMonSendOutNew
-@ Switch Pokémon before opponent
+/* Switch Pokémon before opponent*/
 	atknameinbuff1
 	resetswitchinabilitybits
 	hpthresholds2 BS_ATTACKER
@@ -5559,7 +5559,7 @@ BattleScript_ArenaDoJudgment::
 	arenajudgmentstring B_MSG_REF_THATS_IT
 	arenawaitmessage
 	pause B_WAIT_TIME_LONG
-	setbyte gBattleCommunication, 0  @ Reset state for arenajudgmentwindow
+	setbyte gBattleCommunication, 0  /* Reset state for arenajudgmentwindow*/
 	arenajudgmentwindow
 	pause B_WAIT_TIME_LONG
 	arenajudgmentwindow
@@ -5574,7 +5574,7 @@ BattleScript_ArenaDoJudgment::
 	arenajudgmentwindow
 	jumpifbyte CMP_EQUAL, gBattleCommunication + 1, ARENA_RESULT_PLAYER_LOST, BattleScript_ArenaJudgmentPlayerLoses
 	jumpifbyte CMP_EQUAL, gBattleCommunication + 1, ARENA_RESULT_TIE, BattleScript_ArenaJudgmentDraw
-@ ARENA_RESULT_PLAYER_WON
+/* ARENA_RESULT_PLAYER_WON*/
 	arenajudgmentstring B_MSG_REF_PLAYER_WON
 	arenawaitmessage
 	arenajudgmentwindow

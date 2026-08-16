@@ -43,7 +43,7 @@ BattleFrontier_BattlePikeRoomNormal_EventScript_SetBrainRoomObjPos::
 
 BattleFrontier_BattlePikeRoom_OnWarp:
 	map_script_2 VAR_TEMP_4, 0, BattleFrontier_BattlePikeRoomNormal_EventScript_InitRoomObjects
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattlePikeRoomNormal_EventScript_InitRoomObjects::
 	setvar VAR_OBJ_GFX_ID_1, OBJ_EVENT_GFX_LINK_RECEPTIONIST
@@ -226,7 +226,7 @@ BattleFrontier_BattlePike_EventScript_Retire::
 	end
 
 BattleFrontier_BattlePikeRoom_OnResume:
-	setorcopyvar VAR_0x8006, VAR_RESULT  @ Save VAR_RESULT from being overwritten
+	setorcopyvar VAR_0x8006, VAR_RESULT  /* Save VAR_RESULT from being overwritten*/
 	frontier_get FRONTIER_DATA_CHALLENGE_STATUS
 	goto_if_eq VAR_RESULT, CHALLENGE_STATUS_PAUSED, BattleFrontier_BattlePikeThreePathRoom_EventScript_EndOnResume
 	goto_if_eq VAR_RESULT, CHALLENGE_STATUS_SAVING, BattleFrontier_BattlePikeThreePathRoom_EventScript_EndOnResume

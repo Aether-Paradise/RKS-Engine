@@ -3,11 +3,11 @@ SlateportCity_BattleTentCorridor_MapScripts::
 	map_script MAP_SCRIPT_ON_WARP_INTO_MAP_TABLE, SlateportCity_BattleTentCorridor_OnWarp
 	.byte 0
 
-	@ This is Slateport Tent's version of the Battle Factory Pre-Battle Room
+	/* This is Slateport Tent's version of the Battle Factory Pre-Battle Room*/
 
 SlateportCity_BattleTentCorridor_OnWarp:
 	map_script_2 VAR_TEMP_1, 0, SlateportCity_BattleTentCorridor_EventScript_SetUpObjects
-	.2byte 0
+	.short 0
 
 SlateportCity_BattleTentCorridor_EventScript_SetUpObjects::
 	setvar VAR_TEMP_1, 1
@@ -20,7 +20,7 @@ SlateportCity_BattleTentCorridor_EventScript_TurnPlayerNorth::
 
 SlateportCity_BattleTentCorridor_OnFrame:
 	map_script_2 VAR_TEMP_0, 0, SlateportCity_BattleTentCorridor_EventScript_EnterCorridor
-	.2byte 0
+	.short 0
 
 SlateportCity_BattleTentCorridor_EventScript_EnterCorridor::
 	goto_if_eq VAR_0x8006, 1, SlateportCity_BattleTentCorridor_EventScript_ReturnToRoomFromBattle
@@ -151,8 +151,8 @@ SlateportCity_BattleTentCorridor_Movement_AttendantExit:
 	set_invisible
 	step_end
 
-@ Leftover text from when this was a Contest Hall in R/S
-@ Unused
+/* Leftover text from when this was a Contest Hall in R/S*/
+/* Unused*/
 SlateportCity_ContestHall_Text_AdviceForContests:
 	.string "Want a tasty little bit of advice\n"
 	.string "for CONTESTS?\p"
@@ -164,13 +164,13 @@ SlateportCity_ContestHall_Text_AdviceForContests:
 	.string "Of course, your opponents might try\n"
 	.string "disrupting your POKéMON's showing.$"
 
-@ Unused
+/* Unused*/
 SlateportCity_ContestHall_Text_MyPapaIsContestJudge:
 	.string "My papa, he's a CONTEST JUDGE.\p"
 	.string "I wonder what I should be when I\n"
 	.string "grow up, a JUDGE or a GYM LEADER?$"
 
-@ Unused
+/* Unused*/
 SlateportCity_ContestHall_Text_ImLikeMajorlyCheesed:
 	.string "Hey, man, I'm like majorly cheesed,\n"
 	.string "you know. Like, you know, I just\l"
@@ -183,7 +183,7 @@ SlateportCity_ContestHall_Text_ImLikeMajorlyCheesed:
 	.string "Hey, like, you! Zip it, you know?\n"
 	.string "Just, you know, take this!$"
 
-@ Unused
+/* Unused*/
 SlateportCity_ContestHall_Text_ExplainTorment:
 	.string "That's, like, TM41, you know?\n"
 	.string "Hey, it's TORMENT, you hearing me?\p"
@@ -192,7 +192,7 @@ SlateportCity_ContestHall_Text_ExplainTorment:
 	.string "Hey, now, you listen here, like,\n"
 	.string "I'm not laying a torment on you!$"
 
-@ Unused
+/* Unused*/
 SlateportCity_ContestHall_Text_MCStepUpTakePartInContest:
 	.string "MC: Oh, my, my!\n"
 	.string "Now isn't that a dandy of a POKéMON?\p"
@@ -201,7 +201,7 @@ SlateportCity_ContestHall_Text_MCStepUpTakePartInContest:
 	.string "You'll do well! I'm sure of it!\n"
 	.string "My eyes have never failed me!$"
 
-@ Unused
+/* Unused*/
 SlateportCity_ContestHall_Text_JudgeWouldntDoToMissContest:
 	.string "JUDGE: Well, hello there!\n"
 	.string "I see that you're a TRAINER!\p"
@@ -210,19 +210,19 @@ SlateportCity_ContestHall_Text_JudgeWouldntDoToMissContest:
 	.string "Get a CONTEST PASS in VERDANTURF\n"
 	.string "CITY and enter anytime!$"
 
-@ Unused
+/* Unused*/
 SlateportCity_ContestHall_Text_ItsAppealTime:
 	.string "It's appeal time!\n"
 	.string "What should I lead with?$"
 
-@ Unused
+/* Unused*/
 SlateportCity_ContestHall_Text_DidntPayAttentionToAppeal:
 	.string "They didn't pay much attention to\n"
 	.string "my POKéMON's appeal…\p"
 	.string "Humph, that JUDGE, he doesn't know\n"
 	.string "a good thing when he sees it.$"
 
-@ Unused
+/* Unused*/
 SlateportCity_ContestHall_Text_RewardWithSageAdvice:
 	.string "Oh, hi! You must be a serious fan to get\n"
 	.string "this close to the action.\p"
@@ -235,20 +235,20 @@ SlateportCity_ContestHall_Text_RewardWithSageAdvice:
 	.string "Well, you'd think something good has\n"
 	.string "to happen!$"
 
-@ Unused
+/* Unused*/
 SlateportCity_ContestHall_Text_MoreFreakedOutThanMon:
 	.string "I can't do this! I'm more freaked out\n"
 	.string "than my POKéMON.\p"
 	.string "I'm shivering and my heart is racing!$"
 
-@ Unused
+/* Unused*/
 SlateportCity_ContestHall_Text_BattleAndContestAlike:
 	.string "A battle and a CONTEST aren't the\n"
 	.string "same, but they are alike, too.\p"
 	.string "You need to work hard and believe\n"
 	.string "in the POKéMON you've raised.$"
 
-@ Unused
+/* Unused*/
 SlateportCity_ContestHall_Text_MonLooksOnTopOfGame:
 	.string "That POKéMON looks like it's on top\n"
 	.string "of its game, huh?\p"
@@ -256,19 +256,19 @@ SlateportCity_ContestHall_Text_MonLooksOnTopOfGame:
 	.string "secondary judging seems to be more\l"
 	.string "relaxed when it's doing appeals.$"
 
-@ Unused
+/* Unused*/
 SlateportCity_ContestHall_Text_MyMonBetterThanThatLot:
 	.string "Will you look at that sorry sight?\p"
 	.string "Heh, my POKéMON's absolutely better\n"
 	.string "than that lot!$"
 
-@ Unused
+/* Unused*/
 SlateportCity_ContestHall_Text_GetUrgeToMoveWithMon:
 	.string "Don't you get the urge to move with\n"
 	.string "POKéMON if they're putting on an\l"
 	.string "energetic appeal?$"
 
-@ Unused
+/* Unused*/
 SlateportCity_ContestHall_Text_HyperRankStage:
 	.string "POKéMON CONTESTS\n"
 	.string "HYPER RANK STAGE!$"

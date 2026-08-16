@@ -281,7 +281,7 @@ static u16 FreeAndDestroyPicSpriteInternal(u16 spriteId, bool8 clearPalette)
 
 static u16 LoadPicSpriteInWindow(u16 species, bool8 isShiny, u32 personality, bool8 isFrontPic, u8 paletteSlot, u8 windowId, bool8 isTrainer)
 {
-    if (DecompressPic(species, personality, isFrontPic, (u8 *)GetWindowAttribute(windowId, WINDOW_TILE_DATA), FALSE))
+    if (DecompressPic(species, personality, isFrontPic, GetWindowTileData(windowId), FALSE))
         return 0xFFFF;
 
     LoadPicPaletteBySlot(species, isShiny, personality, paletteSlot, isTrainer);

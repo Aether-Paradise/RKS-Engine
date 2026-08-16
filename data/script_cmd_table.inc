@@ -6,9 +6,9 @@
 	.macro script_cmd_table_entry constant:req, value:req, requests_effects=0
 	.if ALLOCATE_SCRIPT_CMD_TABLE
 	.if \requests_effects == 0
-	.4byte \value
+	ptrvalue \value
 	.else
-	.4byte \value + ROM_SIZE
+	ptrvalue \value + ROM_SIZE
 	.endif
 	.else
 	enum \constant
@@ -256,5 +256,5 @@ gScriptCmdTable::
 
 	.if ALLOCATE_SCRIPT_CMD_TABLE
 gScriptCmdTableEnd::
-	.4byte ScrCmd_nop
+	ptrvalue ScrCmd_nop
 	.endif

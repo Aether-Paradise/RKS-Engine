@@ -87,7 +87,7 @@ ProfileMan_EventScript_DeclineNewProfile::
 	release
 	end
 
-@ Unused
+/* Unused*/
 ProfileMan_EventScript_Ret::
 	return
 
@@ -158,7 +158,7 @@ ProfileMan_Text_FantasticProfile:
 	.string "be captivated by you!\p"
 	.string "Thank you!$"
 
-@ Unused
+/* Unused*/
 ProfileMan_Text_YouKnowSecretSaying:
 	.string "Oh?\n"
 	.string "You know the secret saying!\p"

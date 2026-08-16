@@ -4,7 +4,7 @@ TrainerHill_Elevator_MapScripts::
 
 TrainerHill_Elevator_OnFrame:
 	map_script_2 VAR_TEMP_4, 0, TrainerHill_Elevator_EventScript_EnterElevator
-	.2byte 0
+	.short 0
 
 TrainerHill_Elevator_EventScript_Attendant::
 	end
@@ -38,12 +38,12 @@ TrainerHill_Elevator_EventScript_EnterElevator::
 	waitstate
 	end
 
-@ Unused
+/* Unused*/
 TrainerHill_Elevator_EventScript_ExitFloorSelect::
 	goto TrainerHill_Elevator_EventScript_CloseFloorSelect
 	end
 
-@ Functionally unused
+/* Functionally unused*/
 TrainerHill_Elevator_EventScript_CloseFloorSelect::
 	special CloseDeptStoreElevatorWindow
 	releaseall

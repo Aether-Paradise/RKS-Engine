@@ -1141,7 +1141,12 @@ static u8 SaveOverwriteInputCallback(void)
 
 static u8 SaveSavingMessageCallback(void)
 {
+#ifdef PORTABLE
+    sSavingComplete = TRUE;
+    sSaveDialogCallback = SaveDoSaveCallback;
+#else
     ShowSaveMessage(gText_SavingDontTurnOff, SaveDoSaveCallback);
+#endif
     return SAVE_IN_PROGRESS;
 }
 

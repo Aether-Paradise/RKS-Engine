@@ -1,8 +1,16 @@
 #ifndef GUARD_GLOBAL_H
 #define GUARD_GLOBAL_H
 
+#include <stdio.h>
 #include <string.h>
 #include <limits.h>
+
+#if !defined NO_STD_LIB_ENABLED && defined PORTABLE
+    #define DBGPRINTF(...) printf(__VA_ARGS__)
+#else
+    #define DBGPRINTF(...)
+#endif
+
 #include "config/general.h" // we need to define config before gba headers as print stuff needs the functions nulled before defines.
 #include "gba/gba.h"
 #include "assertf.h"
@@ -54,6 +62,9 @@
 #define INCGFX_U16  INCGFX
 #define INCGFX_U32  INCGFX
 #define INCGFX_COMP INCGFX
+void * memcpy(void *, const void *, size_t);
+void * memset(void *, int, size_t);
+int strcmp(const char *, const char*);
 #endif // IDE support
 
 #define ARRAY_COUNT(array) (size_t)(sizeof(array) / sizeof((array)[0]))
@@ -92,6 +103,14 @@
 // intended, and a%n for powers of 2 isn't always optimized to use &.
 #define MOD(a, n) (((n) & ((n)-1)) ? ((a) % (n)) : ((a) & ((n)-1)))
 
+// Used in cases where modulo by 0 can occur in the retail version.
+// Avoids invalid opcodes on some emulators, and the otherwise UB.
+#ifdef UBFIX
+#define SAFE_MOD(a, b) ((b) ? (a) % (b) : 0)
+#else
+#define SAFE_MOD(a, b) ((a) % (b))
+#endif
+
 // Increments 'a' by 1, wrapping back to 0 when it reaches 'n'. If 'n' is a power of two,
 // the wrap is implemented using a bit mask: (a + 1) & (n - 1), which is slightly faster.
 // This is intended to be used when 'n' is known at compile time.
@@ -113,13 +132,35 @@
 #define T1_READ_8(ptr)  ((ptr)[0])
 #define T1_READ_16(ptr) ((ptr)[0] | ((ptr)[1] << 8))
 #define T1_READ_32(ptr) ((ptr)[0] | ((ptr)[1] << 8) | ((ptr)[2] << 16) | ((ptr)[3] << 24))
+#define T1_READ_64(ptr) (*(u64*)(ptr))
+
+#ifdef VER_64BIT
+#define T1_READ_PTR(ptr) (u8 *) T1_READ_64(ptr)
+#define T1_READ_PTRSIZE(ptr) T1_READ_64(ptr)
+#else
 #define T1_READ_PTR(ptr) (u8 *) T1_READ_32(ptr)
+#define T1_READ_PTRSIZE(ptr) T1_READ_32(ptr)
+#endif
 
 // T2_READ_8 is a duplicate to remain consistent with each group.
 #define T2_READ_8(ptr)  ((ptr)[0])
 #define T2_READ_16(ptr) ((ptr)[0] + ((ptr)[1] << 8))
 #define T2_READ_32(ptr) ((ptr)[0] + ((ptr)[1] << 8) + ((ptr)[2] << 16) + ((ptr)[3] << 24))
+#define T2_READ_64(ptr) (*(u64*)(ptr))
+
+#ifdef VER_64BIT
+#define T2_READ_PTR(ptr) (void *) T2_READ_64(ptr)
+#define T2_READ_PTRSIZE(ptr) T2_READ_64(ptr)
+#else
 #define T2_READ_PTR(ptr) (void *) T2_READ_32(ptr)
+#define T2_READ_PTRSIZE(ptr) T2_READ_32(ptr)
+#endif
+
+#define DSIZE8BIT 1
+#define DSIZE16BIT 2
+#define DSIZE32BIT 4
+#define DSIZE64BIT 8
+#define DSIZEPTR (sizeof(void*))
 
 #define PACK(data, shift, mask)   ( ((data) << (shift)) & (mask) )
 #define UNPACK(data, shift, mask) ( ((data) & (mask)) >> (shift) )
@@ -223,7 +264,7 @@ struct Time
     /*0x02*/ s8 hours;
     /*0x03*/ s8 minutes;
     /*0x04*/ s8 seconds;
-};
+} ALIGNED(4);
 
 struct NPCFollowerPadding
 {
@@ -448,7 +489,7 @@ struct BattleDomeTrainer
     u16 isEliminated:1;
     u16 eliminatedAt:2;
     u16 forfeited:3;
-};
+} ALIGNED(4);
 
 #define DOME_TOURNAMENT_TRAINERS_COUNT 16
 #define BATTLE_TOWER_RECORD_COUNT 5
@@ -688,7 +729,7 @@ struct Pokeblock
     u8 bitter;
     u8 sour;
     u8 feel;
-};
+} ALIGNED(4);
 
 struct Roamer
 {
@@ -803,7 +844,7 @@ typedef union OldMan
     struct MauvilleOldManTrader trader;
     struct MauvilleManStoryteller storyteller;
     u8 filler[0x40];
-} OldMan;
+} ALIGNED(4) OldMan;
 
 #define LINK_B_RECORDS_COUNT 5
 
@@ -857,7 +898,7 @@ struct Mail
     /*0x1A*/ u8 trainerId[TRAINER_ID_LENGTH];
     /*0x1E*/ enum Species species;
     /*0x20*/ enum Item itemId;
-};
+} ALIGNED(4);
 
 struct DaycareMail
 {

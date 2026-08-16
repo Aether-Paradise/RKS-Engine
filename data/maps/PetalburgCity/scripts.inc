@@ -27,7 +27,7 @@ PetalburgCity_EventScript_SetGymDoorsUnlocked::
 PetalburgCity_OnFrame:
 	map_script_2 VAR_PETALBURG_CITY_STATE, 2, PetalburgCity_EventScript_WallyTutorial
 	map_script_2 VAR_PETALBURG_CITY_STATE, 4, PetalburgCity_EventScript_WalkToWallyHouse
-	.2byte 0
+	.short 0
 
 PetalburgCity_EventScript_WallyTutorial::
 	lockall
@@ -338,7 +338,7 @@ PetalburgCity_EventScript_LeadPlayerToGym3::
 	waitmovement 0
 	return
 
-@ Unused
+/* Unused*/
 PetalburgCity_Movement_Delay48::
 	delay_16
 	delay_16

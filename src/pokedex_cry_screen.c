@@ -29,6 +29,12 @@
 
 #define TAG_NEEDLE 0x2000
 
+#ifdef PORTABLE
+    typedef float SampleDataType;
+#else
+    typedef u8 SampleDataType;
+#endif
+
 struct PokedexCryMeterNeedle {
     s8 rotation;
     s8 targetRotation;
@@ -38,10 +44,10 @@ struct PokedexCryMeterNeedle {
 
 struct PokedexCryScreen
 {
-    u8 cryWaveformBuffer[16];
+    SampleDataType cryWaveformBuffer[16];
     u8 cryState;
     u8 playhead;
-    u8 waveformPreviousY;
+    SampleDataType waveformPreviousY;
     u16 unk; // Never read
     u8 playStartPos;
     enum Species species;
@@ -53,7 +59,7 @@ static void PlayCryScreenCry(enum Species);
 static void BufferCryWaveformSegment(void);
 static void DrawWaveformFlatline(void);
 static void AdvancePlayhead(u8);
-static void DrawWaveformSegment(u8, u8);
+static void DrawWaveformSegment(u8, SampleDataType);
 static void DrawWaveformWindow(u8);
 static void ShiftWaveformOver(u8, s16, bool8);
 static void SpriteCB_CryMeterNeedle(struct Sprite *);
@@ -234,7 +240,7 @@ bool8 LoadCryWaveformWindow(struct CryScreenWindow *window, u8 windowId)
         if (!sDexCryScreen)
         {
             sDexCryScreen = AllocZeroed(sizeof(*sDexCryScreen));
-            sCryWaveformWindowTiledata = (u8 *)GetWindowAttribute(windowId, WINDOW_TILE_DATA);
+            sCryWaveformWindowTiledata = GetWindowTileData(windowId);
         }
 
         sDexCryScreen->unk = window->unk0;
@@ -352,8 +358,8 @@ static void PlayCryScreenCry(enum Species species)
 static void BufferCryWaveformSegment(void)
 {
     u8 i;
-    s8 *baseBuffer;
-    s8 *buffer;
+    SampleDataType *baseBuffer;
+    SampleDataType *buffer;
 
     if (gPcmDmaCounter < 2)
         baseBuffer = gSoundInfo.pcmBuffer;
@@ -385,14 +391,14 @@ static void AdvancePlayhead(u8 windowId)
 
 // Waveform segments are drawn in alternate vertical slices
 // Note that the waveform isnt put on screen until DrawWaveformWindow
-static void DrawWaveformSegment(u8 position, u8 amplitude)
+static void DrawWaveformSegment(u8 position, SampleDataType amplitude)
 {
     // Position is a bitfield containing the play start pos, the playhead pos, and which vertical slice half to draw
     #define PLAY_START_POS (position >> 3)
     #define PLAYHEAD_POS   (position & ((1 << 3) - 1))
     #define VERT_SLICE     (position & 1)
 
-    u8 currentPointY;
+    SampleDataType currentPointY;
     u8 nybble;
     u16 offset;
     u16 temp;

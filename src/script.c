@@ -242,6 +242,24 @@ u32 ScriptPeekWord(struct ScriptContext *ctx)
     return (((((value3 << 8) + value2) << 8) + value1) << 8) + value0;
 }
 
+u64 ScriptReadQuadWord(struct ScriptContext *ctx)
+{
+    u64 value0 = *((u64*)ctx->scriptPtr);
+    ctx->scriptPtr += 8;
+    return value0;
+}
+
+uintptr_t ScriptReadPointer(struct ScriptContext *ctx)
+{
+    #ifdef VER_64BIT
+    uintptr_t value0 = *((u64*)ctx->scriptPtr);
+    #else
+    uintptr_t value0 = T2_READ_32(ctx->scriptPtr);
+    #endif
+    ctx->scriptPtr += DSIZEPTR;
+    return value0;
+}
+
 void LockPlayerFieldControls(void)
 {
     sLockFieldControls = TRUE;
@@ -382,7 +400,7 @@ const u8 *MapHeaderGetScriptTable(u8 tag)
             mapScripts++;
             return T2_READ_PTR(mapScripts);
         }
-        mapScripts += 5;
+        mapScripts += DSIZEPTR + 1;
     }
 }
 
@@ -405,7 +423,7 @@ const u8 *MapHeaderCheckScriptTable(u8 tag)
         u16 varIndex1;
         u16 varIndex2;
 
-        // Read first var (or .2byte terminal value)
+        // Read first var (or .short terminal value)
         varIndex1 = T1_READ_16(ptr);
         if (!varIndex1)
             return NULL; // Reached end of table
@@ -423,7 +441,7 @@ const u8 *MapHeaderCheckScriptTable(u8 tag)
                 return mapScript;
         }
 
-        ptr += 4;
+        ptr += DSIZEPTR;
     }
 }
 

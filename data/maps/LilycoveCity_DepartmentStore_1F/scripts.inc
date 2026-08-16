@@ -166,7 +166,7 @@ LilycoveCity_DepartmentStore_1F_Text_FloorNamesSign:
 	.string "5F: POKé DOLL FLOOR\p"
 	.string "ROOFTOP: ROOFTOP PLAZA$"
 
-@ Unused
+/* Unused*/
 LilycoveCity_DepartmentStore_1F_Text_WirelessCommIsFun:
 	.string "Wireless Communication is a\n"
 	.string "lot of fun, isn't it?\p"
@@ -176,7 +176,7 @@ LilycoveCity_DepartmentStore_1F_Text_WirelessCommIsFun:
 	.string "with people you couldn't before.\p"
 	.string "I think it's going to be exciting!$"
 
-@ Unused
+/* Unused*/
 LilycoveCity_DepartmentStore_1F_Text_SpreadWordAboutWirelessComm:
 	.string "I want to spread the word about how\n"
 	.string "fun Wireless Communication can be.$"

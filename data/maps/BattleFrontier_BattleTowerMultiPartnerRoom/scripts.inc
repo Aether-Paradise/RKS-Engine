@@ -38,7 +38,7 @@ BattleFrontier_BattleTowerMultiPartnerRoom_EventScript_ChosePartner::
 
 BattleFrontier_BattleTowerMultiPartnerRoom_OnWarp:
 	map_script_2 VAR_TEMP_3, 1, BattleFrontier_BattleTowerMultiPartnerRoom_EventScript_TurnPlayerNorth
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattleTowerMultiPartnerRoom_EventScript_TurnPlayerNorth::
 	turnobject LOCALID_PLAYER, DIR_NORTH
@@ -47,7 +47,7 @@ BattleFrontier_BattleTowerMultiPartnerRoom_EventScript_TurnPlayerNorth::
 BattleFrontier_BattleTowerMultiPartnerRoom_OnFrame:
 	map_script_2 VAR_TEMP_1, 0, BattleFrontier_BattleTowerMultiPartnerRoom_EventScript_EnterRoom
 	map_script_2 VAR_TEMP_3, 1, BattleFrontier_BattleTowerMultiPartnerRoom_EventScript_ExitRoom
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattleTowerMultiPartnerRoom_EventScript_ExitRoom::
 	lockall
@@ -116,14 +116,14 @@ BattleFrontier_BattleTowerMultiPartnerRoom_EventScript_MoveToElevator::
 	waitmovement 0
 	return
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattleTowerMultiPartnerRoom_EventScript_MoveToElevatorEast:
 	applymovement LOCALID_TOWER_PARTNER_ROOM_ATTENDANT, BattleFrontier_BattleTowerMultiPartnerRoom_Movement_AttendantEnterElevator
 	applymovement LOCALID_PLAYER, BattleFrontier_BattleTowerMultiPartnerRoom_Movement_PlayerEnterElevatorEast
 	waitmovement 0
 	return
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattleTowerMultiPartnerRoom_EventScript_MoveToElevatorWest:
 	applymovement LOCALID_TOWER_PARTNER_ROOM_ATTENDANT, BattleFrontier_BattleTowerMultiPartnerRoom_Movement_AttendantEnterElevator
 	applymovement LOCALID_PLAYER, BattleFrontier_BattleTowerMultiPartnerRoom_Movement_PlayerEnterElevatorWest
@@ -136,14 +136,14 @@ BattleFrontier_BattleTowerMultiPartnerRoom_Movement_PlayerEnterElevator:
 	set_invisible
 	step_end
 
-@ Functionally unused
+/* Functionally unused*/
 BattleFrontier_BattleTowerMultiPartnerRoom_Movement_PlayerEnterElevatorEast:
 	walk_right
 	walk_up
 	set_invisible
 	step_end
 
-@ Functionally unused
+/* Functionally unused*/
 BattleFrontier_BattleTowerMultiPartnerRoom_Movement_PlayerEnterElevatorWest:
 	walk_left
 	walk_up

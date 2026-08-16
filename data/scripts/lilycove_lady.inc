@@ -234,7 +234,7 @@ LilycoveCity_PokemonCenter_1F_EventScript_IncorrectResponse::
 	goto LilycoveCity_PokemonCenter_1F_EventScript_AskMakeQuiz
 	end
 
-@ VAR_RESULT is essentially ignored, both jumps are identical
+/* VAR_RESULT is essentially ignored, both jumps are identical*/
 LilycoveCity_PokemonCenter_1F_EventScript_ReadyGivePrize::
 	specialvar VAR_RESULT, BufferQuizAuthorNameAndCheckIfLady
 	goto_if_eq VAR_RESULT, 1, LilycoveCity_PokemonCenter_1F_EventScript_GivePrize1
@@ -329,7 +329,7 @@ LilycoveCity_PokemonCenter_1F_EventScript_ContestLady::
 	goto_if_eq VAR_RESULT, TRUE, LilycoveCity_PokemonCenter_1F_EventScript_GivenPokeblock
 	end
 
-@ Redundant with above script, VAR_RESULT will always be FALSE here
+/* Redundant with above script, VAR_RESULT will always be FALSE here*/
 LilycoveCity_PokemonCenter_1F_EventScript_NotGivenPokeblock::
 	specialvar VAR_RESULT, ShouldContestLadyShowGoOnAir
 	goto_if_eq VAR_RESULT, FALSE, LilycoveCity_PokemonCenter_1F_EventScript_AskForPokeblock
@@ -376,7 +376,7 @@ LilycoveCity_PokemonCenter_1F_EventScript_GivePokeblock::
 	goto LilycoveCity_PokemonCenter_1F_EventScript_FeedPokeblock
 	end
 
-@ VAR_0x8004 here is the return value from GivePokeblockToContestLady
+/* VAR_0x8004 here is the return value from GivePokeblockToContestLady*/
 LilycoveCity_PokemonCenter_1F_EventScript_FeedPokeblock::
 	applymovement LOCALID_LILYCOVE_LADY, LilycoveCity_PokemonCenter_1F_Movement_LadyFaceMon
 	waitmovement 0
@@ -392,7 +392,7 @@ LilycoveCity_PokemonCenter_1F_EventScript_FeedPokeblock::
 	goto LilycoveCity_PokemonCenter_1F_EventScript_FinishFeedPokeblock
 	end
 
-@ VAR_0x8004 here is the return value from GivePokeblockToContestLady
+/* VAR_0x8004 here is the return value from GivePokeblockToContestLady*/
 LilycoveCity_PokemonCenter_1F_EventScript_MonEnjoyPokeblock::
 	applymovement LOCALID_LILYCOVE_LADYS_MON, LilycoveCity_PokemonCenter_1F_Movement_MonJump
 	waitmovement 0
@@ -443,7 +443,7 @@ LilycoveCity_PokemonCenter_1F_Movement_MonFaceLady:
 	delay_8
 	step_end
 
-@ Unused
+/* Unused*/
 LilycoveCity_PokemonCenter_1F_Movement_MonFaceDown:
 	face_down
 	step_end
@@ -643,7 +643,7 @@ LilycoveCity_PokemonCenter_1F_Text_YouGotItRightYouveWonPersonsPrize:
 	.string "You've won a prize provided by\n"
 	.string "{STR_VAR_1}!$"
 
-@ Unused
+/* Unused*/
 LilycoveCity_PokemonCenter_1F_Text_XReceivedOneY:
 	.string "{STR_VAR_1} received\n"
 	.string "one {STR_VAR_2}!$"
@@ -693,7 +693,7 @@ LilycoveCity_PokemonCenter_1F_Text_QuitWritingQuizQuestion:
 	.string "Are you going to quit writing\n"
 	.string "your quiz question?$"
 
-@ Unused
+/* Unused*/
 LilycoveCity_PokemonCenter_1F_Text_QuitWritingQuizAnswer:
 	.string "Are you going to quit choosing\n"
 	.string "your quiz answer?$"

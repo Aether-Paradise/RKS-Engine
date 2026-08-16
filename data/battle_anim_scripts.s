@@ -12,7 +12,7 @@
 	.include "asm/macros/battle_anim_script.inc"
 	.include "constants/constants.inc"
 
-	.section script_data, "aw", %progbits
+	.section script_data, "aw"
 
 gBattleAnimGeneral_MonScared::
 	createvisualtask AnimTask_SetAttackerTargetLeftPos, 2, 1
@@ -19343,7 +19343,7 @@ gBattleAnimMove_FlameWheel::
 	clearmonbg ANIM_DEF_PARTNER
 	end
 
-FlameWheel1: @ Unused
+FlameWheel1: /* Unused*/
 	createsprite gFireSpiralOutwardSpriteTemplate, ANIM_ATTACKER, 3, 0, 0, 50
 	delay 4
 	return
@@ -20645,7 +20645,7 @@ gBattleAnimMove_LockOn::
 	createsprite gLockOnMoveTargetSpriteTemplate, ANIM_ATTACKER, 40, 1
 	createsprite gLockOnMoveTargetSpriteTemplate, ANIM_ATTACKER, 40, 2
 	createsprite gLockOnMoveTargetSpriteTemplate, ANIM_ATTACKER, 40, 3
-	createsprite gLockOnMoveTargetSpriteTemplate, ANIM_ATTACKER, 40, 4  @ Also transitions to red target
+	createsprite gLockOnMoveTargetSpriteTemplate, ANIM_ATTACKER, 40, 4  /* Also transitions to red target*/
 	delay 120
 	setarg 7, -1  @ Signal target to flash/disappear
 	waitforvisualfinish
@@ -22623,7 +22623,7 @@ gBattleAnimMove_AirCutter::
 	monbg ANIM_DEF_PARTNER
 	setalpha 12, 8
 	delay 0
-	createvisualtask AnimTask_AirCutterProjectile, 2, 32, -24, 6 * 256, 2, 128  @ 6 * 256 == Q_8_8(6)
+	createvisualtask AnimTask_AirCutterProjectile, 2, 32, -24, 6 * 256, 2, 128  /* 6 * 256 == Q_8_8(6)*/
 	waitforvisualfinish
 	playsewithpan SE_M_CUT, SOUND_PAN_TARGET
 	createsprite gAirCutterSliceSpriteTemplate, ANIM_ATTACKER, 2, 40, -32, 0, 2
@@ -28127,7 +28127,7 @@ IceCrystalEffectLong:
 	playsewithpan SE_M_ICY_WIND, SOUND_PAN_TARGET
 	return
 
-IceSpikesEffectShort: @ Unused
+IceSpikesEffectShort: /* Unused*/
 	loopsewithpan SE_M_ICY_WIND, SOUND_PAN_TARGET, 6, 4
 	createsprite gIceGroundSpikeSpriteTemplate, ANIM_TARGET, 2, 0, 24, 0
 	delay 4
@@ -28722,7 +28722,7 @@ gBattleAnimGeneral_MonHit::
 
 gBattleAnimGeneral_ItemSteal::
 	createvisualtask AnimTask_SetAnimAttackerAndTargetForEffectAtk, 2
-	createvisualtask AnimTask_SetTargetToEffectBattler, 2  @ Redundant with above
+	createvisualtask AnimTask_SetTargetToEffectBattler, 2  /* Redundant with above*/
 	delay 1
 	createvisualtask AnimTask_StealItem, ANIM_TARGET, 2
 	end

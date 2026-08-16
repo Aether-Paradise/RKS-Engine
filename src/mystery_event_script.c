@@ -59,7 +59,7 @@ static void InitMysteryEventScript(struct ScriptContext *ctx, u8 *script)
 {
     InitScriptContext(ctx, gMysteryEventScriptCmdTable, gMysteryEventScriptCmdTableEnd);
     SetupBytecodeScript(ctx, script);
-    ctx->mScriptBase = (u32)script;
+    ctx->mScriptBase = (uintptr_t)script;
     ctx->mOffset = 0;
     ctx->mStatus = MEVENT_STATUS_LOAD_OK;
     ctx->mValid = FALSE;
@@ -316,7 +316,7 @@ bool8 MEScrCmd_givepokemon(struct ScriptContext *ctx)
     struct Pokemon pokemon;
     enum Species species;
     enum Item heldItem;
-    u32 data = ScriptReadWord(ctx) - ctx->mOffset + ctx->mScriptBase;
+    uintptr_t data = ScriptReadQuadWord(ctx) - ctx->mOffset + ctx->mScriptBase;
     void *pokemonPtr = (void *)data;
     void *mailPtr = (void *)(data + sizeof(struct Pokemon));
 
@@ -360,7 +360,7 @@ bool8 MEScrCmd_givepokemon(struct ScriptContext *ctx)
 bool8 MEScrCmd_addtrainer(struct ScriptContext *ctx)
 {
 #if FREE_BATTLE_TOWER_E_READER == FALSE
-    u32 data = ScriptReadWord(ctx) - ctx->mOffset + ctx->mScriptBase;
+    uintptr_t data = ScriptReadQuadWord(ctx) - ctx->mOffset + ctx->mScriptBase;
     memcpy(&gSaveBlock2Ptr->frontier.ereaderTrainer, (void *)data, sizeof(gSaveBlock2Ptr->frontier.ereaderTrainer));
     ValidateEReaderTrainer();
     StringExpandPlaceholders(gStringVar4, gText_MysteryEventNewTrainer);

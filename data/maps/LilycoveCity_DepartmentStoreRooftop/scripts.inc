@@ -28,21 +28,21 @@ LilycoveCity_DepartmentStoreRooftop_EventScript_SaleWoman::
 
 	.align 2
 LilycoveCity_DepartmentStoreRooftop_PokemartDecor_ClearOutSale:
-	.2byte DECOR_MUD_BALL
-	.2byte DECOR_FENCE_LENGTH
-	.2byte DECOR_FENCE_WIDTH
-	.2byte DECOR_TIRE
-	.2byte DECOR_BREAKABLE_DOOR
-	.2byte DECOR_SOLID_BOARD
-	.2byte DECOR_SAND_ORNAMENT
-	.2byte DECOR_STAND
-	.2byte DECOR_SLIDE
-	.2byte DECOR_TV
-	.2byte DECOR_ROUND_TV
-	.2byte DECOR_CUTE_TV
-	.2byte DECOR_WAILMER_DOLL
-	.2byte DECOR_RHYDON_DOLL
-	.2byte 0
+	.short DECOR_MUD_BALL
+	.short DECOR_FENCE_LENGTH
+	.short DECOR_FENCE_WIDTH
+	.short DECOR_TIRE
+	.short DECOR_BREAKABLE_DOOR
+	.short DECOR_SOLID_BOARD
+	.short DECOR_SAND_ORNAMENT
+	.short DECOR_STAND
+	.short DECOR_SLIDE
+	.short DECOR_TV
+	.short DECOR_ROUND_TV
+	.short DECOR_CUTE_TV
+	.short DECOR_WAILMER_DOLL
+	.short DECOR_RHYDON_DOLL
+	.short 0
 	release
 	end
 
@@ -140,7 +140,7 @@ LilycoveCity_DepartmentStoreRooftop_EventScript_TryBuyDrink::
 	bufferitemname STR_VAR_2, VAR_TEMP_0
 	bufferstdstring STR_VAR_3, STDSTRING_ITEMS
 	msgbox gText_PutItemInPocket, MSGBOX_DEFAULT
-	random 64  @ 1/64 chance of an additional drink dropping
+	random 64  /* 1/64 chance of an additional drink dropping*/
 	goto_if_ne VAR_RESULT, 0, LilycoveCity_DepartmentStoreRooftop_EventScript_ChooseNewDrink
 	checkitemspace VAR_TEMP_0
 	goto_if_eq VAR_RESULT, FALSE, LilycoveCity_DepartmentStoreRooftop_EventScript_NoRoomForDrink
@@ -150,7 +150,7 @@ LilycoveCity_DepartmentStoreRooftop_EventScript_TryBuyDrink::
 	bufferitemname STR_VAR_2, VAR_TEMP_0
 	bufferstdstring STR_VAR_3, STDSTRING_ITEMS
 	msgbox gText_PutItemInPocket, MSGBOX_DEFAULT
-	random 64  @ 1/64 * the prev 1/64 chance of a third additional drink dropping, ~ 0.02% chance
+	random 64  /* 1/64 * the prev 1/64 chance of a third additional drink dropping, ~ 0.02% chance*/
 	goto_if_ne VAR_RESULT, 0, LilycoveCity_DepartmentStoreRooftop_EventScript_ChooseNewDrink
 	checkitemspace VAR_TEMP_0
 	goto_if_eq VAR_RESULT, 0, LilycoveCity_DepartmentStoreRooftop_EventScript_NoRoomForDrink

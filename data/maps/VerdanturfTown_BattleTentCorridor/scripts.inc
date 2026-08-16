@@ -4,7 +4,7 @@ VerdanturfTown_BattleTentCorridor_MapScripts::
 
 VerdanturfTown_BattleTentCorridor_OnFrame:
 	map_script_2 VAR_TEMP_0, 0, VerdanturfTown_BattleTentCorridor_EventScript_EnterCorridor
-	.2byte 0
+	.short 0
 
 VerdanturfTown_BattleTentCorridor_EventScript_EnterCorridor::
 	lockall
@@ -40,8 +40,8 @@ VerdanturfTown_BattleTentCorridor_Movement_AttendantEnterDoor:
 	step_end
 
 
-@ Leftover text from when this was a Contest Hall in R/S
-@ Unused
+/* Leftover text from when this was a Contest Hall in R/S*/
+/* Unused*/
 VerdanturfTown_ContestHall_Text_WhichContestYouEntering:
 	.string "Which CONTEST are you entering?\n"
 	.string "Want a piece of advice?\p"
@@ -51,7 +51,7 @@ VerdanturfTown_ContestHall_Text_WhichContestYouEntering:
 	.string "You need to work out ways for raising\n"
 	.string "POKéMON better.$"
 
-@ Unused
+/* Unused*/
 VerdanturfTown_ContestHall_Text_RaisedMonToBeCute:
 	.string "I raised my POKéMON to be cute.\p"
 	.string "I found out you can put POKéMON in\n"
@@ -59,7 +59,7 @@ VerdanturfTown_ContestHall_Text_RaisedMonToBeCute:
 	.string "I'm so glad I raised my POKéMON with\n"
 	.string "loving care…$"
 
-@ Unused
+/* Unused*/
 VerdanturfTown_ContestHall_Text_MyMonRules:
 	.string "My POKéMON rules!\p"
 	.string "It's cool, tough yet beautiful, cute,\n"
@@ -67,7 +67,7 @@ VerdanturfTown_ContestHall_Text_MyMonRules:
 	.string "I may as well go for wins in every\n"
 	.string "single CONTEST.$"
 
-@ Unused
+/* Unused*/
 VerdanturfTown_ContestHall_Text_NormalRankStage:
 	.string "POKéMON CONTESTS\n"
 	.string "NORMAL RANK STAGE!$"

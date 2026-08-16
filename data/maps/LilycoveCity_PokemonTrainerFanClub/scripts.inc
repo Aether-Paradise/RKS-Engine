@@ -3,11 +3,11 @@ LilycoveCity_PokemonTrainerFanClub_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, LilycoveCity_PokemonTrainerFanClub_OnTransition
 	.byte 0
 
-	@ See field_specials.c for a breakdown of the Fan Club and its variables
+	/* See field_specials.c for a breakdown of the Fan Club and its variables*/
 
 LilycoveCity_PokemonTrainerFanClub_OnFrame:
 	map_script_2 VAR_LILYCOVE_FAN_CLUB_STATE, 1, LilycoveCity_PokemonTrainerFanClub_EventScript_MeetFirstFans
-	.2byte 0
+	.short 0
 
 LilycoveCity_PokemonTrainerFanClub_EventScript_MeetFirstFans::
 	lockall
@@ -108,8 +108,8 @@ LilycoveCity_PokemonTrainerFanClub_EventScript_HideInterviewer::
 	setflag FLAG_HIDE_LILYCOVE_FAN_CLUB_INTERVIEWER
 	return
 
-@ Set up the fan club TV show, if the player has at least 5 fans in the club
-@ Rather than counting up, 1 is subtracted from the total for each member not a fan of the players
+/* Set up the fan club TV show, if the player has at least 5 fans in the club*/
+/* Rather than counting up, 1 is subtracted from the total for each member not a fan of the players*/
 LilycoveCity_PokemonTrainerFanClub_EventScript_CheckSetUpTVShow::
 	setvar VAR_0x8005, NUM_TRAINER_FAN_CLUB_MEMBERS
 	setvar VAR_0x8004, FANCLUB_MEMBER1
@@ -459,8 +459,8 @@ LilycoveCity_PokemonTrainerFanClub_EventScript_Interviewer::
 	goto_if_unset FLAG_FAN_CLUB_STRENGTH_SHARED, LilycoveCity_PokemonTrainerFanClub_EventScript_Interview
 	end
 
-@ The interviewer doesnt count as an individual fan club member
-@ Instead they always ask about whoever the Lass would be interested in, if not the player
+/* The interviewer doesnt count as an individual fan club member*/
+/* Instead they always ask about whoever the Lass would be interested in, if not the player*/
 LilycoveCity_PokemonTrainerFanClub_EventScript_Interview::
 	setvar VAR_0x8005, TVSHOW_FAN_CLUB_SPECIAL
 	special InterviewBefore
@@ -553,7 +553,7 @@ LilycoveCity_PokemonTrainerFanClub_EventScript_AlreadyInterviewed::
 	release
 	end
 
-@ Shouldnt be reached
+/* Shouldnt be reached*/
 LilycoveCity_PokemonTrainerFanClub_EventScript_AlreadyInterviewed2::
 	end
 

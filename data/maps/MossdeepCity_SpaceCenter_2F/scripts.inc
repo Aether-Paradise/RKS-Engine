@@ -26,7 +26,7 @@ MossdeepCity_SpaceCenter_2F_EventScript_MoveDefeatedGrunts::
 
 MossdeepCity_SpaceCenter_2F_OnFrame:
 	map_script_2 VAR_MOSSDEEP_SPACE_CENTER_STATE, 1, MossdeepCity_SpaceCenter_2F_EventScript_ThreeMagmaGrunts
-	.2byte 0
+	.short 0
 
 MossdeepCity_SpaceCenter_2F_EventScript_ThreeMagmaGrunts::
 	playse SE_PIN
@@ -148,7 +148,7 @@ MossdeepCity_SpaceCenter_2F_EventScript_RichBoyMagma::
 	release
 	end
 
-@ Battle for the below 3 grunts is handled in MossdeepCity_SpaceCenter_2F_EventScript_BattleThreeMagmaGrunts
+/* Battle for the below 3 grunts is handled in MossdeepCity_SpaceCenter_2F_EventScript_BattleThreeMagmaGrunts*/
 MossdeepCity_SpaceCenter_2F_EventScript_Grunt6::
 	msgbox MossdeepCity_SpaceCenter_2F_Text_Grunt6PostBattle, MSGBOX_NPC
 	end

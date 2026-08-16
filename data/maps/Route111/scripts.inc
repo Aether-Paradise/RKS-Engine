@@ -15,7 +15,7 @@ Route111_EventScript_CloseDesertRuins::
 	setmetatile 29, 87, METATILE_General_RockWall_SandBase, TRUE
 	return
 
-@ Show Mirage Tower just prior to disintegration. Mirage Tower is otherwise handled by the map layout
+/* Show Mirage Tower just prior to disintegration. Mirage Tower is otherwise handled by the map layout*/
 Route111_EventScript_ShowTemporaryMirageTower::
 	setmetatile 18, 53, METATILE_Mauville_MirageTower_Tile0, FALSE
 	setmetatile 19, 53, METATILE_Mauville_MirageTower_Tile1, FALSE
@@ -94,7 +94,7 @@ Route111_EventScript_SetMirageTowerGone::
 
 Route111_OnWarp:
 	map_script_2 VAR_MIRAGE_TOWER_STATE, 1, Route111_EventScript_HidePlayerForMirageTower
-	.2byte 0
+	.short 0
 
 Route111_EventScript_HidePlayerForMirageTower::
 	hideobjectat LOCALID_PLAYER, MAP_LITTLEROOT_TOWN
@@ -102,7 +102,7 @@ Route111_EventScript_HidePlayerForMirageTower::
 
 Route111_OnFrame:
 	map_script_2 VAR_MIRAGE_TOWER_STATE, 1, Route111_EventScript_MirageTowerDisappear
-	.2byte 0
+	.short 0
 
 Route111_EventScript_MirageTowerDisappear::
 	lockall
@@ -130,7 +130,7 @@ Route111_EventScript_RootFossilDisappeared::
 	releaseall
 	end
 
-@ Unused
+/* Unused*/
 Route111_Movement_PlayerFall::
 	lock_anim
 	walk_fast_down
@@ -160,7 +160,7 @@ Route111_EventScript_ReceivedBerry::
 	release
 	end
 
-@ Unused
+/* Unused*/
 Route111_EventScript_ViciousSandstormTriggerUp::
 	lockall
 	setvar VAR_0x8004, 0
@@ -179,7 +179,7 @@ Route111_EventScript_ViciousSandstormTriggerLeft::
 	goto Route111_EventScript_ViciousSandstormTrigger
 	end
 
-@ Unused
+/* Unused*/
 Route111_EventScript_ViciousSandstormTriggerRight::
 	lockall
 	setvar VAR_0x8004, 3

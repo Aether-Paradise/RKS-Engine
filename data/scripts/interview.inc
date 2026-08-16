@@ -4,7 +4,7 @@ Interview_EventScript_EndInterview::
 	release
 	end
 
-@ Shares reporter object with TVSHOW_PKMN_FAN_CLUB_OPINIONS
+/* Shares reporter object with TVSHOW_PKMN_FAN_CLUB_OPINIONS*/
 SlateportCity_PokemonFanClub_EventScript_ReporterNoNickname::
 	setvar VAR_0x8005, TVSHOW_FAN_CLUB_LETTER
 	special InterviewBefore
@@ -307,7 +307,7 @@ BattleFrontier_BattleTowerLobby_EventScript_HideReporter::
 	setflag FLAG_HIDE_BATTLE_TOWER_REPORTER
 	return
 
-@ Unused
+/* Unused*/
 EventScript_ContestLiveInterview::
 	setvar VAR_0x8005, TVSHOW_CONTEST_LIVE_UPDATES
 	special InterviewBefore

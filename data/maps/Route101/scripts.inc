@@ -9,7 +9,7 @@ Route101_OnTransition:
 
 Route101_OnFrame:
 	map_script_2 VAR_ROUTE101_STATE, 0, Route101_EventScript_HideMapNamePopup
-	.2byte 0
+	.short 0
 
 Route101_EventScript_HideMapNamePopup::
 	setflag FLAG_HIDE_MAP_NAME_POPUP
@@ -122,7 +122,7 @@ Route101_Movement_ZigzagoonChase1:
 	walk_fast_up
 	step_end
 
-@ Leftover data? This command is unused.
+/* Leftover data? This command is unused.*/
 	step_end
 
 Route101_Movement_ZigzagoonFaceBirch:
@@ -182,7 +182,7 @@ Route101_Movement_BirchRunAway1:
 	walk_fast_up
 	step_end
 
-@ Leftover data? This command is unused.
+/* Leftover data? This command is unused.*/
 	step_end
 
 Route101_Movement_BirchFaceZigzagoon:

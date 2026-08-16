@@ -30,7 +30,7 @@ FallarborTown_BattleTentBattleRoom_EventScript_SetPlayerGfxFemale::
 
 FallarborTown_BattleTentBattleRoom_OnFrame:
 	map_script_2 VAR_TEMP_0, 0, FallarborTown_BattleTentBattleRoom_EventScript_EnterRoom
-	.2byte 0
+	.short 0
 
 FallarborTown_BattleTentBattleRoom_EventScript_EnterRoom::
 	lockall
@@ -136,12 +136,12 @@ FallarborTown_BattleTentBattleRoom_EventScript_WarpToLobbyWon::
 	warp MAP_FALLARBOR_TOWN_BATTLE_TENT_LOBBY, 6, 6
 	waitstate
 
-@ Unreachable code block? The flow into the next block also doesnt make sense
+/* Unreachable code block? The flow into the next block also doesnt make sense*/
 	arena_get ARENA_DATA_WIN_STREAK
 	goto_if_eq VAR_RESULT, MAX_STREAK, FallarborTown_BattleTentBattleRoom_EventScript_IncrementBattleNum
 	addvar VAR_RESULT, 1
 	arena_set ARENA_DATA_WIN_STREAK, VAR_RESULT
-@ See above
+/* See above*/
 
 FallarborTown_BattleTentBattleRoom_EventScript_ReadyFor2ndOpponent::
 	message BattleFrontier_BattleArenaBattleRoom_Text_ReadyFor2ndOpponent
@@ -194,7 +194,7 @@ FallarborTown_BattleTentBattleRoom_Movement_OpponentEnter:
 	walk_in_place_faster_left
 	step_end
 
-@ Unused
+/* Unused*/
 FallarborTown_BattleTentBattleRoom_Movement_OpponentStepForward:
 	walk_left
 	step_end
@@ -227,7 +227,7 @@ FallarborTown_BattleTentBattleRoom_Movement_AttendantReturnToPos:
 
 FallarborTown_BattleTentBattleRoom_OnWarp:
 	map_script_2 VAR_TEMP_1, 0, FallarborTown_BattleTentBattleRoom_EventScript_SetUpObjects
-	.2byte 0
+	.short 0
 
 FallarborTown_BattleTentBattleRoom_EventScript_SetUpObjects::
 	hideobjectat LOCALID_PLAYER, MAP_FALLARBOR_TOWN_BATTLE_TENT_BATTLE_ROOM

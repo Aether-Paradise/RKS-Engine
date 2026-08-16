@@ -3,10 +3,10 @@ BattleFrontier_BattlePyramidLobby_MapScripts::
 	map_script MAP_SCRIPT_ON_WARP_INTO_MAP_TABLE, BattleFrontier_BattleDomeLobby_OnWarp
 	.byte 0
 
-@ Unused. Pyramid uses Dome's OnWarp (presumably by mistake). Their effects are identical
+/* Unused. Pyramid uses Dome's OnWarp (presumably by mistake). Their effects are identical*/
 BattleFrontier_BattlePyramidLobby_OnWarp:
 	map_script_2 VAR_TEMP_1, 0, BattleFrontier_BattlePyramidLobby_EventScript_TurnPlayerNorth
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattlePyramidLobby_EventScript_TurnPlayerNorth:
 	setvar VAR_TEMP_1, 1
@@ -19,7 +19,7 @@ BattleFrontier_BattlePyramidLobby_OnFrame:
 	map_script_2 VAR_TEMP_CHALLENGE_STATUS, CHALLENGE_STATUS_PAUSED, BattleFrontier_BattlePyramidLobby_EventScript_ResumeChallenge
 	map_script_2 VAR_TEMP_CHALLENGE_STATUS, CHALLENGE_STATUS_WON, BattleFrontier_BattlePyramidLobby_EventScript_WonChallenge
 	map_script_2 VAR_TEMP_CHALLENGE_STATUS, CHALLENGE_STATUS_LOST, BattleFrontier_BattlePyramidLobby_EventScript_LostChallenge
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattlePyramidLobby_EventScript_GetChallengeStatus::
 	frontier_getstatus
@@ -225,7 +225,7 @@ BattleFrontier_BattlePyramidLobby_EventScript_GiveHint::
 	case MULTI_B_PRESSED, BattleFrontier_BattlePyramidLobby_EventScript_NoHint
 	return
 
-@ Shouldnt occur
+/* Shouldnt occur*/
 BattleFrontier_BattlePyramidLobby_EventScript_NoHint::
 	return
 
@@ -439,7 +439,7 @@ BattleFrontier_BattlePyramidLobby_EventScript_HeldItemsStoredInPyramidBag::
 	msgbox BattleFrontier_BattlePyramidLobby_Text_HeldItemsMovedToBag, MSGBOX_DEFAULT
 	return
 
-@ When exiting Battle Pyramid with a full pyramid bag and held items the player must select to keep/toss party held items and make room for any kept items by tossing from the pyramid bag
+/* When exiting Battle Pyramid with a full pyramid bag and held items the player must select to keep/toss party held items and make room for any kept items by tossing from the pyramid bag*/
 BattleFrontier_BattlePyramidLobby_EventScript_PickItemsToKeep::
 	multichoice 17, 6, MULTI_FRONTIER_ITEM_CHOOSE, FALSE
 	switch VAR_RESULT
@@ -661,7 +661,7 @@ BattleFrontier_BattlePyramidLobby_Text_PickItemsToKeep:
 	.string "Please pick the items you'll keep in the\n"
 	.string "BATTLE BAG, and with your POKéMON.$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattlePyramidLobby_Text_ReturnedEverythingMonsHeld:
 	.string "{PLAYER} returned everything that\n"
 	.string "the POKéMON held.$"
@@ -676,17 +676,17 @@ BattleFrontier_BattlePyramidLobby_Text_RecordResultsWait:
 	.string "I must record your results.\n"
 	.string "Please wait.$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattlePyramidLobby_Text_ForConqueringPyramidTakeThis:
 	.string "As a memento for conquering\n"
 	.string "the BATTLE PYRAMID, please take this.$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattlePyramidLobby_Text_ReceivedPrizeItem:
 	.string "{PLAYER} received the prize\n"
 	.string "{STR_VAR_1}.$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattlePyramidLobby_Text_BagIsFull:
 	.string "…Ah…\n"
 	.string "Your BAG appears to be filled.\p"
@@ -703,7 +703,7 @@ BattleFrontier_BattlePyramidLobby_Text_LookForwardToNextChallenge:
 	.string "We look forward to your\n"
 	.string "next challenge!$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattlePyramidLobby_Text_HereIsPrize:
 	.string "We have been looking forward to\n"
 	.string "your arrival!\p"

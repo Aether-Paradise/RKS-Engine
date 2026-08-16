@@ -42,7 +42,7 @@ CableClub_EventScript_DistributeEonTicket::
 	release
 	end
 
-@ Unused?
+/* Unused?*/
 CableClub_EventScript_MysteryGiftThankYou2::
 	msgbox gText_ThankYouForAccessingMysteryGift, MSGBOX_DEFAULT
 	release
@@ -57,7 +57,7 @@ CableClub_OnWarp:
 	map_script_2 VAR_CABLE_CLUB_STATE, USING_UNION_ROOM, CableClub_EventScript_CheckTurnAttendant
 	map_script_2 VAR_CABLE_CLUB_STATE, USING_BERRY_CRUSH, CableClub_EventScript_CheckTurnAttendant
 	map_script_2 VAR_CABLE_CLUB_STATE, USING_MINIGAME, CableClub_EventScript_CheckTurnAttendant
-	.2byte 0
+	.short 0
 
 CableClub_EventScript_CheckTurnAttendant::
 	goto_if_eq VAR_0x8007, 0, CableClub_EventScript_DontTurnAttendant
@@ -110,7 +110,7 @@ CableClub_OnFrame:
 	map_script_2 VAR_CABLE_CLUB_STATE, USING_UNION_ROOM, CableClub_EventScript_ExitUnionRoom
 	map_script_2 VAR_CABLE_CLUB_STATE, USING_BERRY_CRUSH, CableClub_EventScript_ExitLinkRoom
 	map_script_2 VAR_CABLE_CLUB_STATE, USING_MINIGAME, CableClub_EventScript_ExitMinigameRoom
-	.2byte 0
+	.short 0
 
 CableClub_EventScript_ExitLinkRoom::
 	lockall
@@ -365,7 +365,7 @@ CableClub_EventScript_EnterColosseum::
 	special DoCableClubWarp
 	end
 
-@ Unused
+/* Unused*/
 CableClub_EventScript_PlayerApproachLinkRoomRight::
 	applymovement LOCALID_PLAYER, Movement_PlayerApproachLinkRoomRight
 	waitmovement 0
@@ -404,7 +404,7 @@ CableClub_EventScript_AbortLinkWrongNumberForSingleBattle::
 	end
 
 CableClub_EventScript_ConfirmNumberAndRestart::
-	special CloseLink  @ Redundant
+	special CloseLink  /* Redundant*/
 	msgbox CableClub_Text_PleaseConfirmNumberAndRestart, MSGBOX_DEFAULT
 	release
 	end
@@ -559,7 +559,7 @@ MossdeepCity_GameCorner_1F_EventScript_AbortMinigame::
 	release
 	end
 
-@ Unused
+/* Unused*/
 CableClub_EventScript_CableClubWarp::
 	special SetCableClubWarp
 	special DoCableClubWarp
@@ -597,7 +597,7 @@ Movement_AttendantFaceDown:
 	face_down
 	step_end
 
-@ Unused
+/* Unused*/
 Movement_AttendantFaceRight:
 	face_right
 	step_end
@@ -611,7 +611,7 @@ Movement_PlayerExitLinkRoom:
 	walk_down
 	step_end
 
-@ Functionally unused
+/* Functionally unused*/
 Movement_PlayerApproachLinkRoomRight:
 	walk_right
 	walk_up
@@ -628,7 +628,7 @@ Movement_PlayerEnterLinkRoom:
 	walk_up
 	step_end
 
-@ Unused
+/* Unused*/
 Movement_PlayerFaceAttendantLeft:
 	face_left
 	step_end
@@ -924,7 +924,7 @@ CableClub_EventScript_DontAskAboutLinking::
 CableClub_EventScript_DirectCornerAttendant::
 	lock
 	faceplayer
-	setvar VAR_FRONTIER_FACILITY, FACILITY_MULTI_OR_EREADER  @ Set preemptively for multi battles, ignored otherwise
+	setvar VAR_FRONTIER_FACILITY, FACILITY_MULTI_OR_EREADER  /* Set preemptively for multi battles, ignored otherwise*/
 	goto_if_unset FLAG_SYS_POKEDEX_GET, CableClub_EventScript_WirelessClubAdjustements
 	specialvar VAR_RESULT, IsBadEggInParty
 	goto_if_eq VAR_RESULT, TRUE, CableClub_EventScript_AbortLinkPlayerHasBadEgg

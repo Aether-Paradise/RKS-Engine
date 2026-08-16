@@ -224,6 +224,9 @@ static const u8 sUnusedData[] = {0x00, 0xFF, 0xFE, 0xFF, 0x00};
 
 bool8 IsWirelessAdapterConnected(void)
 {
+#ifdef PORTABLE
+    return FALSE;
+#endif
     SetWirelessCommType1();
     InitRFUAPI();
     if (rfu_LMAN_REQBN_softReset_and_checkID() == RFU_ID)
@@ -1731,6 +1734,7 @@ void LinkPlayerFromBlock(u32 who)
         SetMainCallback2(CB2_LinkError);
 }
 
+#ifndef PORTABLE
 // When this function returns TRUE the callbacks are skipped
 bool8 HandleLinkConnection(void)
 {
@@ -1757,6 +1761,7 @@ bool8 HandleLinkConnection(void)
     }
     return FALSE;
 }
+#endif
 
 void SetWirelessCommType1(void)
 {

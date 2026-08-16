@@ -8,11 +8,11 @@ BattleFrontier_BattlePikeLobby_OnFrame:
 	map_script_2 VAR_TEMP_CHALLENGE_STATUS, CHALLENGE_STATUS_SAVING, BattleFrontier_BattlePikeLobby_EventScript_QuitWithoutSaving
 	map_script_2 VAR_TEMP_CHALLENGE_STATUS, CHALLENGE_STATUS_WON, BattleFrontier_BattlePikeLobby_EventScript_WonChallenge
 	map_script_2 VAR_TEMP_CHALLENGE_STATUS, CHALLENGE_STATUS_LOST, BattleFrontier_BattlePikeLobby_EventScript_LostChallenge
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattlePikeLobby_OnWarp:
 	map_script_2 VAR_TEMP_1, 0, BattleFrontier_BattlePikeLobby_EventScript_TurnPlayerNorth
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattlePikeLobby_EventScript_TurnPlayerNorth::
 	setvar VAR_TEMP_1, 1
@@ -359,13 +359,13 @@ BattleFrontier_BattlePikeLobby_Text_ShallRecordResults:
 	.string "I shall record your results.\n"
 	.string "Please wait…$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattlePikeLobby_Text_AwardYouTheseBattlePoints2:
 	.string "To commemorate your completion of\n"
 	.string "the Battle Choice challenge, we award\l"
 	.string "you these Battle Point(s)…$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattlePikeLobby_Text_ReachedBattlePointLimit:
 	.string "You appear to have reached the limit\n"
 	.string "for Battle Points…\p"
@@ -405,7 +405,7 @@ BattleFrontier_BattlePikeLobby_Text_ThinkAbilitiesUsefulHere:
 	.string "abilities of POKéMON will be useful\l"
 	.string "here?$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattlePikeLobby_Text_TrainersWhicheverPathIChoose:
 	.string "What is this weird place?\n"
 	.string "I can't figure it out at all!\p"

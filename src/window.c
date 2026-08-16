@@ -587,7 +587,7 @@ bool32 SetWindowAttribute(u32 windowId, u32 attributeId, u32 value)
         gWindows[windowId].window.baseBlock = value;
         return FALSE;
     case WINDOW_TILE_DATA:
-        gWindows[windowId].tileData = (u8 *)(value);
+        DBGPRINTF("WINDOW_TILE_DATA attribute can no longer be accessed by SetWindowAttribute");
         return TRUE;
     case WINDOW_BG:
     case WINDOW_WIDTH:
@@ -595,6 +595,12 @@ bool32 SetWindowAttribute(u32 windowId, u32 attributeId, u32 value)
     default:
         return TRUE;
     }
+}
+
+bool8 SetWindowTileData(u32 windowId, u8* tileData)
+{
+    gWindows[windowId].tileData = tileData;
+    return TRUE;
 }
 
 u32 GetWindowAttribute(u32 windowId, u32 attributeId)
@@ -616,10 +622,15 @@ u32 GetWindowAttribute(u32 windowId, u32 attributeId)
     case WINDOW_BASE_BLOCK:
         return gWindows[windowId].window.baseBlock;
     case WINDOW_TILE_DATA:
-        return (u32)(gWindows[windowId].tileData);
+        DBGPRINTF("WINDOW_TILE_DATA attribute can no longer be accessed by GetWindowAttribute");
     default:
         return 0;
     }
+}
+
+u8* GetWindowTileData(u32 windowId)
+{
+    return gWindows[windowId].tileData;
 }
 
 static u32 GetNumActiveWindowsOnBg(u32 bgId)

@@ -20,7 +20,7 @@ BattleFrontier_BattlePalaceBattleRoom_EventScript_SetPlayerGfx::
 	goto_if_eq VAR_RESULT, FEMALE, BattleFrontier_BattlePalaceBattleRoom_EventScript_SetPlayerGfxFemale
 	return
 
-@ The opponent's gfx are set to the players by default
+/* The opponent's gfx are set to the players by default*/
 BattleFrontier_BattlePalaceBattleRoom_EventScript_SetPlayerGfxMale::
 	setvar VAR_OBJ_GFX_ID_1, OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL
 	setvar VAR_OBJ_GFX_ID_0, OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL
@@ -33,7 +33,7 @@ BattleFrontier_BattlePalaceBattleRoom_EventScript_SetPlayerGfxFemale::
 
 BattleFrontier_BattlePalaceBattleRoom_OnFrame:
 	map_script_2 VAR_TEMP_0, 0, BattleFrontier_BattlePalaceBattleRoom_EventScript_EnterRoom
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattlePalaceBattleRoom_EventScript_EnterRoom::
 	showobjectat LOCALID_PALACE_BATTLE_PLAYER, MAP_BATTLE_FRONTIER_BATTLE_PALACE_BATTLE_ROOM
@@ -283,7 +283,7 @@ BattleFrontier_BattlePalaceBattleRoom_EventScript_DoPalaceBattle::
 
 BattleFrontier_BattlePalaceBattleRoom_OnWarp:
 	map_script_2 VAR_TEMP_1, 0, BattleFrontier_BattlePalaceBattleRoom_EventScript_SetUpRoomObjects
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattlePalaceBattleRoom_EventScript_SetUpRoomObjects::
 	hideobjectat LOCALID_PALACE_BATTLE_PLAYER, MAP_BATTLE_FRONTIER_BATTLE_PALACE_BATTLE_ROOM

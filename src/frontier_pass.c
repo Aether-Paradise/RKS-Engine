@@ -677,7 +677,13 @@ static u32 FreeFrontierPassGfx(void)
 
 static void VBlankCB_FrontierPass(void)
 {
+    #ifdef UBFIX
+    //Game doesn't clear VBlank interrupt handler when freeing sPassGfx
+    //Check was added instead of disabling VBlank after freeing to ensure there are no new bugs introduced
+    if (sPassGfx != NULL && sPassGfx->zooming)
+    #else
     if (sPassGfx->zooming)
+    #endif
     {
         SetBgAffine(2,
                     sBgAffineCoords[sPassData->areaToShow - 1][0] << 8,

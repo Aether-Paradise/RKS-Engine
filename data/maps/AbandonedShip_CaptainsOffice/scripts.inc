@@ -1,7 +1,7 @@
-AbandonedShip_CaptainsOffice_MapScripts::
+AbandonedShip_CaptainsOffice_MapScripts:: /* 82387E1*/
 	.byte 0
 
-AbandonedShip_CaptainsOffice_EventScript_CaptSternAide::
+AbandonedShip_CaptainsOffice_EventScript_CaptSternAide:: /* 82387E2*/
 	lock
 	faceplayer
 	goto_if_set FLAG_EXCHANGED_SCANNER, AbandonedShip_CaptainsOffice_EventScript_ThisIsSSCactus

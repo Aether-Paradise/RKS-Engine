@@ -212,7 +212,7 @@ struct MapEvents
 struct MapConnection
 {
     u8 direction;
-    s32 offset;
+    uintptr_t offset;
     u8 mapGroup;
     u8 mapNum;
 };

@@ -193,7 +193,7 @@ Route110_TrickHousePuzzle5_EventScript_Mechadoll4Trigger4::
 	goto Route110_TrickHousePuzzle5_EventScript_Mechadoll4Activate
 	end
 
-@ Unused
+/* Unused*/
 Route110_TrickHousePuzzle5_EventScript_Mechadoll4Trigger5::
 	lockall
 	setvar VAR_TEMP_9, 5
@@ -452,11 +452,11 @@ Route110_TrickHousePuzzle5_EventScript_CorrectGoThrough::
 	releaseall
 	end
 
-@ Absurd redundancy in movement scripts that could be resolved by using VAR_TEMP_8 for applymovement instead
-@ Many of the below movement scripts arent even used, see below
-@   Mechadoll 2 is the only mechadoll to walk right, all the other WalkRight scripts are unused
-@   Mechadoll 5 never walks, all the Mechadoll5Walk scripts are unused
-@   No mechadoll walks left 5 paces, all the WalkLeft5 scripts are unused
+/* Absurd redundancy in movement scripts that could be resolved by using VAR_TEMP_8 for applymovement instead*/
+/* Many of the below movement scripts arent even used, see below*/
+/*   Mechadoll 2 is the only mechadoll to walk right, all the other WalkRight scripts are unused*/
+/*   Mechadoll 5 never walks, all the Mechadoll5Walk scripts are unused*/
+/*   No mechadoll walks left 5 paces, all the WalkLeft5 scripts are unused*/
 Route110_TrickHousePuzzle5_EventScript_MechadollWalkLeft1::
 	call_if_eq VAR_TEMP_8, LOCALID_MECHADOLL_1, Route110_TrickHousePuzzle5_EventScript_Mechadoll1WalkLeft1
 	call_if_eq VAR_TEMP_8, LOCALID_MECHADOLL_2, Route110_TrickHousePuzzle5_EventScript_Mechadoll2WalkLeft1

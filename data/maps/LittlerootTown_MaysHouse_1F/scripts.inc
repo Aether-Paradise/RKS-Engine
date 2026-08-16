@@ -44,14 +44,14 @@ LittlerootTown_MaysHouse_1F_EventScript_MoveMomToDoor::
 	setobjectmovementtype LOCALID_PLAYERS_HOUSE_1F_MOM, MOVEMENT_TYPE_FACE_UP
 	return
 
-@ Many of the below scripts have no gender check because they assume youre in the correct house
+/* Many of the below scripts have no gender check because they assume youre in the correct house*/
 LittlerootTown_MaysHouse_1F_OnFrame:
 	map_script_2 VAR_LITTLEROOT_INTRO_STATE, 3, LittlerootTown_MaysHouse_1F_EventScript_EnterHouseMovingIn
 	map_script_2 VAR_LITTLEROOT_INTRO_STATE, 5, LittlerootTown_MaysHouse_1F_EventScript_GoUpstairsToSetClock
 	map_script_2 VAR_LITTLEROOT_INTRO_STATE, 6, LittlerootTown_MaysHouse_1F_EventScript_PetalburgGymReport
 	map_script_2 VAR_LITTLEROOT_HOUSES_STATE_BRENDAN, 1, LittlerootTown_MaysHouse_1F_EventScript_YoureNewNeighbor
 	map_script_2 VAR_LITTLEROOT_HOUSES_STATE_MAY, 3, PlayersHouse_1F_EventScript_GetSSTicketAndSeeLatiTV
-	.2byte 0
+	.short 0
 
 LittlerootTown_MaysHouse_1F_EventScript_GoUpstairsToSetClock::
 	lockall

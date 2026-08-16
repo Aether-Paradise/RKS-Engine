@@ -10,7 +10,7 @@ BattleFrontier_BattleDomeLobby_OnResume:
 
 BattleFrontier_BattleDomeLobby_OnWarp:
 	map_script_2 VAR_TEMP_1, 0, BattleFrontier_BattleDomeLobby_EventScript_TurnPlayerNorth
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattleDomeLobby_EventScript_TurnPlayerNorth::
 	setvar VAR_TEMP_1, 1
@@ -23,7 +23,7 @@ BattleFrontier_BattleDomeLobby_OnFrame:
 	map_script_2 VAR_TEMP_CHALLENGE_STATUS, CHALLENGE_STATUS_PAUSED, BattleFrontier_BattleDomeLobby_EventScript_ResumeChallenge
 	map_script_2 VAR_TEMP_CHALLENGE_STATUS, CHALLENGE_STATUS_WON, BattleFrontier_BattleDomeLobby_EventScript_WonChallenge
 	map_script_2 VAR_TEMP_CHALLENGE_STATUS, CHALLENGE_STATUS_LOST, BattleFrontier_BattleDomeLobby_EventScript_LostChallenge
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattleDomeLobby_EventScript_GetChallengeStatus::
 	frontier_getstatus
@@ -384,17 +384,17 @@ BattleFrontier_BattleDomeLobby_EventScript_Man::
 	msgbox BattleFrontier_BattleDomeLobby_Text_NeedToCheckOpponentCarefully, MSGBOX_NPC
 	end
 
-@ A few OutsideWest event scripts are inserted here instead, two of which are unused
+/* A few OutsideWest event scripts are inserted here instead, two of which are unused*/
 BattleFrontier_OutsideWest_EventScript_Man3::
 	msgbox BattleFrontier_OutsideWest_Text_LongDreamedAboutBattleFrontier, MSGBOX_NPC
 	end
 
-@ Unused
+/* Unused*/
 BattleFrontier_OutsideWest_EventScript_BattleDomeSign2::
 	msgbox BattleFrontier_OutsideWest_Text_BattleDomeSign2, MSGBOX_NPC
 	end
 
-@ Unused
+/* Unused*/
 BattleFrontier_OutsideWest_EventScript_UnderConstructionSign::
 	msgbox BattleFrontier_OutsideWest_Text_QuestionMarkUnderConstruction, MSGBOX_NPC
 	end
@@ -518,17 +518,17 @@ BattleFrontier_BattleDomeLobby_Text_CongratsForWinningTourney:
 	.string "Congratulations for winning\n"
 	.string "your Battle Tournament!$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattleDomeLobby_Text_HereIsYourPrize:
 	.string "Here is your prize for your Battle\n"
 	.string "Tournament victory.$"
 
-@ Used by Verdanturf Tent
+/* Used by Verdanturf Tent*/
 BattleFrontier_BattleDomeLobby_Text_ReceivedPrize:
 	.string "{PLAYER} received the prize\n"
 	.string "{STR_VAR_1}.$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattleDomeLobby_Text_BagFullMakeRoom:
 	.string "Oh, your BAG appears to be full.\p"
 	.string "Please make room in your BAG, then come\n"
@@ -608,12 +608,12 @@ BattleFrontier_OutsideWest_Text_LongDreamedAboutBattleFrontier:
 	.string "The BATTLE FRONTIER…\n"
 	.string "I've long dreamed about a place like it.$"
 
-@ Functionally unused
+/* Functionally unused*/
 BattleFrontier_OutsideWest_Text_BattleDomeSign2:
 	.string "The BATTLE DOME\n"
 	.string "Become the Unbeatable Superstar!$"
 
-@ Functionally unused
+/* Functionally unused*/
 BattleFrontier_OutsideWest_Text_QuestionMarkUnderConstruction:
 	.string "The ??????\n"
 	.string "Under Construction!$"

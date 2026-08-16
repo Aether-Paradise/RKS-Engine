@@ -24,6 +24,10 @@ endif
 MAKER_CODE  := 01
 REVISION    := 0
 KEEP_TEMPS  ?= 0
+PORTABLE    ?= 1
+IS64BIT		?= 1
+TARGET_PLATFORM := PLATFORM_SDL2
+TILE_RENDERER   := RENDERER_EASY_DRAW
 
 # `File name`.gba
 FILE_NAME := poke$(BUILD_NAME)
@@ -49,6 +53,13 @@ RELEASE      ?= 0
 
 ifeq (compare,$(MAKECMDGOALS))
   COMPARE := 1
+endif
+ifeq (gba,$(MAKECMDGOALS))
+  PORTABLE := 0
+endif
+#Enable MODERN if compiling portable version
+ifeq ($(PORTABLE), 1)
+  MODERN := 1
 endif
 ifeq (check,$(MAKECMDGOALS))
   TEST := 1
@@ -79,7 +90,29 @@ ifneq (,$(TOOLCHAIN))
   endif
 endif
 
-PREFIX := arm-none-eabi-
+BIT_WIDTH := 32
+OTHER_BIT_WIDTH := 64
+ASFLAGS64 :=
+CPPFLAGS64 :=
+
+# 64 bit specific stuff goes here
+ifeq ($(IS64BIT),1)
+  BIT_WIDTH := 64
+  OTHER_BIT_WIDTH := 32
+  ASFLAGS64 :=
+  CPPFLAGS64 := -D VER_64BIT
+endif
+
+ifeq ($(PORTABLE),1)
+  ifeq ($(IS64BIT),1)
+    PREFIX := x86_64-w64-mingw32-
+  else
+    PREFIX := i686-w64-mingw32-
+  endif
+else
+  PREFIX := arm-none-eabi-
+endif
+
 OBJCOPY := $(PREFIX)objcopy
 OBJDUMP := $(PREFIX)objdump
 AS := $(PREFIX)as
@@ -88,6 +121,43 @@ LD := $(PREFIX)ld
 EXE :=
 ifeq ($(OS),Windows_NT)
   EXE := .exe
+endif
+
+ifeq ($(PORTABLE),1)
+  ifeq ($(IS64BIT),1)
+    SDL_DIR := /home/asparagusedu/repos/rksengine/SDL2-2.30.7/x86_64-w64-mingw32
+    ASM_PSEUDO_OP_CONV := sed -e 's/\.4byte/\.int/g;s/\.2byte/\.short/g'
+    #FIX_UNDERSCORE is required for 32 bit windows
+    FIX_UNDERSCORE := $(OBJCOPY)
+    LEADING_UNDERSCORE_FLAG :=
+    PLATFORM_INCLUDES :=
+  else
+    SDL_DIR := /home/asparagusedu/repos/rksengine/SDL2-2.0.18/i686-w64-mingw32
+    ASM_PSEUDO_OP_CONV := sed -e 's/\.4byte/\.int/g;s/\.2byte/\.short/g'
+    FIX_UNDERSCORE := $(OBJCOPY) --prefix-symbol _
+    LEADING_UNDERSCORE_FLAG := -fleading-underscore
+    PLATFORM_INCLUDES :=
+  endif
+
+  #Windows only
+  ifneq ($(NO_STD_LIB),1)
+    PLATFORM_INCLUDES += -lmingw32
+  endif
+
+  ifeq ($(TARGET_PLATFORM), PLATFORM_SDL2)
+    PLATFORM_INCLUDES += -lSDL2main -lSDL2.dll
+  endif
+
+  ifeq ($(TARGET_PLATFORM), PLATFORM_WIN32)
+    ifeq ($(NO_STD_LIB),1)
+      PLATFORM_INCLUDES += -Wl,-e__main -nostdlib
+      CPPFLAGS += -D NO_STD_LIB_ENABLED
+    endif
+    PLATFORM_INCLUDES += -lkernel32 -luser32 -lgdi32
+  endif
+else
+  ASM_PSEUDO_OP_CONV := cat
+  FIX_UNDERSCORE := $(OBJCOPY)
 endif
 
 CPP := $(PREFIX)cpp
@@ -101,6 +171,10 @@ OBJ_DIR_NAME := $(BUILD_DIR)/$(BUILD_NAME)
 OBJ_DIR_NAME_TEST := $(BUILD_DIR)/$(BUILD_NAME)-test
 OBJ_DIR_NAME_DEBUG := $(BUILD_DIR)/$(BUILD_NAME)-debug
 OBJ_DIR_NAME_RELEASE := $(BUILD_DIR)/$(BUILD_NAME)-release
+PORTABLE_ROM_NAME := $(FILE_NAME)$(BIT_WIDTH).exe
+PORTABLE_OBJ_DIR_NAME := $(BUILD_DIR)/pc$(BIT_WIDTH)
+PORTABLE_ROM_NAME_OTHER := $(FILE_NAME)$(OTHER_BIT_WIDTH).exe
+PORTABLE_OBJ_DIR_NAME_OTHER := $(BUILD_DIR)/pc$(OTHER_BIT_WIDTH)
 ASSETS_DIR_NAME := $(BUILD_DIR)/assets
 
 ELF_NAME := $(ROM_NAME:.gba=.elf)
@@ -115,6 +189,9 @@ ifeq ($(TESTELF),$(MAKECMDGOALS))
 endif
 ifeq ($(TEST), 0)
   OBJ_DIR := $(OBJ_DIR_NAME)
+else ifeq ($(PORTABLE),1)
+  ROM := $(PORTABLE_ROM_NAME)
+  OBJ_DIR := $(PORTABLE_OBJ_DIR_NAME)
 else
   OBJ_DIR := $(OBJ_DIR_NAME_TEST)
 endif
@@ -145,7 +222,11 @@ TEST_BUILDDIR = $(OBJ_DIR)/$(TEST_SUBDIR)
 SHELL := bash -o pipefail
 
 # Set flags for tools
-ASFLAGS := -mcpu=arm7tdmi -march=armv4t -meabi=5 --defsym MODERN=1 --defsym $(GAME_VERSION)=1
+ifeq ($(PORTABLE),1)
+  ASFLAGS := --$(BIT_WIDTH) $(ASFLAGS64) --defsym VER_64BIT=$(IS64BIT) --defsym MODERN=1 --defsym PORTABLE=1 --defsym UBFIX=1 --defsym $(GAME_VERSION)=1
+else
+  ASFLAGS := -mcpu=arm7tdmi -march=armv4t -meabi=5 --defsym MODERN=1 --defsym $(GAME_VERSION)=1
+endif
 
 INCLUDE_DIRS := include
 INCLUDE_CPP_ARGS := $(INCLUDE_DIRS:%=-iquote %)
@@ -167,7 +248,10 @@ ARMCC := $(PREFIX)gcc
 PATH_ARMCC := PATH="$(PATH)" $(ARMCC)
 CC1 := $(shell $(PATH_ARMCC) --print-prog-name=cc1) -quiet
 
-override CFLAGS += -mthumb -mthumb-interwork -O$(O_LEVEL) -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -Wno-pointer-to-int-cast -std=gnu17 -Werror -Wall -Wno-strict-aliasing -Wno-attribute-alias -Woverride-init -Wnonnull -Wenum-conversion
+ifneq ($(PORTABLE),1)
+override CFLAGS += -mthumb -mthumb-interwork -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t
+endif
+override CFLAGS += -O$(O_LEVEL) -Wno-pointer-to-int-cast -std=gnu17 -Werror -Wall -Wno-strict-aliasing -Wno-attribute-alias -Woverride-init -Wnonnull -Wenum-conversion
 
 ifneq ($(LTO),0)
   ifneq ($(TEST),1)
@@ -193,6 +277,36 @@ endif
 
 LIBPATH := -L "$(dir $(shell $(PATH_ARMCC) -mthumb -print-file-name=libgcc.a))" -L "$(dir $(shell $(PATH_ARMCC) -mthumb -print-file-name=libnosys.a))" -L "$(dir $(shell $(PATH_ARMCC) -mthumb -print-file-name=libc.a))"
 LIB := $(LIBPATH) -lc -lnosys -lgcc -L../../libagbsyscall -lagbsyscall
+ifeq ($(PORTABLE),1)
+  CPPFLAGS += -D NONMATCHING -D PORTABLE -D $(TARGET_PLATFORM) -D $(TILE_RENDERER) -D UBFIX $(CPPFLAGS64) -I $(SDL_DIR)/include -L$(SDL_DIR)/lib
+  MODERNCC := $(PREFIX)gcc
+  PATH_MODERNCC := PATH="$(PATH)" $(MODERNCC)
+  CC1 	:= $(shell $(PREFIX)gcc --print-prog-name=cc1) -quiet
+  override CFLAGS += -Wno-trigraphs -Wimplicit -Wparentheses -Wunused -m$(BIT_WIDTH) -std=gnu99 $(LEADING_UNDERSCORE_FLAG) -fno-dce -fno-builtin -Wno-unused-function -DPORTABLE -DNONMATCHING -D UBFIX -DMODERN=$(MODERN)
+  LIB := $(LIBPATH) -lgcc -lc
+endif
+
+ifeq ($(PORTABLE),1)
+  PLATFORM_INCLUDES :=
+
+  #Windows only
+  ifneq ($(NO_STD_LIB),1)
+    PLATFORM_INCLUDES += -lmingw32
+  endif
+
+  ifeq ($(TARGET_PLATFORM), PLATFORM_SDL2)
+    PLATFORM_INCLUDES += -lSDL2main -lSDL2.dll
+  endif
+
+  ifeq ($(TARGET_PLATFORM), PLATFORM_WIN32)
+    ifeq ($(NO_STD_LIB),1)
+      PLATFORM_INCLUDES += -Wl,-e__main -nostdlib
+      CPPFLAGS += -D NO_STD_LIB_ENABLED
+    endif
+    PLATFORM_INCLUDES += -lkernel32 -luser32 -lgdi32
+  endif
+endif
+
 # Enable debug info if set
 ifeq ($(DINFO),1)
   override CFLAGS += -g
@@ -205,6 +319,14 @@ endif
 ifeq ($(NOOPT),1)
 override CFLAGS := $(filter-out -O1 -Og -O2,$(CFLAGS))
 override CFLAGS += -O0
+endif
+
+ifeq ($(PORTABLE),1)
+  ifeq ($(DINFO),1)
+    override CFLAGS += -O0
+  else
+    override CFLAGS += -O3
+  endif
 endif
 
 # Variable filled out in other make files
@@ -269,7 +391,7 @@ MAKEFLAGS += --no-print-directory
 .DELETE_ON_ERROR:
 
 RULES_NO_SCAN += libagbsyscall clean clean-assets tidy tidymodern tidycheck tidyrelease generated clean-generated clean-teachables clean-teachables_intermediates
-.PHONY: all rom agbcc modern compare check debug release
+.PHONY: all rom modern compare gba check debug release
 .PHONY: $(RULES_NO_SCAN)
 
 infoshell = $(foreach line, $(shell $1 | sed "s/ /__SPACE__/g"), $(info $(subst __SPACE__, ,$(line))))
@@ -324,7 +446,12 @@ DATA_ASM_OBJS := $(patsubst $(DATA_ASM_SUBDIR)/%.s,$(DATA_ASM_BUILDDIR)/%.o,$(DA
 MID_SRCS := $(wildcard $(MID_SUBDIR)/*.mid)
 MID_OBJS := $(patsubst $(MID_SUBDIR)/%.mid,$(MID_BUILDDIR)/%.o,$(MID_SRCS))
 
-OBJS     := $(C_OBJS) $(C_ASM_OBJS) $(ASM_OBJS) $(DATA_ASM_OBJS) $(MID_OBJS)
+ifeq ($(PORTABLE),1)
+  OBJS     := $(C_OBJS) $(ASM_OBJS) $(DATA_ASM_OBJS) $(MID_OBJS)
+else
+  OBJS     := $(C_OBJS) $(C_ASM_OBJS) $(ASM_OBJS) $(DATA_ASM_OBJS) $(MID_OBJS)
+endif
+
 OBJS_REL := $(patsubst $(OBJ_DIR)/%,%,$(OBJS))
 
 SUBDIRS  := $(sort $(dir $(OBJS) $(dir $(TEST_OBJS))))
@@ -333,14 +460,9 @@ $(shell mkdir -p $(SUBDIRS))
 # Pretend rules that are actually flags defer to `make all`
 modern: all
 compare: all
+gba: all
 debug: all
 release: all
-# Uncomment the next line, and then comment the 4 lines after it to reenable agbcc.
-#agbcc: all
-agbcc:
-	@echo "'make agbcc' is deprecated as of pokeemerald-expansion 1.9 and will be removed in 1.10."
-	@echo "Search for 'agbcc: all' in Makefile to reenable agbcc."
-	@exit 1
 
 LD_SCRIPT_TEST := ld_script_test.ld
 
@@ -385,7 +507,7 @@ clean-assets:
 	find . \( -iname '*.1bpp' -o -iname '*.4bpp' -o -iname '*.8bpp' -o -iname '*.gbapal' -o -iname '*.lz' -o -iname '*.smol' -o -iname '*.fastSmol' -o -iname '*.smolTM' -o -iname '*.rl' -o -iname '*.latfont' -o -iname '*.hwjpnfont' -o -iname '*.fwjpnfont' \) -exec rm {} +
 	find $(DATA_ASM_SUBDIR)/maps \( -iname 'connections.inc' -o -iname 'events.inc' -o -iname 'header.inc' \) -exec rm {} +
 
-tidy: tidymodern tidycheck tidydebug tidyrelease
+tidy: tidymodern tidyportable tidycheck tidydebug tidyrelease
 
 tidymodern:
 	rm -f poke*.gba poke*.elf poke*.map
@@ -405,6 +527,16 @@ else # Manually remove the release files on clean/tidy
 	rm -f $(FILE_NAME)-release.gba $(FILE_NAME)-release.elf $(FILE_NAME)-release.map
 endif
 	rm -rf $(OBJ_DIR_NAME_RELEASE)
+
+tidyportable:
+	rm -f $(PORTABLE_ROM_NAME)
+	rm -rf $(PORTABLE_OBJ_DIR_NAME)
+	rm -f $(PORTABLE_ROM_NAME_OTHER)
+	rm -rf $(PORTABLE_OBJ_DIR_NAME_OTHER)
+
+clean-platform:
+	rm -f $(PORTABLE_ROM_NAME)
+	rm -rf $(PORTABLE_OBJ_DIR_NAME)/src/platform
 
 # Other rules
 include graphics_file_rules.mk
@@ -502,6 +634,7 @@ endif
 
 $(ASM_BUILDDIR)/%.o: $(ASM_SUBDIR)/%.s
 	$(AS) $(ASFLAGS) -o $@ $<
+	$(FIX_UNDERSCORE) $@
 
 $(ASM_BUILDDIR)/%.d: $(ASM_SUBDIR)/%.s
 	$(SCANINC) -M $@ -g $(ASSETS_DIR_NAME) $(INCLUDE_SCANINC_ARGS) -I "" $<
@@ -521,7 +654,8 @@ ifneq ($(NODEP),1)
 endif
 
 $(DATA_ASM_BUILDDIR)/%.o: $(DATA_ASM_SUBDIR)/%.s
-	$(PREPROC) -s $< charmap.txt | $(CPP) $(CPPFLAGS) $(INCLUDE_SCANINC_ARGS) - | $(PREPROC) -ie $< charmap.txt | $(AS) $(ASFLAGS) -o $@
+	$(PREPROC) -s $< charmap.txt | $(CPP) $(INCLUDE_SCANINC_ARGS) - | $(PREPROC) -ie $< charmap.txt | $(ASM_PSEUDO_OP_CONV) | $(AS) $(ASFLAGS) -o $@
+	$(FIX_UNDERSCORE) $@
 
 $(DATA_ASM_BUILDDIR)/%.d: $(DATA_ASM_SUBDIR)/%.s
 	$(SCANINC) -M $@ -g $(ASSETS_DIR_NAME) $(INCLUDE_SCANINC_ARGS) -I "" $<
@@ -585,9 +719,14 @@ $(ELF): $(LD_SCRIPT) $(OBJS) libagbsyscall
 endif
 
 # Builds the rom from the elf file
+ifneq ($(PORTABLE),1)
 $(ROM): $(ELF)
 	$(OBJCOPY) -O binary $< $@
 	$(FIX) $@ -p --silent
+else
+$(ROM): $(OBJS)
+	$(MODERNCC) $(CFLAGS) -Wl,--demangle $^ -static-libgcc -L$(SDL_DIR)/lib $(PLATFORM_INCLUDES) -lwinmm -lxinput -o $@
+endif
 
 emerald: all
 firered: all

@@ -75,12 +75,12 @@ VictoryRoad_1F_Movement_WallyApproachPlayer2:
 	walk_up
 	step_end
 
-@ This Wally appears near the entrance once his battle is triggered and remains there until the Hall of Fame is entered
+/* This Wally appears near the entrance once his battle is triggered and remains there until the Hall of Fame is entered*/
 VictoryRoad_1F_EventScript_EntranceWally::
 	msgbox VictoryRoad_1F_Text_WallyPostEntranceBattle, MSGBOX_NPC
 	end
 
-@ This Wally appears and remains at the exit after the Hall of Fame is entered
+/* This Wally appears and remains at the exit after the Hall of Fame is entered*/
 VictoryRoad_1F_EventScript_ExitWally::
 	trainerbattle_single TRAINER_WALLY_VR_2, VictoryRoad_1F_Text_WallyIntro, VictoryRoad_1F_Text_WallyDefeat
 	specialvar VAR_RESULT, ShouldTryRematchBattle

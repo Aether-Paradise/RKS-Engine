@@ -38,18 +38,18 @@ JaggedPass_EventScript_ConcealHideoutEntrance::
 
 JaggedPass_EventScript_OpenMagmaHideout::
 	lockall
-	setvar VAR_0x8004, 1  @ vertical pan
-	setvar VAR_0x8005, 1  @ horizontal pan
-	setvar VAR_0x8006, 8  @ num shakes
-	setvar VAR_0x8007, 5  @ shake delay
+	setvar VAR_0x8004, 1  /* vertical pan*/
+	setvar VAR_0x8005, 1  /* horizontal pan*/
+	setvar VAR_0x8006, 8  /* num shakes*/
+	setvar VAR_0x8007, 5  /* shake delay*/
 	special ShakeCamera
 	waitstate
 	msgbox JaggedPass_Text_BoulderShakingInResponseToEmblem, MSGBOX_DEFAULT
 	closemessage
-	setvar VAR_0x8004, 1   @ vertical pan
-	setvar VAR_0x8005, 1   @ horizontal pan
-	setvar VAR_0x8006, 16  @ num shakes
-	setvar VAR_0x8007, 3   @ shake delay
+	setvar VAR_0x8004, 1   /* vertical pan*/
+	setvar VAR_0x8005, 1   /* horizontal pan*/
+	setvar VAR_0x8006, 16  /* num shakes*/
+	setvar VAR_0x8007, 3   /* shake delay*/
 	special ShakeCamera
 	waitstate
 	playse SE_EFFECTIVE

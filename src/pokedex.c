@@ -2605,7 +2605,11 @@ static void UpdateSelectedMonSpriteId(void)
     {
         u16 spriteId = sPokedexView->monSpriteIds[i];
 
+#ifndef PORTABLE
         if (gSprites[spriteId].x2 == 0 && gSprites[spriteId].y2 == 0 && spriteId != 0xFFFF)
+#else
+        if (spriteId != 0xFFFF && gSprites[spriteId].x2 == 0 && gSprites[spriteId].y2 == 0)
+#endif
             sPokedexView->selectedMonSpriteId = spriteId;
     }
 }
@@ -3053,7 +3057,7 @@ static void SpriteCB_Scrollbar(struct Sprite *sprite)
     if (sPokedexView->currentPage != PAGE_MAIN && sPokedexView->currentPage != PAGE_SEARCH_RESULTS)
         DestroySprite(sprite);
     else
-        sprite->y2 = sPokedexView->selectedPokemon * 120 / (sPokedexView->pokemonListCount - 1);
+        sprite->y2 = SAFE_DIV(sPokedexView->selectedPokemon * 120, (sPokedexView->pokemonListCount - 1));
 }
 
 static void SpriteCB_ScrollArrow(struct Sprite *sprite)
@@ -5504,7 +5508,7 @@ void SetSearchRectHighlight(u8 flags, u8 x, u8 y, u8 width)
 {
     u16 i;
     u16 temp; //should be a pointer, but does not match as one
-    u32 ptr = (u32)GetBgTilemapBuffer(3); //same as above
+    void* ptr = GetBgTilemapBuffer(3); //same as above
 
     for (i = 0; i < width; i++)
     {

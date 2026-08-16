@@ -58,7 +58,7 @@ AquaHideout_B2F_Movement_SumbarineDepartLeft:
 	walk_left
 	step_end
 
-@ Unused
+/* Unused*/
 AquaHideout_B2F_Movement_SumbarineDepartRight:
 	walk_right
 	walk_right

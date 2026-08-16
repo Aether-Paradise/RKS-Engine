@@ -1121,13 +1121,13 @@ static void SlotMachine_VBlankCB(void)
 }
 
 #define tMachineId    data[0]
-#define tExitCallback data[1]
+#define tExitCallback ptr.genericPtr[0]
 
 static void PlaySlotMachine_Internal(u8 machineId, MainCallback exitCallback)
 {
     struct Task *task = &gTasks[CreateTask(SlotMachineDummyTask, 0xFF)];
     task->tMachineId = machineId;
-    StoreWordInTwoHalfwords((u16*) &task->tExitCallback, (intptr_t)exitCallback);
+    task->tExitCallback = exitCallback;
 }
 
 // Extracts and assigns machineId and exit callback from task.
@@ -1135,7 +1135,7 @@ static void SlotMachine_InitFromTask(void)
 {
     struct Task *task = &gTasks[FindTaskIdByFunc(SlotMachineDummyTask)];
     sSlotMachine->machineId = task->tMachineId;
-    LoadWordFromTwoHalfwords((u16 *)&task->tExitCallback, (u32 *)&sSlotMachine->prevMainCb);
+    sSlotMachine->prevMainCb = task->tExitCallback;
 }
 
 static void SlotMachineDummyTask(u8 taskId)
@@ -1781,6 +1781,11 @@ static bool8 SlotTask_FreeDataStructures(struct Task *task)
         FREE_AND_SET_NULL(sReelBackgroundSpriteSheet);
         FREE_AND_SET_NULL(sSlotMachineSpritesheetsPtr);
         FREE_AND_SET_NULL(sSlotMachine);
+#ifdef PORTABLE
+        SetVBlankCallback(NULL);
+        ResetTasks();
+        ResetSpriteData();
+#endif
     }
     return FALSE;
 }

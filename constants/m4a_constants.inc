@@ -12,8 +12,8 @@
 	.equiv TONEDATA_TYPE_FIX, 0x08
 	.equiv TONEDATA_TYPE_REV, 0x10
 	.equiv TONEDATA_TYPE_CMP, 0x20
-	.equiv TONEDATA_TYPE_SPL, 0x40 @ key split
-	.equiv TONEDATA_TYPE_RHY, 0x80 @ rhythm
+	.equiv TONEDATA_TYPE_SPL, 0x40 /* key split*/
+	.equiv TONEDATA_TYPE_RHY, 0x80 /* rhythm*/
 
 	.equiv TONEDATA_P_S_PAN,  0xc0
 

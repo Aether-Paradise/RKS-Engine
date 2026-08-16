@@ -4,7 +4,7 @@ BattleFrontier_BattleTowerLobby_EventScript_Apprentice::
 	apprentice_gavelvlmode
 	goto_if_eq VAR_RESULT, FALSE, Apprentice_EventScript_FirstMeeting
 	apprentice_shouldcheckgone
-	goto_if_eq VAR_0x8004, FALSE, Apprentice_EventScript_AskQuestion  @ VAR_0x8004 always TRUE here
+	goto_if_eq VAR_0x8004, FALSE, Apprentice_EventScript_AskQuestion  /* VAR_0x8004 always TRUE here*/
 	goto_if_set FLAG_DAILY_APPRENTICE_LEAVES, Apprentice_EventScript_Gone
 Apprentice_EventScript_AskQuestion:
 	apprentice_getquestion
@@ -37,7 +37,7 @@ Apprentice_EventScript_WhichLvlMode:
 	goto Apprentice_EventScript_Leave
 	end
 
-@ Its impossible to fully reject an Apprentice, they just keep asking for you to teach them
+/* Its impossible to fully reject an Apprentice, they just keep asking for you to teach them*/
 Apprentice_EventScript_RejectTeach:
 	apprentice_msg FALSE, APPRENTICE_MSG_REJECT
 	goto Apprentice_EventScript_WhichLvlMode
@@ -120,8 +120,8 @@ Apprentice_EventScript_HoldNothing:
 	goto Apprentice_EventScript_Leave
 	end
 
-@ Because Battle Tower mons may not hold the same item, the player must suggest a
-@ different item if theyve already told the Apprentice to use it for another mon
+/* Because Battle Tower mons may not hold the same item, the player must suggest a*/
+/* different item if theyve already told the Apprentice to use it for another mon*/
 Apprentice_EventScript_AlreadySuggestedItem:
 	apprentice_initquestion APPRENTICE_QUESTION_WHAT_ITEM
 	apprentice_buff STR_VAR_1, APPRENTICE_BUFF_ITEM
@@ -179,7 +179,7 @@ Apprentice_EventScript_PutWhichMonFirst:
 	goto Apprentice_EventScript_Leave
 	end
 
-@ Last question, after which the Apprentice leaves (and is saved) to be replaced by another
+/* Last question, after which the Apprentice leaves (and is saved) to be replaced by another*/
 Apprentice_EventScript_PickWinSpeech:
 	apprentice_msg TRUE, APPRENTICE_MSG_PICK_WIN_SPEECH
 	apprentice_shiftsaved
@@ -206,14 +206,14 @@ Apprentice_EventScript_SetHideFlags:
 
 Apprentice_EventScript_LeaveNorth:
 	apprentice_shouldleave
-	goto_if_eq VAR_0x8004, FALSE, Apprentice_EventScript_DontMove  @ VAR_0x8004 always TRUE here
+	goto_if_eq VAR_0x8004, FALSE, Apprentice_EventScript_DontMove  /* VAR_0x8004 always TRUE here*/
 	applymovement LOCALID_APPRENTICE, Apprentice_Movement_LeaveNorth
 	waitmovement 0
 	end
 
 Apprentice_EventScript_Leave:
 	apprentice_shouldleave
-	goto_if_eq VAR_0x8004, FALSE, Apprentice_EventScript_DontMove  @ VAR_0x8004 always TRUE here
+	goto_if_eq VAR_0x8004, FALSE, Apprentice_EventScript_DontMove  /* VAR_0x8004 always TRUE here*/
 	applymovement LOCALID_APPRENTICE, Apprentice_Movement_Leave
 	waitmovement 0
 	end

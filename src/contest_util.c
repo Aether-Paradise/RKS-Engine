@@ -1075,6 +1075,10 @@ static void Task_FlashStarsAndHearts(u8 taskId)
         BlendPalette(BG_PLTT_ID(6) + 14, 1, gTasks[taskId].tCoeff, RGB(30, 29, 29));
     }
 
+#ifdef PORTABLE
+    if (!sContestResults)
+        return;
+#endif
     if (gTasks[taskId].tCoeff == 0)
         sContestResults->data->pointsFlashing = FALSE;
     else
@@ -1160,7 +1164,7 @@ static s32 DrawResultsTextWindow(const u8 *text, u8 spriteId)
         s32 i;
         struct Sprite *sprite;
         const u8 *src, *windowTilesPtr;
-        windowTilesPtr = (u8 *)GetWindowAttribute(windowId, WINDOW_TILE_DATA);
+        windowTilesPtr = GetWindowTileData(windowId);
         src = (u8 *)sResultsTextWindow_Gfx;
 
         sprite = &gSprites[spriteId];

@@ -402,17 +402,23 @@ static void Callback_Dummy_M(int reqCommandId, int error, void (*callbackM)())
 static void Callback_Dummy_M(int reqCommandId, int error, void (*callbackM)(...))
 #endif
 {
+#ifndef PORTABLE
     asm("bx r2");
+#endif
 }
 
 NAKED
 static void Callback_Dummy_S(u16 reqCommandId, void (*callbackS)(u16))
 {
+#ifndef PORTABLE
     asm("bx r1");
+#endif
 }
 
 NAKED
 static void Callback_Dummy_ID(void (*callbackId)(void))
 {
+#ifndef PORTABLE
     asm("bx r0");
+#endif
 }

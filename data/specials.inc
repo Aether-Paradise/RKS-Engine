@@ -3,9 +3,9 @@
 	.global SPECIAL_\ptr
 	.set SPECIAL_\ptr, __special__
 	.if \requests_effects == 0
-		.4byte \ptr
+		ptrvalue \ptr
 	.else
-		.4byte \ptr + ROM_SIZE
+		ptrvalue \ptr + ROM_SIZE
 	.endif
 .endif
 .set SPECIAL_WAITSTATE_\ptr, \waitstate
@@ -289,7 +289,7 @@ gSpecials::
 	def_special CheckLeadMonSmart
 	def_special CheckLeadMonTough
 	def_special LookThroughPorthole, waitstate=1
-	def_special DoSoftReset
+/*	def_special DoSoftReset*/
 	def_special GameClear, waitstate=1
 	def_special MoveElevator, waitstate=1
 	def_special ShowGlassWorkshopMenu
@@ -522,7 +522,7 @@ gSpecials::
 	def_special LinkRetireStatusWithBattleTowerPartner, waitstate=1
 	def_special BattleTowerReconnectLink
 	def_special CallTrainerHillFunction
-	def_special Script_DoRayquazaScene, waitstate=1 @ Listed twice
+	def_special Script_DoRayquazaScene, waitstate=1 /* Listed twice*/
 	def_special LoopWingFlapSE
 	def_special DestroyMewEmergingGrassSprite
 	def_special ShowBerryCrushRankings, waitstate=1

@@ -209,8 +209,13 @@ struct Sprite
              bool8 affineAnimPaused:1;
     /*0x2D*/ u8 animLoopCounter;
 
-    // general purpose data fields
-    /*0x2E*/ s16 data[8];
+	// general purpose data fields
+    s16 data[8];
+
+    union {
+        void (*spriteFuncPtr)(struct Sprite *);
+        intptr_t intPtr;
+    } ptr;
 
     /*0x3E*/ u16 inUse:1;                   //1
              u16 coordOffsetEnabled:1;      //2

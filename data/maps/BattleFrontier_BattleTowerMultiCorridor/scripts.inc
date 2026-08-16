@@ -31,7 +31,7 @@ BattleFrontier_BattleTowerMultiCorridor_EventScript_SetLinkPlayerGfx::
 
 BattleFrontier_BattleTowerMultiCorridor_OnWarp:
 	map_script_2 VAR_TEMP_1, 0, BattleFrontier_BattleTowerMultiCorridor_EventScript_SetUpObjects
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattleTowerMultiCorridor_EventScript_SetUpObjects::
 	hideobjectat LOCALID_PLAYER, MAP_BATTLE_FRONTIER_BATTLE_TOWER_MULTI_CORRIDOR
@@ -42,13 +42,13 @@ BattleFrontier_BattleTowerMultiCorridor_EventScript_SetUpObjects::
 
 BattleFrontier_BattleTowerMultiCorridor_OnFrame:
 	map_script_2 VAR_TEMP_1, 0, BattleFrontier_BattleTowerMultiCorridor_EventScript_EnterCorridor
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattleTowerMultiCorridor_EventScript_EnterCorridor::
 	lockall
 	setflag FLAG_ENABLE_MULTI_CORRIDOR_DOOR
-	setvar VAR_0x8004, 14  @ x coord of far door, used by DrawDoor
-	setvar VAR_0x8005, 1   @ y coord of far door, used by DrawDoor
+	setvar VAR_0x8004, 14  /* x coord of far door, used by DrawDoor*/
+	setvar VAR_0x8005, 1   /* y coord of far door, used by DrawDoor*/
 	opendoor 1, 1
 	waitdooranim
 	clearflag FLAG_ENABLE_MULTI_CORRIDOR_DOOR
@@ -58,8 +58,8 @@ BattleFrontier_BattleTowerMultiCorridor_EventScript_EnterCorridor::
 	applymovement LOCALID_TOWER_MULTI_CORRIDOR_PARTNER, BattleFrontier_BattleTowerMultiCorridor_Movement_ExitElevator
 	waitmovement 0
 	setflag FLAG_ENABLE_MULTI_CORRIDOR_DOOR
-	setvar VAR_0x8004, 14  @ x coord of far door, used by DrawDoor
-	setvar VAR_0x8005, 1   @ y coord of far door, used by DrawDoor
+	setvar VAR_0x8004, 14  /* x coord of far door, used by DrawDoor*/
+	setvar VAR_0x8005, 1   /* y coord of far door, used by DrawDoor*/
 	closedoor 1, 1
 	waitdooranim
 	clearflag FLAG_ENABLE_MULTI_CORRIDOR_DOOR
@@ -104,7 +104,7 @@ BattleFrontier_BattleTowerMultiCorridor_EventScript_WarpToMultiBattleRoom::
 	waitstate
 	return
 
-@ Unnecessary duplicate of the above
+/* Unnecessary duplicate of the above*/
 BattleFrontier_BattleTowerMultiCorridor_EventScript_WarpToLinkMultiBattleRoom::
 	warp MAP_BATTLE_FRONTIER_BATTLE_TOWER_MULTI_BATTLE_ROOM, 4, 5
 	waitstate

@@ -19,7 +19,7 @@ LittlerootTown_BrendansHouse_2F_EventScript_CheckShouldUpdateBrendanPos::
 LittlerootTown_BrendansHouse_2F_EventScript_TryUpdateBrendanPos::
 	checkplayergender
 	goto_if_eq VAR_RESULT, MALE, LittlerootTown_BrendansHouse_2F_EventScript_Ret
-	@ Odd that the MaysHouse equivalent was used below instead
+	/* Odd that the MaysHouse equivalent was used below instead*/
 	goto_if_ge VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 2, LittlerootTown_MaysHouse_2F_EventScript_Ret
 	setobjectxyperm LOCALID_RIVALS_HOUSE_2F_RIVAL, 0, 2
 	setobjectmovementtype LOCALID_RIVALS_HOUSE_2F_RIVAL, MOVEMENT_TYPE_FACE_UP
@@ -39,7 +39,7 @@ LittlerootTown_BrendansHouse_2F_EventScript_SetReadyToMeetBrendan::
 
 LittlerootTown_BrendansHouse_2F_OnWarp:
 	map_script_2 VAR_SECRET_BASE_INITIALIZED, 0, LittlerootTown_BrendansHouse_2F_EventScript_CheckInitDecor
-	.2byte 0
+	.short 0
 
 LittlerootTown_BrendansHouse_2F_EventScript_CheckInitDecor::
 	checkplayergender
@@ -226,7 +226,7 @@ LittlerootTown_BrendansHouse_2F_Movement_BrendanWalkToPCEast:
 	walk_in_place_faster_up
 	step_end
 
-@ Unused, the player is already facing this direction so its unneeded
+/* Unused, the player is already facing this direction so its unneeded*/
 LittlerootTown_BrendansHouse_2F_Movement_PlayerWatchBrendanEast:
 	delay_16
 	delay_16

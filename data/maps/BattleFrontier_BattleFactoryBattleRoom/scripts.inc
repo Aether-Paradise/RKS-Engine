@@ -26,7 +26,7 @@ BattleFrontier_BattleFactoryBattleRoom_EventScript_SetUpFactoryHeadObj::
 
 BattleFrontier_BattleFactoryBattleRoom_OnWarp:
 	map_script_2 VAR_TEMP_1, 0, BattleFrontier_BattleFactoryBattleRoom_EventScript_HideObjects
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattleFactoryBattleRoom_EventScript_HideObjects::
 	setvar VAR_TEMP_1, 1
@@ -46,7 +46,7 @@ BattleFrontier_BattleFactoryBattleRoom_EventScript_SetPlayerGfxFemale::
 
 BattleFrontier_BattleFactoryBattleRoom_OnFrame:
 	map_script_2 VAR_TEMP_0, 0, BattleFrontier_BattleFactoryBattleRoom_EventScript_EnterRoom
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattleFactoryBattleRoom_EventScript_EnterRoomFactoryHeadBattle::
 	msgbox BattleFrontier_BattleFactoryBattleRoom_Text_GetAMoveOn, MSGBOX_DEFAULT
@@ -93,7 +93,7 @@ BattleFrontier_BattleFactoryBattleRoom_EventScript_DefeatedOpponent::
 	goto_if_eq VAR_RESULT, MAX_STREAK, BattleFrontier_BattleFactoryBattleRoom_EventScript_IncrementWinStreak
 	addvar VAR_RESULT, 1
 	setorcopyvar VAR_0x8006, VAR_RESULT
-	factory_set FACTORY_DATA_WIN_STREAK_SWAPS  @ uses VAR_0x8006 above
+	factory_set FACTORY_DATA_WIN_STREAK_SWAPS  /* uses VAR_0x8006 above*/
 BattleFrontier_BattleFactoryBattleRoom_EventScript_IncrementWinStreak::
 	call BattleFrontier_EventScript_IncrementWinStreak
 BattleFrontier_BattleFactoryBattleRoom_EventScript_IncrementBattleNum::
@@ -178,7 +178,7 @@ BattleFrontier_BattleFactoryBattleRoom_EventScript_DefeatedNoland::
 	goto_if_eq VAR_RESULT, MAX_STREAK, BattleFrontier_BattleFactoryBattleRoom_EventScript_IncrementWinStreak
 	addvar VAR_RESULT, 1
 	setorcopyvar VAR_0x8006, VAR_RESULT
-	factory_set FACTORY_DATA_WIN_STREAK_SWAPS  @ uses VAR_0x8006 above
+	factory_set FACTORY_DATA_WIN_STREAK_SWAPS  /* uses VAR_0x8006 above*/
 	factory_get FACTORY_DATA_WIN_STREAK
 	goto_if_eq VAR_RESULT, MAX_STREAK, BattleFrontier_BattleFactoryBattleRoom_EventScript_IncrementBattleNum
 	addvar VAR_RESULT, 1

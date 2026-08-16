@@ -6,6 +6,9 @@
 #include "malloc.h"
 #include "menu.h"
 #include "decompress.h"
+#ifdef PORTABLE
+#include "platform/system.h"
+#endif
 
 #define DISPCNT_ALL_BG_AND_MODE_BITS    (DISPCNT_BG_ALL_ON | 0x7)
 
@@ -482,6 +485,10 @@ bool32 IsDma3ManagerBusyWithBgCopy(void)
 {
     int i;
 
+#ifdef PORTABLE
+	RunDMAsAndVBlank();
+    return FALSE;
+#endif
     for (i = 0; i < 0x80; i++)
     {
         u8 div = i / 0x20;
@@ -1202,10 +1209,9 @@ static u32 GetBgType(u32 bg)
 
 bool32 IsTileMapOutsideWram(u32 bg)
 {
+#ifndef PORTABLE
     if (sGpuBgConfigs2[bg].tilemap > (void *)IWRAM_END)
         return TRUE;
-    else if (sGpuBgConfigs2[bg].tilemap == NULL)
-        return TRUE;
-    else
-        return FALSE;
+#endif
+    return sGpuBgConfigs2[bg].tilemap == NULL;
 }

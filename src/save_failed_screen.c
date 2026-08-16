@@ -216,9 +216,9 @@ static void CB2_SaveFailedScreen(void)
         LoadBgTiles(0, gTextWindowFrame1_Gfx, 0x120, 0x214);
         InitWindows(sDummyWindowTemplate);
         sWindowIds[TEXT_WIN_ID] = AddWindowWithoutTileMap(sWindowTemplate_Text);
-        SetWindowAttribute(sWindowIds[TEXT_WIN_ID], 7, (u32)&sSaveFailedBuffers->window1TileData);
+        SetWindowAttribute(sWindowIds[TEXT_WIN_ID], 7, &sSaveFailedBuffers->window1TileData);
         sWindowIds[CLOCK_WIN_ID] = AddWindowWithoutTileMap(sWindowTemplate_Clock);
-        SetWindowAttribute(sWindowIds[CLOCK_WIN_ID], 7, (u32)&sSaveFailedBuffers->window2TileData);
+        SetWindowAttribute(sWindowIds[CLOCK_WIN_ID], 7, &sSaveFailedBuffers->window2TileData);
         DeactivateAllTextPrinters();
         ResetSpriteData();
         ResetTasks();

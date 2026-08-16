@@ -1056,8 +1056,15 @@ static void CB2_Roulette(void)
     RunTasks();
     AnimateSprites();
     BuildOamBuffer();
+#ifdef PORTABLE
+    if (sRoulette)
+    {
+#endif
     if (sRoulette->flashUtil.enabled)
         RouletteFlash_Run(&sRoulette->flashUtil);
+#ifdef PORTABLE
+    }
+#endif
 }
 
 static void VBlankCB_Roulette(void)

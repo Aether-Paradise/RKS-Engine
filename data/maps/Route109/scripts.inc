@@ -1,5 +1,5 @@
-@ NOTE: Route 109's sail to Dewford script references local IDs from Dewford's map.
-@  These are labeled in DewfordTown/scripts.inc
+/* NOTE: Route 109's sail to Dewford script references local IDs from Dewford's map.*/
+/*  These are labeled in DewfordTown/scripts.inc*/
 
 Route109_MapScripts::
 	.byte 0

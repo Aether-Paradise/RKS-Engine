@@ -1,12 +1,12 @@
 BattleFrontier_Lounge2_MapScripts::
 	.byte 0
 
-@ This NPC gives hints about a random facility or battle mode.
-@ For battle modes he gives generic advice
-@ For facilities, depending on how far the player has progressed he will say either
-@    The name of the Frontier Brain there
-@    The type and description of the 3 pokemon they use in their silver battle
-@    The type and description of the 3 pokemon they use in their gold battle
+/* This NPC gives hints about a random facility or battle mode.*/
+/* For battle modes he gives generic advice*/
+/* For facilities, depending on how far the player has progressed he will say either*/
+/*    The name of the Frontier Brain there*/
+/*    The type and description of the 3 pokemon they use in their silver battle*/
+/*    The type and description of the 3 pokemon they use in their gold battle*/
 BattleFrontier_Lounge2_EventScript_FrontierManiac::
 	lock
 	faceplayer
@@ -126,7 +126,7 @@ BattleFrontier_Lounge2_Text_SwingByForTheLatestWord::
 	.string "Howdy! Did you swing by to grill me\n"
 	.string "about the latest word? Oh, all right!$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_Lounge2_Text_MyInformationsBeenUsefulRight::
 	.string "Well? Well? Well?\p"
 	.string "I'm sure my information's been\n"

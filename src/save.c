@@ -1,4 +1,5 @@
 #include "global.h"
+#include "platform.h"
 #include "agb_flash.h"
 #include "gba/flash_internal.h"
 #include "fieldmap.h"
@@ -766,6 +767,11 @@ u8 HandleSavingData(u8 saveType)
         WriteSaveSectorOrSlot(FULL_SAVE_SLOT, gRamSaveSectorLocations);
         break;
     }
+
+#ifdef PORTABLE
+	Platform_StoreSaveFile();
+#endif
+
     gTrainerHillVBlankCounter = backupVar;
     return 0;
 }
@@ -781,6 +787,9 @@ u8 TrySavingData(u8 saveType)
     HandleSavingData(saveType);
     if (!gDamagedSaveSectors)
     {
+#ifdef PORTABLE
+		Platform_StoreSaveFile();
+#endif
         gSaveAttemptStatus = SAVE_STATUS_OK;
         return SAVE_STATUS_OK;
     }

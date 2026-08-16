@@ -14,7 +14,7 @@ MtChimney_CableCarStation_EventScript_MoveAttendantAside::
 
 MtChimney_CableCarStation_OnFrame:
 	map_script_2 VAR_CABLE_CAR_STATION_STATE, 1, MtChimney_CableCarStation_EventScript_ExitCableCar
-	.2byte 0
+	.short 0
 
 MtChimney_CableCarStation_EventScript_ExitCableCar::
 	lockall
@@ -41,7 +41,7 @@ MtChimney_CableCarStation_EventScript_RideCableCar::
 	applymovement LOCALID_MT_CHIMNEY_CABLE_CAR_ATTENDANT, MtChimney_CableCarStation_Movement_LeadPlayerToCableCar
 	applymovement LOCALID_PLAYER, MtChimney_CableCarStation_Movement_BoardCableCar
 	waitmovement 0
-	setvar VAR_0x8004, TRUE  @ Going down
+	setvar VAR_0x8004, TRUE  /* Going down*/
 	setvar VAR_CABLE_CAR_STATION_STATE, 2
 	incrementgamestat GAME_STAT_RODE_CABLE_CAR
 	special CableCarWarp

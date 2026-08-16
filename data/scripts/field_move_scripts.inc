@@ -1,4 +1,4 @@
-@ Interact with cuttable tree
+/* Interact with cuttable tree*/
 EventScript_CutTree::
 	lockall
 	checkfieldmove FIELD_MOVE_CUT, TRUE

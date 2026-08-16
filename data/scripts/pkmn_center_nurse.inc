@@ -15,7 +15,7 @@ EventScript_PkmnCenterNurse_Goodbye::
 	message gText_WeHopeToSeeYouAgain
 	return
 
-@ VAR_0x8004 is 1 when player has Gold Card; jumps are identical
+/* VAR_0x8004 is 1 when player has Gold Card; jumps are identical*/
 EventScript_PkmnCenterNurse_HealPkmn::
 	incrementgamestat GAME_STAT_USED_POKECENTER
 	call_if_eq VAR_0x8004, 0, EventScript_PkmnCenterNurse_IllTakeYourPkmn
@@ -60,7 +60,7 @@ EventScript_PkmnCenterNurse_CheckTrainerHillAndUnionRoom::
 	goto_if_eq VAR_0x8008, 1, EventScript_PkmnCenterNurse_PlayerWaitingInUnionRoom
 	end
 
-@ VAR_0x8004 is 1 when player has Gold Card
+/* VAR_0x8004 is 1 when player has Gold Card*/
 EventScript_PkmnCenterNurse_ReturnPkmn::
 	goto_if_eq VAR_0x8004, 1, EventScript_PkmnCenterNurse_ReturnPkmn2
 	message gText_RestoredPkmnToFullHealth

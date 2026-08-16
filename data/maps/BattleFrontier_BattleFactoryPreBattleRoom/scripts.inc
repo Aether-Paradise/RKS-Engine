@@ -5,7 +5,7 @@ BattleFrontier_BattleFactoryPreBattleRoom_MapScripts::
 
 BattleFrontier_BattleFactoryPreBattleRoom_OnWarp:
 	map_script_2 VAR_TEMP_1, 0, BattleFrontier_BattleFactoryPreBattleRoom_EventScript_SetUpObjects
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattleFactoryPreBattleRoom_EventScript_SetUpObjects::
 	setvar VAR_TEMP_1, 1
@@ -18,7 +18,7 @@ BattleFrontier_BattleFactoryPreBattleRoom_EventScript_TurnPlayerNorth::
 
 BattleFrontier_BattleFactoryPreBattleRoom_OnFrame:
 	map_script_2 VAR_TEMP_0, 0, BattleFrontier_BattleFactoryPreBattleRoom_EventScript_EnterRoom
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattleFactoryPreBattleRoom_EventScript_EnterRoom::
 	goto_if_eq VAR_0x8006, 1, BattleFrontier_BattleFactoryPreBattleRoom_EventScript_ReturnToRoomFromBattle
@@ -152,7 +152,7 @@ BattleFrontier_BattleFactoryPreBattleRoom_EventScript_SwapMons::
 	fadescreen FADE_TO_BLACK
 	factory_swapmons
 	waitstate
-	goto_if_eq VAR_RESULT, TRUE, BattleFrontier_BattleFactoryPreBattleRoom_EventScript_EnterBattleRoom  @ Did player keep current pokemon
+	goto_if_eq VAR_RESULT, TRUE, BattleFrontier_BattleFactoryPreBattleRoom_EventScript_EnterBattleRoom  /* Did player keep current pokemon*/
 	factory_setswapped
 	msgbox BattleFrontier_BattleFactoryPreBattleRoom_Text_YourSwapIsComplete, MSGBOX_DEFAULT
 	goto BattleFrontier_BattleFactoryPreBattleRoom_EventScript_EnterBattleRoom

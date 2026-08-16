@@ -131,6 +131,7 @@ static const char str_checkMbootLL[] = "RFU-MBOOT";
         *_dst++ = *_src++;                          \
 } while (0)
 
+#ifndef PORTABLE
 u16 rfu_initializeAPI(u32 *APIBuffer, u16 buffByteSize, IntrFunc *sioIntrTable_p, bool8 copyInterruptToRam)
 {
     u16 i;
@@ -198,6 +199,7 @@ u16 rfu_initializeAPI(u32 *APIBuffer, u16 buffByteSize, IntrFunc *sioIntrTable_p
     gRfuFixed->fastCopyPtr = (void *)gRfuFixed->fastCopyBuffer + 1;
     return 0;
 }
+#endif
 
 static void rfu_STC_clearAPIVariables(void)
 {
@@ -324,6 +326,44 @@ u16 rfu_getRFUStatus(u8 *rfuState)
     return 0;
 }
 
+/*
+ * RFU Multiboot images are loaded into IWRAM
+ * struct RfuMbootLL
+ * {
+ *   struct RfuLinkStatus status;
+ *   u8 filler_B4[0x3C];
+ *   char name[10];
+ *   u16 checksum;
+ * }
+ * Returns 1 if the packet to inherit is malformed.
+ */
+#ifndef PORTABLE
+u16 rfu_MBOOT_CHILD_inheritanceLinkStatus(void)
+{
+    const char *s1 = str_checkMbootLL;
+    char *s2 = (char *)(IWRAM_START + 0xF0);
+    u16 checksum;
+    u16 *mb_buff_iwram_p;
+    u8 i;
+
+    // if (strcmp(s1, s2) != 0) return 1;
+    while (*s1 != '\0')
+        if (*s1++ != *s2++)
+            return 1;
+    mb_buff_iwram_p = (u16 *)IWRAM_START;
+
+    // The size of struct RfuLinkStatus is 180
+    checksum = 0;
+    for (i = 0; i < 180/2; ++i)
+        checksum += *mb_buff_iwram_p++;
+    if (checksum != *(u16 *)(IWRAM_START + 0xFA))
+        return 1;
+    CpuCopy16((u16 *)IWRAM_START, gRfuLinkStatus, sizeof(struct RfuLinkStatus));
+    gRfuStatic->flags |= 0x80; // mboot
+    return 0;
+}
+#endif
+
 void rfu_REQ_stopMode(void)
 {
     vu32 *timerReg;
@@ -402,7 +442,11 @@ void rfu_REQ_configSystem(u16 availSlotFlag, u8 maxMFrame, u8 mcTimer)
         u16 IMEBackup = REG_IME;
 
         REG_IME = 0;
+#ifndef PORTABLE
         gRfuStatic->linkEmergencyLimit = Div(600, mcTimer);
+#else
+        gRfuStatic->linkEmergencyLimit = 600 / mcTimer;
+#endif
         REG_IME = IMEBackup;
     }
 }
@@ -1700,7 +1744,7 @@ static void rfu_constructSendLLFrame(void)
         }
         if (pakcketSize != 0)
         {
-            while ((u32)llf_p & 3)
+            while ((uintptr_t)llf_p & 3)
                 *llf_p++ = 0;
             gRfuFixed->LLFBuffer[0] = pakcketSize;
             if (gRfuLinkStatus->parentChild == MODE_CHILD)

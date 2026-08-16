@@ -10,11 +10,11 @@ BattleFrontier_BattlePikeThreePathRoom_OnFrame:
 	map_script_2 VAR_TEMP_CHALLENGE_STATUS, CHALLENGE_STATUS_PAUSED, BattleFrontier_BattlePikeThreePathRoom_EventScript_ResumeChallenge
 	map_script_2 VAR_TEMP_5, 0, BattleFrontier_BattlePikeThreePathRoom_EventScript_SetHintRoom
 	map_script_2 VAR_TEMP_5, 1, BattleFrontier_BattlePikeThreePathRoom_EventScript_GivePikeQueenHint
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattlePikeThreePathRoom_OnWarp:
 	map_script_2 VAR_TEMP_4, 0, BattleFrontier_BattlePikeThreePathRoom_EventScript_TurnPlayerNorth
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattlePikeThreePathRoom_EventScript_TurnPlayerNorth::
 	setvar VAR_TEMP_4, 1
@@ -49,7 +49,7 @@ BattleFrontier_BattlePikeThreePathRoom_EventScript_ResumeChallenge::
 	end
 
 BattleFrontier_BattlePikeThreePathRoom_EventScript_Attendant::
-	frontier_get FRONTIER_DATA_BATTLE_NUM  @ Room number
+	frontier_get FRONTIER_DATA_BATTLE_NUM  /* Room number*/
 	switch VAR_RESULT
 	case 1, BattleFrontier_BattlePikeThreePathRoom_EventScript_AttendantRoom1
 	case 3, BattleFrontier_BattlePikeThreePathRoom_EventScript_AttendantRoom3

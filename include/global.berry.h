@@ -101,6 +101,6 @@ struct BerryTree
     u16 moistureLevel:7;
     u16 moistureClock:7;
     u16 padding:2;
-};
+} ALIGNED(4);
 
 #endif // GUARD_GLOBAL_BERRY_H

@@ -1189,6 +1189,7 @@ void BtlController_EmitDataTransfer(enum BattlerId battler, u32 bufferId, u16 si
     PrepareBufferDataTransfer(battler, bufferId, gBattleResources->transferBuffer, size + 4);
 }
 
+#ifndef VER_64BIT
 static void UNUSED BtlController_EmitDMA3Transfer(enum BattlerId battler, u32 bufferId, void *dst, u16 size, void *data)
 {
     s32 i;
@@ -1204,6 +1205,7 @@ static void UNUSED BtlController_EmitDMA3Transfer(enum BattlerId battler, u32 bu
         gBattleResources->transferBuffer[7 + i] = *(u8 *)(data++);
     PrepareBufferDataTransfer(battler, bufferId, gBattleResources->transferBuffer, size + 7);
 }
+#endif
 
 static void UNUSED BtlController_EmitPlayBGM(enum BattlerId battler, u32 bufferId, u16 songId, void *data)
 {

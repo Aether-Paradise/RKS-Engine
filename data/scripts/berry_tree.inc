@@ -131,8 +131,8 @@ BerryTree_EventScript_CheckBerryStage4::
 	waitbuttonpress
 	goto BerryTree_EventScript_WantToWater
 
-@ VAR_0x8005 here is the number of times watered
-@ Buffered by ObjectEventInteractionGetBerryTreeData
+/* VAR_0x8005 here is the number of times watered*/
+/* Buffered by ObjectEventInteractionGetBerryTreeData*/
 BerryTree_EventScript_GetCareAdverb::
 	goto_if_eq VAR_0x8005, 0, BerryTree_EventScript_SetAdverbPoor
 	goto_if_eq VAR_0x8005, 4, BerryTree_EventScript_SetAdverbGreat
@@ -147,7 +147,7 @@ BerryTree_EventScript_SetAdverbPoor::
 	bufferstring STR_VAR_2, BerryTree_Text_CareAdverbPoor
 	return
 
-@ VAR_0x8006 here is the number of berries
+/* VAR_0x8006 here is the number of berries*/
 BerryTree_EventScript_CheckBerryFullyGrown::
 	buffernumberstring STR_VAR_2, VAR_0x8006
 	lock

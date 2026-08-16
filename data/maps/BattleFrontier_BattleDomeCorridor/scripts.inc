@@ -4,7 +4,7 @@ BattleFrontier_BattleDomeCorridor_MapScripts::
 
 BattleFrontier_BattleDomeCorridor_OnFrame:
 	map_script_2 VAR_TEMP_0, 0, BattleFrontier_BattleDomeCorridor_EventScript_EnterCorridor
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattleDomeCorridor_EventScript_EnterCorridor::
 	delay 16
@@ -129,7 +129,7 @@ BattleFrontier_BattleDomeCorridor_Movement_AttendantEnterDoorLvOpen:
 	set_invisible
 	step_end
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattleDomeCorridor_Movement_WalkToBattleRoomMidRight:
 	walk_up
 	walk_right

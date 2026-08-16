@@ -3095,6 +3095,11 @@ static void PlayAnimation(enum BattlerId battler, u8 animId, const u16 *argPtr, 
     }
 }
 
+#ifdef PORTABLE
+#define SAFE_BtlController_EmitBattleAnimation(bufferId, animationId) BtlController_EmitBattleAnimation(bufferId, animationId, argumentPtr != NULL ? *argumentPtr : 0)
+#else
+#define SAFE_BtlController_EmitBattleAnimation(bufferId, animationId) BtlController_EmitBattleAnimation(bufferId, animationId, *argumentPtr)
+#endif
 static void Cmd_playanimation(void)
 {
     CMD_ARGS(u8 battler, u8 animId, const u16 *argPtr);
@@ -3111,6 +3116,7 @@ static void Cmd_playanimation_var(void)
     enum BattlerId battler = GetBattlerForBattleScript(cmd->battler);
     PlayAnimation(battler, *(cmd->animIdPtr), cmd->argPtr, cmd->nextInstr);
 }
+#undef SAFE_BtlController_EmitBattleAnimation
 
 static void Cmd_jumpfifsemiinvulnerable(void)
 {
@@ -4589,7 +4595,7 @@ static void DrawLevelUpBannerText(void)
 {
     struct TextPrinterTemplate printerTemplate;
     u8 *txtPtr;
-    u32 var;
+    uintptr_t var;
 
     struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][gBattleStruct->expGetterMonId];
     u32 monLevel = GetMonData(mon, MON_DATA_LEVEL);
@@ -4617,9 +4623,9 @@ static void DrawLevelUpBannerText(void)
     *(txtPtr)++ = CHAR_EXTRA_SYMBOL;
     *(txtPtr)++ = CHAR_LV_2;
 
-    var = (u32)(txtPtr);
+    var = (uintptr_t)(txtPtr);
     txtPtr = ConvertIntToDecimalStringN(txtPtr, monLevel, STR_CONV_MODE_LEFT_ALIGN, 3);
-    var = (u32)(txtPtr) - var;
+    var = (uintptr_t)(txtPtr) - var;
     txtPtr = StringFill(txtPtr, CHAR_SPACER, 4 - var);
 
     if (monGender != MON_GENDERLESS)

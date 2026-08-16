@@ -5286,6 +5286,15 @@ static void FreeResetData_ReturnToOvOrDoEvolutions(void)
 {
     if (!gPaletteFade.active)
     {
+#ifdef PORTABLE
+    FreeAllWindowBuffers(); // This needs to be moved up here to avoid a use-after-free
+    if (!(gBattleTypeFlags & BATTLE_TYPE_LINK))
+    {
+        FreeMonSpritesGfx();
+        FreeBattleResources();
+        FreeBattleSpritesData();
+    }
+#endif
         memset(&gBattleMons, 0, sizeof(struct BattlePokemon) * MAX_BATTLERS_COUNT);
         gIsFishingEncounter = FALSE;
         gIsSurfingEncounter = FALSE;
@@ -5320,6 +5329,7 @@ static void FreeResetData_ReturnToOvOrDoEvolutions(void)
         }
     }
 
+#ifndef PORTABLE
     FreeAllWindowBuffers();
     if (!(gBattleTypeFlags & BATTLE_TYPE_LINK))
     {
@@ -5334,6 +5344,7 @@ static void FreeResetData_ReturnToOvOrDoEvolutions(void)
         FreeBattleResources();
         FreeBattleSpritesData();
     }
+#endif
 }
 
 static void TryEvolvePokemon(void)

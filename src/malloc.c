@@ -7,7 +7,9 @@
 static void *sHeapStart;
 static u32 sHeapSize;
 
+#ifndef PORTABLE
 ALIGNED(4) EWRAM_DATA u8 gHeap[HEAP_SIZE] = {0};
+#endif
 
 void PutMemBlockHeader(void *block, struct MemBlock *prev, struct MemBlock *next, u32 size)
 {

@@ -329,14 +329,12 @@ u8 GetAnimBattlerSpriteId(enum AnimBattler animBattler)
 
 void StoreSpriteCallbackInData6(struct Sprite *sprite, void (*callback)(struct Sprite *))
 {
-    sprite->data[6] = (u32)(callback) & 0xffff;
-    sprite->data[7] = (u32)(callback) >> 16;
+    sprite->ptr.spriteFuncPtr = callback;
 }
 
 void SetCallbackToStoredInData6(struct Sprite *sprite)
 {
-    u32 callback = (u16)sprite->data[6] | (sprite->data[7] << 16);
-    sprite->callback = (void (*)(struct Sprite *))callback;
+    sprite->callback = sprite->ptr.spriteFuncPtr;
 }
 
 // Sprite data for TranslateSpriteInCircle/Ellipse and related
@@ -1755,13 +1753,13 @@ void PrepareAffineAnimInTaskData(struct Task *task, u8 spriteId, const union Aff
     task->data[10] = 0x100;
     task->data[11] = 0x100;
     task->data[12] = 0;
-    StorePointerInVars(&task->data[13], &task->data[14], affineAnimCmds);
+    StorePointerInVars(&task->ptr.intPtr[0], affineAnimCmds);
     PrepareBattlerSpriteForRotScale(spriteId, ST_OAM_OBJ_NORMAL);
 }
 
 bool8 RunAffineAnimFromTaskData(struct Task *task)
 {
-    sAnimTaskAffineAnim = &((union AffineAnimCmd *)LoadPointerFromVars(task->data[13], task->data[14]))[task->data[7]];
+    sAnimTaskAffineAnim = &((union AffineAnimCmd *)LoadPointerFromVars(task->ptr.intPtr[0]))[task->data[7]];
     switch (sAnimTaskAffineAnim->type)
     {
     default:
@@ -1890,15 +1888,14 @@ static u16 GetBattlerYDeltaFromSpriteId(u8 spriteId)
     return MON_PIC_HEIGHT;
 }
 
-void StorePointerInVars(s16 *lo, s16 *hi, const void *ptr)
+void StorePointerInVars(uintptr_t *dest, const void *ptr)
 {
-    *lo = ((intptr_t) ptr) & 0xffff;
-    *hi = (((intptr_t) ptr) >> 16) & 0xffff;
+    *dest = ((uintptr_t) ptr);
 }
 
-void *LoadPointerFromVars(s16 lo, s16 hi)
+void *LoadPointerFromVars(intptr_t ptr)
 {
-    return (void *)((u16)lo | ((u16)hi << 16));
+    return (void *)(ptr);
 }
 
 void PrepareEruptAnimTaskData(struct Task *task, u8 spriteId, s16 xScaleStart, s16 yScaleStart, s16 xScaleEnd, s16 yScaleEnd, u16 duration)

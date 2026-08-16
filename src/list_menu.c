@@ -847,7 +847,11 @@ void ListMenuSetTemplateField(u8 taskId, u8 field, s32 value)
     {
     case LISTFIELD_MOVECURSORFUNC:
     case LISTFIELD_MOVECURSORFUNC2:
+        #ifndef VER_64BIT
         data->template.moveCursorFunc = (void *)value;
+        #else
+        printf("ListMenuSetUnkIndicatorsStructField: case LISTFIELD_MOVECURSORFUNC stubbed out.");
+        #endif
         break;
     case LISTFIELD_TOTALITEMS:
         data->template.totalItems = value;

@@ -351,7 +351,7 @@ BattleFrontier_ExchangeServiceCorner_Text_WelcomePleaseChoosePrize:
 	.string "have collected for lovely prizes.\p"
 	.string "Please choose a prize from this list.$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_ExchangeServiceCorner_Text_PleaseChoosePrize:
 	.string "Please choose a prize from this list.$"
 

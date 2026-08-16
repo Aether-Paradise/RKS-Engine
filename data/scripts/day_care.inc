@@ -231,7 +231,7 @@ Route117_PokemonDayCare_Movement_RetrieveDaycareMon:
 	walk_slow_down
 	step_end
 
-@ Unused. Possibly a commented script, or a typo end added to the above Movement script
+/* Unused. Possibly a commented script, or a typo end added to the above Movement script*/
 Route117_PokemonDayCare_EventScript_UnusedEnd::
 	end
 
@@ -247,7 +247,7 @@ Route117_PokemonDayCare_EventScript_TwoMonsInDaycare::
 	release
 	end
 
-@ Unused
+/* Unused*/
 Route117_PokemonDayCare_EventScript_UnusedRetrieveMon::
 	special ShowDaycareLevelMenu
 	goto_if_eq VAR_RESULT, 2, Route117_PokemonDayCare_EventScript_ComeAgain
@@ -307,7 +307,7 @@ Route117_Text_FriendlyWithOtherTrainersMon:
 	.string "I may even have seen it receiving\n"
 	.string "a piece of MAIL.$"
 
-@ Unused
+/* Unused*/
 Route117_Text_SeeWifeIfYouWantToPickUpMon:
 	.string "If you want to pick up your POKéMON,\n"
 	.string "have a word with my wife.$"
@@ -368,7 +368,7 @@ Route117_PokemonDayCare_Text_YourTeamIsFull:
 	.string "Your POKéMON team is full.\n"
 	.string "Make room, then come see me.$"
 
-@ Unused
+/* Unused*/
 Route117_PokemonDayCare_Text_TakeBackWhichMon:
 	.string "Which POKéMON will you take back?$"
 

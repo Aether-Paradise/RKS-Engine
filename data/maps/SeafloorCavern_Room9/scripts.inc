@@ -53,20 +53,20 @@ SeafloorCavern_Room9_EventScript_ArchieAwakenKyogre::
 	applymovement LOCALID_SEAFLOOR_CAVERN_KYOGRE, SeafloorCavern_Room9_Movement_KyogreApproach
 	waitmovement 0
 	special FadeOutOrbEffect
-	setvar VAR_0x8004, 1  @ vertical pan
-	setvar VAR_0x8005, 1  @ horizontal pan
-	setvar VAR_0x8006, 8  @ num shakes
-	setvar VAR_0x8007, 5  @ shake delay
+	setvar VAR_0x8004, 1  /* vertical pan*/
+	setvar VAR_0x8005, 1  /* horizontal pan*/
+	setvar VAR_0x8006, 8  /* num shakes*/
+	setvar VAR_0x8007, 5  /* shake delay*/
 	special ShakeCamera
 	waitstate
 	applymovement LOCALID_SEAFLOOR_CAVERN_KYOGRE, SeafloorCavern_Room9_Movement_KyogreExit
 	waitmovement 0
 	removeobject LOCALID_SEAFLOOR_CAVERN_KYOGRE
 	delay 4
-	setvar VAR_0x8004, 2  @ vertical pan
-	setvar VAR_0x8005, 2  @ horizontal pan
-	setvar VAR_0x8006, 8  @ num shakes
-	setvar VAR_0x8007, 5  @ shake delay
+	setvar VAR_0x8004, 2  /* vertical pan*/
+	setvar VAR_0x8005, 2  /* horizontal pan*/
+	setvar VAR_0x8006, 8  /* num shakes*/
+	setvar VAR_0x8007, 5  /* shake delay*/
 	special ShakeCamera
 	waitstate
 	delay 30

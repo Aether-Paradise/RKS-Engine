@@ -9,7 +9,7 @@ RustboroCity_House3_EventScript_OldWoman::
 	msgbox RustboroCity_House3_Text_NamingPikachuPekachu, MSGBOX_NPC
 	end
 
-@ Misspelling on purpose, see nickname
+/* Misspelling on purpose, see nickname*/
 RustboroCity_House3_EventScript_Pekachu::
 	lock
 	faceplayer

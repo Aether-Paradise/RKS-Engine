@@ -7,7 +7,7 @@ BattleFrontier_BattlePikeRoomNormal_MapScripts::
 
 BattleFrontier_BattlePikeRoomNormal_OnFrame:
 	map_script_2 VAR_TEMP_0, 0, BattleFrontier_BattlePikeRoomNormal_EventScript_EnterRoom
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattlePikeRoomNormal_EventScript_EnterRoom::
 	setvar VAR_TEMP_0, 1
@@ -488,7 +488,7 @@ BattleFrontier_BattlePikeRoomNormal_Movement_Trainer2Exit:
 	walk_up
 	step_end
 
-@ For approaching Lucy and exiting room after defeating Lucy
+/* For approaching Lucy and exiting room after defeating Lucy*/
 BattleFrontier_BattlePikeRoomNormal_Movement_PlayerWalkUp2:
 	walk_up
 	walk_up
@@ -567,7 +567,7 @@ BattleFrontier_BattlePikeRoomNormal_EventScript_WillRestoreTwoMons::
 	closemessage
 	return
 
-@ Dusclops or Kirlia
+/* Dusclops or Kirlia*/
 BattleFrontier_BattlePikeRoomNormal_EventScript_StatusMon::
 	lock
 	faceplayer
@@ -627,7 +627,7 @@ BattleFrontier_BattlePikeRoomNormal_Movement_CameraPanUp:
 	walk_up
 	step_end
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattlePikeRoomNormal_Movement_CameraPanDown:
 	walk_down
 	walk_down
@@ -653,31 +653,31 @@ BattleFrontier_BattlePikeRoomNormal_Text_BestOfLuckFarewell:
 	.string "The best of luck to you.\n"
 	.string "Farewell.$"
 
-@ Seems there was a planned room type where the player could choose to battle and would be healed if they won
-@ Possibly replaced/superseded by the hard battle room, which is the same but the battle isnt optional
-@ Unused
+/* Seems there was a planned room type where the player could choose to battle and would be healed if they won*/
+/* Possibly replaced/superseded by the hard battle room, which is the same but the battle isnt optional*/
+/* Unused*/
 BattleFrontier_BattlePikeRoomNormal_Text_CareForBattleWillRestoreMons:
 	.string "Excuse me…\p"
 	.string "Would you care for a battle?\n"
 	.string "I'll restore your POKéMON if you win.$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattlePikeRoomNormal_Text_NowShallWe:
 	.string "Very well…\n"
 	.string "Now, shall we?$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattlePikeRoomNormal_Text_HowUnsportingOfYou:
 	.string "I see…\n"
 	.string "How unsporting of you…$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattlePikeRoomNormal_Text_WillRestoreMonsAsPromised:
 	.string "Magnificent…\p"
 	.string "As promised, I shall restore your\n"
 	.string "POKéMON to full health.$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattlePikeRoomNormal_Text_BestOfLuckFarewell2:
 	.string "The best of luck to you.\n"
 	.string "Farewell.$"
@@ -819,7 +819,7 @@ BattleFrontier_BattlePikeRoomNormal_Text_ChoseRoomHealTwo:
 	.string "Since you have chosen this room, I will\n"
 	.string "restore two POKéMON to full health…$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattlePikeRoomNormal_Text_WillRestoreAllMons:
 	.string "I welcome you…\p"
 	.string "Giggle…\n"

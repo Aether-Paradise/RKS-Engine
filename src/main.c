@@ -24,6 +24,7 @@
 #include "main.h"
 #include "trainer_hill.h"
 #include "test_runner.h"
+#include "platform.h"
 #include "constants/rgb.h"
 
 static void VBlankIntr(void);
@@ -62,6 +63,9 @@ const IntrFunc gIntrTableTemplate[] =
 
 #define INTR_COUNT ((int)(sizeof(gIntrTableTemplate)/sizeof(IntrFunc)))
 
+#ifdef PORTABLE
+u8 gHeap[HEAP_SIZE];
+#endif
 COMMON_DATA u16 gKeyRepeatStartDelay = 0;
 COMMON_DATA bool8 gLinkTransferringData = 0;
 COMMON_DATA struct Main gMain = {0};
@@ -89,8 +93,50 @@ void EnableVCountIntrAtLine150(void);
 
 #define B_START_SELECT (B_BUTTON | START_BUTTON | SELECT_BUTTON)
 
+void MainLoop()
+{
+    ReadKeys();
+
+    if (gSoftResetDisabled == FALSE
+     && JOY_HELD_RAW(A_BUTTON)
+     && JOY_HELD_RAW(B_START_SELECT) == B_START_SELECT)
+    {
+        rfu_REQ_stopMode();
+        rfu_waitREQComplete();
+        DoSoftReset();
+    }
+
+    if (Overworld_SendKeysToLinkIsRunning() == TRUE)
+    {
+        gLinkTransferringData = TRUE;
+        UpdateLinkAndCallCallbacks();
+        gLinkTransferringData = FALSE;
+    }
+    else
+    {
+        gLinkTransferringData = FALSE;
+        UpdateLinkAndCallCallbacks();
+
+        if (Overworld_RecvKeysFromLinkIsRunning() == TRUE)
+        {
+            gMain.newKeys = 0;
+            ClearSpriteCopyRequests();
+            gLinkTransferringData = TRUE;
+            UpdateLinkAndCallCallbacks();
+            gLinkTransferringData = FALSE;
+        }
+    }
+
+    PlayTimeCounter_Update();
+    MapMusicMain();
+    WaitForVBlank();
+}
+
 void AgbMain(void)
 {
+#ifdef PORTABLE
+    REG_VCOUNT = 161; // prep for being in VBlank period
+#endif
     *(vu16 *)BG_PLTT = RGB_WHITE; // Set the backdrop to white on startup
     InitGpuRegManager();
     REG_WAITCNT = WAITCNT_PREFETCH_ENABLE
@@ -100,7 +146,9 @@ void AgbMain(void)
     InitIntrHandlers();
     m4aSoundInit();
     EnableVCountIntrAtLine150();
+#ifndef PORTABLE
     InitRFU();
+#endif
     RtcInit();
     CheckForFlashMemory();
     InitMainCallbacks();
@@ -115,8 +163,10 @@ void AgbMain(void)
 
     gSoftResetDisabled = FALSE;
 
+#ifndef PORTABLE
     if (gFlashMemoryPresent != TRUE)
         SetMainCallback2(CB2_FlashNotDetectedScreen);
+#endif
 
     gLinkTransferringData = FALSE;
 
@@ -133,44 +183,12 @@ void AgbMain(void)
 
 void AgbMainLoop(void)
 {
+#ifndef PORTABLE
     for (;;)
     {
-        ReadKeys();
-
-        if (gSoftResetDisabled == FALSE
-         && JOY_HELD_RAW(A_BUTTON)
-         && JOY_HELD_RAW(B_START_SELECT) == B_START_SELECT)
-        {
-            rfu_REQ_stopMode();
-            rfu_waitREQComplete();
-            DoSoftReset();
-        }
-
-        if (Overworld_SendKeysToLinkIsRunning() == TRUE)
-        {
-            gLinkTransferringData = TRUE;
-            UpdateLinkAndCallCallbacks();
-            gLinkTransferringData = FALSE;
-        }
-        else
-        {
-            gLinkTransferringData = FALSE;
-            UpdateLinkAndCallCallbacks();
-
-            if (Overworld_RecvKeysFromLinkIsRunning() == TRUE)
-            {
-                gMain.newKeys = 0;
-                ClearSpriteCopyRequests();
-                gLinkTransferringData = TRUE;
-                UpdateLinkAndCallCallbacks();
-                gLinkTransferringData = FALSE;
-            }
-        }
-
-        PlayTimeCounter_Update();
-        MapMusicMain();
-        WaitForVBlank();
+        MainLoop();
     }
+#endif
 }
 
 static void UpdateLinkAndCallCallbacks(void)
@@ -268,7 +286,11 @@ void InitKeys(void)
 
 static void ReadKeys(void)
 {
+#ifndef PORTABLE
     u16 keyInput = REG_KEYINPUT ^ KEYS_MASK;
+#else
+    u16 keyInput = Platform_GetKeyInput();
+#endif
     gMain.newKeysRaw = keyInput & ~gMain.heldKeysRaw;
     gMain.newKeys = gMain.newKeysRaw;
     gMain.newAndRepeatedKeys = gMain.newKeysRaw;
@@ -371,7 +393,9 @@ static void VBlankIntr(void)
 
     gPcmDmaCounter = gSoundInfo.pcmDmaCounter;
 
+#ifndef PORTABLE
     m4aSoundMain();
+#endif
     TryReceiveLinkBattleData();
 
     if (!gTestRunnerEnabled && (!gMain.inBattle || !(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_FRONTIER | BATTLE_TYPE_RECORDED))))
@@ -402,7 +426,9 @@ static void VCountIntr(void)
     if (gMain.vcountCallback)
         gMain.vcountCallback();
 
+#ifndef PORTABLE
     m4aSoundVSync();
+#endif
     INTR_CHECK |= INTR_FLAG_VCOUNT;
     gMain.intrCheck |= INTR_FLAG_VCOUNT;
 }
@@ -421,8 +447,7 @@ static void IntrDummy(void)
 
 static void WaitForVBlank(void)
 {
-    gMain.intrCheck &= ~INTR_FLAG_VBLANK;
-
+#ifndef PORTABLE
     if (gWirelessCommType != 0)
     {
         // Desynchronization may occur if wireless adapter is connected
@@ -431,6 +456,7 @@ static void WaitForVBlank(void)
             ;
     }
     else
+#endif
     {
         VBlankIntrWait();
     }

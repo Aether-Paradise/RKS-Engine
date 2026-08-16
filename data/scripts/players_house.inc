@@ -478,7 +478,7 @@ PlayersHouse_1F_EventScript_GetSSTicketAndSeeLatiTV::
 	releaseall
 	end
 
-@ Never called.
+/* Never called.*/
 PlayersHouse_1F_EventScript_AirLatiBroadcast::
 	setflag FLAG_SYS_TV_LATIAS_LATIOS
 	return

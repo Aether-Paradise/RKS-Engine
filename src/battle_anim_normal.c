@@ -963,7 +963,7 @@ static void AnimShakeMonOrBattlePlatforms(struct Sprite *sprite)
         break;
     }
 
-    sprite->sOriginalValue = *(u16 *)(sprite->sShakePtrLo | (sprite->sShakePtrHi << 16));
+    sprite->sOriginalValue = *(u16 *)LoadPointerFromVars(sprite->ptr.intPtr);
     sprite->sType = cmd->type;
     if (sprite->sType == SHAKE_MON_X || sprite->sType == SHAKE_MON_Y)
         AnimShakeMonOrBattlePlatforms_UpdateCoordOffsetEnabled();
@@ -983,13 +983,13 @@ static void AnimShakeMonOrBattlePlatforms_Step(struct Sprite *sprite)
         else
         {
             sprite->sShakeTimer = sprite->sShakeDuration;
-            *(u16 *)(sprite->sShakePtrLo | (sprite->sShakePtrHi << 16)) += sprite->sShakeVelocity;
+            *(u16 *)LoadPointerFromVars(sprite->ptr.intPtr) += sprite->sShakeVelocity;
             sprite->sShakeVelocity = -sprite->sShakeVelocity;
         }
     }
     else
     {
-        *(u16 *)(sprite->sShakePtrLo | (sprite->sShakePtrHi << 16)) = sprite->sOriginalValue;
+        *(u16 *)LoadPointerFromVars(sprite->ptr.intPtr) = sprite->sOriginalValue;
         if (sprite->sType == SHAKE_MON_X || sprite->sType == SHAKE_MON_Y)
         {
             for (enum BattlerId i = 0; i < gBattlersCount; i++)

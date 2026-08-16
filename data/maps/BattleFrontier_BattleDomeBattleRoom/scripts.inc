@@ -39,7 +39,7 @@ BattleFrontier_BattleDomeBattleRoom_EventScript_SetPlayerGfxFemale::
 
 BattleFrontier_BattleDomeBattleRoom_OnFrame:
 	map_script_2 VAR_TEMP_0, 0, BattleFrontier_BattleDomeBattleRoom_EventScript_EnterRoom
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattleDomeBattleRoom_EventScript_EnterRoom::
 	lockall
@@ -96,7 +96,7 @@ BattleFrontier_BattleDomeBattleRoom_EventScript_Draw::
 	delay 180
 	applymovement LOCALID_DOME_REFEREE, BattleFrontier_BattleDomeBattleRoom_Movement_RefereeExit
 	waitmovement 0
-	goto_if_eq VAR_TEMP_2, DRAW_TUCKER, BattleFrontier_BattleDomeBattleRoom_EventScript_LostToOpponent @ Tucker always wins on a draw
+	goto_if_eq VAR_TEMP_2, DRAW_TUCKER, BattleFrontier_BattleDomeBattleRoom_EventScript_LostToOpponent /* Tucker always wins on a draw*/
 	dome_compareseeds
 	switch VAR_RESULT
 	case 1, BattleFrontier_BattleDomeBattleRoom_EventScript_DefeatedOpponent
@@ -456,7 +456,7 @@ BattleFrontier_BattleDomeBattleRoom_EventScript_DoDomeBattle::
 
 BattleFrontier_BattleDomeBattleRoom_OnWarp:
 	map_script_2 VAR_TEMP_1, 0, BattleFrontier_BattleDomeBattleRoom_EventScript_SetUpObjects
-	.2byte 0
+	.short 0
 
 BattleFrontier_BattleDomeBattleRoom_EventScript_SetUpObjects::
 	hideobjectat LOCALID_DOME_PLAYER, MAP_BATTLE_FRONTIER_BATTLE_DOME_BATTLE_ROOM
@@ -486,7 +486,7 @@ BattleFrontier_BattleDomeBattleRoom_EventScript_CallAddAudience::
 	call BattleFrontier_BattleDomeBattleRoom_EventScript_AddAudience
 	return
 
-@ Add audience members to supplement the permanent object event audience
+/* Add audience members to supplement the permanent object event audience*/
 BattleFrontier_BattleDomeBattleRoom_EventScript_AddAudience::
 	call_if_eq VAR_TEMP_F, DOME_ROUND1, BattleFrontier_BattleDomeBattleRoom_EventScript_AddRound1Audience
 	call_if_eq VAR_TEMP_F, DOME_ROUND2, BattleFrontier_BattleDomeBattleRoom_EventScript_AddRound2Audience
@@ -589,7 +589,7 @@ BattleFrontier_BattleDomeBattleRoom_Movement_PlayerApproachAudience:
 	walk_up
 	step_end
 
-@ Identical to Movement_PlayerEnter
+/* Identical to Movement_PlayerEnter*/
 BattleFrontier_BattleDomeBattleRoom_Movement_PlayerEnterForTucker:
 	set_visible
 	delay_16
@@ -862,7 +862,7 @@ BattleFrontier_BattleDomePreBattleRoom_EventScript_WarpToLobbyDoubles::
 	waitstate
 	end
 
-@ On round 1 there's a 50% chance that a specific audience member will walk to his seat
+/* On round 1 there's a 50% chance that a specific audience member will walk to his seat*/
 BattleFrontier_BattleDomeBattleRoom_EventScript_SetWalkingAudienceMemberPos::
 	random 2
 	copyvar VAR_TEMP_D, VAR_RESULT
@@ -1150,13 +1150,13 @@ BattleFrontier_BattleDomeBattleRoom_Text_LookForwardToNextEncounter:
 	.string "I will very much look forward to\n"
 	.string "our next encounter!$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattleDomeBattleRoom_Text_PlayerIsLv50Champ2:
 	.string "{PLAYER} is the Level 50\n"
 	.string "Battle Tournament Champion!\p"
 	.string "Congratulations!$"
 
-@ Unused
+/* Unused*/
 BattleFrontier_BattleDomeBattleRoom_Text_PlayerIsLvOpenChamp2:
 	.string "{PLAYER} is the Open Level\n"
 	.string "Battle Tournament Champion!\p"
