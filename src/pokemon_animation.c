@@ -891,27 +891,14 @@ u8 GetSpeciesBackAnimSet(u16 species)
 }
 
 #define tState  data[0]
-#define tPtrHi  data[1]
-#define tPtrLo  data[2]
 #define tAnimId data[3]
 #define tBattlerId data[4]
 #define tSpeciesId data[5]
 
-// BUG: In vanilla, tPtrLo is read as an s16, so if bit 15 of the
-// address were to be set it would cause the pointer to be read
-// as 0xFFFFXXXX instead of the desired 0x02YYXXXX.
-// By dumb luck, this is not an issue in vanilla. However,
-// changing the link order revealed this bug.
-#if MODERN || defined(BUGFIX)
-#define ANIM_SPRITE(taskId)   ((struct Sprite *)((gTasks[taskId].tPtrHi << 16) | ((u16)gTasks[taskId].tPtrLo)))
-#else
-#define ANIM_SPRITE(taskId)   ((struct Sprite *)((gTasks[taskId].tPtrHi << 16) | (gTasks[taskId].tPtrLo)))
-#endif //MODERN || BUGFIX
-
 static void Task_HandleMonAnimation(u8 taskId)
 {
     u32 i;
-    struct Sprite *sprite = ANIM_SPRITE(taskId);
+    struct Sprite *sprite = gTasks[taskId].ptr.spritePtr;
 
     if (gTasks[taskId].tState == 0)
     {
@@ -941,8 +928,7 @@ static void Task_HandleMonAnimation(u8 taskId)
 void LaunchAnimationTaskForFrontSprite(struct Sprite *sprite, u8 frontAnimId)
 {
     u8 taskId = CreateTask(Task_HandleMonAnimation, 128);
-    gTasks[taskId].tPtrHi = (u32)(sprite) >> 16;
-    gTasks[taskId].tPtrLo = (u32)(sprite);
+    gTasks[taskId].ptr.spritePtr = sprite;
     gTasks[taskId].tAnimId = frontAnimId;
 }
 
@@ -958,8 +944,7 @@ void LaunchAnimationTaskForBackSprite(struct Sprite *sprite, u8 backAnimSet)
     u8 nature, taskId, animId, battler;
 
     taskId = CreateTask(Task_HandleMonAnimation, 128);
-    gTasks[taskId].tPtrHi = (u32)(sprite) >> 16;
-    gTasks[taskId].tPtrLo = (u32)(sprite);
+    gTasks[taskId].ptr.spritePtr = sprite;
 
     battler = sprite->data[0];
     nature = GetNature(&gPlayerParty[gBattlerPartyIndexes[battler]]);
@@ -970,8 +955,6 @@ void LaunchAnimationTaskForBackSprite(struct Sprite *sprite, u8 backAnimSet)
 }
 
 #undef tState
-#undef tPtrHi
-#undef tPtrLo
 #undef tAnimId
 #undef tBattlerId
 #undef tSpeciesId

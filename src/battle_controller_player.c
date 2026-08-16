@@ -2790,6 +2790,7 @@ static void PlayerHandleDataTransfer(void)
 
 static void PlayerHandleDMA3Transfer(void)
 {
+    #ifndef VER_64BIT //unused function, just ifdef it out so it wouldnt cause pointer truncation warnings
     u32 dstArg = gBattleBufferA[gActiveBattler][1]
             | (gBattleBufferA[gActiveBattler][2] << 8)
             | (gBattleBufferA[gActiveBattler][3] << 16)
@@ -2798,6 +2799,7 @@ static void PlayerHandleDMA3Transfer(void)
 
     DmaCopyLarge16(3, &gBattleBufferA[gActiveBattler][7], (void *)dstArg, sizeArg, 0x1000);
     PlayerBufferExecCompleted();
+    #endif
 }
 
 static void PlayerHandlePlayBGM(void)

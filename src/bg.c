@@ -3,6 +3,9 @@
 #include "bg.h"
 #include "dma3.h"
 #include "gpu_regs.h"
+#ifdef PORTABLE
+#include "platform/system.h"
+#endif
 
 #define DISPCNT_ALL_BG_AND_MODE_BITS    (DISPCNT_BG_ALL_ON | 0x7)
 
@@ -442,8 +445,8 @@ bool8 IsDma3ManagerBusyWithBgCopy(void)
     int i;
 
 #ifdef PORTABLE
-    // HACK: this is often called in a tight loop, not allowing the VBlank thread to run. Suspend thread for now.
-    VBlankIntrWait();
+	RunDMAsAndVBlank();
+    return FALSE;
 #endif
     for (i = 0; i < 0x80; i++)
     {

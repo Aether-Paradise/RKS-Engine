@@ -366,8 +366,8 @@ static void Cmd_createsprite(void)
     s16 subpriority;
 
     sBattleAnimScriptPtr++;
-    template = (const struct SpriteTemplate *)(T2_READ_32(sBattleAnimScriptPtr));
-    sBattleAnimScriptPtr += 4;
+    template = (const struct SpriteTemplate *)(T2_READ_PTRSIZE(sBattleAnimScriptPtr));
+    sBattleAnimScriptPtr += DSIZEPTR;
 
     argVar = sBattleAnimScriptPtr[0];
     sBattleAnimScriptPtr++;
@@ -421,8 +421,8 @@ static void Cmd_createvisualtask(void)
 
     sBattleAnimScriptPtr++;
 
-    taskFunc = (TaskFunc)T2_READ_32(sBattleAnimScriptPtr);
-    sBattleAnimScriptPtr += 4;
+    taskFunc = (TaskFunc)T2_READ_PTRSIZE(sBattleAnimScriptPtr);
+    sBattleAnimScriptPtr += DSIZEPTR;
 
     taskPriority = sBattleAnimScriptPtr[0];
     sBattleAnimScriptPtr++;
@@ -1043,7 +1043,7 @@ static void Cmd_blendoff(void)
 static void Cmd_call(void)
 {
     sBattleAnimScriptPtr++;
-    sBattleAnimScriptRetAddr = sBattleAnimScriptPtr + 4;
+    sBattleAnimScriptRetAddr = sBattleAnimScriptPtr + DSIZEPTR;
     sBattleAnimScriptPtr = T2_READ_PTR(sBattleAnimScriptPtr);
 }
 
@@ -1074,7 +1074,7 @@ static void Cmd_choosetwoturnanim(void)
 {
     sBattleAnimScriptPtr++;
     if (gAnimMoveTurn & 1)
-        sBattleAnimScriptPtr += 4;
+        sBattleAnimScriptPtr += DSIZEPTR;
     sBattleAnimScriptPtr = T2_READ_PTR(sBattleAnimScriptPtr);
 }
 
@@ -1088,7 +1088,7 @@ static void Cmd_jumpifmoveturn(void)
     if (toCheck == gAnimMoveTurn)
         sBattleAnimScriptPtr = T2_READ_PTR(sBattleAnimScriptPtr);
     else
-        sBattleAnimScriptPtr += 4;
+        sBattleAnimScriptPtr += DSIZEPTR;
 }
 
 static void Cmd_goto(void)
@@ -1618,8 +1618,8 @@ static void Cmd_createsoundtask(void)
     s32 i;
 
     sBattleAnimScriptPtr++;
-    func = (TaskFunc)T2_READ_32(sBattleAnimScriptPtr);
-    sBattleAnimScriptPtr += 4;
+    func = (TaskFunc)T2_READ_PTRSIZE(sBattleAnimScriptPtr);
+    sBattleAnimScriptPtr += DSIZEPTR;
     numArgs = sBattleAnimScriptPtr[0];
     sBattleAnimScriptPtr++;
     for (i = 0; i < numArgs; i++)
@@ -1667,12 +1667,12 @@ static void Cmd_jumpargeq(void)
 
     sBattleAnimScriptPtr++;
     argId = sBattleAnimScriptPtr[0];
-    valueToCheck = T1_READ_16(sBattleAnimScriptPtr + 1);
+    valueToCheck = T1_READ_16(sBattleAnimScriptPtr + DSIZE8BIT);
 
     if (valueToCheck == gBattleAnimArgs[argId])
-        sBattleAnimScriptPtr = T2_READ_PTR(sBattleAnimScriptPtr + 3);
+        sBattleAnimScriptPtr = T2_READ_PTR(sBattleAnimScriptPtr + DSIZE8BIT + DSIZE16BIT);
     else
-        sBattleAnimScriptPtr += 7;
+        sBattleAnimScriptPtr += DSIZE8BIT + DSIZE16BIT + DSIZEPTR;
 }
 
 static void Cmd_jumpifcontest(void)
@@ -1681,7 +1681,7 @@ static void Cmd_jumpifcontest(void)
     if (IsContest())
         sBattleAnimScriptPtr = T2_READ_PTR(sBattleAnimScriptPtr);
     else
-        sBattleAnimScriptPtr += 4;
+        sBattleAnimScriptPtr += DSIZEPTR;
 }
 
 static void Cmd_splitbgprio(void)

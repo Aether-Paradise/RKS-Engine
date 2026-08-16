@@ -5,9 +5,11 @@ MAKER_CODE  := 01
 REVISION    := 0
 MODERN      ?= 0
 KEEP_TEMPS  ?= 0
-PORTABLE    ?= 1
-TARGET_PLATFORM := PLATFORM_SDL2
-TILE_RENDERER   := RENDERER_FAST_DRAW
+PORTABLE    ?= 0
+IS64BIT     ?= 1
+TARGET_PLATFORM ?= PLATFORM_SDL2
+TARGET_OS       ?= NONE
+TILE_RENDERER   ?= RENDERER_EASY_DRAW
 
 # `File name`.gba ('_modern' will be appended to the modern builds)
 FILE_NAME := pokeemerald
@@ -24,9 +26,15 @@ endif
 ifeq (compare,$(MAKECMDGOALS))
   COMPARE := 1
 endif
-ifeq (gba,$(MAKECMDGOALS))
-  PORTABLE := 0
+ifeq (winwsl,$(MAKECMDGOALS))
+  PORTABLE := 1
+  TARGET_OS := WINDOWS
 endif
+ifeq (linux,$(MAKECMDGOALS))
+  PORTABLE := 1
+  TARGET_OS := LINUX
+endif
+
 #Enable MODERN if compiling portable version
 ifeq ($(PORTABLE), 1)
   MODERN := 1
@@ -49,14 +57,36 @@ ifneq (,$(TOOLCHAIN))
   endif
 endif
 
+BIT_WIDTH := 32
+OTHER_BIT_WIDTH := 64
+ASFLAGS64 :=
+CPPFLAGS64 :=
+
+# 64 bit specific stuff goes here
+ifeq ($(IS64BIT),1)
+  BIT_WIDTH := 64
+  OTHER_BIT_WIDTH := 32
+  ASFLAGS64 :=
+  CPPFLAGS64 := -D VER_64BIT
+endif
+
 ifeq ($(PORTABLE),1)
-  PREFIX := i686-w64-mingw32-
+  ifeq ($(TARGET_OS),WINDOWS)
+    ifeq ($(IS64BIT),1)
+      PREFIX := x86_64-w64-mingw32-
+    else
+      PREFIX := i686-w64-mingw32-
+    endif # IS64BIT
+  else # LINUX
+    PREFIX :=
+  endif # TARGET_OS
 else
   PREFIX := arm-none-eabi-
 endif
 
 OBJCOPY := $(PREFIX)objcopy
 OBJDUMP := $(PREFIX)objdump
+WINDRES := $(PREFIX)windres
 AS := $(PREFIX)as
 LD := $(PREFIX)ld
 
@@ -66,19 +96,48 @@ ifeq ($(OS),Windows_NT)
 endif
 
 ifeq ($(PORTABLE),1)
-  SDL_DIR := /home/pokeemerald/SDL2-2.0.14/i686-w64-mingw32
-  ASM_PSEUDO_OP_CONV := sed -e 's/\.4byte/\.int/g;s/\.2byte/\.short/g'
-  #FIX_UNDERSCORE is required for 32 bit windows
-  FIX_UNDERSCORE := $(OBJCOPY) --prefix-symbol _
+  ifeq ($(IS64BIT),1)
+    ifeq ($(TARGET_OS),WINDOWS)
+      SDL_DIR := ./SDL2/x86_64-w64-mingw32
+    endif
+    ASM_PSEUDO_OP_CONV := sed -e 's/\.4byte/\.int/g;s/\.2byte/\.short/g'
+    FIX_UNDERSCORE := $(OBJCOPY)
+    LEADING_UNDERSCORE_FLAG :=
+  else
+    SDL_DIR := ./SDL2/x86_64-w64-mingw32/i686-w64-mingw32
+    ASM_PSEUDO_OP_CONV := sed -e 's/\.4byte/\.int/g;s/\.2byte/\.short/g'
+    #FIX_UNDERSCORE is required for 32 bit windows
+    ifeq ($(TARGET_OS),WINDOWS)
+      FIX_UNDERSCORE := $(OBJCOPY) --prefix-symbol _
+    else
+      FIX_UNDERSCORE := $(OBJCOPY)
+    endif
+    LEADING_UNDERSCORE_FLAG := -fleading-underscore
+  endif
+
   PLATFORM_INCLUDES :=
+  BUILD_FEXTENSION :=
+  OS_CFLAGS :=
+  OS_LFLAGS :=
+
+  ifeq ($(TARGET_OS),WINDOWS)
+    OS_CFLAGS :=
+    OS_LFLAGS := -lwinmm -lxinput
+    BUILD_FEXTENSION := .exe
+  else
+    OS_CFLAGS := -Wno-incompatible-pointer-types -Wno-implicit-function-declaration -Wno-int-conversion
+    OS_LFLAGS := -no-pie
+  endif
 
   #Windows only
-  ifneq ($(NO_STD_LIB),1)
-    PLATFORM_INCLUDES += -lmingw32
+  ifeq ($(TARGET_OS),WINDOWS)
+    ifneq ($(NO_STD_LIB),1)
+      PLATFORM_INCLUDES += -lmingw32
+    endif
   endif
 
   ifeq ($(TARGET_PLATFORM), PLATFORM_SDL2)
-    PLATFORM_INCLUDES += -lSDL2main -lSDL2.dll
+    PLATFORM_INCLUDES += -lSDL2main -lSDL2
   endif
 
   ifeq ($(TARGET_PLATFORM), PLATFORM_WIN32)
@@ -115,8 +174,10 @@ ROM_NAME := $(FILE_NAME).gba
 OBJ_DIR_NAME := $(BUILD_DIR)/emerald
 MODERN_ROM_NAME := $(FILE_NAME)_modern.gba
 MODERN_OBJ_DIR_NAME := $(BUILD_DIR)/modern
-PORTABLE_ROM_NAME := $(FILE_NAME).exe
-PORTABLE_OBJ_DIR_NAME := $(BUILD_DIR)/pc
+PORTABLE_ROM_NAME := $(FILE_NAME)$(BIT_WIDTH)$(BUILD_FEXTENSION)
+PORTABLE_OBJ_DIR_NAME := $(BUILD_DIR)/pc$(BIT_WIDTH)
+PORTABLE_ROM_NAME_OTHER := $(FILE_NAME)$(OTHER_BIT_WIDTH)$(BUILD_FEXTENSION)
+PORTABLE_OBJ_DIR_NAME_OTHER := $(BUILD_DIR)/pc$(OTHER_BIT_WIDTH)
 ASSETS_DIR_NAME := $(BUILD_DIR)/assets
 
 ELF_NAME := $(ROM_NAME:.gba=.elf)
@@ -155,7 +216,7 @@ SHELL := bash -o pipefail
 
 # Set flags for tools
 ifeq ($(PORTABLE),1)
-  ASFLAGS := --32 --defsym MODERN=$(MODERN) --defsym PORTABLE=1 --defsym UBFIX=1
+  ASFLAGS := --$(BIT_WIDTH) $(ASFLAGS64) --defsym VER_64BIT=$(IS64BIT) --defsym MODERN=$(MODERN) --defsym PORTABLE=1 --defsym UBFIX=1
 else
   ASFLAGS := -mcpu=arm7tdmi --defsym MODERN=$(MODERN)
 endif
@@ -173,11 +234,12 @@ ifeq ($(MODERN),0)
   LIBPATH := -L ../../tools/agbcc/lib
   LIB := $(LIBPATH) -lgcc -lc -L../../libagbsyscall -lagbsyscall
 else ifeq ($(PORTABLE),1)
-  CPPFLAGS += -D NONMATCHING -D PORTABLE -D $(TARGET_PLATFORM) -D $(TILE_RENDERER) -D UBFIX -I$(SDL_DIR)/include -L$(SDL_DIR)/lib
+  CPPFLAGS += -D NONMATCHING -D PORTABLE -D $(TARGET_PLATFORM) -D $(TILE_RENDERER) -D UBFIX $(CPPFLAGS64) -I$(SDL_DIR)/include -L$(SDL_DIR)/lib
   MODERNCC := $(PREFIX)gcc
   PATH_MODERNCC := PATH="$(PATH)" $(MODERNCC)
   CC1 	:= $(shell $(PREFIX)gcc --print-prog-name=cc1) -quiet
-  override CFLAGS += -Wno-trigraphs -Wimplicit -Wparentheses -Wunused -m32 -std=gnu99 -fleading-underscore -fno-dce -fno-builtin -Wno-unused-function -DPORTABLE -DNONMATCHING -D UBFIX -DMODERN=$(MODERN)
+  #override CFLAGS += -Wno-trigraphs -Wimplicit -Wparentheses -Wunused -m$(BIT_WIDTH) -std=gnu99 $(LEADING_UNDERSCORE_FLAG) -fno-dce -fno-builtin -Wno-unused-function -DPORTABLE -DNONMATCHING -D UBFIX -DMODERN=$(MODERN)
+  override CFLAGS += $(OS_CFLAGS) -Wno-trigraphs -Wimplicit -Wparentheses -Wunused -m$(BIT_WIDTH) -std=gnu99 $(LEADING_UNDERSCORE_FLAG) -fno-dce -fno-builtin -Wno-unused-function -DPORTABLE -DNONMATCHING -D UBFIX -DMODERN=$(MODERN)
   LIB := $(LIBPATH) -lgcc -lc
 else
   # Note: The makefile must be set up to not call these if modern == 0
@@ -188,6 +250,7 @@ else
   LIBPATH := -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libgcc.a))" -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libnosys.a))" -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libc.a))"
   LIB := $(LIBPATH) -lc -lnosys -lgcc -L../../libagbsyscall -lagbsyscall
 endif
+
 # Enable debug info if set
 ifeq ($(DINFO),1)
   override CFLAGS += -g
@@ -228,7 +291,7 @@ MAKEFLAGS += --no-print-directory
 .DELETE_ON_ERROR:
 
 RULES_NO_SCAN += libagbsyscall clean clean-assets tidy tidymodern tidynonmodern generated clean-generated
-.PHONY: all rom modern compare gba
+.PHONY: all rom modern compare winwsl linux
 .PHONY: $(RULES_NO_SCAN)
 
 infoshell = $(foreach line, $(shell $1 | sed "s/ /__SPACE__/g"), $(info $(subst __SPACE__, ,$(line))))
@@ -284,6 +347,10 @@ else
   OBJS     := $(C_OBJS) $(C_ASM_OBJS) $(ASM_OBJS) $(DATA_ASM_OBJS) $(MID_OBJS)
 endif
 
+ifeq ($(TARGET_OS),WINDOWS)
+  OBJS += $(OBJ_DIR)/res.o
+endif
+
 OBJS_REL := $(patsubst $(OBJ_DIR)/%,%,$(OBJS))
 
 SUBDIRS  := $(sort $(dir $(OBJS)))
@@ -292,7 +359,8 @@ $(shell mkdir -p $(SUBDIRS))
 # Pretend rules that are actually flags defer to `make all`
 modern: all
 compare: all
-gba: all
+winwsl: all
+linux: all
 
 # Other rules
 rom: $(ROM)
@@ -326,7 +394,11 @@ tidymodern:
 
 tidyportable:
 	rm -f $(PORTABLE_ROM_NAME)
+	rm -f $(PORTABLE_ROM_NAME).exe
 	rm -rf $(PORTABLE_OBJ_DIR_NAME)
+	rm -f $(PORTABLE_ROM_NAME_OTHER)
+	rm -f $(PORTABLE_ROM_NAME_OTHER).exe
+	rm -rf $(PORTABLE_OBJ_DIR_NAME_OTHER)
 
 clean-platform:
 	rm -f $(PORTABLE_ROM_NAME)
@@ -442,6 +514,9 @@ $(OBJ_DIR)/sym_common.ld: sym_common.txt $(C_OBJS) $(wildcard common_syms/*.txt)
 $(OBJ_DIR)/sym_ewram.ld: sym_ewram.txt
 	$(RAMSCRGEN) ewram_data $< ENGLISH > $@
 
+$(OBJ_DIR)/res.o: $(C_SUBDIR)/platform/win32res/res.rc $(C_SUBDIR)/platform/win32res/icon.ico
+	$(WINDRES) $< -o $@
+
 # Linker script
 ifeq ($(MODERN),0)
 LD_SCRIPT := ld_script.ld
@@ -474,5 +549,5 @@ $(SYM): $(ELF)
 	$(OBJDUMP) -t $< | sort -u | grep -E "^0[2389]" | $(PERL) -p -e 's/^(\w{8}) (\w).{6} \S+\t(\w{8}) (\S+)$$/\1 \2 \3 \4/g' > $@
 else
 $(ROM): $(OBJS)
-	$(MODERNCC) $(CFLAGS) -Wl,--demangle $^ -static-libgcc -L$(SDL_DIR)/lib $(PLATFORM_INCLUDES) -lwinmm -lxinput -o $@
+	$(MODERNCC) $(CFLAGS) -Wl,--demangle $^ -static-libgcc -L$(SDL_DIR)/lib $(PLATFORM_INCLUDES) $(OS_LFLAGS) -o $@
 endif

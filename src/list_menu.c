@@ -885,6 +885,7 @@ void ListMenuDefaultCursorMoveFunc(s32 itemIndex, bool8 onInit, struct ListMenu 
 }
 
 // unused
+#ifndef VER_64BIT
 s32 ListMenuGetTemplateField(u8 taskId, u8 field)
 {
     struct ListMenu *data = (void *) gTasks[taskId].data;
@@ -928,6 +929,7 @@ s32 ListMenuGetTemplateField(u8 taskId, u8 field)
         return -1;
     }
 }
+#endif
 
 void ListMenuSetTemplateField(u8 taskId, u8 field, s32 value)
 {
@@ -937,7 +939,11 @@ void ListMenuSetTemplateField(u8 taskId, u8 field, s32 value)
     {
     case LISTFIELD_MOVECURSORFUNC:
     case LISTFIELD_MOVECURSORFUNC2:
+        #ifndef VER_64BIT
         data->template.moveCursorFunc = (void *)value;
+        #else
+        printf("ListMenuSetUnkIndicatorsStructField: case LISTFIELD_MOVECURSORFUNC stubbed out.");
+        #endif
         break;
     case LISTFIELD_TOTALITEMS:
         data->template.totalItems = value;

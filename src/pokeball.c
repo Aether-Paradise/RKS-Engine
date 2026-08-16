@@ -657,8 +657,6 @@ static void SpriteCB_BallThrow_Shake(struct Sprite *sprite)
 #define tCryTaskWantedCry       data[2]
 #define tCryTaskBattler         data[3]
 #define tCryTaskMonSpriteId     data[4]
-#define tCryTaskMonPtr1         data[5]
-#define tCryTaskMonPtr2         data[6]
 #define tCryTaskFrames          data[10]
 #define tCryTaskState           data[15]
 
@@ -669,11 +667,7 @@ static void Task_PlayCryWhenReleasedFromBall(u8 taskId)
     u16 species = gTasks[taskId].tCryTaskSpecies;
     u8 battler = gTasks[taskId].tCryTaskBattler;
     u8 monSpriteId = gTasks[taskId].tCryTaskMonSpriteId;
-#ifndef PORTABLE
-    struct Pokemon *mon = (void *)(u32)((gTasks[taskId].tCryTaskMonPtr1 << 16) | (u16)(gTasks[taskId].tCryTaskMonPtr2));
-#else
-    struct Pokemon *mon = (void *)(u32)(((u16)gTasks[taskId].tCryTaskMonPtr1 << 16) | (u16)(gTasks[taskId].tCryTaskMonPtr2));
-#endif
+    struct Pokemon *mon = gTasks[taskId].ptr.monPtr;
 
     switch (gTasks[taskId].tCryTaskState)
     {
@@ -811,8 +805,7 @@ static void SpriteCB_ReleaseMonFromBall(struct Sprite *sprite)
         gTasks[taskId].tCryTaskWantedCry = wantedCryCase;
         gTasks[taskId].tCryTaskBattler = battler;
         gTasks[taskId].tCryTaskMonSpriteId = gBattlerSpriteIds[sprite->sBattler];
-        gTasks[taskId].tCryTaskMonPtr1 = (u32)(mon) >> 16;
-        gTasks[taskId].tCryTaskMonPtr2 = (u32)(mon);
+        gTasks[taskId].ptr.monPtr = mon;
         gTasks[taskId].tCryTaskState = 0;
     }
 
@@ -832,8 +825,6 @@ static void SpriteCB_ReleaseMonFromBall(struct Sprite *sprite)
 #undef tCryTaskWantedCry
 #undef tCryTaskBattler
 #undef tCryTaskMonSpriteId
-#undef tCryTaskMonPtr1
-#undef tCryTaskMonPtr2
 #undef tCryTaskFrames
 #undef tCryTaskState
 

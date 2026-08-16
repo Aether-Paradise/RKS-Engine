@@ -2422,7 +2422,7 @@ static void PrintPocketNames(const u8 *pocketName1, const u8 *pocketName2)
         offset = GetStringCenterAlignXOffset(FONT_NORMAL, pocketName2, 0x40);
         BagMenu_Print(windowId, FONT_NORMAL, pocketName2, offset + 0x40, 1, 0, 0, TEXT_SKIP_DRAW, COLORID_POCKET_NAME);
     }
-    CpuCopy32((u8 *)GetWindowAttribute(windowId, WINDOW_TILE_DATA), gBagMenu->pocketNameBuffer, sizeof(gBagMenu->pocketNameBuffer));
+    CpuCopy32(GetWindowTileData(windowId), gBagMenu->pocketNameBuffer, sizeof(gBagMenu->pocketNameBuffer));
     RemoveWindow(windowId);
 }
 
@@ -2434,7 +2434,7 @@ static void CopyPocketNameToWindow(u32 a)
     if (a > 8)
         a = 8;
     tileDataBuffer = &gBagMenu->pocketNameBuffer;
-    windowTileData = (u8 *)GetWindowAttribute(2, WINDOW_TILE_DATA);
+    windowTileData = GetWindowTileData(2);
     CpuCopy32(&tileDataBuffer[0][a], windowTileData, 0x100); // Top half of pocket name
     b = a + 16;
     CpuCopy32(&tileDataBuffer[0][b], windowTileData + 0x100, 0x100); // Bottom half of pocket name

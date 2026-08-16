@@ -39,6 +39,9 @@ struct MP2KInstrument {
             u8 decay;
             u8 sustain;
             u8 release;
+            #ifdef VER_64BIT
+            u8 padding[4];
+            #endif
         };
         u8 *keySplitTable;
     };

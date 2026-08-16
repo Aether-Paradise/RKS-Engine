@@ -1277,17 +1277,17 @@ static const u16 sRestrictedWordSpecies[] = {
 
 
 // In addition to the task defines below, these two elements
-// have their indexes used explicitly because they are 4-byte
-// pointers, and occupy the next data element as well.
+// have their indexes used explicitly because they are 8-byte
+// pointers, and occupy intPtr instead of data.
 // SetWordTaskArg/GetWordTaskArg use these defines to
 // read the pointer from the two elements
-#define TASKIDX_WORDS         2
-#define TASKIDX_EXIT_CALLBACK 4
+#define TASKIDX_WORDS         0
+#define TASKIDX_EXIT_CALLBACK 1
 
 #define tState        data[0]
 #define tType         data[1]
-#define tWords        data[TASKIDX_WORDS] // Occupies 2 and 3
-#define tExitCallback data[TASKIDX_EXIT_CALLBACK] // Occupies 4 and 5
+#define tWords        ptr.intPtr[TASKIDX_WORDS]
+#define tExitCallback ptr.intPtr[TASKIDX_EXIT_CALLBACK]
 #define tFuncId       data[6]
 #define tPersonType   data[7]
 
@@ -1299,8 +1299,8 @@ void DoEasyChatScreen(u8 type, u16 *words, MainCallback exitCallback, u8 display
     taskId = CreateTask(Task_InitEasyChatScreen, 0);
     gTasks[taskId].tType = type;
     gTasks[taskId].tPersonType = displayedPersonType;
-    SetWordTaskArg(taskId, TASKIDX_WORDS, (u32)words);
-    SetWordTaskArg(taskId, TASKIDX_EXIT_CALLBACK, (u32)exitCallback);
+    SetWordTaskArg(taskId, TASKIDX_WORDS, (uintptr_t)words);
+    SetWordTaskArg(taskId, TASKIDX_EXIT_CALLBACK, (uintptr_t)exitCallback);
     SetMainCallback2(CB2_EasyChatScreen);
 }
 

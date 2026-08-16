@@ -1780,7 +1780,7 @@ static void rfu_constructSendLLFrame(void)
         }
         if (pakcketSize != 0)
         {
-            while ((u32)llf_p & 3)
+            while ((uintptr_t)llf_p & 3)
                 *llf_p++ = 0;
             gRfuFixed->LLFBuffer[0] = pakcketSize;
             if (gRfuLinkStatus->parentChild == MODE_CHILD)

@@ -545,7 +545,7 @@ void StartPokemonJump(u16 partyId, MainCallback exitCallback)
             sPokemonJump->multiplayerId = GetMultiplayerId();
             InitJumpMonInfo(&sPokemonJump->monInfo[sPokemonJump->multiplayerId], &gPlayerParty[partyId]);
             InitGame(sPokemonJump);
-            SetWordTaskArg(taskId, 2, (u32)sPokemonJump);
+            SetWordTaskArg(taskId, 2, (uintptr_t)sPokemonJump);
             SetMainCallback2(CB2_PokemonJump);
             return;
         }
@@ -1679,7 +1679,7 @@ static void Task_CommunicateMonInfo(u8 taskId)
 static void SetTaskWithPokeJumpStruct(TaskFunc func, u8 taskPriority)
 {
     u8 taskId = CreateTask(func, taskPriority);
-    SetWordTaskArg(taskId, DATAIDX_GAME_STRUCT, (u32)sPokemonJump);
+    SetWordTaskArg(taskId, DATAIDX_GAME_STRUCT, (uintptr_t)sPokemonJump);
 }
 
 #undef tState
@@ -3026,7 +3026,7 @@ static void StartPokeJumpGfx(struct PokemonJumpGfx *jumpGfx)
     InitPokeJumpGfx(sPokemonJumpGfx);
     taskId = CreateTask(Task_RunPokeJumpGfxFunc, 3);
     sPokemonJumpGfx->taskId = taskId;
-    SetWordTaskArg(sPokemonJumpGfx->taskId, 2, (u32) sPokemonJumpGfx);
+    SetWordTaskArg(sPokemonJumpGfx->taskId, 2, (uintptr_t) sPokemonJumpGfx);
     SetUpPokeJumpGfxFunc(LoadPokeJumpGfx);
 }
 
@@ -3156,7 +3156,7 @@ static bool32 IsPokeJumpGfxFuncFinished(void)
 
 static void SetUpPokeJumpGfxFunc(void (*func)(void))
 {
-    SetWordTaskArg(sPokemonJumpGfx->taskId, 0, (u32) func);
+    SetWordTaskArg(sPokemonJumpGfx->taskId, 0, (uintptr_t) func);
     sPokemonJumpGfx->mainState = 0;
     sPokemonJumpGfx->funcFinished = FALSE;
 }

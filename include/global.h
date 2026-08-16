@@ -5,10 +5,10 @@
 #include <string.h>
 #include <limits.h>
 
-#ifndef NO_STD_LIB_ENABLED
-#define DBGPRINTF(...) printf(__VA_ARGS__)
+#if !defined NO_STD_LIB_ENABLED && defined PORTABLE
+    #define DBGPRINTF(...) printf(__VA_ARGS__)
 #else
-#define DBGPRINTF(...)
+    #define DBGPRINTF(...)
 #endif
 
 #include "config.h" // we need to define config before gba headers as print stuff needs the functions nulled before defines.
@@ -131,13 +131,35 @@ int strcmp(const char *, const char*);
 #define T1_READ_8(ptr)  ((ptr)[0])
 #define T1_READ_16(ptr) ((ptr)[0] | ((ptr)[1] << 8))
 #define T1_READ_32(ptr) ((ptr)[0] | ((ptr)[1] << 8) | ((ptr)[2] << 16) | ((ptr)[3] << 24))
+#define T1_READ_64(ptr) (*(u64*)(ptr))
+
+#ifdef VER_64BIT
+#define T1_READ_PTR(ptr) (u8 *) T1_READ_64(ptr)
+#define T1_READ_PTRSIZE(ptr) T1_READ_64(ptr)
+#else
 #define T1_READ_PTR(ptr) (u8 *) T1_READ_32(ptr)
+#define T1_READ_PTRSIZE(ptr) T1_READ_32(ptr)
+#endif
 
 // T2_READ_8 is a duplicate to remain consistent with each group.
 #define T2_READ_8(ptr)  ((ptr)[0])
 #define T2_READ_16(ptr) ((ptr)[0] + ((ptr)[1] << 8))
 #define T2_READ_32(ptr) ((ptr)[0] + ((ptr)[1] << 8) + ((ptr)[2] << 16) + ((ptr)[3] << 24))
+#define T2_READ_64(ptr) (*(u64*)(ptr))
+
+#ifdef VER_64BIT
+#define T2_READ_PTR(ptr) (void *) T2_READ_64(ptr)
+#define T2_READ_PTRSIZE(ptr) T2_READ_64(ptr)
+#else
 #define T2_READ_PTR(ptr) (void *) T2_READ_32(ptr)
+#define T2_READ_PTRSIZE(ptr) T2_READ_32(ptr)
+#endif
+
+#define DSIZE8BIT 1
+#define DSIZE16BIT 2
+#define DSIZE32BIT 4
+#define DSIZE64BIT 8
+#define DSIZEPTR (sizeof(void*))
 
 #define PACK(data, shift, mask)   ( ((data) << (shift)) & (mask) )
 #define UNPACK(data, shift, mask) ( ((data) & (mask)) >> (shift) )
