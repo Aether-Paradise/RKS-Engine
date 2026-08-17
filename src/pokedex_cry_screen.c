@@ -32,7 +32,7 @@
 #ifdef PORTABLE
     typedef float SampleDataType;
 #else
-    typedef u8 SampleDataType;
+    typedef s8 SampleDataType;
 #endif
 
 struct PokedexCryMeterNeedle {

@@ -1,6 +1,5 @@
 	.section .rodata
 
-	.include "asm/macros/bit_width.inc"
 	.include "asm/macros.inc"
 	.include "constants/constants.inc"
 
