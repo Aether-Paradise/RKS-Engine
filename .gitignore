@@ -66,3 +66,5 @@ tools/aif2pcm/aif2pcm
 *.smolTM
 __pycache__
 .map_version
+SDL2-2.0.18/
+SDL2-2.30.7/
