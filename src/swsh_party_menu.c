@@ -84,6 +84,7 @@
 #include "constants/pokemon_icon.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
+#include "config/party_menu.h"
 
 
 

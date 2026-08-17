@@ -35,9 +35,9 @@ COMPARE     ?= 0
 TEST         ?= 0
 # Enables -fanalyzer C flag to analyze in depth potential UBs
 ANALYZE      ?= 0
-# Count unused warnings as errors. Used by RH-Hideout's repo
-UNUSED_ERROR ?= 0
-# Count deprecated warnings as errors. Used by RH-Hideout's repo
+# Count unused warnings as errors. Used by RKS-Engine's repo
+UNUSED_ERROR ?= 1
+# Count deprecated warnings as errors. Used by RKS-Engine's repo
 DEPRECATED_ERROR ?= 0
 # Adds -Og and -g flags, which optimize the build for debugging and include debug info respectively
 DEBUG        ?= 0
@@ -166,6 +166,8 @@ endif
 ARMCC := $(PREFIX)gcc
 PATH_ARMCC := PATH="$(PATH)" $(ARMCC)
 CC1 := $(shell $(PATH_ARMCC) --print-prog-name=cc1) -quiet
+
+include override_config.mk
 
 override CFLAGS += -mthumb -mthumb-interwork -O$(O_LEVEL) -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -Wno-pointer-to-int-cast -std=gnu17 -Werror -Wall -Wno-strict-aliasing -Wno-attribute-alias -Woverride-init -Wnonnull -Wenum-conversion
 
