@@ -8659,6 +8659,7 @@ s8 Test_UpdatePartySelectionSingleLayout(s8 slotId, s8 movementDir, bool8 choose
 
     UpdatePartySelectionSingleLayout(&slotId, movementDir);
 
+    DebugPrintf("slotId:%d", slotId);
     sPartyMenuInternal = savedInternal;
     return slotId;
 }

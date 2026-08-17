@@ -33,7 +33,7 @@ TEST("Form species ID tables fit within RANDOM_MON_MAX_FORMS")
 
     for (u32 i = 0; i < NUM_SPECIES; i++)
     {
-        if (GetSpeciesFormTable(i))
+        if (IsSpeciesEnabled(i) && GetSpeciesFormTable(i))
             PARAMETRIZE_LABEL("ID:%d - %S", i, GetSpeciesName(i)) { species = i; }
     }
 

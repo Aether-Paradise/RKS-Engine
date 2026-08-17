@@ -2,6 +2,7 @@
 #include "battle.h"
 #include "party_menu.h"
 #include "pokemon.h"
+#include "config/party_menu.h"
 #include "test/test.h"
 
 #define TEST_MENU_DIR_DOWN     1
@@ -25,7 +26,10 @@ TEST("Full multi partner party menu stops down navigation at partner party count
     SetTestPartySize(B_TRAINER_PARTNER, 2);
     gPartyMenu.layout = PARTY_LAYOUT_MULTI_FULL_PARTNER;
 
-    EXPECT_EQ(Test_UpdatePartySelectionSingleLayout(1, TEST_MENU_DIR_DOWN, FALSE, 0), PARTY_SIZE + 1);
+    if (RKSE_PARTY_MENU_DESIGN == PARTY_MENU_DESIGN_SWSH)
+        EXPECT_EQ(Test_UpdatePartySelectionSingleLayout(1, TEST_MENU_DIR_DOWN, FALSE, 0), 0);
+    else
+        EXPECT_EQ(Test_UpdatePartySelectionSingleLayout(1, TEST_MENU_DIR_DOWN, FALSE, 0), PARTY_SIZE + 1);
 }
 
 TEST("Full multi partner party menu allows down navigation through partner party count")

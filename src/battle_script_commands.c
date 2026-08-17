@@ -2973,17 +2973,17 @@ void SetMoveEffect(enum BattlerId battlerAtk, enum BattlerId effectBattler, enum
 
             enum HoldEffect holdEffect = GetItemHoldEffect(item);
 
-            if (ItemIsBerry(item))
-            {
-                BattleScriptPush(battleScript);
-                gBattlescriptCurrInstr = BattleScript_EffectFlingConsumeBerry;
-                break;
-            }
-
             if (IsMoveEffectBlockedByTarget(abilities[effectBattler]))
             {
                 BattleScriptPush(battleScript);
                 gBattlescriptCurrInstr = BattleScript_FlingBlockedByShieldDust;
+                break;
+            }
+
+            if (ItemIsBerry(item))
+            {
+                BattleScriptPush(battleScript);
+                gBattlescriptCurrInstr = BattleScript_EffectFlingConsumeBerry;
                 break;
             }
 

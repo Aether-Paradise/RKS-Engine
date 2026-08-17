@@ -1993,6 +1993,9 @@ void Task_HandleChooseMonInput(u8 taskId)
                 else
                     gPartyMenu.layout = PARTY_LAYOUT_MULTI_FULL;
 
+                gPartyMenu.slotId = 0;
+                sPartyMenuInternal->lastSelectedSlot = 0;
+
                 LoadBattlePartyCurrentOrderForLayout();
                 UpdatePartyToBattleOrder();
                 RefreshPartyMenu();
@@ -2390,6 +2393,7 @@ static void UpdateCurrentPartySelection(s8 *slotPtr, s8 movementDir)
 
 static void UpdatePartySelectionSingleLayout(s8 *slotPtr, s8 movementDir)
 {
+    enum BattleTrainer partyTrainer = (gPartyMenu.layout == PARTY_LAYOUT_MULTI_FULL_PARTNER) ? B_TRAINER_PARTNER : B_TRAINER_PLAYER;
     // PARTY_SIZE + 1 is Cancel, PARTY_SIZE is Confirm
     switch (movementDir)
     {
@@ -2397,11 +2401,11 @@ static void UpdatePartySelectionSingleLayout(s8 *slotPtr, s8 movementDir)
         if (*slotPtr == 0)
         {
             // *slotPtr = PARTY_SIZE + 1;
-            *slotPtr = gPartiesCount[B_TRAINER_PLAYER] - 1; // Disable cursor going to Cancel
+            *slotPtr = gPartiesCount[partyTrainer] - 1; // Disable cursor going to Cancel
         }
         else if (*slotPtr == PARTY_SIZE)
         {
-            *slotPtr = gPartiesCount[B_TRAINER_PLAYER] - 1;
+            *slotPtr = gPartiesCount[partyTrainer] - 1;
         }
         else if (*slotPtr == PARTY_SIZE + 1)
         {
@@ -2409,7 +2413,7 @@ static void UpdatePartySelectionSingleLayout(s8 *slotPtr, s8 movementDir)
             //  if (sPartyMenuInternal->chooseHalf)
             //     *slotPtr = PARTY_SIZE;
             // else
-            *slotPtr = gPartiesCount[B_TRAINER_PLAYER] - 1;
+            *slotPtr = gPartiesCount[partyTrainer] - 1;
         }
         else
         {
@@ -2423,7 +2427,8 @@ static void UpdatePartySelectionSingleLayout(s8 *slotPtr, s8 movementDir)
         }
         else
         {
-            if (*slotPtr == gPartiesCount[B_TRAINER_PLAYER] - 1)
+            DebugPrintf("slot:%d", *slotPtr);
+            if (*slotPtr == gPartiesCount[partyTrainer] - 1)
             {
                 *slotPtr = 0;
             }
