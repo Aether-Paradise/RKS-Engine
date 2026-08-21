@@ -1,4 +1,8 @@
-## Credits ✨
+## RKS-Engine Credits ✨
+- ### Montblanc
+  - Sword and Shield Party Menu
+
+## Expansion Credits ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/en/reference/emoji-key/)):
 
