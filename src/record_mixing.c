@@ -85,7 +85,9 @@ union PlayerRecord
 };
 
 static bool8 sReadyToReceive;
+#if FREE_SECRET_BASES == FALSE
 static struct SecretBase *sSecretBasesSave;
+#endif //FREE_SECRET_BASES
 static TVShow *sTvShowsSave;
 static PokeNews *sPokeNewsSave;
 static OldMan *sOldManSave;
@@ -173,7 +175,9 @@ void RecordMixingPlayerSpotTriggered(void)
 // these variables were const in R/S, but had to become changeable because of saveblocks changing RAM position
 static void SetSrcLookupPointers(void)
 {
+#if FREE_SECRET_BASES == FALSE
     sSecretBasesSave = gSaveBlock1Ptr->secretBases;
+#endif //FREE_SECRET_BASES
     sTvShowsSave = gSaveBlock1Ptr->tvShows;
     sPokeNewsSave = gSaveBlock1Ptr->pokeNews;
     sOldManSave = &gSaveBlock1Ptr->oldMan;
@@ -187,7 +191,9 @@ static void SetSrcLookupPointers(void)
 
 static void PrepareUnknownExchangePacket(struct PlayerRecordRS *dest)
 {
+#if FREE_SECRET_BASES == FALSE
     memcpy(dest->secretBases, sSecretBasesSave, sizeof(dest->secretBases));
+#endif //FREE_SECRET_BASES
     memcpy(dest->tvShows, sTvShowsSave, sizeof(dest->tvShows));
     SanitizeTVShowLocationsForRuby(dest->tvShows);
     memcpy(dest->pokeNews, sPokeNewsSave, sizeof(dest->pokeNews));
@@ -202,7 +208,9 @@ static void PrepareUnknownExchangePacket(struct PlayerRecordRS *dest)
 
 static void PrepareExchangePacketForRubySapphire(struct PlayerRecordRS *dest)
 {
+#if FREE_SECRET_BASES == FALSE
     memcpy(dest->secretBases, sSecretBasesSave, sizeof(dest->secretBases));
+#endif //FREE_SECRET_BASES
     ClearJapaneseSecretBases(dest->secretBases);
     memcpy(dest->tvShows, sTvShowsSave, sizeof(dest->tvShows));
     SanitizeTVShowsForRuby(dest->tvShows);
@@ -234,7 +242,9 @@ static void PrepareExchangePacket(void)
     }
     else
     {
+    #if FREE_SECRET_BASES == FALSE
         memcpy(sSentRecord->emerald.secretBases, sSecretBasesSave, sizeof(sSentRecord->emerald.secretBases));
+    #endif //FREE_SECRET_BASES
         memcpy(sSentRecord->emerald.tvShows, sTvShowsSave, sizeof(sSentRecord->emerald.tvShows));
         memcpy(sSentRecord->emerald.pokeNews, sPokeNewsSave, sizeof(sSentRecord->emerald.pokeNews));
         memcpy(&sSentRecord->emerald.oldMan, sOldManSave, sizeof(sSentRecord->emerald.oldMan));

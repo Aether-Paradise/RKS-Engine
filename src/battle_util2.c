@@ -61,11 +61,13 @@ void AllocateBattleResources(void)
 
     AllocateBattleGfxResources();
 
+#if FREE_SECRET_BASES == FALSE
     if (gBattleTypeFlags & BATTLE_TYPE_SECRET_BASE)
     {
         u16 currSecretBaseId = VarGet(VAR_CURRENT_SECRET_BASE);
         CreateSecretBaseEnemyParty(&gSaveBlock1Ptr->secretBases[currSecretBaseId]);
     }
+#endif
 }
 
 void FreeBattleResources(void)
