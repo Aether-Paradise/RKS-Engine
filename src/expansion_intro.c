@@ -15,8 +15,6 @@
 #include "constants/rgb.h"
 #include "constants/songs.h"
 
-#if EXPANSION_INTRO == TRUE
-
 #define TAG_DIZZY   20000
 #define TAG_PORYGON 20001
 
@@ -418,5 +416,3 @@ static void SpriteCallback_PorygonFlying(struct Sprite* sprite)
     sprite->sTimer++;
 }
 #undef sTimer
-
-#endif //EXPANSION_INTRO
