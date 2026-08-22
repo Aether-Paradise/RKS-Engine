@@ -2,7 +2,8 @@
 #include "gba/m4a_internal.h"
 
 #ifdef PORTABLE
-    #include "cgb_audio.h"
+#include "cgb_audio.h"
+void RunMixerFrame(void);
 #endif
 
 extern const u8 gCgb3Vol[];
