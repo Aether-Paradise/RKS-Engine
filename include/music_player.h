@@ -114,6 +114,9 @@ struct MP2KPlayerState {
     vu32 lockStatus;
     void (*nextPlayerFunc)(void *);
     void *nextPlayer;
+#ifdef PORTABLE
+    bool8 hasBeenRanOnce;
+#endif
 };
 
 struct MP2KPlayerCtor {

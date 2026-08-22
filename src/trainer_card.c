@@ -32,6 +32,9 @@
 #include "constants/rgb.h"
 #include "constants/trainers.h"
 #include "constants/union_room.h"
+#ifdef PORTABLE
+#include "menu_helpers.h"
+#endif
 
 enum {
     WIN_MSG,
