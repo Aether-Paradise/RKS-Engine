@@ -260,17 +260,9 @@ TEST("Trainer Party Pool picks according to custom rules")
     u32 currTrainer = 8;
     gBattleTypeFlags = BATTLE_TYPE_DOUBLE;
     CreateNPCTrainerPartyFromTrainer(testParty, GetTrainerStructFromId(currTrainer));
-    //  Lead + Weather Setter
-    EXPECT(GetMonData(&testParty[0], MON_DATA_SPECIES) == SPECIES_TORKOAL
-        || GetMonData(&testParty[0], MON_DATA_SPECIES) == SPECIES_VULPIX);
-    //  Lead + Weather Abuser
-    EXPECT(GetMonData(&testParty[1], MON_DATA_SPECIES) == SPECIES_BULBASAUR
-        || GetMonData(&testParty[1], MON_DATA_SPECIES) == SPECIES_CHERRIM);
-    //  Anything else
-    EXPECT_NE(GetMonData(&testParty[2], MON_DATA_SPECIES), SPECIES_TORKOAL);
-    EXPECT_NE(GetMonData(&testParty[2], MON_DATA_SPECIES), SPECIES_VULPIX);
-    EXPECT_NE(GetMonData(&testParty[2], MON_DATA_SPECIES), SPECIES_BULBASAUR);
-    EXPECT_NE(GetMonData(&testParty[2], MON_DATA_SPECIES), SPECIES_CHERRIM);
+    EXPECT(GetMonData(&testParty[0], MON_DATA_SPECIES) == SPECIES_TORKOAL);    //  Lead + Weather Setter
+    EXPECT(GetMonData(&testParty[1], MON_DATA_SPECIES) == SPECIES_BULBASAUR);  //  Lead + Weather Abuser
+    EXPECT(GetMonData(&testParty[2], MON_DATA_SPECIES) == SPECIES_EEVEE);      //  Anything else
     gBattleTypeFlags = 0;
     Free(testParty);
 }
