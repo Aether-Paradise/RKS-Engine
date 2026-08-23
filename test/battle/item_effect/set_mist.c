@@ -4,7 +4,7 @@
 SINGLE_BATTLE_TEST("Guard Spec. sets Mist effect on the battlers side")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_GUARD_SPEC].battleUsage == EFFECT_ITEM_SET_MIST);
+        ASSUME(GetItemBattleUsage(ITEM_GUARD_SPEC) == EFFECT_ITEM_SET_MIST);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {

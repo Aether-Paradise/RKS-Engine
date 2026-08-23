@@ -332,7 +332,7 @@ SINGLE_BATTLE_TEST("Eelevate doesn't consider stat stages")
 SINGLE_BATTLE_TEST("Eelevate doesn't consider held items")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_CHOICE_BAND].holdEffect == HOLD_EFFECT_CHOICE_BAND);
+        ASSUME(GetItemHoldEffect(ITEM_CHOICE_BAND) == HOLD_EFFECT_CHOICE_BAND);
         PLAYER(SPECIES_EELEKTROSS_MEGA) { Ability(ABILITY_EELEVATE); Item(ITEM_CHOICE_BAND); Attack(120); Defense(60); SpAttack(150); SpDefense(60); }
         OPPONENT(SPECIES_WOBBUFFET) { HP(1); }
         OPPONENT(SPECIES_WOBBUFFET);

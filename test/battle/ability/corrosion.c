@@ -69,7 +69,7 @@ SINGLE_BATTLE_TEST("Corrosion does not effect poison type damaging moves if the 
 SINGLE_BATTLE_TEST("Corrosion badly poisons its Poison/Steel-type user who holds a Toxic Orb")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_TOXIC_ORB].holdEffect == HOLD_EFFECT_TOXIC_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_TOXIC_ORB) == HOLD_EFFECT_TOXIC_ORB);
         PLAYER(SPECIES_SALANDIT) { Ability(ABILITY_CORROSION); Item(ITEM_TOXIC_ORB); }
         OPPONENT(SPECIES_ODDISH);
     } WHEN {
@@ -265,7 +265,7 @@ SINGLE_BATTLE_TEST("Corrosion can poison Poison/Steel types if the Pokémon uses
 
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_FLING) == EFFECT_FLING);
-        ASSUME(gItemsInfo[ITEM_TOXIC_ORB].holdEffect == HOLD_EFFECT_TOXIC_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_TOXIC_ORB) == HOLD_EFFECT_TOXIC_ORB);
         PLAYER(SPECIES_SALANDIT) { Ability(ABILITY_CORROSION); Item(ITEM_TOXIC_ORB); }
         OPPONENT(species);
     } WHEN {
@@ -287,8 +287,8 @@ SINGLE_BATTLE_TEST("Corrosion can poison Poison/Steel types if the Pokémon uses
 
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_FLING) == EFFECT_FLING);
-        ASSUME(gItemsInfo[ITEM_POISON_BARB].holdEffect == HOLD_EFFECT_TYPE_POWER);
-        ASSUME(gItemsInfo[ITEM_POISON_BARB].secondaryId == TYPE_POISON);
+        ASSUME(GetItemHoldEffect(ITEM_POISON_BARB) == HOLD_EFFECT_TYPE_POWER);
+        ASSUME(GetItemSecondaryId(ITEM_POISON_BARB) == TYPE_POISON);
         PLAYER(SPECIES_SALANDIT) { Ability(ABILITY_CORROSION); Item(ITEM_POISON_BARB); }
         OPPONENT(species);
     } WHEN {

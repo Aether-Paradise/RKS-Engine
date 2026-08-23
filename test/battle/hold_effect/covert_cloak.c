@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_COVERT_CLOAK].holdEffect == HOLD_EFFECT_COVERT_CLOAK);
+    ASSUME(GetItemHoldEffect(ITEM_COVERT_CLOAK) == HOLD_EFFECT_COVERT_CLOAK);
 }
 
 SINGLE_BATTLE_TEST("Covert Cloak blocks secondary effects")

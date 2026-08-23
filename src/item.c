@@ -783,6 +783,8 @@ bool32 RemovePyramidBagItem(enum Item itemId, u16 count)
     }
 }
 
+#undef gItemsInfo
+
 static enum Item SanitizeItemId(enum Item itemId)
 {
     assertf(itemId < ITEMS_COUNT, "invalid item: %d", itemId)
@@ -980,4 +982,19 @@ bool32 IsItemShopCriteriaFulfilled(enum Item itemId)
         return TRUE;
 
     return func(SanitizeItemId(itemId));
+}
+
+enum ItemSortType GetItemSortType(enum Item itemId)
+{
+    return gItemsInfo[SanitizeItemId(itemId)].sortType;
+}
+
+bool32 ItemIsTMHM(enum Item itemId)
+{
+    return GetItemPocket(itemId) == POCKET_TM_HM;
+}
+
+bool32 ItemIsBerry(enum Item itemId)
+{
+    return GetItemPocket(itemId) == POCKET_BERRIES;
 }

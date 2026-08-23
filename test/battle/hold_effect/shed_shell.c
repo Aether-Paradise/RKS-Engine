@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_SHED_SHELL].holdEffect == HOLD_EFFECT_SHED_SHELL);
+    ASSUME(GetItemHoldEffect(ITEM_SHED_SHELL) == HOLD_EFFECT_SHED_SHELL);
 };
 
 SINGLE_BATTLE_TEST("Shed Shell allows switching out even when trapped by Mean Look")

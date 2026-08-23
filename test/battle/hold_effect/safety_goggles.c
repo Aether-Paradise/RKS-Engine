@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_SAFETY_GOGGLES].holdEffect == HOLD_EFFECT_SAFETY_GOGGLES);
+    ASSUME(GetItemHoldEffect(ITEM_SAFETY_GOGGLES) == HOLD_EFFECT_SAFETY_GOGGLES);
 };
 
 SINGLE_BATTLE_TEST("Safety Goggles block powder and spore moves")

@@ -5674,7 +5674,7 @@ enum Type GetDynamicMoveType(struct Pokemon *mon, enum Move move, enum BattlerId
         }
         break;
     case EFFECT_NATURAL_GIFT:
-        if (GetItemPocket(heldItem) == POCKET_BERRIES)
+        if (ItemIsBerry(heldItem))
             return gBerries[ItemIdToBerryType(heldItem)].naturalGiftType;
         else
             return moveType;

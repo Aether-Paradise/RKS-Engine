@@ -79,7 +79,7 @@ SINGLE_BATTLE_TEST("Poison Touch applies between multi-hit move hits")
     GIVEN {
         ASSUME(IsMultiHitMove(MOVE_ARM_THRUST));
         ASSUME(MoveMakesContact(MOVE_ARM_THRUST));
-        ASSUME(gItemsInfo[ITEM_PECHA_BERRY].holdEffect == HOLD_EFFECT_CURE_PSN);
+        ASSUME(GetItemHoldEffect(ITEM_PECHA_BERRY) == HOLD_EFFECT_CURE_PSN);
         PLAYER(SPECIES_GRIMER) { Ability(ABILITY_POISON_TOUCH); }
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_PECHA_BERRY); }
     } WHEN {
@@ -182,7 +182,7 @@ SINGLE_BATTLE_TEST("Poison Touch is blocked by Shield Dust")
 SINGLE_BATTLE_TEST("Poison Touch is blocked by Covert Cloak")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_COVERT_CLOAK].holdEffect == HOLD_EFFECT_COVERT_CLOAK);
+        ASSUME(GetItemHoldEffect(ITEM_COVERT_CLOAK) == HOLD_EFFECT_COVERT_CLOAK);
         ASSUME(GetMoveCategory(MOVE_SCRATCH) != DAMAGE_CATEGORY_STATUS);
         ASSUME(MoveMakesContact(MOVE_SCRATCH));
         PLAYER(SPECIES_GRIMER) { Ability(ABILITY_POISON_TOUCH); }

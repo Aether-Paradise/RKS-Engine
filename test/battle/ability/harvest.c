@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_SITRUS_BERRY].holdEffect == HOLD_EFFECT_RESTORE_PCT_HP);
+    ASSUME(GetItemHoldEffect(ITEM_SITRUS_BERRY) == HOLD_EFFECT_RESTORE_PCT_HP);
     ASSUME(I_SITRUS_BERRY_HEAL >= GEN_4);
     ASSUME(GetMoveEffect(MOVE_SUNNY_DAY) == EFFECT_WEATHER);
     ASSUME(GetMoveWeatherType(MOVE_SUNNY_DAY) == BATTLE_WEATHER_SUN);
@@ -115,7 +115,7 @@ SINGLE_BATTLE_TEST("Harvest restores a Berry consumed by Natural Gift")
 SINGLE_BATTLE_TEST("Harvest only works once per turn")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_PECHA_BERRY].holdEffect == HOLD_EFFECT_CURE_PSN);
+        ASSUME(GetItemHoldEffect(ITEM_PECHA_BERRY) == HOLD_EFFECT_CURE_PSN);
         ASSUME(GetMoveEffect(MOVE_TOXIC_THREAD) == EFFECT_TOXIC_THREAD);
         PLAYER(SPECIES_NINETALES) { Ability(ABILITY_DROUGHT); }
         OPPONENT(SPECIES_EXEGGUTOR) { Ability(ABILITY_HARVEST); Item(ITEM_PECHA_BERRY); Status1(STATUS1_POISON); }
@@ -272,7 +272,7 @@ SINGLE_BATTLE_TEST("Harvest can only restore the newest berry consumed that was 
 {
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_TRICK) == EFFECT_TRICK);
-        ASSUME(gItemsInfo[ITEM_APICOT_BERRY].holdEffect == HOLD_EFFECT_SP_DEFENSE_UP);
+        ASSUME(GetItemHoldEffect(ITEM_APICOT_BERRY) == HOLD_EFFECT_SP_DEFENSE_UP);
         PLAYER(SPECIES_TORKOAL) { Ability(ABILITY_DROUGHT); Item(ITEM_SITRUS_BERRY); }
         OPPONENT(SPECIES_EXEGGUTOR) { Ability(ABILITY_HARVEST); HP(100); MaxHP(500); Item(ITEM_APICOT_BERRY); }
     } WHEN {

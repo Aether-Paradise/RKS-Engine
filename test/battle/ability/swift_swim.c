@@ -42,7 +42,7 @@ SINGLE_BATTLE_TEST("Swift Swim doesn't double speed if Cloud Nine/Air Lock is on
 SINGLE_BATTLE_TEST("Swift Swim doesn't double speed if they have an Utility Umbrella")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_UTILITY_UMBRELLA].holdEffect == HOLD_EFFECT_UTILITY_UMBRELLA);
+        ASSUME(GetItemHoldEffect(ITEM_UTILITY_UMBRELLA) == HOLD_EFFECT_UTILITY_UMBRELLA);
         PLAYER(SPECIES_LUDICOLO) { Ability(ABILITY_SWIFT_SWIM); Speed(100); Item(ITEM_UTILITY_UMBRELLA); }
         OPPONENT(SPECIES_WOBBUFFET) { Speed(199); }
     } WHEN {

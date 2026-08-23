@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_WHITE_HERB].holdEffect == HOLD_EFFECT_WHITE_HERB);
+    ASSUME(GetItemHoldEffect(ITEM_WHITE_HERB) == HOLD_EFFECT_WHITE_HERB);
 }
 
 SINGLE_BATTLE_TEST("White Herb restores stats when they're lowered")

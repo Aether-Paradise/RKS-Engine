@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_CUSTAP_BERRY].holdEffect == HOLD_EFFECT_CUSTAP_BERRY);
+    ASSUME(GetItemHoldEffect(ITEM_CUSTAP_BERRY) == HOLD_EFFECT_CUSTAP_BERRY);
 }
 
 SINGLE_BATTLE_TEST("Custap Berry allows the holder to move first in its priority bracket when HP is below 1/4")

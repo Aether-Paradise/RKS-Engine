@@ -161,7 +161,7 @@ DOUBLE_BATTLE_TEST("Commander prevents Whirlwind from working against Dondozo or
 DOUBLE_BATTLE_TEST("Commander prevents Red Card from working while Commander is active")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_RED_CARD].holdEffect == HOLD_EFFECT_RED_CARD);
+        ASSUME(GetItemHoldEffect(ITEM_RED_CARD) == HOLD_EFFECT_RED_CARD);
         PLAYER(SPECIES_TATSUGIRI) { Ability(ABILITY_COMMANDER); }
         PLAYER(SPECIES_DONDOZO);
         PLAYER(SPECIES_WOBBUFFET);
@@ -209,7 +209,7 @@ DOUBLE_BATTLE_TEST("Commander prevents Emergency Exit from switching out Dondozo
 DOUBLE_BATTLE_TEST("Commander prevents Eject Button from switching out Dondozo")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_EJECT_BUTTON].holdEffect == HOLD_EFFECT_EJECT_BUTTON);
+        ASSUME(GetItemHoldEffect(ITEM_EJECT_BUTTON) == HOLD_EFFECT_EJECT_BUTTON);
         PLAYER(SPECIES_TATSUGIRI) { Ability(ABILITY_COMMANDER); }
         PLAYER(SPECIES_DONDOZO) { Item(ITEM_EJECT_BUTTON); }
         PLAYER(SPECIES_WOBBUFFET);
@@ -234,7 +234,7 @@ DOUBLE_BATTLE_TEST("Commander prevents Eject Button from switching out Dondozo")
 DOUBLE_BATTLE_TEST("Commander prevents Eject Pack from switching out Dondozo")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_EJECT_PACK].holdEffect == HOLD_EFFECT_EJECT_PACK);
+        ASSUME(GetItemHoldEffect(ITEM_EJECT_PACK) == HOLD_EFFECT_EJECT_PACK);
         ASSUME_STAT_CHANGE(MOVE_CHARM, attack: -2);
         PLAYER(SPECIES_TATSUGIRI) { Ability(ABILITY_COMMANDER); }
         PLAYER(SPECIES_DONDOZO) { Item(ITEM_EJECT_PACK); }
@@ -260,7 +260,7 @@ DOUBLE_BATTLE_TEST("Commander prevents Eject Pack from switching out Dondozo")
 DOUBLE_BATTLE_TEST("Commander prevents Eject Pack from activating after a switch-in stat drop")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_EJECT_PACK].holdEffect == HOLD_EFFECT_EJECT_PACK);
+        ASSUME(GetItemHoldEffect(ITEM_EJECT_PACK) == HOLD_EFFECT_EJECT_PACK);
         PLAYER(SPECIES_TATSUGIRI) { Ability(ABILITY_COMMANDER); }
         PLAYER(SPECIES_DONDOZO) { Item(ITEM_EJECT_PACK); }
         PLAYER(SPECIES_WOBBUFFET);
@@ -286,7 +286,7 @@ DOUBLE_BATTLE_TEST("Commander prevents Eject Pack from activating after a switch
 DOUBLE_BATTLE_TEST("Commander prevents Tatsugiri's Eject Pack from activating after Sticky Web")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_EJECT_PACK].holdEffect == HOLD_EFFECT_EJECT_PACK);
+        ASSUME(GetItemHoldEffect(ITEM_EJECT_PACK) == HOLD_EFFECT_EJECT_PACK);
         ASSUME(GetMoveEffect(MOVE_STICKY_WEB) == EFFECT_STICKY_WEB);
         PLAYER(SPECIES_WOBBUFFET);
         PLAYER(SPECIES_DONDOZO);
@@ -902,7 +902,7 @@ DOUBLE_BATTLE_TEST("Commander still blocks forced switch after swallowed Tatsugi
 DOUBLE_BATTLE_TEST("Red Card is still consumed but cannot force out Dondozo after swallowed Tatsugiri faints")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_RED_CARD].holdEffect == HOLD_EFFECT_RED_CARD);
+        ASSUME(GetItemHoldEffect(ITEM_RED_CARD) == HOLD_EFFECT_RED_CARD);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_RED_CARD); }
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_DONDOZO);

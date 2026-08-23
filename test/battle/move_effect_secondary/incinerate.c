@@ -14,7 +14,7 @@ SINGLE_BATTLE_TEST("Incinerate destroys Berries and Gems even if the holder has 
     PARAMETRIZE { item = ITEM_GHOST_GEM; }
 
     GIVEN {
-        ASSUME(GetItemPocket(ITEM_CHERI_BERRY) == POCKET_BERRIES);
+        ASSUME(ItemIsBerry(ITEM_CHERI_BERRY));
         ASSUME(GetItemHoldEffect(ITEM_GHOST_GEM) == HOLD_EFFECT_GEMS);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_CAPSAKID) { Ability(ABILITY_KLUTZ); Item(item); }

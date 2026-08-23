@@ -27,7 +27,7 @@ SINGLE_BATTLE_TEST("Sand Stream sets up sandstorm for 8 turns with Smooth Rock (
 {
     GIVEN {
         WITH_CONFIG(B_ABILITY_WEATHER, GEN_6);
-        ASSUME(gItemsInfo[ITEM_SMOOTH_ROCK].holdEffect == HOLD_EFFECT_SMOOTH_ROCK);
+        ASSUME(GetItemHoldEffect(ITEM_SMOOTH_ROCK) == HOLD_EFFECT_SMOOTH_ROCK);
         PLAYER(SPECIES_HIPPOWDON) { Ability(ABILITY_SAND_STREAM); Item(ITEM_SMOOTH_ROCK); }
         OPPONENT(SPECIES_SANDSLASH);
     } WHEN {

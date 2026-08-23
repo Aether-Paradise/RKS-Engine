@@ -32,7 +32,7 @@ SINGLE_BATTLE_TEST("Innards Out counters accumulated multihit damage after all s
     GIVEN {
         ASSUME(GetMoveStrikeCount(MOVE_DOUBLE_KICK) == 2);
         ASSUME(GetMoveCategory(MOVE_DOUBLE_KICK) != DAMAGE_CATEGORY_STATUS);
-        ASSUME(gItemsInfo[ITEM_FOCUS_SASH].holdEffect == HOLD_EFFECT_FOCUS_SASH);
+        ASSUME(GetItemHoldEffect(ITEM_FOCUS_SASH) == HOLD_EFFECT_FOCUS_SASH);
         PLAYER(SPECIES_PYUKUMUKU) { HP(2); MaxHP(2); Ability(ABILITY_INNARDS_OUT); Item(ITEM_FOCUS_SASH); }
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET);
@@ -56,7 +56,7 @@ SINGLE_BATTLE_TEST("Innards Out counters accumulated multihit damage for Parenta
 
     GIVEN {
         ASSUME(GetMoveCategory(MOVE_SCRATCH) != DAMAGE_CATEGORY_STATUS);
-        ASSUME(gItemsInfo[ITEM_FOCUS_SASH].holdEffect == HOLD_EFFECT_FOCUS_SASH);
+        ASSUME(GetItemHoldEffect(ITEM_FOCUS_SASH) == HOLD_EFFECT_FOCUS_SASH);
         PLAYER(SPECIES_PYUKUMUKU) { HP(2); MaxHP(2); Ability(ABILITY_INNARDS_OUT); Item(ITEM_FOCUS_SASH); }
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_KANGASKHAN) { Item(ITEM_KANGASKHANITE); }
@@ -80,7 +80,7 @@ SINGLE_BATTLE_TEST("Innards Out includes mid-move Sitrus Berry recovery in accum
 
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_SEISMIC_TOSS) == EFFECT_LEVEL_DAMAGE);
-        ASSUME(gItemsInfo[ITEM_SITRUS_BERRY].holdEffect == HOLD_EFFECT_RESTORE_PCT_HP);
+        ASSUME(GetItemHoldEffect(ITEM_SITRUS_BERRY) == HOLD_EFFECT_RESTORE_PCT_HP);
         PLAYER(SPECIES_PYUKUMUKU) { HP(30); MaxHP(40); Ability(ABILITY_INNARDS_OUT); Item(ITEM_SITRUS_BERRY); }
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_KANGASKHAN) { Level(20); Item(ITEM_KANGASKHANITE); }

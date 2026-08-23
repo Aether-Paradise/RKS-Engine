@@ -226,7 +226,7 @@ DOUBLE_BATTLE_TEST("Instruct-called move doesn't fail if tormented")
 DOUBLE_BATTLE_TEST("Instruct-called status moves don't fail if holding Assault Vest")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_ASSAULT_VEST].holdEffect == HOLD_EFFECT_ASSAULT_VEST);
+        ASSUME(GetItemHoldEffect(ITEM_ASSAULT_VEST) == HOLD_EFFECT_ASSAULT_VEST);
         ASSUME(GetMoveEffect(MOVE_TRICK) == EFFECT_TRICK);
         PLAYER(SPECIES_WOBBUFFET);
         PLAYER(SPECIES_WOBBUFFET) { Moves(MOVE_SCRATCH, MOVE_POUND, MOVE_SCRATCH, MOVE_TRICK); }

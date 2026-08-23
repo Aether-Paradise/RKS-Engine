@@ -107,7 +107,7 @@ DOUBLE_BATTLE_TEST("Intimidate doesn't activate on an empty field in a double ba
 SINGLE_BATTLE_TEST("Intimidate and Eject Button don't force the opponent to Attack")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_EJECT_BUTTON].holdEffect == HOLD_EFFECT_EJECT_BUTTON);
+        ASSUME(GetItemHoldEffect(ITEM_EJECT_BUTTON) == HOLD_EFFECT_EJECT_BUTTON);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_EJECT_BUTTON); }
         OPPONENT(SPECIES_HITMONTOP) { Moves(MOVE_SCRATCH); }
@@ -307,8 +307,8 @@ SINGLE_BATTLE_TEST("Intimidate activates when it's no longer affected by Neutral
     PARAMETRIZE { move = MOVE_ROAR; item = ITEM_NONE; }
     PARAMETRIZE { move = MOVE_DRAGON_TAIL; item = ITEM_NONE; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_EJECT_BUTTON].holdEffect == HOLD_EFFECT_EJECT_BUTTON);
-        ASSUME(gItemsInfo[ITEM_EJECT_PACK].holdEffect == HOLD_EFFECT_EJECT_PACK);
+        ASSUME(GetItemHoldEffect(ITEM_EJECT_BUTTON) == HOLD_EFFECT_EJECT_BUTTON);
+        ASSUME(GetItemHoldEffect(ITEM_EJECT_PACK) == HOLD_EFFECT_EJECT_PACK);
         ASSUME_STAT_CHANGE(MOVE_GROWL, attack: -1);
         ASSUME(GetMoveEffect(MOVE_ROAR) == EFFECT_ROAR);
         ASSUME(GetMoveEffect(MOVE_DRAGON_TAIL) == EFFECT_HIT_SWITCH_TARGET);

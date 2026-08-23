@@ -122,7 +122,7 @@ SINGLE_BATTLE_TEST("Disguised Mimikyu takes damage from Rocky Helmet without bre
     PARAMETRIZE { species = SPECIES_MIMIKYU_DISGUISED; }
     PARAMETRIZE { species = SPECIES_MIMIKYU_TOTEM_DISGUISED; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_ROCKY_HELMET].holdEffect == HOLD_EFFECT_ROCKY_HELMET);
+        ASSUME(GetItemHoldEffect(ITEM_ROCKY_HELMET) == HOLD_EFFECT_ROCKY_HELMET);
         PLAYER(species) { Ability(ABILITY_DISGUISE); }
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_ROCKY_HELMET); }
     } WHEN {

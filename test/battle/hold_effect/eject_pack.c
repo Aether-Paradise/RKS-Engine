@@ -3,13 +3,13 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_EJECT_PACK].holdEffect == HOLD_EFFECT_EJECT_PACK);
+    ASSUME(GetItemHoldEffect(ITEM_EJECT_PACK) == HOLD_EFFECT_EJECT_PACK);
 }
 
 SINGLE_BATTLE_TEST("Eject Pack does not cause the new Pokémon to lose HP due to it's held Life Orb")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_LIFE_ORB].holdEffect == HOLD_EFFECT_LIFE_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_LIFE_ORB) == HOLD_EFFECT_LIFE_ORB);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_EJECT_PACK); }
         PLAYER(SPECIES_WYNAUT) { Item(ITEM_LIFE_ORB); }
         OPPONENT(SPECIES_WOBBUFFET);
@@ -46,7 +46,7 @@ SINGLE_BATTLE_TEST("Eject Pack does not activate if there are no Pokémon left t
 SINGLE_BATTLE_TEST("Eject Pack is triggered by self-inflicting stat decreases")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_LIFE_ORB].holdEffect == HOLD_EFFECT_LIFE_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_LIFE_ORB) == HOLD_EFFECT_LIFE_ORB);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_EJECT_PACK); }
         PLAYER(SPECIES_WYNAUT);
         OPPONENT(SPECIES_WOBBUFFET)  { Item(ITEM_EJECT_PACK); }

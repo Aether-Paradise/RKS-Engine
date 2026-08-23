@@ -287,7 +287,7 @@ SINGLE_BATTLE_TEST("Dynamax: Dynamaxed Pokemon are not affected by phazing moves
 SINGLE_BATTLE_TEST("Dynamax: Dynamaxed Pokemon can be switched out by Eject Button")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_EJECT_BUTTON].holdEffect == HOLD_EFFECT_EJECT_BUTTON);
+        ASSUME(GetItemHoldEffect(ITEM_EJECT_BUTTON) == HOLD_EFFECT_EJECT_BUTTON);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_EJECT_BUTTON); }
         PLAYER(SPECIES_WYNAUT);
         OPPONENT(SPECIES_WOBBUFFET);
@@ -538,7 +538,7 @@ SINGLE_BATTLE_TEST("Dynamax: Dynamaxed Pokemon are not affected by Choice items"
     PARAMETRIZE { item = ITEM_CHOICE_BAND; }
     PARAMETRIZE { item = ITEM_NONE; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_CHOICE_BAND].holdEffect == HOLD_EFFECT_CHOICE_BAND);
+        ASSUME(GetItemHoldEffect(ITEM_CHOICE_BAND) == HOLD_EFFECT_CHOICE_BAND);
         PLAYER(SPECIES_WOBBUFFET) { Item(item); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -556,7 +556,7 @@ SINGLE_BATTLE_TEST("Dynamax: Dynamaxed Pokemon are not affected by Choice items"
 SINGLE_BATTLE_TEST("Dynamax: Dynamaxed Pokemon cannot use Max Guard while holding Assault Vest")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_ASSAULT_VEST].holdEffect == HOLD_EFFECT_ASSAULT_VEST);
+        ASSUME(GetItemHoldEffect(ITEM_ASSAULT_VEST) == HOLD_EFFECT_ASSAULT_VEST);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_ASSAULT_VEST); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -638,7 +638,7 @@ SINGLE_BATTLE_TEST("Dynamax: Sitrus Berries heal based on a Pokemon's non-Dynama
     PARAMETRIZE { dynamax = GIMMICK_DYNAMAX; }
     GIVEN {
         ASSUME(I_SITRUS_BERRY_HEAL >= GEN_4);
-        ASSUME(gItemsInfo[ITEM_SITRUS_BERRY].holdEffect == HOLD_EFFECT_RESTORE_PCT_HP);
+        ASSUME(GetItemHoldEffect(ITEM_SITRUS_BERRY) == HOLD_EFFECT_RESTORE_PCT_HP);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_SITRUS_BERRY); }
     } WHEN {

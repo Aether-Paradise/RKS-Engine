@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_POKE_TOY].battleUsage == EFFECT_ITEM_ESCAPE);
+    ASSUME(GetItemBattleUsage(ITEM_POKE_TOY) == EFFECT_ITEM_ESCAPE);
 }
 
 WILD_BATTLE_TEST("Poke Toy lets the player escape from a wild battle")

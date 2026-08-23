@@ -4,8 +4,8 @@
 ASSUMPTIONS
 {
     ASSUME(GetMoveEffect(MOVE_STUFF_CHEEKS) == EFFECT_STUFF_CHEEKS);
-    ASSUME(gItemsInfo[ITEM_LIECHI_BERRY].pocket == POCKET_BERRIES);
-    ASSUME(gItemsInfo[ITEM_LIECHI_BERRY].holdEffect == HOLD_EFFECT_ATTACK_UP);
+    ASSUME(ItemIsBerry(ITEM_LIECHI_BERRY));
+    ASSUME(GetItemHoldEffect(ITEM_LIECHI_BERRY) == HOLD_EFFECT_ATTACK_UP);
 }
 
 SINGLE_BATTLE_TEST("Stuff Cheeks cannot be used if the user doesn't hold a berry (Gen8-9)")

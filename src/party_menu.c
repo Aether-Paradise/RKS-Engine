@@ -4716,7 +4716,7 @@ void CB2_ShowPartyMenuForItemUse(void)
     }
     else
     {
-        if (GetItemPocket(gSpecialVar_ItemId) == POCKET_TM_HM)
+        if (ItemIsTMHM(gSpecialVar_ItemId))
             msgId = PARTY_MSG_TEACH_WHICH_MON;
         else
             msgId = PARTY_MSG_USE_ON_WHICH_MON;
@@ -5519,7 +5519,7 @@ void ItemUseCB_PPUp(u8 taskId, TaskFunc task)
 
 enum Move ItemIdToBattleMoveId(enum Item item)
 {
-    return (GetItemPocket(item) == POCKET_TM_HM) ? GetItemTMHMMoveId(item) : MOVE_NONE;
+    return (ItemIsTMHM(item)) ? GetItemTMHMMoveId(item) : MOVE_NONE;
 }
 
 bool8 MonKnowsMove(struct Pokemon *mon, enum Move move)

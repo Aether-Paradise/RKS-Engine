@@ -325,7 +325,7 @@ SINGLE_BATTLE_TEST("Pursuit attacks a switching foe but fails if user is asleep"
 SINGLE_BATTLE_TEST("Pursuit attacks a switching foe and takes Life Orb damage")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_LIFE_ORB].holdEffect == HOLD_EFFECT_LIFE_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_LIFE_ORB) == HOLD_EFFECT_LIFE_ORB);
         PLAYER(SPECIES_WOBBUFFET);
         PLAYER(SPECIES_ZIGZAGOON);
         OPPONENT(SPECIES_WYNAUT) { Item(ITEM_LIFE_ORB); }
@@ -557,7 +557,7 @@ DOUBLE_BATTLE_TEST("Pursuited mon correctly switches out after it got hit and ac
 SINGLE_BATTLE_TEST("Pursuit becomes a locked move after being used on switch-out while holding a Choice Item")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_CHOICE_BAND].holdEffect == HOLD_EFFECT_CHOICE_BAND);
+        ASSUME(GetItemHoldEffect(ITEM_CHOICE_BAND) == HOLD_EFFECT_CHOICE_BAND);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_CHOICE_BAND); MovesWithPP({MOVE_PURSUIT, 1}, {MOVE_CELEBRATE, 10}, {MOVE_WATER_GUN, 10}, {MOVE_SCRATCH, 10}); }
         OPPONENT(SPECIES_WYNAUT);
         OPPONENT(SPECIES_WOBBUFFET);
@@ -615,7 +615,7 @@ SINGLE_BATTLE_TEST("Pursuit attacks a switching foe and switchin is correctly st
 SINGLE_BATTLE_TEST("Pursuit user gets forced out by Red Card and target still switches out")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_RED_CARD].holdEffect == HOLD_EFFECT_RED_CARD);
+        ASSUME(GetItemHoldEffect(ITEM_RED_CARD) == HOLD_EFFECT_RED_CARD);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_RED_CARD); }
         PLAYER(SPECIES_VOLTORB);
         OPPONENT(SPECIES_WOBBUFFET);
@@ -637,7 +637,7 @@ SINGLE_BATTLE_TEST("Pursuit user gets forced out by Red Card and target still sw
 SINGLE_BATTLE_TEST("Pursuit user faints to Life Orb and target still switches out")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_LIFE_ORB].holdEffect == HOLD_EFFECT_LIFE_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_LIFE_ORB) == HOLD_EFFECT_LIFE_ORB);
         PLAYER(SPECIES_WOBBUFFET);
         PLAYER(SPECIES_VOLTORB);
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_LIFE_ORB); HP(1); }

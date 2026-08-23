@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_MENTAL_HERB].holdEffect == HOLD_EFFECT_MENTAL_HERB);
+    ASSUME(GetItemHoldEffect(ITEM_MENTAL_HERB) == HOLD_EFFECT_MENTAL_HERB);
 }
 
 SINGLE_BATTLE_TEST("Mental Herb cures infatuation")

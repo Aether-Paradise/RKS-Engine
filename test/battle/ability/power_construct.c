@@ -63,7 +63,7 @@ SINGLE_BATTLE_TEST("Power Construct does not switch Zygarde's form if end-turn h
     PARAMETRIZE { baseSpecies = SPECIES_ZYGARDE_50_POWER_CONSTRUCT; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_LEFTOVERS].holdEffect == HOLD_EFFECT_LEFTOVERS);
+        ASSUME(GetItemHoldEffect(ITEM_LEFTOVERS) == HOLD_EFFECT_LEFTOVERS);
         PLAYER(baseSpecies)
         {
             Ability(ABILITY_POWER_CONSTRUCT);

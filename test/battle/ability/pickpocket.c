@@ -119,7 +119,7 @@ SINGLE_BATTLE_TEST("Pickpocket cannot steal from Sticky Hold")
 SINGLE_BATTLE_TEST("Pickpocket cannot steal restricted held items")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_NORMALIUM_Z].holdEffect == HOLD_EFFECT_Z_CRYSTAL);
+        ASSUME(GetItemHoldEffect(ITEM_NORMALIUM_Z) == HOLD_EFFECT_Z_CRYSTAL);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_NORMALIUM_Z); }
         OPPONENT(SPECIES_SNEASEL) { Ability(ABILITY_PICKPOCKET); }
     } WHEN {
@@ -177,7 +177,7 @@ SINGLE_BATTLE_TEST("Pickpocket activates after Magician steals an item")
 SINGLE_BATTLE_TEST("Pickpocket activates after Sticky Barb transfers")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_STICKY_BARB].holdEffect == HOLD_EFFECT_STICKY_BARB);
+        ASSUME(GetItemHoldEffect(ITEM_STICKY_BARB) == HOLD_EFFECT_STICKY_BARB);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_SNEASEL) { Ability(ABILITY_PICKPOCKET); Item(ITEM_STICKY_BARB); }
     } WHEN {
@@ -218,7 +218,7 @@ SINGLE_BATTLE_TEST("Pickpocket activates after Focus Sash is consumed")
 {
     GIVEN {
         ASSUME(MoveMakesContact(MOVE_SEISMIC_TOSS));
-        ASSUME(gItemsInfo[ITEM_FOCUS_SASH].holdEffect == HOLD_EFFECT_FOCUS_SASH);
+        ASSUME(GetItemHoldEffect(ITEM_FOCUS_SASH) == HOLD_EFFECT_FOCUS_SASH);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_MAGOST_BERRY); Level(100); }
         OPPONENT(SPECIES_SNEASEL) { Ability(ABILITY_PICKPOCKET); Item(ITEM_FOCUS_SASH); MaxHP(6); HP(6); }
     } WHEN {
@@ -258,7 +258,7 @@ SINGLE_BATTLE_TEST("Pickpocket activates after Knock Off, Bug Bite, or Pluck")
 SINGLE_BATTLE_TEST("Pickpocket steals Life Orb after it activates")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_LIFE_ORB].holdEffect == HOLD_EFFECT_LIFE_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_LIFE_ORB) == HOLD_EFFECT_LIFE_ORB);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_LIFE_ORB); }
         OPPONENT(SPECIES_SNEASEL) { Ability(ABILITY_PICKPOCKET); }
     } WHEN {
@@ -276,7 +276,7 @@ SINGLE_BATTLE_TEST("Pickpocket steals Life Orb after it activates")
 SINGLE_BATTLE_TEST("Pickpocket steals Shell Bell after it heals the user")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_SHELL_BELL].holdEffect == HOLD_EFFECT_SHELL_BELL);
+        ASSUME(GetItemHoldEffect(ITEM_SHELL_BELL) == HOLD_EFFECT_SHELL_BELL);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_SHELL_BELL); MaxHP(100); HP(66); }
         OPPONENT(SPECIES_SNEASEL) { Ability(ABILITY_PICKPOCKET); }
     } WHEN {
@@ -296,7 +296,7 @@ SINGLE_BATTLE_TEST("Pickpocket steals Shell Bell after it heals the user")
 SINGLE_BATTLE_TEST("Pickpocket does not prevent King's Rock or Razor Fang flinches")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_KINGS_ROCK].holdEffect == HOLD_EFFECT_FLINCH);
+        ASSUME(GetItemHoldEffect(ITEM_KINGS_ROCK) == HOLD_EFFECT_FLINCH);
         PLAYER(SPECIES_WOBBUFFET) { Speed(20); Item(ITEM_KINGS_ROCK); }
         OPPONENT(SPECIES_SNEASEL) { Speed(10); Ability(ABILITY_PICKPOCKET); }
     } WHEN {
@@ -401,7 +401,7 @@ SINGLE_BATTLE_TEST("Pickpocket steals from the original U-turn user before it sw
 SINGLE_BATTLE_TEST("Pickpocket steals the attacker's item even after Red Card forces a switch")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_RED_CARD].holdEffect == HOLD_EFFECT_RED_CARD);
+        ASSUME(GetItemHoldEffect(ITEM_RED_CARD) == HOLD_EFFECT_RED_CARD);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_POKE_BALL); }
         PLAYER(SPECIES_WYNAUT);
         OPPONENT(SPECIES_SNEASEL) { Ability(ABILITY_PICKPOCKET); Item(ITEM_RED_CARD); }
@@ -425,7 +425,7 @@ SINGLE_BATTLE_TEST("Pickpocket steals the attacker's item even after Red Card fo
 SINGLE_BATTLE_TEST("Pickpocket does not activate if its user switches out with Eject Button")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_EJECT_BUTTON].holdEffect == HOLD_EFFECT_EJECT_BUTTON);
+        ASSUME(GetItemHoldEffect(ITEM_EJECT_BUTTON) == HOLD_EFFECT_EJECT_BUTTON);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_POTION); }
         OPPONENT(SPECIES_SNEASEL) { Ability(ABILITY_PICKPOCKET); Item(ITEM_EJECT_BUTTON); }
         OPPONENT(SPECIES_WOBBUFFET);
@@ -450,7 +450,7 @@ SINGLE_BATTLE_TEST("Pickpocket cannot steal an item if hit by a contact move tha
     GIVEN {
         // GIVEN(B_SHEER_FORCE_AGAINST_ABILITIES, GEN_9);
         ASSUME(gMovesInfo[MOVE_CRUNCH].additionalEffects->moveEffect == MOVE_EFFECT_STAT_MINUS);
-        ASSUME(gItemsInfo[ITEM_LIFE_ORB].holdEffect == HOLD_EFFECT_LIFE_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_LIFE_ORB) == HOLD_EFFECT_LIFE_ORB);
         PLAYER(SPECIES_LANDORUS) { Item(ITEM_LIFE_ORB); Ability(ABILITY_SHEER_FORCE); }
         OPPONENT(SPECIES_SNEASEL) { Ability(ABILITY_PICKPOCKET); }
     } WHEN {
@@ -474,7 +474,7 @@ SINGLE_BATTLE_TEST("Pickpocket can steal an item even if hit by a contact move t
     GIVEN {
         // GIVEN(B_SHEER_FORCE_AGAINST_ABILITIES, GEN_CHAMPIONS);
         ASSUME(gMovesInfo[MOVE_CRUNCH].additionalEffects->moveEffect == MOVE_EFFECT_STAT_MINUS);
-        ASSUME(gItemsInfo[ITEM_LIFE_ORB].holdEffect == HOLD_EFFECT_LIFE_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_LIFE_ORB) == HOLD_EFFECT_LIFE_ORB);
         PLAYER(SPECIES_LANDORUS) { Item(ITEM_LIFE_ORB); Ability(ABILITY_SHEER_FORCE); }
         OPPONENT(SPECIES_SNEASEL) { Ability(ABILITY_PICKPOCKET); }
     } WHEN {

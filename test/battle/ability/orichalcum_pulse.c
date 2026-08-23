@@ -27,7 +27,7 @@ SINGLE_BATTLE_TEST("Orichalcum Pulse sets up sun for 5 turns")
 SINGLE_BATTLE_TEST("Orichalcum Pulse sets up sun for 8 turns with Heat Rock")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_HEAT_ROCK].holdEffect == HOLD_EFFECT_HEAT_ROCK);
+        ASSUME(GetItemHoldEffect(ITEM_HEAT_ROCK) == HOLD_EFFECT_HEAT_ROCK);
         PLAYER(SPECIES_KORAIDON) { Ability(ABILITY_ORICHALCUM_PULSE); Item(ITEM_HEAT_ROCK); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -114,7 +114,7 @@ SINGLE_BATTLE_TEST("Orichalcum Pulse boost applies even if the target holds Util
     PARAMETRIZE { targetItem = ITEM_UTILITY_UMBRELLA; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_UTILITY_UMBRELLA].holdEffect == HOLD_EFFECT_UTILITY_UMBRELLA);
+        ASSUME(GetItemHoldEffect(ITEM_UTILITY_UMBRELLA) == HOLD_EFFECT_UTILITY_UMBRELLA);
         ASSUME(GetMoveCategory(MOVE_SCRATCH) == DAMAGE_CATEGORY_PHYSICAL);
         PLAYER(SPECIES_KORAIDON) { Ability(ABILITY_ORICHALCUM_PULSE); }
         OPPONENT(SPECIES_WOBBUFFET) { Item(targetItem); }
@@ -136,7 +136,7 @@ SINGLE_BATTLE_TEST("Orichalcum Pulse does not boost physical moves if holder has
     PARAMETRIZE { holdItem = ITEM_UTILITY_UMBRELLA; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_UTILITY_UMBRELLA].holdEffect == HOLD_EFFECT_UTILITY_UMBRELLA);
+        ASSUME(GetItemHoldEffect(ITEM_UTILITY_UMBRELLA) == HOLD_EFFECT_UTILITY_UMBRELLA);
         ASSUME(GetMoveCategory(MOVE_SCRATCH) == DAMAGE_CATEGORY_PHYSICAL);
         PLAYER(SPECIES_KORAIDON) { Ability(ABILITY_ORICHALCUM_PULSE); Item(holdItem); }
         OPPONENT(SPECIES_WOBBUFFET);

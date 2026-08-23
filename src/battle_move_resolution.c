@@ -1307,7 +1307,7 @@ static enum CancelerResult CancelerMoveFailure(struct BattleCalcValues *cv)
             battleScript = BattleScript_ButItFailed;
         break;
     case EFFECT_STUFF_CHEEKS:
-        if (GetItemPocket(gBattleMons[cv->battlerAtk].item) != POCKET_BERRIES)
+        if (!ItemIsBerry(gBattleMons[cv->battlerAtk].item))
             battleScript = BattleScript_ButItFailed;
         break;
     case EFFECT_SWALLOW:
@@ -1319,7 +1319,7 @@ static enum CancelerResult CancelerMoveFailure(struct BattleCalcValues *cv)
         // TODO: follow up: Can't make sense of teleport logic
         break;
     case EFFECT_NATURAL_GIFT:
-        if (GetItemPocket(gBattleMons[cv->battlerAtk].item) != POCKET_BERRIES
+        if (!ItemIsBerry(gBattleMons[cv->battlerAtk].item)
          || gFieldStatuses & STATUS_FIELD_MAGIC_ROOM
          || cv->abilities[cv->battlerAtk] == ABILITY_KLUTZ
          || gBattleMons[cv->battlerAtk].volatiles.embargoTimer)
@@ -4867,7 +4867,7 @@ static enum MoveEndResult MoveEndThirdMoveBlock(struct BattleCalcValues *cv)
         }
         break;
     case EFFECT_NATURAL_GIFT:
-        if (!gBattleStruct->unableToUseMove && GetItemPocket(gBattleMons[cv->battlerAtk].item) == POCKET_BERRIES)
+        if (!gBattleStruct->unableToUseMove && ItemIsBerry(gBattleMons[cv->battlerAtk].item))
         {
             enum Item item = gBattleMons[cv->battlerAtk].item;
             gBattleMons[gBattlerAttacker].item = ITEM_NONE;

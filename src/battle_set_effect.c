@@ -452,7 +452,7 @@ static void HandleSetEffectIncinerate(struct BattleCalcValues *cv, struct SetEff
     if (cv->abilities[se->effectBattler] == ABILITY_STICKY_HOLD)
         return;
 
-    if (gItemsInfo[gBattleMons[se->effectBattler].item].pocket == POCKET_BERRIES
+    if (ItemIsBerry(gBattleMons[se->effectBattler].item)
      || (B_INCINERATE_GEMS >= GEN_6 && GetItemHoldEffect(gBattleMons[se->effectBattler].item) == HOLD_EFFECT_GEMS))
     {
         gLastUsedItem = gBattleMons[se->effectBattler].item;
@@ -473,7 +473,7 @@ static void HandleSetEffectBugBite(struct BattleCalcValues *cv, struct SetEffect
         // jaboca berry / resist berries trigger instead of being stolen
         gBattlescriptCurrInstr = se->script;
     }
-    else if (GetItemPocket(gBattleMons[se->effectBattler].item) == POCKET_BERRIES
+    else if (ItemIsBerry(gBattleMons[se->effectBattler].item)
         && cv->abilities[se->effectBattler] != ABILITY_STICKY_HOLD)
     {
         // target loses their berry
@@ -820,7 +820,7 @@ static void HandleSetEffectFling(struct BattleCalcValues *cv, struct SetEffect *
             return;
         }
 
-        if (GetItemPocket(item) == POCKET_BERRIES)
+        if (ItemIsBerry(item))
         {
             BattleScriptPush(se->script);
             gBattlescriptCurrInstr = BattleScript_EffectFlingConsumeBerry;

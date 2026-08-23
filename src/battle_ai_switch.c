@@ -1589,7 +1589,7 @@ static u32 GetSwitchinSingleUseItemHealing(enum BattlerId battler, enum BattlerI
     // Check if we're at a single use healing item threshold
     if (currentHP <= 0
      || gAiLogicData->abilities[battler] == ABILITY_KLUTZ
-     || (gAiLogicData->abilities[opposingBattler] == ABILITY_UNNERVE && GetItemPocket(aiItem) == POCKET_BERRIES))
+     || (gAiLogicData->abilities[opposingBattler] == ABILITY_UNNERVE && ItemIsBerry(aiItem)))
         return itemHeal;
 
     switch (GetItemHoldEffect(aiItem))
