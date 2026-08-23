@@ -183,7 +183,7 @@ TEST("Item names fit on Pokemon Storage System")
     enum Item item = ITEM_NONE;
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        if (gItemsInfo[i].importance) continue;
+        if (GetItemImportance(i)) continue;
         PARAMETRIZE_LABEL("%S", GetItemName(i)) { item = i; }
     }
     // All items explicitly listed here are too big to fit.
@@ -210,7 +210,7 @@ TEST("Item names fit on Pokemon Summary Screen")
     enum Item item = ITEM_NONE;
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        if (gItemsInfo[i].importance) continue;
+        if (GetItemImportance(i)) continue;
         PARAMETRIZE_LABEL("%S", GetItemName(i)) { item = i; }
     }
     // All items explicitly listed here are too big to fit.
@@ -244,9 +244,9 @@ TEST("Item descriptions fit on Bag and Shop Screen")
     enum Item item = ITEM_NONE;
     for (i = 1; i < ITEMS_COUNT; i++)
     {
-        PARAMETRIZE_LABEL("%S", gItemsInfo[i].description) { item = i; }
+        PARAMETRIZE_LABEL("%S", GetItemDescription(i)) { item = i; }
     }
-    EXPECT_LE(GetStringWidth(fontId, gItemsInfo[item].description, 0), widthPx);
+    EXPECT_LE(GetStringWidth(fontId, GetItemDescription(item), 0), widthPx);
 }
 
 TEST("Species names fit on Battle Screen HP box")
