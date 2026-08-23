@@ -5241,27 +5241,25 @@ static struct Sprite *CreateMonIconSprite(enum Species species, u32 personality,
     species = GetIconSpecies(species, personality);
     if (isEgg)
     {
-        if (gSpeciesInfo[species].eggId != EGG_ID_NONE)
+        if (GetSpeciesEggId(species) != EGG_ID_NONE)
         {
-            template.paletteTag = PALTAG_MON_ICON_0 + gEggDatas[gSpeciesInfo[species].eggId].eggIconPalIndex;
+            template.paletteTag = PALTAG_MON_ICON_0 + gEggDatas[GetSpeciesEggId(species)].eggIconPalIndex;
             iconType = EGG_ICON;
         }
         else
         {
             species = SPECIES_EGG;
-            template.paletteTag = PALTAG_MON_ICON_0 + gSpeciesInfo[SPECIES_EGG].iconPalIndex;
+            template.paletteTag = PALTAG_MON_ICON_0 + GetSpeciesIconPalIndex(SPECIES_EGG);
         }
     }
-#if P_GENDER_DIFFERENCES
-    else if (gSpeciesInfo[species].iconSpriteFemale != NULL && IsPersonalityFemale(species, personality))
+    else if (IsPersonalityFemale(species, personality))
     {
-        template.paletteTag = PALTAG_MON_ICON_0 + gSpeciesInfo[species].iconPalIndexFemale;
+        template.paletteTag = PALTAG_MON_ICON_0 + GetSpeciesIconPalIndexFemale(species);
         iconType = FEMALE_ICON;
     }
-#endif
     else
     {
-        template.paletteTag = PALTAG_MON_ICON_0 + gSpeciesInfo[species].iconPalIndex;
+        template.paletteTag = PALTAG_MON_ICON_0 + GetSpeciesIconPalIndex(species);
     }
 
     tileNum = TryLoadMonIconTiles(species, iconType);
@@ -8612,7 +8610,7 @@ static void MultiMove_SetIconToBg(u8 x, u8 y)
     if (species != SPECIES_NONE)
     {
         const u8 *iconGfx = GetMonIconPtrIsEgg(species, personality, isEgg);
-        u8 index = GetValidMonIconPalIndex(species) + 8;
+        u8 index = GetSpeciesIconPalIndex(species) + 8;
 
         BlitBitmapRectToWindow4BitTo8Bit(sStorage->multiMoveWindowId,
                                          iconGfx,

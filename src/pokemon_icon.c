@@ -149,27 +149,25 @@ u8 CreateMonIconIsEgg(enum Species species, void (*callback)(struct Sprite *), s
         .anims = sMonIconAnims,
         .affineAnims = sMonIconAffineAnims,
         .callback = callback,
-        .paletteTag = POKE_ICON_BASE_PAL_TAG + gSpeciesInfo[species].iconPalIndex,
+        .paletteTag = POKE_ICON_BASE_PAL_TAG + GetSpeciesIconPalIndex(species),
     };
     species = SanitizeSpeciesId(species);
 
     if (isEgg)
     {
-        if (gSpeciesInfo[species].eggId != EGG_ID_NONE)
-            iconTemplate.paletteTag = POKE_ICON_BASE_PAL_TAG + gEggDatas[gSpeciesInfo[species].eggId].eggIconPalIndex;
+        if (GetSpeciesEggId(species) != EGG_ID_NONE)
+            iconTemplate.paletteTag = POKE_ICON_BASE_PAL_TAG + gEggDatas[GetSpeciesEggId(species)].eggIconPalIndex;
         else
-            iconTemplate.paletteTag = POKE_ICON_BASE_PAL_TAG + gSpeciesInfo[SPECIES_EGG].iconPalIndex;
+            iconTemplate.paletteTag = POKE_ICON_BASE_PAL_TAG + GetSpeciesIconPalIndex(SPECIES_EGG);
     }
     else if (species > NUM_SPECIES)
     {
         iconTemplate.paletteTag = POKE_ICON_BASE_PAL_TAG;
     }
-#if P_GENDER_DIFFERENCES
-    else if (gSpeciesInfo[species].iconSpriteFemale != NULL && IsPersonalityFemale(species, personality))
+    else if (IsPersonalityFemale(species, personality))
     {
-        iconTemplate.paletteTag = POKE_ICON_BASE_PAL_TAG + gSpeciesInfo[species].iconPalIndexFemale;
+        iconTemplate.paletteTag = POKE_ICON_BASE_PAL_TAG + GetSpeciesIconPalIndexFemale(species);
     }
-#endif
 
     spriteId = CreateMonIconSprite(&iconTemplate, x, y, subpriority);
 
@@ -193,7 +191,7 @@ u8 CreateMonIconNoPersonalityIsEgg(enum Species species, void (*callback)(struct
         .anims = sMonIconAnims,
         .affineAnims = sMonIconAffineAnims,
         .callback = callback,
-        .paletteTag = POKE_ICON_BASE_PAL_TAG + gSpeciesInfo[species].iconPalIndex,
+        .paletteTag = POKE_ICON_BASE_PAL_TAG + GetSpeciesIconPalIndex(species),
     };
 
     iconTemplate.image = GetMonIconTilesIsEgg(species, 0, isEgg);
@@ -207,7 +205,7 @@ u8 CreateMonIconNoPersonalityIsEgg(enum Species species, void (*callback)(struct
 u8 CreateTaggedMonIcon(u32 tileTag, u32 paletteTag, enum Species species)
 {
     struct SpritePalette palette;
-    palette.data = gMonIconPaletteTable[gSpeciesInfo[SanitizeSpeciesId(species)].iconPalIndex].data;
+    palette.data = gMonIconPaletteTable[GetSpeciesIconPalIndex(species)].data;
     palette.tag = paletteTag;
     LoadSpritePalette(&palette);
 
@@ -283,7 +281,7 @@ void LoadMonIconPalettes(void)
 
 void LoadMonIconPalette(enum Species species)
 {
-    u8 palIndex = gSpeciesInfo[SanitizeSpeciesId(species)].iconPalIndex;
+    u8 palIndex = GetSpeciesIconPalIndex(species);
     if (IndexOfSpritePaletteTag(gMonIconPaletteTable[palIndex].tag) == 0xFF)
         LoadSpritePalette(&gMonIconPaletteTable[palIndex]);
 }
@@ -292,12 +290,10 @@ void LoadMonIconPalettePersonality(enum Species species, u32 personality)
 {
     u8 palIndex;
     species = SanitizeSpeciesId(species);
-#if P_GENDER_DIFFERENCES
-    if (gSpeciesInfo[species].iconSpriteFemale != NULL && IsPersonalityFemale(species, personality))
-        palIndex = gSpeciesInfo[species].iconPalIndexFemale;
+    if (IsPersonalityFemale(species, personality))
+        palIndex = GetSpeciesIconPalIndexFemale(species);
     else
-#endif
-        palIndex = gSpeciesInfo[species].iconPalIndex;
+        palIndex = GetSpeciesIconPalIndex(species);
     if (IndexOfSpritePaletteTag(gMonIconPaletteTable[palIndex].tag) == 0xFF)
         LoadSpritePalette(&gMonIconPaletteTable[palIndex]);
 }
@@ -309,19 +305,9 @@ void FreeMonIconPalettes(void)
         FreeSpritePaletteByTag(gMonIconPaletteTable[i].tag);
 }
 
-// unused
-void SafeFreeMonIconPalette(enum Species species)
-{
-    u8 palIndex;
-    palIndex = gSpeciesInfo[SanitizeSpeciesId(species)].iconPalIndex;
-    FreeSpritePaletteByTag(gMonIconPaletteTable[palIndex].tag);
-}
-
 void FreeMonIconPalette(enum Species species)
 {
-    u8 palIndex;
-    palIndex = gSpeciesInfo[SanitizeSpeciesId(species)].iconPalIndex;
-    FreeSpritePaletteByTag(gMonIconPaletteTable[palIndex].tag);
+    FreeSpritePaletteByTag(gMonIconPaletteTable[GetSpeciesIconPalIndex(species)].tag);
 }
 
 void SpriteCB_MonIcon(struct Sprite *sprite)
@@ -343,22 +329,17 @@ const u8 *GetMonIconTilesIsEgg(enum Species species, u32 personality, bool32 isE
 
     if (isEgg)
     {
-        if (gSpeciesInfo[species].eggId != EGG_ID_NONE)
-            iconSprite = gEggDatas[gSpeciesInfo[species].eggId].eggIcon;
+        if (GetSpeciesEggId(species) != EGG_ID_NONE)
+            iconSprite = gEggDatas[GetSpeciesEggId(species)].eggIcon;
         else
-            iconSprite = gSpeciesInfo[SPECIES_EGG].iconSprite;
+            iconSprite = GetSpeciesIconSprite(SPECIES_EGG);
     }
     else
     {
-#if P_GENDER_DIFFERENCES
-        if (gSpeciesInfo[species].iconSpriteFemale != NULL && IsPersonalityFemale(species, personality))
-            iconSprite = gSpeciesInfo[species].iconSpriteFemale;
+        if (IsPersonalityFemale(species, personality))
+            iconSprite = GetSpeciesIconSpriteFemale(species);
         else
-#endif
-        if (gSpeciesInfo[species].iconSprite != NULL)
-            iconSprite = gSpeciesInfo[species].iconSprite;
-        else
-            iconSprite = gSpeciesInfo[SPECIES_NONE].iconSprite;
+            iconSprite = GetSpeciesIconSprite(species);
     }
 
     return iconSprite;
@@ -367,10 +348,10 @@ const u8 *GetMonIconTilesIsEgg(enum Species species, u32 personality, bool32 isE
 const u8 *GetMonIconTilesByIconType(enum Species species, enum SpeciesIconType iconType)
 {
     if (iconType == EGG_ICON)
-        return gEggDatas[gSpeciesInfo[species].eggId].eggIcon;
+        return gEggDatas[GetSpeciesEggId(species)].eggIcon;
     if (iconType == FEMALE_ICON)
-        return gSpeciesInfo[species].iconSpriteFemale;
-    return gSpeciesInfo[species].iconSprite;
+        return GetSpeciesIconSpriteFemale(species);
+    return GetSpeciesIconSprite(species);
 }
 
 void TryLoadAllMonIconPalettesAtOffset(u16 offset)
@@ -386,19 +367,9 @@ void TryLoadAllMonIconPalettesAtOffset(u16 offset)
     }
 }
 
-u8 GetValidMonIconPalIndex(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].iconPalIndex;
-}
-
-u8 GetMonIconPaletteIndexFromSpecies(enum Species species)
-{
-    return gSpeciesInfo[SanitizeSpeciesId(species)].iconPalIndex;
-}
-
 const u16 *GetValidMonIconPalettePtr(enum Species species)
 {
-    return gMonIconPaletteTable[gSpeciesInfo[SanitizeSpeciesId(species)].iconPalIndex].data;
+    return gMonIconPaletteTable[GetSpeciesIconPalIndex(species)].data;
 }
 
 u8 UpdateMonIconFrame(struct Sprite *sprite)

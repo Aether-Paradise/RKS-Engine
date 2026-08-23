@@ -9,7 +9,7 @@ ASSUMPTIONS
 SINGLE_BATTLE_TEST("Sky Drop does no damage to Flying type Pokémon")
 {
     GIVEN {
-        ASSUME(gSpeciesInfo[SPECIES_PIDGEY].weight < 2000);
+        ASSUME(GetSpeciesWeight(SPECIES_PIDGEY) < 2000);
         ASSUME(GetSpeciesType(SPECIES_PIDGEY, 1) == TYPE_FLYING);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_PIDGEY);
@@ -71,7 +71,7 @@ DOUBLE_BATTLE_TEST("Sky Drop is cancelled if Gravity activated")
 SINGLE_BATTLE_TEST("Sky Drop fails on targets heavier or equal than 200kg")
 {
     GIVEN {
-        ASSUME(gSpeciesInfo[SPECIES_METAGROSS].weight >= 2000);
+        ASSUME(GetSpeciesWeight(SPECIES_METAGROSS) >= 2000);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_METAGROSS);
     } WHEN {
@@ -277,7 +277,7 @@ DOUBLE_BATTLE_TEST("Sky Drop: If target was locked into a move that would confus
 SINGLE_BATTLE_TEST("Sky Drop: Flying types will still get confused if they rampaged before being dropped")
 {
     GIVEN {
-        ASSUME(gSpeciesInfo[SPECIES_PIDGEY].weight < 2000);
+        ASSUME(GetSpeciesWeight(SPECIES_PIDGEY) < 2000);
         ASSUME(GetSpeciesType(SPECIES_PIDGEY, 1) == TYPE_FLYING);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_PIDGEY);
@@ -302,7 +302,7 @@ DOUBLE_BATTLE_TEST("Sky Drop user and target can't activate Eject items while th
     GIVEN {
         ASSUME(GetItemHoldEffect(ITEM_EJECT_BUTTON) == HOLD_EFFECT_EJECT_BUTTON);
         ASSUME(GetItemHoldEffect(ITEM_EJECT_PACK) == HOLD_EFFECT_EJECT_PACK);
-        ASSUME(gSpeciesInfo[SPECIES_VULLABY].weight < 2000);
+        ASSUME(GetSpeciesWeight(SPECIES_VULLABY) < 2000);
         ASSUME(GetSpeciesType(SPECIES_VULLABY, 0) == TYPE_FLYING || GetSpeciesType(SPECIES_VULLABY, 1) == TYPE_FLYING);
         ASSUME(MoveHasAdditionalEffectWithChance(MOVE_BREAKING_SWIPE, MOVE_EFFECT_STAT_MINUS, 100));
         PLAYER(SPECIES_WOBBUFFET) { Item(item); }

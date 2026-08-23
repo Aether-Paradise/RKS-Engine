@@ -3246,9 +3246,9 @@ static u32 DebugSelectionStep_GetMaxAbility(u8 taskId)
 {
     enum Species species = DebugSelection_GetData(taskId, 0);
     u32 max = 0;
-    if ((gSpeciesInfo[species].abilities[1] != gSpeciesInfo[species].abilities[0]) && (gSpeciesInfo[species].abilities[1] != ABILITY_NONE))
+    if ((GetSpeciesAbility(species, 1) != GetSpeciesAbility(species, 0)) && (GetSpeciesAbility(species, 1) != ABILITY_NONE))
         max++;
-    if (gSpeciesInfo[species].abilities[2] != ABILITY_NONE)
+    if (GetSpeciesAbility(species, 2) != ABILITY_NONE)
         max++;
     return max;
 }
@@ -3257,16 +3257,16 @@ static void DebugSelectionStep_UpdateAbility(u8 taskId, u8 digits, u32 min, u32 
 {
     enum Ability abilities[NUM_ABILITY_SLOTS];
     enum Species species = DebugSelection_GetData(taskId, 0);
-    abilities[0] = gSpeciesInfo[species].abilities[0];
+    abilities[0] = GetSpeciesAbility(species, 0);
     u32 i = 1;
-    if (gSpeciesInfo[species].abilities[1] != abilities[0] && gSpeciesInfo[species].abilities[1] != ABILITY_NONE)
+    if (GetSpeciesAbility(species, 1) != abilities[0] && GetSpeciesAbility(species, 1) != ABILITY_NONE)
     {
-        abilities[1] = gSpeciesInfo[species].abilities[1];
+        abilities[1] = GetSpeciesAbility(species, 1);
         i++;
     }
-    if (gSpeciesInfo[species].abilities[2] != ABILITY_NONE)
+    if (GetSpeciesAbility(species, 2) != ABILITY_NONE)
     {
-        abilities[i] = gSpeciesInfo[species].abilities[2];
+        abilities[i] = GetSpeciesAbility(species, 2);
     }
 
     ConvertIntToDecimalStringN(gStringVar3, gTasks[taskId].tInput, STR_CONV_MODE_LEADING_ZEROS, digits);
@@ -3281,7 +3281,7 @@ static void DebugSelectionStep_AbilityConfirm(u8 taskId)
     enum Species species = DebugSelection_GetData(taskId, 0);
     if (gTasks[taskId].tInput == 1)
     {
-        if ((gSpeciesInfo[species].abilities[1] == gSpeciesInfo[species].abilities[0]) || (gSpeciesInfo[species].abilities[1] == ABILITY_NONE))
+        if ((GetSpeciesAbility(species, 1) == GetSpeciesAbility(species, 0)) || (GetSpeciesAbility(species, 1) == ABILITY_NONE))
             gTasks[taskId].tInput++;
     }
     DebugSelectionStep_GenericInputConfirm(taskId);

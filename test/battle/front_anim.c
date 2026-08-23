@@ -9,7 +9,7 @@ WILD_BATTLE_TEST("Front anims work")
     {
         for (enum Species tempSpecies = SPECIES_NONE + 1; tempSpecies < NUM_SPECIES; tempSpecies++)
         {
-            if (gSpeciesInfo[tempSpecies].frontAnimId == animId)
+            if (IsSpeciesEnabled(tempSpecies) && GetSpeciesFrontAnimId(tempSpecies) == animId)
             {
                 PARAMETRIZE { species = tempSpecies; }
                 break;

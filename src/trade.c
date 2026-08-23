@@ -1573,7 +1573,7 @@ static u8 CheckValidityOfTradeMons(u8 *aliveMons, u8 playerPartyCount, u8 player
     partnerSpecies = GetMonData(&gParties[B_TRAINER_OPPONENT_A][partnerMonIdx], MON_DATA_SPECIES);
 
     // Can't trade specific species
-    if (gSpeciesInfo[partnerSpecies].cannotBeTraded)
+    if (IsSpeciesTradeBanned(partnerSpecies))
         return PARTNER_MON_INVALID;
 
     // Partner can't trade Egg or non-Hoenn mon if player doesn't have National Dex
@@ -2420,7 +2420,7 @@ static enum CanTradeMon CanTradeSelectedMon(struct Pokemon *playerParty, int par
     }
 
     // Can't trade specific species
-    if (gSpeciesInfo[species[monIdx]].cannotBeTraded)
+    if (IsSpeciesTradeBanned(species[monIdx]))
         return CANT_TRADE_INVALID_MON;
 
     // Make Eggs not count for numMonsLeft
@@ -2503,7 +2503,7 @@ int GetUnionRoomTradeMessageId(struct RfuGameCompatibilityData player, struct Rf
     }
 
     // Can't trade specific species
-    if (gSpeciesInfo[playerSpecies].cannotBeTraded)
+    if (IsSpeciesTradeBanned(playerSpecies))
         return UR_TRADE_MSG_MON_CANT_BE_TRADED;
 
     if (partnerSpecies == SPECIES_EGG)
@@ -2551,7 +2551,7 @@ int CanRegisterMonForTradingBoard(struct RfuGameCompatibilityData player, enum S
     bool8 hasNationalDex = player.hasNationalDex;
 
     // Can't trade specific species
-    if (gSpeciesInfo[species].cannotBeTraded)
+    if (IsSpeciesTradeBanned(species))
         return CANT_REGISTER_MON;
 
     if (hasNationalDex)
@@ -3443,7 +3443,7 @@ static bool8 DoTradeAnim_Cable(void)
     case STATE_START:
         gSprites[sTradeAnim->monSpriteIds[TRADE_PLAYER]].invisible = FALSE;
         gSprites[sTradeAnim->monSpriteIds[TRADE_PLAYER]].x2 = -180;
-        gSprites[sTradeAnim->monSpriteIds[TRADE_PLAYER]].y2 = gSpeciesInfo[sTradeAnim->monSpecies[TRADE_PLAYER]].frontPicYOffset;
+        gSprites[sTradeAnim->monSpriteIds[TRADE_PLAYER]].y2 = GetSpeciesFrontPicYOffset(sTradeAnim->monSpecies[TRADE_PLAYER]);
         sTradeAnim->state++;
         sTradeAnim->cachedMapMusic = GetCurrentMapMusic();
         PlayNewMapMusic(MUS_EVOLUTION);
@@ -3812,7 +3812,7 @@ static bool8 DoTradeAnim_Cable(void)
         break;
     case STATE_SHOW_NEW_MON:
         gSprites[sTradeAnim->monSpriteIds[TRADE_PARTNER]].x = 120;
-        gSprites[sTradeAnim->monSpriteIds[TRADE_PARTNER]].y = gSpeciesInfo[sTradeAnim->monSpecies[TRADE_PARTNER]].frontPicYOffset + 60;
+        gSprites[sTradeAnim->monSpriteIds[TRADE_PARTNER]].y = GetSpeciesFrontPicYOffset(sTradeAnim->monSpecies[TRADE_PARTNER]) + 60;
         gSprites[sTradeAnim->monSpriteIds[TRADE_PARTNER]].x2 = 0;
         gSprites[sTradeAnim->monSpriteIds[TRADE_PARTNER]].y2 = 0;
         StartSpriteAnim(&gSprites[sTradeAnim->monSpriteIds[TRADE_PARTNER]], 0);
@@ -3919,7 +3919,7 @@ static bool8 DoTradeAnim_Wireless(void)
     case STATE_START:
         gSprites[sTradeAnim->monSpriteIds[TRADE_PLAYER]].invisible = FALSE;
         gSprites[sTradeAnim->monSpriteIds[TRADE_PLAYER]].x2 = -180;
-        gSprites[sTradeAnim->monSpriteIds[TRADE_PLAYER]].y2 = gSpeciesInfo[sTradeAnim->monSpecies[TRADE_PLAYER]].frontPicYOffset;
+        gSprites[sTradeAnim->monSpriteIds[TRADE_PLAYER]].y2 = GetSpeciesFrontPicYOffset(sTradeAnim->monSpecies[TRADE_PLAYER]);
         sTradeAnim->state++;
         sTradeAnim->cachedMapMusic = GetCurrentMapMusic();
         PlayNewMapMusic(MUS_EVOLUTION);
@@ -4312,7 +4312,7 @@ static bool8 DoTradeAnim_Wireless(void)
         break;
     case STATE_SHOW_NEW_MON:
         gSprites[sTradeAnim->monSpriteIds[TRADE_PARTNER]].x = 120;
-        gSprites[sTradeAnim->monSpriteIds[TRADE_PARTNER]].y = gSpeciesInfo[sTradeAnim->monSpecies[TRADE_PARTNER]].frontPicYOffset + 60;
+        gSprites[sTradeAnim->monSpriteIds[TRADE_PARTNER]].y = GetSpeciesFrontPicYOffset(sTradeAnim->monSpecies[TRADE_PARTNER]) + 60;
         gSprites[sTradeAnim->monSpriteIds[TRADE_PARTNER]].x2 = 0;
         gSprites[sTradeAnim->monSpriteIds[TRADE_PARTNER]].y2 = 0;
         StartSpriteAnim(&gSprites[sTradeAnim->monSpriteIds[TRADE_PARTNER]], 0);

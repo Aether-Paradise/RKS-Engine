@@ -307,7 +307,7 @@ void UpdateOverworldWildEncounter(void)
         .x = x - MAP_OFFSET,
         .y = y - MAP_OFFSET,
         .elevation = MapGridGetElevationAt(x, y),
-        .movementType = OWE_GetMovementTypeFromSpecies(infoOWE.speciesId),
+        .movementType = GetSpeciesOWEMovementType(infoOWE.speciesId),
         .trainerType = TRAINER_TYPE_OW_WILD_ENCOUNTER,
     };
     u32 objectEventId = GetObjectEventIdByLocalId(infoOWE.localId);
@@ -899,7 +899,7 @@ static bool32 CheckCanLoadOWE_Palette(enum Species speciesId, bool32 isFemale, b
     u32 tag = speciesId + OBJ_EVENT_MON + (isShiny ? OBJ_EVENT_MON_SHINY : 0);
 
 #if P_GENDER_DIFFERENCES
-    if (isFemale && gSpeciesInfo[speciesId].overworldShinyPaletteFemale != NULL)
+    if (isFemale)
         tag += OBJ_EVENT_MON_FEMALE;
 #endif
 
@@ -1374,8 +1374,8 @@ bool32 CanAwareOWESeePlayer(struct ObjectEvent *owe)
 
     struct ObjectEvent *player = &gObjectEvents[gPlayerAvatar.objectEventId];
     enum Species speciesId = OW_SPECIES(owe);
-    u32 viewDistance = OWE_GetViewDistanceFromSpecies(speciesId);
-    u32 viewWidth = OWE_GetViewWidthFromSpecies(speciesId);
+    u32 viewDistance = GetSpeciesOWEViewDistance(speciesId);
+    u32 viewWidth = GetSpeciesOWEViewWidth(speciesId);
     s32 halfWidth = (viewWidth - 1) / 2;
     enum Direction direction = owe->facingDirection;
 
@@ -1434,7 +1434,7 @@ bool32 IsPlayerInsideOWEActiveDistance(struct ObjectEvent *owe)
     enum Species speciesId = OW_SPECIES(owe);
 
     if (speciesId != SPECIES_NONE)
-        distance = OWE_GetViewActiveDistanceFromSpecies(speciesId);
+        distance = GetSpeciesOWEViewActiveDistance(speciesId);
 
     s32 absX = abs(player->currentCoords.x - owe->currentCoords.x);
     s32 absY = abs(player->currentCoords.y - owe->currentCoords.y);
@@ -1623,7 +1623,7 @@ static void Task_OWEApproachForBattle(u8 taskId)
         u32 movementActionId;
     
         SetObjectEventDirection(OWE, direction);
-        movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(OWE->movementDirection, OWE_GetActiveSpeedFromSpecies(speciesId));
+        movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(OWE->movementDirection, GetSpeciesOWEActiveSpeed(speciesId));
         
         if (CheckRestrictedOWEMovement(OWE, OWE->movementDirection))
         {
@@ -1658,7 +1658,7 @@ static void Task_OWEApproachForBattle(u8 taskId)
             {
                 direction = DirectionOfOWEToPlayerFromCollision(OWE);
                 SetObjectEventDirection(OWE, direction);
-                movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(OWE->movementDirection, OWE_GetActiveSpeedFromSpecies(speciesId));
+                movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(OWE->movementDirection, GetSpeciesOWEActiveSpeed(speciesId));
             }
         }
         ObjectEventSetHeldMovement(OWE, movementActionId);
@@ -1742,7 +1742,7 @@ const struct ObjectEventTemplate TryGetObjectEventTemplateForOWE(const struct Ob
         info.isFemale = GetGenderFromSpeciesAndPersonality(info.speciesId, Random32()) == MON_FEMALE;
 
     if (templateOWE.movementType == MOVEMENT_TYPE_NONE)
-        templateOWE.movementType = OWE_GetMovementTypeFromSpecies(info.speciesId);
+        templateOWE.movementType = GetSpeciesOWEMovementType(info.speciesId);
 
     templateOWE.graphicsId = GetGraphicsIdForOWE(&info);
     templateOWE.sOverworldEncounterLevel = info.level;

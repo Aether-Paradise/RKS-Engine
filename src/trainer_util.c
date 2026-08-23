@@ -43,19 +43,19 @@ static void CustomTrainerPartyAssignMoves(struct Pokemon *mon, const struct Trai
 
 u32 GeneratePersonalityForGender(u32 gender, u32 species)
 {
-    const struct SpeciesInfo *speciesInfo = &gSpeciesInfo[species];
+    u32 genderRatio = GetSpeciesGenderRatio(species);
     if (gender == MON_MALE)
     {
-        assertf(speciesInfo->genderRatio < MON_FEMALE, "species %d cannot be male", species);
-        return ((255 - speciesInfo->genderRatio) / 2) + speciesInfo->genderRatio;
+        assertf(genderRatio < MON_FEMALE, "species %d cannot be male", species);
+        return ((255 - genderRatio) / 2) + genderRatio;
     }
     if (gender == MON_FEMALE)
     {
-        assertf(speciesInfo->genderRatio != MON_MALE && speciesInfo->genderRatio != MON_GENDERLESS, "species %d cannot be female", species);
-        return speciesInfo->genderRatio / 2;
+        assertf(genderRatio != MON_MALE && genderRatio != MON_GENDERLESS, "species %d cannot be female", species);
+        return genderRatio / 2;
     }
     if (gender == MON_GENDERLESS)
-        assertf(speciesInfo->genderRatio == MON_GENDERLESS, "species %d cannot be genderless", species);
+        assertf(genderRatio == MON_GENDERLESS, "species %d cannot be genderless", species);
     else
         errorf("GeneratePersonalityForGender called with invalid gender value %d", gender);
     return 0;
@@ -78,15 +78,13 @@ static void ModifyPersonalityForNature(u32 *personality, s32 newNature)
 
 static bool32 SetCorrectAbilityNum(struct Pokemon *mon, enum Species species, enum Ability ability)
 {
-    const struct SpeciesInfo *speciesInfo = &gSpeciesInfo[species];
     u32 abilityNum;
-    u32 maxAbilityNum = ARRAY_COUNT(speciesInfo->abilities);
-    for (abilityNum = 0; abilityNum < maxAbilityNum; ++abilityNum)
+    for (abilityNum = 0; abilityNum < NUM_ABILITY_SLOTS; ++abilityNum)
     {
-        if (speciesInfo->abilities[abilityNum] == ability)
+        if (GetSpeciesAbility(species, abilityNum) == ability)
             break;
     }
-    assertf(abilityNum < maxAbilityNum, "illegal ability %S for %S", gAbilitiesInfo[ability].name, speciesInfo->speciesName)
+    assertf(abilityNum < NUM_ABILITY_SLOTS, "illegal ability %S for %S", gAbilitiesInfo[ability].name, GetSpeciesName(species))
     {
         return FALSE;
     }

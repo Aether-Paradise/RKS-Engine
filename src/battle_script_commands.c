@@ -2208,7 +2208,7 @@ static void Cmd_getexp(void)
             if (orderId < PARTY_SIZE)
                 gBattleStruct->expGettersOrder[orderId] = PARTY_SIZE;
 
-            calculatedExp = gSpeciesInfo[faintedSpecies].expYield * gBattleMons[gBattlerFainted].level;
+            calculatedExp = GetSpeciesExpYield(faintedSpecies) * gBattleMons[gBattlerFainted].level;
             if (GetConfig(B_SCALED_EXP) >= GEN_5 && GetConfig(B_SCALED_EXP) != GEN_6)
                 calculatedExp /= 5;
             else
@@ -2301,7 +2301,7 @@ static void Cmd_getexp(void)
 
                     if (B_EXP_CAP_TYPE == EXP_CAP_HARD && gBattleStruct->battlerExpReward != 0)
                     {
-                        enum GrowthRate growthRate = gSpeciesInfo[GetMonData(&gParties[B_TRAINER_PLAYER][*expMonId], MON_DATA_SPECIES)].growthRate;
+                        enum GrowthRate growthRate = GetSpeciesGrowthRate(GetMonData(&gParties[B_TRAINER_PLAYER][*expMonId], MON_DATA_SPECIES));
                         u32 currentExp = GetMonData(&gParties[B_TRAINER_PLAYER][*expMonId], MON_DATA_EXP);
                         u32 levelCap = GetCurrentLevelCap();
 
@@ -7839,7 +7839,7 @@ static void ComputeBallData(u32 wildMonBattler, u32 playerBattler, struct BallDa
     ball->flatBonus = 0;
     ball->guaranteedCapture = FALSE;
 
-    if (gSpeciesInfo[battleMon->species].isUltraBeast)
+    if (IsSpeciesUltraBeast(battleMon->species))
     {
         if (ballId == BALL_BEAST)
             ball->multiplier = 500;
@@ -8040,7 +8040,7 @@ static u32 GetBattleMonCatchRate(struct BattlePokemon *battleMon)
         species = battleMon->species;
     else
         species = battleMon->volatiles.transformedMonSpecies;
-    return gSpeciesInfo[species].catchRate;
+    return GetSpeciesCatchRate(species);
 }
 
 static u32 ComputeCaptureOdds(u32 wildMonBattler, u32 playerBattler)
@@ -8679,14 +8679,6 @@ static void Cmd_trainerslideout(void)
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
-//note test wiglett when becomes possible
-bool32 IsTelekinesisBannedSpecies(enum Species species)
-{
-    species = SanitizeSpeciesId(species);
-
-    return gSpeciesInfo[species].isTelekinesisBanned;
-}
-
 static void Cmd_settelekinesis(void)
 {
     CMD_ARGS(const u8 *failInstr);
@@ -8695,7 +8687,7 @@ static void Cmd_settelekinesis(void)
         || gBattleMons[gBattlerTarget].volatiles.root
         || gBattleMons[gBattlerTarget].volatiles.smackDown
         || gFieldStatuses & STATUS_FIELD_GRAVITY
-        || IsTelekinesisBannedSpecies(gBattleMons[gBattlerTarget].species))
+        || IsSpeciesTelekinesisBanned(gBattleMons[gBattlerTarget].species))
     {
         gBattlescriptCurrInstr = cmd->failInstr;
     }

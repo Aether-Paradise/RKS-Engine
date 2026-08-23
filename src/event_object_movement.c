@@ -2139,19 +2139,13 @@ const struct ObjectEventGraphicsInfo *SpeciesToGraphicsInfo(enum Species species
     switch (species)
     {
     case SPECIES_UNOWN: // Deal with Unown forms later
-        graphicsInfo = &gSpeciesInfo[species].overworldData;
+        graphicsInfo = GetSpeciesOverworldData(species);
         break;
     default:
-    #if P_GENDER_DIFFERENCES
-        if (female && gSpeciesInfo[species].overworldDataFemale.paletteTag == OBJ_EVENT_PAL_TAG_DYNAMIC)
-        {
-            graphicsInfo = &gSpeciesInfo[species].overworldDataFemale;
-        }
+        if (female)
+            graphicsInfo = GetSpeciesOverworldDataFemale(species);
         else
-    #endif
-        {
-            graphicsInfo = &gSpeciesInfo[species].overworldData;
-        }
+            graphicsInfo = GetSpeciesOverworldData(species);
         break;
     }
 
@@ -2159,7 +2153,7 @@ const struct ObjectEventGraphicsInfo *SpeciesToGraphicsInfo(enum Species species
     if ((graphicsInfo->tileTag == 0 && species < NUM_SPECIES) || (graphicsInfo->tileTag != TAG_NONE && species >= NUM_SPECIES))
     {
         if (OW_SUBSTITUTE_PLACEHOLDER)
-            return &gSpeciesInfo[SPECIES_NONE].overworldData;
+            return GetSpeciesOverworldData(SPECIES_NONE);
         return NULL;
     }
 #endif // OW_POKEMON_OBJECT_EVENTS
@@ -2172,34 +2166,30 @@ static u32 LoadDynamicFollowerPalette(enum Species species, bool32 shiny, bool32
     u32 paletteNum;
     // Use standalone palette, unless entry is OOB or NULL (fallback to front-sprite-based)
 #if OW_POKEMON_OBJECT_EVENTS == TRUE && OW_PKMN_OBJECTS_SHARE_PALETTES == FALSE
-    if ((shiny && gSpeciesInfo[species].overworldPalette)
-    || (!shiny && gSpeciesInfo[species].overworldShinyPalette))
+    if ((shiny && GetSpeciesOverworldPalette(species) != NULL)
+    || (!shiny && GetSpeciesOverworldShinyPalette(species) != NULL))
     {
         struct SpritePalette spritePalette;
         u16 palTag = species + OBJ_EVENT_MON + (shiny ? OBJ_EVENT_MON_SHINY : 0);
-    #if P_GENDER_DIFFERENCES
-        if (female && gSpeciesInfo[species].overworldShinyPaletteFemale != NULL)
+        if (female)
             palTag += OBJ_EVENT_MON_FEMALE;
-    #endif
         // palette already loaded
         if ((paletteNum = IndexOfSpritePaletteTag(palTag)) < 16)
             return paletteNum;
         spritePalette.tag = palTag;
-    #if P_GENDER_DIFFERENCES
-        if (female && gSpeciesInfo[species].overworldPaletteFemale != NULL)
+        if (female)
         {
             if (shiny)
-                spritePalette.data = gSpeciesInfo[species].overworldShinyPaletteFemale;
+                spritePalette.data = GetSpeciesOverworldShinyPaletteFemale(species);
             else
-                spritePalette.data = gSpeciesInfo[species].overworldPaletteFemale;
+                spritePalette.data = GetSpeciesOverworldPaletteFemale(species);
         }
         else
-    #endif
         {
             if (shiny)
-                spritePalette.data = gSpeciesInfo[species].overworldShinyPalette;
+                spritePalette.data = GetSpeciesOverworldShinyPalette(species);
             else
-                spritePalette.data = gSpeciesInfo[species].overworldPalette;
+                spritePalette.data = GetSpeciesOverworldPalette(species);
         }
 
         paletteNum = LoadSpritePalette(&spritePalette);
@@ -11779,7 +11769,7 @@ bool8 MovementType_OverworldWildEncounter_WanderAround_Step4(struct ObjectEvent 
 
 bool8 MovementType_OverworldWildEncounter_WanderAround_Step5(struct ObjectEvent *objectEvent, struct Sprite *sprite)
 {
-    ObjectEventSetSingleMovement(objectEvent, sprite, GetOWEWalkMovementActionInDirectionWithSpeed(objectEvent->movementDirection, OWE_GetIdleSpeedFromSpecies(OW_SPECIES(objectEvent))));
+    ObjectEventSetSingleMovement(objectEvent, sprite, GetOWEWalkMovementActionInDirectionWithSpeed(objectEvent->movementDirection, GetSpeciesOWEIdleSpeed(OW_SPECIES(objectEvent))));
     objectEvent->singleMovementActive = TRUE;
     sprite->sTypeFuncId = 6;
     return TRUE;
@@ -11830,7 +11820,7 @@ bool8 MovementType_OverworldWildEncounter_ChasePlayer_Step10(struct ObjectEvent 
 bool8 MovementType_OverworldWildEncounter_ChasePlayer_Step11(struct ObjectEvent *objectEvent, struct Sprite *sprite)
 {
     enum Species speciesId = OW_SPECIES(objectEvent);
-    u32 movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(objectEvent->movementDirection, OWE_GetActiveSpeedFromSpecies(speciesId));
+    u32 movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(objectEvent->movementDirection, GetSpeciesOWEActiveSpeed(speciesId));
     sprite->sTypeFuncId = 12;
 
     if (CheckRestrictedOWEMovement(objectEvent, objectEvent->movementDirection))
@@ -11847,7 +11837,7 @@ bool8 MovementType_OverworldWildEncounter_ChasePlayer_Step11(struct ObjectEvent 
         }
 
         enum Direction newDirection = DirectionOfOWEToPlayerFromCollision(objectEvent);
-        movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(newDirection, OWE_GetActiveSpeedFromSpecies(speciesId));
+        movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(newDirection, GetSpeciesOWEActiveSpeed(speciesId));
         if (CheckRestrictedOWEMovement(objectEvent, newDirection))
             movementActionId = GetWalkInPlaceNormalMovementAction(objectEvent->facingDirection);
     }
@@ -11864,7 +11854,7 @@ bool8 MovementType_OverworldWildEncounter_Common_Step12(struct ObjectEvent *obje
         objectEvent->singleMovementActive = FALSE;
         sprite->sTypeFuncId = 10;
         bool32 returnToIdle;
-        switch(OWE_GetReturnToIdleFromSpecies(OW_SPECIES(objectEvent)))
+        switch(GetSpeciesOWEReturnToIdle(OW_SPECIES(objectEvent)))
         {
         case NEVER_RETURN:
             returnToIdle = FALSE;
@@ -11917,14 +11907,14 @@ bool8 MovementType_OverworldWildEncounter_FleePlayer_Step10(struct ObjectEvent *
 bool8 MovementType_OverworldWildEncounter_FleePlayer_Step11(struct ObjectEvent *objectEvent, struct Sprite *sprite)
 {
     enum Species speciesId = OW_SPECIES(objectEvent);
-    u32 movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(objectEvent->movementDirection, OWE_GetActiveSpeedFromSpecies(speciesId));
+    u32 movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(objectEvent->movementDirection, GetSpeciesOWEActiveSpeed(speciesId));
     if (CheckRestrictedOWEMovement(objectEvent, objectEvent->movementDirection))
     {
         enum Direction newDirection = DirectionOfOWEToPlayerFromCollision(objectEvent);
         if (newDirection != objectEvent->movementDirection)
             newDirection = GetOppositeDirection(newDirection);
         
-        movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(newDirection, OWE_GetActiveSpeedFromSpecies(speciesId));
+        movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(newDirection, GetSpeciesOWEActiveSpeed(speciesId));
         if (CheckRestrictedOWEMovement(objectEvent, newDirection))
         {
             sCollisionTimer++;
@@ -12014,7 +12004,7 @@ bool8 MovementType_OverworldWildEncounter_ApproachPlayer_Step11(struct ObjectEve
     if (distance <= 1)
     {
         SetObjectEventDirection(objectEvent, GetOppositeDirection(objectEvent->movementDirection));
-        movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(objectEvent->movementDirection, OWE_GetActiveSpeedFromSpecies(speciesId));
+        movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(objectEvent->movementDirection, GetSpeciesOWEActiveSpeed(speciesId));
         if (CheckRestrictedOWEMovement(objectEvent, objectEvent->movementDirection))
         {
             struct ObjectEvent *player = &gObjectEvents[gPlayerAvatar.objectEventId];
@@ -12022,7 +12012,7 @@ bool8 MovementType_OverworldWildEncounter_ApproachPlayer_Step11(struct ObjectEve
             if (objectEvent->currentCoords.x != player->currentCoords.x && objectEvent->currentCoords.y != player->currentCoords.y)
                 newDirection = GetOppositeDirection(newDirection);
 
-            movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(newDirection, OWE_GetActiveSpeedFromSpecies(speciesId));
+            movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(newDirection, GetSpeciesOWEActiveSpeed(speciesId));
             if (CheckRestrictedOWEMovement(objectEvent, newDirection))
                 movementActionId = GetWalkInPlaceNormalMovementAction(objectEvent->facingDirection);
         }
@@ -12043,7 +12033,7 @@ bool8 MovementType_OverworldWildEncounter_ApproachPlayer_Step11(struct ObjectEve
     }
     else
     {
-        movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(objectEvent->movementDirection, OWE_GetActiveSpeedFromSpecies(speciesId));
+        movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(objectEvent->movementDirection, GetSpeciesOWEActiveSpeed(speciesId));
 
         if (CheckRestrictedOWEMovement(objectEvent, objectEvent->movementDirection))
         {
@@ -12058,7 +12048,7 @@ bool8 MovementType_OverworldWildEncounter_ApproachPlayer_Step11(struct ObjectEve
                 return FALSE;
             }
             enum Direction newDirection = DirectionOfOWEToPlayerFromCollision(objectEvent);
-            movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(newDirection, OWE_GetActiveSpeedFromSpecies(speciesId));
+            movementActionId = GetOWEWalkMovementActionInDirectionWithSpeed(newDirection, GetSpeciesOWEActiveSpeed(speciesId));
 
             if (CheckRestrictedOWEMovement(objectEvent, newDirection))
                 movementActionId = GetWalkInPlaceNormalMovementAction(objectEvent->facingDirection);

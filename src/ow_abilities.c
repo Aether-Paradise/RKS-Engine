@@ -79,7 +79,7 @@ static UNUSED bool32 IsTrue(enum Species species)
 
 static UNUSED bool32 IsTrueIfUndiscoveredEggGroup(enum Species species)
 {
-    return (gSpeciesInfo[species].eggGroups[0] == EGG_GROUP_NO_EGGS_DISCOVERED);
+    return (GetSpeciesEggGroup(species, 0) == EGG_GROUP_NO_EGGS_DISCOVERED);
 }
 
 bool32 DoesLeadingMonHaveAbilityEffect(const enum Ability *abilityArray)

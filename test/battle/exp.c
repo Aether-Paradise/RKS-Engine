@@ -148,9 +148,9 @@ WILD_BATTLE_TEST("Transformed Pokemon gives the experience points of the copied 
     } SCENE {
         EXPERIENCE_BAR(player, captureGainedExp: &gainedExp);
     } THEN {
-        EXPECT_EQ(gainedExp, gSpeciesInfo[speciesExp].expYield);
-        EXPECT_EQ(GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_EXP), 1 + gSpeciesInfo[speciesExp].expYield);
-        EXPECT_EQ(GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_HP_EV), gSpeciesInfo[speciesExp].evYield_HP);
+        EXPECT_EQ(gainedExp, GetSpeciesExpYield(speciesExp));
+        EXPECT_EQ(GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_EXP), 1 + GetSpeciesExpYield(speciesExp));
+        EXPECT_EQ(GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_HP_EV), GetSpeciesEVYieldHP(speciesExp));
     }
 }
 
@@ -176,9 +176,9 @@ WILD_BATTLE_TEST("Exp Share(held) gives Experience to mons which did not partici
         NOT MESSAGE("The rest of your team gained EXP. Points thanks to the Exp. Share!");
     } THEN {
         if (item == ITEM_EXP_SHARE)
-            EXPECT_GT(GetMonData(&gParties[B_TRAINER_PLAYER][1], MON_DATA_EXP), gExperienceTables[gSpeciesInfo[SPECIES_WYNAUT].growthRate][40]);
+            EXPECT_GT(GetMonData(&gParties[B_TRAINER_PLAYER][1], MON_DATA_EXP), gExperienceTables[GetSpeciesGrowthRate(SPECIES_WYNAUT)][40]);
         else
-            EXPECT_EQ(GetMonData(&gParties[B_TRAINER_PLAYER][1], MON_DATA_EXP), gExperienceTables[gSpeciesInfo[SPECIES_WYNAUT].growthRate][40]);
+            EXPECT_EQ(GetMonData(&gParties[B_TRAINER_PLAYER][1], MON_DATA_EXP), gExperienceTables[GetSpeciesGrowthRate(SPECIES_WYNAUT)][40]);
     }
 }
 
@@ -194,7 +194,7 @@ AI_DOUBLE_BATTLE_TEST("Both player Pokemon gain experience in double battles")
     } WHEN {
         TURN { }
     } THEN {
-        EXPECT(GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_EXP) > gExperienceTables[gSpeciesInfo[SPECIES_WOBBUFFET].growthRate][99]);
+        EXPECT(GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_EXP) > gExperienceTables[GetSpeciesGrowthRate(SPECIES_WOBBUFFET)][99]);
         EXPECT(GetMonData(&gParties[B_TRAINER_PLAYER][1], MON_DATA_LEVEL) > 1);
     }
 }
@@ -217,8 +217,8 @@ AI_TWO_VS_ONE_BATTLE_TEST("Partner Pokemon do not gain experience")
 AI_ONE_VS_TWO_BATTLE_TEST("Both opponent's Pokemon give experience in battle against two opponents")
 {
     u32 expectedXp = 1; // level 1 xp
-    expectedXp += gSpeciesInfo[SPECIES_WYNAUT].expYield * 100 / 7; // level (100) * scaling multipler (1 / 7)
-    expectedXp += gSpeciesInfo[SPECIES_WOBBUFFET].expYield * 100 / 7;
+    expectedXp += GetSpeciesExpYield(SPECIES_WYNAUT) * 100 / 7; // level (100) * scaling multipler (1 / 7)
+    expectedXp += GetSpeciesExpYield(SPECIES_WOBBUFFET) * 100 / 7;
     GIVEN {
         WITH_CONFIG(B_SCALED_EXP, GEN_3);
         WITH_CONFIG(B_UNEVOLVED_EXP_MULTIPLIER, GEN_3);

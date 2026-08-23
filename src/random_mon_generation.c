@@ -69,7 +69,6 @@ static bool32 IsMoveInMoveset(enum Move move, enum Move *moves, u32 count);
 static bool32 IsSpeciesBannedByRandomSpeciesOptions(enum Species species, const struct RandomSpeciesGeneratorOptions *options, const struct FilterFuncArgs *filterFuncArgs)
 {
     enum Species baseSpecies = GET_BASE_SPECIES_ID(species);
-    const struct SpeciesInfo *speciesInfo = &gSpeciesInfo[species];
 
     for (u32 i = 0; i < options->bannedSpeciesCount; i++)
     {
@@ -77,15 +76,15 @@ static bool32 IsSpeciesBannedByRandomSpeciesOptions(enum Species species, const 
             return TRUE;
     }
 
-    if (options->banLegendary && speciesInfo->isRestrictedLegendary)
+    if (options->banLegendary && IsSpeciesRestrictedLegendary(species))
         return TRUE;
-    if (options->banMythical && speciesInfo->isMythical)
+    if (options->banMythical && IsSpeciesMythical(species))
         return TRUE;
-    if (options->banSubLegendary && speciesInfo->isSubLegendary)
+    if (options->banSubLegendary && IsSpeciesSubLegendary(species))
         return TRUE;
-    if (options->banUltraBeast && speciesInfo->isUltraBeast)
+    if (options->banUltraBeast && IsSpeciesUltraBeast(species))
         return TRUE;
-    if (options->banParadox && speciesInfo->isParadox)
+    if (options->banParadox && IsSpeciesParadox(species))
         return TRUE;
     if (options->filterFunc != NULL && !options->filterFunc(species, filterFuncArgs))
         return TRUE;
@@ -187,7 +186,6 @@ static bool32 IsRandomSpeciesInFormOrFusionTables(enum Species species, const u1
 
 static bool32 IsRandomSpeciesFormAllowed(enum Species species, const u16 *formTable)
 {
-    const struct SpeciesInfo *speciesInfo;
     enum Species baseSpecies = GET_BASE_SPECIES_ID(species);
 
     switch (species) // Special case because darm has galarian forms (desired) and zen mode forms (not desired)
@@ -206,15 +204,13 @@ static bool32 IsRandomSpeciesFormAllowed(enum Species species, const u16 *formTa
      && IsRandomSpeciesInFormOrFusionTables(species, formTable))
         return FALSE;
 
-    speciesInfo = &gSpeciesInfo[species];
-
-    return !speciesInfo->isMegaEvolution
-        && !speciesInfo->isGigantamax
-        && !speciesInfo->isTotem
-        && !speciesInfo->isUltraBurst
-        && !speciesInfo->cannotBeTraded
-        && !speciesInfo->isTeraForm
-        && !speciesInfo->isPrimalReversion;
+    return !IsSpeciesMegaEvolution(species)
+        && !IsSpeciesGigantamax(species)
+        && !IsSpeciesTotem(species)
+        && !IsSpeciesUltraBurst(species)
+        && !IsSpeciesTradeBanned(species)
+        && !IsSpeciesTeraForm(species)
+        && !IsSpeciesPrimalReversion(species);
 }
 
 static enum Species GetSpeciesCandidateForm(enum Species species, const struct RandomSpeciesGeneratorOptions *options, const struct FilterFuncArgs *filterFuncArgs)

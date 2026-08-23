@@ -11,17 +11,17 @@ TEST("Form species ID tables are shared between all forms")
 
     for (enum Species i = SPECIES_NONE; i < NUM_SPECIES; i++)
     {
-        if (gSpeciesInfo[i].formSpeciesIdTable)
+        if (IsSpeciesEnabled(i) && GetSpeciesFormTable(i))
         {
-            PARAMETRIZE_LABEL("ID:%d - %S", i, gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("ID:%d - %S", i, GetSpeciesName(i)) { species = i; }
         }
     }
 
-    formSpeciesIdTable = gSpeciesInfo[species].formSpeciesIdTable;
+    formSpeciesIdTable = GetSpeciesFormTable(species);
     for (u32 i = 0; formSpeciesIdTable[i] != FORM_SPECIES_END; i++)
     {
         enum Species formSpeciesId = formSpeciesIdTable[i];
-        EXPECT_EQ(gSpeciesInfo[formSpeciesId].formSpeciesIdTable, formSpeciesIdTable);
+        EXPECT_EQ(GetSpeciesFormTable(formSpeciesId), formSpeciesIdTable);
     }
 }
 
@@ -33,11 +33,11 @@ TEST("Form species ID tables fit within RANDOM_MON_MAX_FORMS")
 
     for (enum Species i = SPECIES_NONE; i < NUM_SPECIES; i++)
     {
-        if (gSpeciesInfo[i].formSpeciesIdTable)
-            PARAMETRIZE_LABEL("ID:%d - %S", i, gSpeciesInfo[i].speciesName) { species = i; }
+        if (IsSpeciesEnabled(i) && GetSpeciesFormTable(i))
+            PARAMETRIZE_LABEL("ID:%d - %S", i, GetSpeciesName(i)) { species = i; }
     }
 
-    formSpeciesIdTable = gSpeciesInfo[species].formSpeciesIdTable;
+    formSpeciesIdTable = GetSpeciesFormTable(species);
     for (formCount = 0; formSpeciesIdTable[formCount] != FORM_SPECIES_END; formCount++)
         ;
 
@@ -52,14 +52,14 @@ TEST("Form change tables contain only forms in the form species ID table")
 
     for (enum Species i = SPECIES_NONE; i < NUM_SPECIES; i++)
     {
-        if (gSpeciesInfo[i].formChangeTable)
+        if (IsSpeciesEnabled(i) && GetSpeciesFormChanges(i))
         {
-            PARAMETRIZE_LABEL("ID:%d - %S", i, gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("ID:%d - %S", i, GetSpeciesName(i)) { species = i; }
         }
     }
 
-    formChangeTable = gSpeciesInfo[species].formChangeTable;
-    formSpeciesIdTable = gSpeciesInfo[species].formSpeciesIdTable;
+    formChangeTable = GetSpeciesFormChanges(species);
+    formSpeciesIdTable = GetSpeciesFormTable(species);
     EXPECT(formSpeciesIdTable);
 
     for (u32 i = 0; formChangeTable[i].method != FORM_CHANGE_TERMINATOR; i++)
@@ -85,12 +85,15 @@ TEST("Forms have the appropriate species form changes")
 
     for (enum Species i = SPECIES_NONE; i < NUM_SPECIES; i++)
     {
-        if (gSpeciesInfo[i].isMegaEvolution
-            || gSpeciesInfo[i].isGigantamax
-            || gSpeciesInfo[i].isUltraBurst
-            || gSpeciesInfo[i].isPrimalReversion)
+        if (!IsSpeciesEnabled(i))
+            continue;
+
+        if (IsSpeciesMegaEvolution(i)
+            || IsSpeciesGigantamax(i)
+            || IsSpeciesUltraBurst(i)
+            || IsSpeciesPrimalReversion(i))
         {
-            PARAMETRIZE_LABEL("ID:%d - %S", i, gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("ID:%d - %S", i, GetSpeciesName(i)) { species = i; }
         }
     }
     bool32 hasBattleEnd = FALSE, hasFaint = FALSE;
@@ -112,9 +115,9 @@ TEST("Forms have the appropriate species form changes")
     EXPECT(hasBattleEnd);
 
     // Primal Reversion don't change forms upon fainting
-    if (gSpeciesInfo[species].isMegaEvolution
-        || gSpeciesInfo[species].isGigantamax
-        || gSpeciesInfo[species].isUltraBurst)
+    if (IsSpeciesMegaEvolution(species)
+        || IsSpeciesGigantamax(species)
+        || IsSpeciesUltraBurst(species))
     {
         EXPECT(hasFaint);
     }
@@ -127,30 +130,29 @@ TEST("Form change targets have the appropriate species flags")
 
     for (enum Species i = SPECIES_NONE; i < NUM_SPECIES; i++)
     {
-        if (gSpeciesInfo[i].formChangeTable)
+        if (IsSpeciesEnabled(i) && GetSpeciesFormChanges(i))
         {
-            PARAMETRIZE_LABEL("ID:%d - %S", i, gSpeciesInfo[i].speciesName) { species = i; }
+            PARAMETRIZE_LABEL("ID:%d - %S", i, GetSpeciesName(i)) { species = i; }
         }
     }
 
-    formChangeTable = gSpeciesInfo[species].formChangeTable;
+    formChangeTable = GetSpeciesFormChanges(species);
     for (u32 i = 0; formChangeTable[i].method != FORM_CHANGE_TERMINATOR; i++)
     {
-        const struct SpeciesInfo *targetSpeciesInfo = &gSpeciesInfo[formChangeTable[i].targetSpecies];
         switch (formChangeTable[i].method)
         {
         case FORM_CHANGE_BATTLE_MEGA_EVOLUTION_ITEM:
         case FORM_CHANGE_BATTLE_MEGA_EVOLUTION_MOVE:
-            EXPECT(targetSpeciesInfo->isMegaEvolution);
+            EXPECT(IsSpeciesMegaEvolution(formChangeTable[i].targetSpecies));
             break;
         case FORM_CHANGE_BATTLE_PRIMAL_REVERSION:
-            EXPECT(targetSpeciesInfo->isPrimalReversion);
+            EXPECT(IsSpeciesPrimalReversion(formChangeTable[i].targetSpecies));
             break;
         case FORM_CHANGE_BATTLE_ULTRA_BURST:
-            EXPECT(targetSpeciesInfo->isUltraBurst);
+            EXPECT(IsSpeciesUltraBurst(formChangeTable[i].targetSpecies));
             break;
         case FORM_CHANGE_BATTLE_GIGANTAMAX:
-            EXPECT(targetSpeciesInfo->isGigantamax);
+            EXPECT(IsSpeciesGigantamax(formChangeTable[i].targetSpecies));
             break;
         default:
             break;

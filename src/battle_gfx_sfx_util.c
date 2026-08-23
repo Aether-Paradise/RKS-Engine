@@ -953,7 +953,7 @@ void HandleSpeciesGfxDataChange(enum BattlerId battlerAtk, enum BattlerId battle
 
     if (changeType == SPECIES_GFX_CHANGE_GHOST_UNVEIL)
     {
-        SetMonData(&gParties[B_TRAINER_OPPONENT_A][gBattlerPartyIndexes[battlerAtk]], MON_DATA_NICKNAME, gSpeciesInfo[targetSpecies].speciesName);
+        SetMonData(&gParties[B_TRAINER_OPPONENT_A][gBattlerPartyIndexes[battlerAtk]], MON_DATA_NICKNAME, GetSpeciesName(targetSpecies));
         UpdateNickInHealthbox(gHealthboxSpriteIds[battlerAtk], &gParties[B_TRAINER_OPPONENT_A][gBattlerPartyIndexes[battlerAtk]]);
         TryAddPokeballIconToHealthbox(gHealthboxSpriteIds[battlerAtk], TRUE);
     }
@@ -1136,7 +1136,7 @@ void CreateEnemyShadowSprite(enum BattlerId battler)
     if (B_ENEMY_MON_SHADOW_STYLE >= GEN_4 && P_GBA_STYLE_SPECIES_GFX == FALSE)
     {
         enum Species species = GetBattlerVisualSpecies(battler);
-        u8 size = gSpeciesInfo[species].enemyShadowSize;
+        u8 size = GetSpeciesEnemyShadowSize(species);
 
         gBattleSpritesDataPtr->healthBoxesData[battler].shadowSpriteIdPrimary = CreateSprite(&gSpriteTemplate_EnemyShadow,
                                                                                              GetBattlerSpriteCoord(battler, BATTLER_COORD_X),
@@ -1245,23 +1245,23 @@ void SpriteCB_EnemyShadow(struct Sprite *shadowSprite)
     }
     else if (transformSpecies != SPECIES_NONE)
     {
-        xOffset = gSpeciesInfo[transformSpecies].enemyShadowXOffset;
-        yOffset = gSpeciesInfo[transformSpecies].enemyShadowYOffset + 16;
-        size = gSpeciesInfo[transformSpecies].enemyShadowSize;
+        xOffset = GetSpeciesEnemyShadowXOffset(transformSpecies);
+        yOffset = GetSpeciesEnemyShadowYOffset(transformSpecies) + 16;
+        size = GetSpeciesEnemyShadowSize(transformSpecies);
 
         if (B_ENEMY_MON_SHADOW_STYLE >= GEN_4)
             xOffset += (shadowSprite->tSpriteSide == SPRITE_SIDE_LEFT ? -16 : 16);
 
         invisible = (B_ENEMY_MON_SHADOW_STYLE >= GEN_4 && P_GBA_STYLE_SPECIES_GFX == FALSE)
-                  ? gSpeciesInfo[transformSpecies].suppressEnemyShadow
-                  : gSpeciesInfo[transformSpecies].enemyMonElevation == 0;
+                  ? IsSpeciesEnemyShadowSuppressed(transformSpecies)
+                  : GetSpeciesEnemyElevation(transformSpecies) == 0;
     }
     else if (B_ENEMY_MON_SHADOW_STYLE >= GEN_4 && P_GBA_STYLE_SPECIES_GFX == FALSE)
     {
         enum Species species = GetBattlerVisualSpecies(battler);
-        xOffset = gSpeciesInfo[species].enemyShadowXOffset + (shadowSprite->tSpriteSide == SPRITE_SIDE_LEFT ? -16 : 16);
-        yOffset = gSpeciesInfo[species].enemyShadowYOffset + 16;
-        size = gSpeciesInfo[species].enemyShadowSize;
+        xOffset = GetSpeciesEnemyShadowXOffset(species) + (shadowSprite->tSpriteSide == SPRITE_SIDE_LEFT ? -16 : 16);
+        yOffset = GetSpeciesEnemyShadowYOffset(species) + 16;
+        size = GetSpeciesEnemyShadowSize(species);
     }
 
     if (gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
@@ -1303,7 +1303,7 @@ void SetBattlerShadowSpriteCallback(enum BattlerId battler, enum Species species
         if (gBattleSpritesDataPtr->battlerData[battler].transformSpecies != SPECIES_NONE)
             species = gBattleSpritesDataPtr->battlerData[battler].transformSpecies;
 
-        if (gSpeciesInfo[SanitizeSpeciesId(species)].suppressEnemyShadow == FALSE)
+        if (IsSpeciesEnemyShadowSuppressed(species) == FALSE)
         {
             gSprites[gBattleSpritesDataPtr->healthBoxesData[battler].shadowSpriteIdPrimary].callback = SpriteCB_EnemyShadow;
             gSprites[gBattleSpritesDataPtr->healthBoxesData[battler].shadowSpriteIdSecondary].callback = SpriteCB_EnemyShadow;
@@ -1328,7 +1328,7 @@ void SetBattlerShadowSpriteCallback(enum BattlerId battler, enum Species species
         if (gBattleSpritesDataPtr->battlerData[battler].transformSpecies != SPECIES_NONE)
             species = gBattleSpritesDataPtr->battlerData[battler].transformSpecies;
 
-        if (gSpeciesInfo[SanitizeSpeciesId(species)].enemyMonElevation != 0)
+        if (GetSpeciesEnemyElevation(species) != 0)
             gSprites[gBattleSpritesDataPtr->healthBoxesData[battler].shadowSpriteIdPrimary].callback = SpriteCB_EnemyShadow;
         else
             gSprites[gBattleSpritesDataPtr->healthBoxesData[battler].shadowSpriteIdPrimary].callback = SpriteCB_SetInvisible;

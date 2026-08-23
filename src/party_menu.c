@@ -7325,7 +7325,7 @@ static bool8 GetBattleEntryEligibility(struct Pokemon *mon)
         return TRUE;
     default: // Battle Frontier
         species = GetMonData(mon, MON_DATA_SPECIES);
-        if (gSpeciesInfo[species].isFrontierBanned)
+        if (IsSpeciesFrontierBanned(species))
             return FALSE;
         return TRUE;
     }

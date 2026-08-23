@@ -64,8 +64,8 @@ TEST("(Daycare) Pokémon can breed with Ditto if they don't belong to the Ditto 
     );
     STORE_IN_DAYCARE_AND_GET_EGG();
 
-    if (gSpeciesInfo[parentSpecies].eggGroups[0] != EGG_GROUP_NO_EGGS_DISCOVERED
-     && gSpeciesInfo[parentSpecies].eggGroups[0] != EGG_GROUP_DITTO)
+    if (GetSpeciesEggGroup(parentSpecies, 0) != EGG_GROUP_NO_EGGS_DISCOVERED
+     && GetSpeciesEggGroup(parentSpecies, 0) != EGG_GROUP_DITTO)
         EXPECT_NE(GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_SPECIES), SPECIES_NONE);
     else
         EXPECT_EQ(GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_SPECIES), SPECIES_NONE);
