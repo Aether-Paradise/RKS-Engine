@@ -28,7 +28,7 @@ SINGLE_BATTLE_TEST("Sand Spit sets up sandstorm for 5 turns when hit")
 SINGLE_BATTLE_TEST("Sand Spit sets up sandstorm for 8 turns when hit with Smooth Rock")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_SMOOTH_ROCK].holdEffect == HOLD_EFFECT_SMOOTH_ROCK);
+        ASSUME(GetItemHoldEffect(ITEM_SMOOTH_ROCK) == HOLD_EFFECT_SMOOTH_ROCK);
         PLAYER(SPECIES_SANDACONDA) { Ability(ABILITY_SAND_SPIT); Item(ITEM_SMOOTH_ROCK); }
         OPPONENT(SPECIES_LANDORUS);
     } WHEN {

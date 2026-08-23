@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_RING_TARGET].holdEffect == HOLD_EFFECT_RING_TARGET);
+    ASSUME(GetItemHoldEffect(ITEM_RING_TARGET) == HOLD_EFFECT_RING_TARGET);
 }
 
 SINGLE_BATTLE_TEST("Ring Target removes a holder's type immunity")
@@ -41,8 +41,8 @@ SINGLE_BATTLE_TEST("Ring Target does not make Flying-type holders grounded")
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_GRASSY_TERRAIN) == EFFECT_TERRAIN);
         ASSUME(GetMoveTerrainType(MOVE_GRASSY_TERRAIN) == B_TERRAIN_GRASSY);
-        ASSUME(gItemsInfo[ITEM_GRASSY_SEED].holdEffect == HOLD_EFFECT_TERRAIN_SEED);
-        ASSUME(gItemsInfo[ITEM_GRASSY_SEED].holdEffectParam == HOLD_EFFECT_PARAM_GRASSY_TERRAIN);
+        ASSUME(GetItemHoldEffect(ITEM_GRASSY_SEED) == HOLD_EFFECT_TERRAIN_SEED);
+        ASSUME(GetItemHoldEffectParam(ITEM_GRASSY_SEED) == HOLD_EFFECT_PARAM_GRASSY_TERRAIN);
         ASSUME(GetSpeciesType(SPECIES_PIDGEY, 0) == TYPE_FLYING || GetSpeciesType(SPECIES_PIDGEY, 1) == TYPE_FLYING);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_PIDGEY) { Item(ITEM_RING_TARGET); MaxHP(100); HP(1); }

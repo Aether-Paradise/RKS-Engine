@@ -25,7 +25,7 @@ SINGLE_BATTLE_TEST("Emergency Exit switches out when taking 50% max-hp damage")
 SINGLE_BATTLE_TEST("Emergency Exit does not switch out when going below 50% max-HP but healed via held item back above the threshold")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_SITRUS_BERRY].holdEffect == HOLD_EFFECT_RESTORE_PCT_HP);
+        ASSUME(GetItemHoldEffect(ITEM_SITRUS_BERRY) == HOLD_EFFECT_RESTORE_PCT_HP);
         PLAYER(SPECIES_WOBBUFFET)
         OPPONENT(SPECIES_GOLISOPOD) { Ability(ABILITY_EMERGENCY_EXIT); MaxHP(263); HP(262); Item(ITEM_SITRUS_BERRY); }
         OPPONENT(SPECIES_WOBBUFFET);
@@ -42,7 +42,7 @@ SINGLE_BATTLE_TEST("Emergency Exit does not switch out when going below 50% max-
 SINGLE_BATTLE_TEST("Emergency Exit switches out when going below 50% max-HP but healing via held item is not enough to go back above the threshold")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffect == HOLD_EFFECT_RESTORE_HP);
+        ASSUME(GetItemHoldEffect(ITEM_ORAN_BERRY) == HOLD_EFFECT_RESTORE_HP);
         PLAYER(SPECIES_WOBBUFFET)
         OPPONENT(SPECIES_GOLISOPOD) { Ability(ABILITY_EMERGENCY_EXIT); MaxHP(263); HP(133); Item(ITEM_ORAN_BERRY); }
         OPPONENT(SPECIES_WOBBUFFET);
@@ -128,7 +128,7 @@ SINGLE_BATTLE_TEST("Emergency Exit doesn't activate when taking residual damage 
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_SANDSTORM) == EFFECT_WEATHER);
         ASSUME(GetMoveWeatherType(MOVE_SANDSTORM) == BATTLE_WEATHER_SANDSTORM);
-        ASSUME(gItemsInfo[ITEM_SITRUS_BERRY].holdEffect == HOLD_EFFECT_RESTORE_PCT_HP);
+        ASSUME(GetItemHoldEffect(ITEM_SITRUS_BERRY) == HOLD_EFFECT_RESTORE_PCT_HP);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_GOLISOPOD) { Ability(ABILITY_EMERGENCY_EXIT); MaxHP(263); HP(134); Item(ITEM_SITRUS_BERRY); }
         OPPONENT(SPECIES_WOBBUFFET);

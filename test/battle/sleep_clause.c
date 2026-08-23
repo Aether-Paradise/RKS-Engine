@@ -756,7 +756,7 @@ SINGLE_BATTLE_TEST("Sleep Clause: Sleep clause is deactivated when a sleeping mo
         ASSUME(GetMoveEffect(MOVE_PURIFY) == EFFECT_PURIFY);
         ASSUME(GetMoveEffect(MOVE_TAKE_HEART) == EFFECT_TAKE_HEART);
         ASSUME(GetMoveEffect(MOVE_AROMATHERAPY) == EFFECT_HEAL_BELL);
-        ASSUME(gItemsInfo[ITEM_CHESTO_BERRY].holdEffect == HOLD_EFFECT_CURE_SLP);
+        ASSUME(GetItemHoldEffect(ITEM_CHESTO_BERRY) == HOLD_EFFECT_CURE_SLP);
         PLAYER(SPECIES_ZIGZAGOON) { Item(ITEM_CHESTO_BERRY); }
         OPPONENT(SPECIES_ZIGZAGOON) { Moves(MOVE_SLEEP_TALK, move); }
     } WHEN {
@@ -919,8 +919,8 @@ SINGLE_BATTLE_TEST("Sleep Clause: Sleep clause is deactivated when a sleeping mo
         FLAG_SET(B_FLAG_SLEEP_CLAUSE);
         ASSUME(GetMoveEffect(MOVE_SPORE) == EFFECT_NON_VOLATILE_STATUS);
         ASSUME(GetMoveNonVolatileStatus(MOVE_SPORE) == MOVE_EFFECT_SLEEP);
-        ASSUME(gItemsInfo[ITEM_CHESTO_BERRY].holdEffect == HOLD_EFFECT_CURE_SLP);
-        ASSUME(gItemsInfo[ITEM_LUM_BERRY].holdEffect == HOLD_EFFECT_CURE_STATUS);
+        ASSUME(GetItemHoldEffect(ITEM_CHESTO_BERRY) == HOLD_EFFECT_CURE_SLP);
+        ASSUME(GetItemHoldEffect(ITEM_LUM_BERRY) == HOLD_EFFECT_CURE_STATUS);
         PLAYER(SPECIES_ZIGZAGOON);
         OPPONENT(SPECIES_ZIGZAGOON) { Item(heldItem); }
     } WHEN {
@@ -952,8 +952,8 @@ DOUBLE_BATTLE_TEST("Sleep Clause: Sleep clause is deactivated when a sleeping mo
         ASSUME(GetMoveEffect(MOVE_SPORE) == EFFECT_NON_VOLATILE_STATUS);
         ASSUME(GetMoveNonVolatileStatus(MOVE_SPORE) == MOVE_EFFECT_SLEEP);
         ASSUME(GetMoveEffect(MOVE_FLING) == EFFECT_FLING);
-        ASSUME(gItemsInfo[ITEM_CHESTO_BERRY].holdEffect == HOLD_EFFECT_CURE_SLP);
-        ASSUME(gItemsInfo[ITEM_LUM_BERRY].holdEffect == HOLD_EFFECT_CURE_STATUS);
+        ASSUME(GetItemHoldEffect(ITEM_CHESTO_BERRY) == HOLD_EFFECT_CURE_SLP);
+        ASSUME(GetItemHoldEffect(ITEM_LUM_BERRY) == HOLD_EFFECT_CURE_STATUS);
         PLAYER(SPECIES_ZIGZAGOON);
         PLAYER(SPECIES_ZIGZAGOON) { Item(heldItem); }
         OPPONENT(SPECIES_ZIGZAGOON);
@@ -985,7 +985,7 @@ SINGLE_BATTLE_TEST("Sleep Clause: Sleep clause is deactivated when a sleeping mo
         FLAG_SET(B_FLAG_SLEEP_CLAUSE);
         ASSUME(GetMoveEffect(MOVE_SPORE) == EFFECT_NON_VOLATILE_STATUS);
         ASSUME(GetMoveNonVolatileStatus(MOVE_SPORE) == MOVE_EFFECT_SLEEP);
-        ASSUME(gItemsInfo[ITEM_AWAKENING].battleUsage == EFFECT_ITEM_CURE_STATUS);
+        ASSUME(GetItemBattleUsage(ITEM_AWAKENING) == EFFECT_ITEM_CURE_STATUS);
         PLAYER(SPECIES_ZIGZAGOON);
         OPPONENT(SPECIES_ZIGZAGOON);
     } WHEN {
@@ -1135,7 +1135,7 @@ SINGLE_BATTLE_TEST("Sleep Clause: Sleep clause is deactivated when a sleeping mo
         FLAG_SET(B_FLAG_SLEEP_CLAUSE);
         ASSUME(GetMoveEffect(MOVE_SPORE) == EFFECT_NON_VOLATILE_STATUS);
         ASSUME(GetMoveNonVolatileStatus(MOVE_SPORE) == MOVE_EFFECT_SLEEP);
-        ASSUME(gItemsInfo[ITEM_LAGGING_TAIL].holdEffect == HOLD_EFFECT_LAGGING_TAIL);
+        ASSUME(GetItemHoldEffect(ITEM_LAGGING_TAIL) == HOLD_EFFECT_LAGGING_TAIL);
         PLAYER(SPECIES_ZIGZAGOON)
         PLAYER(SPECIES_DELIBIRD) { Ability(ability); }
         OPPONENT(SPECIES_DITTO) { Ability(ABILITY_IMPOSTER); }
@@ -1168,7 +1168,7 @@ AI_SINGLE_BATTLE_TEST("Sleep Clause: AI will use sleep moves again when sleep cl
         FLAG_SET(B_FLAG_SLEEP_CLAUSE);
         ASSUME(GetMoveEffect(MOVE_SPORE) == EFFECT_NON_VOLATILE_STATUS);
         ASSUME(GetMoveNonVolatileStatus(MOVE_SPORE) == MOVE_EFFECT_SLEEP);
-        ASSUME(gItemsInfo[ITEM_CHESTO_BERRY].holdEffect == HOLD_EFFECT_CURE_SLP);
+        ASSUME(GetItemHoldEffect(ITEM_CHESTO_BERRY) == HOLD_EFFECT_CURE_SLP);
         AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_CHESTO_BERRY); }
         OPPONENT(SPECIES_BRELOOM) { Moves(MOVE_SPORE, MOVE_MACH_PUNCH); }
@@ -1894,7 +1894,7 @@ MULTI_BATTLE_TEST("Sleep Clause remains active when a partner's Chesto Berry cur
         ASSUME(GetMoveEffect(MOVE_SPORE) == EFFECT_NON_VOLATILE_STATUS);
         ASSUME(GetMoveNonVolatileStatus(MOVE_SPORE) == MOVE_EFFECT_SLEEP);
         ASSUME(GetMoveEffect(MOVE_REST) == EFFECT_REST);
-        ASSUME(gItemsInfo[ITEM_CHESTO_BERRY].holdEffect == HOLD_EFFECT_CURE_SLP);
+        ASSUME(GetItemHoldEffect(ITEM_CHESTO_BERRY) == HOLD_EFFECT_CURE_SLP);
         PLAYER(SPECIES_WOBBUFFET);
         PARTNER(SPECIES_WOBBUFFET) { HP(1); Item(ITEM_CHESTO_BERRY); }
         OPPONENT_A(SPECIES_WOBBUFFET);

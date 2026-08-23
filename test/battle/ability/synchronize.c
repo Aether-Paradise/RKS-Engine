@@ -145,8 +145,8 @@ SINGLE_BATTLE_TEST("Synchronize does not trigger from Toxic Orb or Flame Orb")
     PARAMETRIZE { item = ITEM_FLAME_ORB; status1 = STATUS1_BURN; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_TOXIC_ORB].holdEffect == HOLD_EFFECT_TOXIC_ORB);
-        ASSUME(gItemsInfo[ITEM_FLAME_ORB].holdEffect == HOLD_EFFECT_FLAME_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_TOXIC_ORB) == HOLD_EFFECT_TOXIC_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_FLAME_ORB) == HOLD_EFFECT_FLAME_ORB);
         PLAYER(SPECIES_ABRA) { Ability(ABILITY_SYNCHRONIZE); Item(item); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {

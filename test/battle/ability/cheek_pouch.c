@@ -7,8 +7,8 @@ SINGLE_BATTLE_TEST("Cheek Pouch restores 33% max HP")
 
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_SUPER_FANG) == EFFECT_FIXED_PERCENT_DAMAGE);
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffect == HOLD_EFFECT_RESTORE_HP);
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffectParam == 10);
+        ASSUME(GetItemHoldEffect(ITEM_ORAN_BERRY) == HOLD_EFFECT_RESTORE_HP);
+        ASSUME(GetItemHoldEffectParam(ITEM_ORAN_BERRY) == 10);
         PLAYER(SPECIES_GREEDENT) { Ability(ABILITY_CHEEK_POUCH); MaxHP(60); HP(31); Item(ITEM_ORAN_BERRY); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -32,8 +32,8 @@ SINGLE_BATTLE_TEST("Cheek Pouch restores HP after the berry's effect")
 
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_SUPER_FANG) == EFFECT_FIXED_PERCENT_DAMAGE);
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffect == HOLD_EFFECT_RESTORE_HP);
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffectParam == 10);
+        ASSUME(GetItemHoldEffect(ITEM_ORAN_BERRY) == HOLD_EFFECT_RESTORE_HP);
+        ASSUME(GetItemHoldEffectParam(ITEM_ORAN_BERRY) == 10);
         PLAYER(SPECIES_GREEDENT) { Ability(ABILITY_CHEEK_POUCH); MaxHP(60); HP(31); Item(ITEM_ORAN_BERRY); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -60,8 +60,8 @@ SINGLE_BATTLE_TEST("Cheek Pouch activates via Bug Bite/Pluck if it would trigger
 
     GIVEN {
         ASSUME(MoveHasAdditionalEffect(move, MOVE_EFFECT_BUG_BITE));
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffect == HOLD_EFFECT_RESTORE_HP);
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffectParam == 10);
+        ASSUME(GetItemHoldEffect(ITEM_ORAN_BERRY) == HOLD_EFFECT_RESTORE_HP);
+        ASSUME(GetItemHoldEffectParam(ITEM_ORAN_BERRY) == 10);
         PLAYER(SPECIES_GREEDENT) { Ability(ABILITY_CHEEK_POUCH); MaxHP(60); HP(30); }
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_ORAN_BERRY); }
     } WHEN {
@@ -85,8 +85,8 @@ SINGLE_BATTLE_TEST("Cheek Pouch activates when receiving from Fling if it would 
 
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_FLING) == EFFECT_FLING);
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffect == HOLD_EFFECT_RESTORE_HP);
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffectParam == 10);
+        ASSUME(GetItemHoldEffect(ITEM_ORAN_BERRY) == HOLD_EFFECT_RESTORE_HP);
+        ASSUME(GetItemHoldEffectParam(ITEM_ORAN_BERRY) == 10);
         PLAYER(SPECIES_WOBBUFFET) { Attack(1); Item(ITEM_ORAN_BERRY); }
         OPPONENT(SPECIES_GREEDENT) { Ability(ABILITY_CHEEK_POUCH); MaxHP(60); HP(30); }
     } WHEN {
@@ -137,8 +137,8 @@ SINGLE_BATTLE_TEST("Cheek Pouch doesn't activate when user uses Fling")
 SINGLE_BATTLE_TEST("Cheek Pouch doesn't activate when using a berry from the bag")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffect == HOLD_EFFECT_RESTORE_HP);
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffectParam == 10);
+        ASSUME(GetItemHoldEffect(ITEM_ORAN_BERRY) == HOLD_EFFECT_RESTORE_HP);
+        ASSUME(GetItemHoldEffectParam(ITEM_ORAN_BERRY) == 10);
         PLAYER(SPECIES_GREEDENT) { Ability(ABILITY_CHEEK_POUCH); MaxHP(60); HP(20); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -153,8 +153,8 @@ SINGLE_BATTLE_TEST("Cheek Pouch doesn't activate under Heal Block's effect")
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_HEAL_BLOCK) == EFFECT_HEAL_BLOCK);
         ASSUME(GetMoveEffect(MOVE_SUPER_FANG) == EFFECT_FIXED_PERCENT_DAMAGE);
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffect == HOLD_EFFECT_RESTORE_HP);
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffectParam == 10);
+        ASSUME(GetItemHoldEffect(ITEM_ORAN_BERRY) == HOLD_EFFECT_RESTORE_HP);
+        ASSUME(GetItemHoldEffectParam(ITEM_ORAN_BERRY) == 10);
         PLAYER(SPECIES_GREEDENT) { Ability(ABILITY_CHEEK_POUCH); MaxHP(60); HP(31); Item(ITEM_ORAN_BERRY); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {

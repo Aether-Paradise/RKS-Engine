@@ -204,7 +204,7 @@ SINGLE_BATTLE_TEST("Weather Ball does not double its power in Sunlight or Rain i
     PARAMETRIZE { setupMove = MOVE_RAIN_DANCE; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_UTILITY_UMBRELLA].holdEffect == HOLD_EFFECT_UTILITY_UMBRELLA);
+        ASSUME(GetItemHoldEffect(ITEM_UTILITY_UMBRELLA) == HOLD_EFFECT_UTILITY_UMBRELLA);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_UTILITY_UMBRELLA); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -228,7 +228,7 @@ SINGLE_BATTLE_TEST("Weather Ball doesn't change type in Sunlight or Rain if user
     PARAMETRIZE { setupMove = MOVE_RAIN_DANCE; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_UTILITY_UMBRELLA].holdEffect == HOLD_EFFECT_UTILITY_UMBRELLA);
+        ASSUME(GetItemHoldEffect(ITEM_UTILITY_UMBRELLA) == HOLD_EFFECT_UTILITY_UMBRELLA);
         ASSUME(GetMoveType(MOVE_WEATHER_BALL) == TYPE_NORMAL);
         ASSUME(GetSpeciesType(SPECIES_GASTLY, 0) == TYPE_GHOST);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_UTILITY_UMBRELLA); }

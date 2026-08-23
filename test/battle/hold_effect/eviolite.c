@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_EVIOLITE].holdEffect == HOLD_EFFECT_EVIOLITE);
+    ASSUME(GetItemHoldEffect(ITEM_EVIOLITE) == HOLD_EFFECT_EVIOLITE);
 }
 
 SINGLE_BATTLE_TEST("Eviolite boosts Defense and Sp. Def for unevolved Pokemon", s16 damage)

@@ -49,7 +49,7 @@ SINGLE_BATTLE_TEST("Drizzle sets up rain for 8 turns with Damp Rock (Gen6+)")
 {
     GIVEN {
         WITH_CONFIG(B_ABILITY_WEATHER, GEN_6);
-        ASSUME(gItemsInfo[ITEM_DAMP_ROCK].holdEffect == HOLD_EFFECT_DAMP_ROCK);
+        ASSUME(GetItemHoldEffect(ITEM_DAMP_ROCK) == HOLD_EFFECT_DAMP_ROCK);
         PLAYER(SPECIES_POLITOED) { Ability(ABILITY_DRIZZLE); Item(ITEM_DAMP_ROCK); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {

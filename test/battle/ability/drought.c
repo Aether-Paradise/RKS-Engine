@@ -27,7 +27,7 @@ SINGLE_BATTLE_TEST("Drought sets up sun for 8 turns with Heat Rock (Gen6+)")
 {
     GIVEN {
         WITH_CONFIG(B_ABILITY_WEATHER, GEN_6);
-        ASSUME(gItemsInfo[ITEM_HEAT_ROCK].holdEffect == HOLD_EFFECT_HEAT_ROCK);
+        ASSUME(GetItemHoldEffect(ITEM_HEAT_ROCK) == HOLD_EFFECT_HEAT_ROCK);
         PLAYER(SPECIES_NINETALES) { Ability(ABILITY_DROUGHT); Item(ITEM_HEAT_ROCK); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {

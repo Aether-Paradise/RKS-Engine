@@ -5,8 +5,8 @@ DOUBLE_BATTLE_TEST("Symbiosis transfers its item to an ally after it consumes an
 {
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_TRICK_ROOM) == EFFECT_TRICK_ROOM);
-        ASSUME(gItemsInfo[ITEM_ROOM_SERVICE].holdEffect == HOLD_EFFECT_ROOM_SERVICE);
-        ASSUME(gItemsInfo[ITEM_TOXIC_ORB].holdEffect == HOLD_EFFECT_TOXIC_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_ROOM_SERVICE) == HOLD_EFFECT_ROOM_SERVICE);
+        ASSUME(GetItemHoldEffect(ITEM_TOXIC_ORB) == HOLD_EFFECT_TOXIC_ORB);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_ROOM_SERVICE); }
         PLAYER(SPECIES_ORANGURU) { Ability(ABILITY_SYMBIOSIS); Item(ITEM_TOXIC_ORB); }
         OPPONENT(SPECIES_KIRLIA);
@@ -33,8 +33,8 @@ DOUBLE_BATTLE_TEST("Symbiosis triggers after partners berry eaten from bug bite"
 {
     GIVEN {
         ASSUME(MoveHasAdditionalEffect(MOVE_BUG_BITE, MOVE_EFFECT_BUG_BITE));
-        ASSUME(gItemsInfo[ITEM_LIECHI_BERRY].holdEffect == HOLD_EFFECT_ATTACK_UP);
-        ASSUME(gItemsInfo[ITEM_TOXIC_ORB].holdEffect == HOLD_EFFECT_TOXIC_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_LIECHI_BERRY) == HOLD_EFFECT_ATTACK_UP);
+        ASSUME(GetItemHoldEffect(ITEM_TOXIC_ORB) == HOLD_EFFECT_TOXIC_ORB);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_LIECHI_BERRY); }
         PLAYER(SPECIES_ORANGURU) { Ability(ABILITY_SYMBIOSIS); Item(ITEM_TOXIC_ORB); }
         OPPONENT(SPECIES_STARAVIA);
@@ -61,8 +61,8 @@ DOUBLE_BATTLE_TEST("Symbiosis triggers after partner bestows its item")
 {
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_BESTOW) == EFFECT_BESTOW);
-        ASSUME(gItemsInfo[ITEM_FLAME_ORB].holdEffect == HOLD_EFFECT_FLAME_ORB);
-        ASSUME(gItemsInfo[ITEM_TOXIC_ORB].holdEffect == HOLD_EFFECT_TOXIC_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_FLAME_ORB) == HOLD_EFFECT_FLAME_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_TOXIC_ORB) == HOLD_EFFECT_TOXIC_ORB);
         PLAYER(SPECIES_WOBBUFFET) { Speed(100); Item(ITEM_FLAME_ORB); }
         PLAYER(SPECIES_ORANGURU) { Speed(75); Ability(ABILITY_SYMBIOSIS); Item(ITEM_TOXIC_ORB); }
         OPPONENT(SPECIES_STARAVIA) { Speed(50); }
@@ -92,8 +92,8 @@ DOUBLE_BATTLE_TEST("Symbiosis triggers after partner flings its item")
 {
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_FLING) == EFFECT_FLING);
-        ASSUME(gItemsInfo[ITEM_FLAME_ORB].holdEffect == HOLD_EFFECT_FLAME_ORB);
-        ASSUME(gItemsInfo[ITEM_TOXIC_ORB].holdEffect == HOLD_EFFECT_TOXIC_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_FLAME_ORB) == HOLD_EFFECT_FLAME_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_TOXIC_ORB) == HOLD_EFFECT_TOXIC_ORB);
         PLAYER(SPECIES_WOBBUFFET) { Speed(100); Item(ITEM_FLAME_ORB); }
         PLAYER(SPECIES_ORANGURU) { Speed(75); Ability(ABILITY_SYMBIOSIS); Item(ITEM_TOXIC_ORB); }
         OPPONENT(SPECIES_STARAVIA) { Speed(50); }
@@ -119,8 +119,8 @@ DOUBLE_BATTLE_TEST("Symbiosis triggers after partner flings its item")
 DOUBLE_BATTLE_TEST("Symbiosis transfers its item to an ally after it consumes a weakness berry")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_CHILAN_BERRY].holdEffect == HOLD_EFFECT_RESIST_BERRY);
-        ASSUME(gItemsInfo[ITEM_TOXIC_ORB].holdEffect == HOLD_EFFECT_TOXIC_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_CHILAN_BERRY) == HOLD_EFFECT_RESIST_BERRY);
+        ASSUME(GetItemHoldEffect(ITEM_TOXIC_ORB) == HOLD_EFFECT_TOXIC_ORB);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_CHILAN_BERRY); }
         PLAYER(SPECIES_ORANGURU) { Ability(ABILITY_SYMBIOSIS); Item(ITEM_TOXIC_ORB); }
         OPPONENT(SPECIES_WOBBUFFET);
@@ -143,7 +143,7 @@ DOUBLE_BATTLE_TEST("Symbiosis transfers its item after Gem consumption and move 
     GIVEN {
         WITH_CONFIG(B_SYMBIOSIS_GEMS, GEN_7);
         ASSUME(GetItemHoldEffect(ITEM_NORMAL_GEM) == HOLD_EFFECT_GEMS);
-        ASSUME(gItemsInfo[ITEM_TOXIC_ORB].holdEffect == HOLD_EFFECT_TOXIC_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_TOXIC_ORB) == HOLD_EFFECT_TOXIC_ORB);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_NORMAL_GEM); }
         PLAYER(SPECIES_ORANGURU) { Ability(ABILITY_SYMBIOSIS); Item(ITEM_TOXIC_ORB); }
         OPPONENT(SPECIES_WOBBUFFET);
@@ -167,7 +167,7 @@ DOUBLE_BATTLE_TEST("Symbiosis transfers its item after Gem consumption, but befo
     GIVEN {
         WITH_CONFIG(B_SYMBIOSIS_GEMS, GEN_6);
         ASSUME(GetItemHoldEffect(ITEM_NORMAL_GEM) == HOLD_EFFECT_GEMS);
-        ASSUME(gItemsInfo[ITEM_TOXIC_ORB].holdEffect == HOLD_EFFECT_TOXIC_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_TOXIC_ORB) == HOLD_EFFECT_TOXIC_ORB);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_NORMAL_GEM); }
         PLAYER(SPECIES_ORANGURU) { Ability(ABILITY_SYMBIOSIS); Item(ITEM_TOXIC_ORB); }
         OPPONENT(SPECIES_WOBBUFFET);
@@ -189,7 +189,7 @@ DOUBLE_BATTLE_TEST("Symbiosis transfers its item after Gem consumption, but befo
 DOUBLE_BATTLE_TEST("Symbiosis does not transfer its item after an ally's Eject Button activates")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_EJECT_BUTTON].holdEffect == HOLD_EFFECT_EJECT_BUTTON);
+        ASSUME(GetItemHoldEffect(ITEM_EJECT_BUTTON) == HOLD_EFFECT_EJECT_BUTTON);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_EJECT_BUTTON); }
         PLAYER(SPECIES_ORANGURU) { Ability(ABILITY_SYMBIOSIS); Item(ITEM_POTION); }
         PLAYER(SPECIES_WOBBUFFET);
@@ -210,7 +210,7 @@ DOUBLE_BATTLE_TEST("Symbiosis does not transfer its item after an ally's Eject B
 DOUBLE_BATTLE_TEST("Symbiosis does not transfer its item after an ally's Eject Pack activates")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_EJECT_PACK].holdEffect == HOLD_EFFECT_EJECT_PACK);
+        ASSUME(GetItemHoldEffect(ITEM_EJECT_PACK) == HOLD_EFFECT_EJECT_PACK);
         ASSUME_STAT_CHANGE(MOVE_CHARM, attack: -2);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_EJECT_PACK); }
         PLAYER(SPECIES_ORANGURU) { Ability(ABILITY_SYMBIOSIS); Item(ITEM_POTION); }
@@ -234,8 +234,8 @@ DOUBLE_BATTLE_TEST("Symbiosis triggers after an ally's Cheek Pouch activates")
 {
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_SUPER_FANG) == EFFECT_FIXED_PERCENT_DAMAGE);
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffect == HOLD_EFFECT_RESTORE_HP);
-        ASSUME(gItemsInfo[ITEM_ORAN_BERRY].holdEffectParam == 10);
+        ASSUME(GetItemHoldEffect(ITEM_ORAN_BERRY) == HOLD_EFFECT_RESTORE_HP);
+        ASSUME(GetItemHoldEffectParam(ITEM_ORAN_BERRY) == 10);
         PLAYER(SPECIES_DEDENNE) { Ability(ABILITY_CHEEK_POUCH); MaxHP(60); HP(31); Item(ITEM_ORAN_BERRY); }
         PLAYER(SPECIES_ORANGURU) { Ability(ABILITY_SYMBIOSIS); Item(ITEM_POTION); }
         OPPONENT(SPECIES_WOBBUFFET);

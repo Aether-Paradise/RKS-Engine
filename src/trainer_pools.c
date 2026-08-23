@@ -233,9 +233,9 @@ static u32 PickMonFromPool(const struct Trainer *trainer, u8 *poolIndexArray, u3
                     poolIndexArray[currIndex] = POOL_SLOT_DISABLED;
                 }
             }
-            if (rules->megaStoneClause && gItemsInfo[currentItem].sortType == ITEM_TYPE_MEGA_STONE && gItemsInfo[chosenItem].sortType == ITEM_TYPE_MEGA_STONE)
+            if (rules->megaStoneClause && GetItemSortType(currentItem) == ITEM_TYPE_MEGA_STONE && GetItemSortType(chosenItem) == ITEM_TYPE_MEGA_STONE)
                 poolIndexArray[currIndex] = POOL_SLOT_DISABLED;
-            if (rules->zCrystalClause && gItemsInfo[currentItem].sortType == ITEM_TYPE_Z_CRYSTAL && gItemsInfo[chosenItem].sortType == ITEM_TYPE_Z_CRYSTAL)
+            if (rules->zCrystalClause && GetItemSortType(currentItem) == ITEM_TYPE_Z_CRYSTAL && GetItemSortType(chosenItem) == ITEM_TYPE_Z_CRYSTAL)
                 poolIndexArray[currIndex] = POOL_SLOT_DISABLED;
         }
     }

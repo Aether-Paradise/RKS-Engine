@@ -178,7 +178,7 @@ DOUBLE_BATTLE_TEST("Aroma Veil protects the Pokémon's side from Destiny Knot in
     PARAMETRIZE { moveTarget = playerRight; }
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_ATTRACT) == EFFECT_ATTRACT);
-        ASSUME(gItemsInfo[ITEM_DESTINY_KNOT].holdEffect == HOLD_EFFECT_DESTINY_KNOT);
+        ASSUME(GetItemHoldEffect(ITEM_DESTINY_KNOT) == HOLD_EFFECT_DESTINY_KNOT);
         PLAYER(SPECIES_AROMATISSE) { Ability(ABILITY_AROMA_VEIL); Gender(MON_MALE); }
         PLAYER(SPECIES_WOBBUFFET) { Gender(MON_MALE); }
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_DESTINY_KNOT); Gender(MON_FEMALE); }

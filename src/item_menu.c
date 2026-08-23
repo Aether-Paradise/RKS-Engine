@@ -2995,8 +2995,8 @@ static s32 CompareItemsByType(enum Pocket pocketId, struct ItemSlot item1, struc
     else if (item2.itemId == ITEM_NONE)
         return -1;
 
-    enum ItemSortType type1 = gItemsInfo[item1.itemId].sortType;
-    enum ItemSortType type2 = gItemsInfo[item2.itemId].sortType;
+    enum ItemSortType type1 = GetItemSortType(item1.itemId);
+    enum ItemSortType type2 = GetItemSortType(item2.itemId);
 
     // Uncategorized items go last.
     if (type1 != ITEM_TYPE_UNCATEGORIZED && type2 == ITEM_TYPE_UNCATEGORIZED)

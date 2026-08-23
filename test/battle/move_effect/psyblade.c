@@ -16,7 +16,7 @@ SINGLE_BATTLE_TEST("Psyblade's power increases by 50% on Electric Terrain even i
     PARAMETRIZE { terrain = TRUE;  airBalloon = TRUE; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_AIR_BALLOON].holdEffect == HOLD_EFFECT_AIR_BALLOON);
+        ASSUME(GetItemHoldEffect(ITEM_AIR_BALLOON) == HOLD_EFFECT_AIR_BALLOON);
         ASSUME(GetMoveEffect(MOVE_ELECTRIC_TERRAIN) == EFFECT_TERRAIN);
         ASSUME(GetMoveTerrainType(MOVE_ELECTRIC_TERRAIN) == B_TERRAIN_ELECTRIC);
         ASSUME(GetMoveTerrainBoost_Terrain(MOVE_PSYBLADE) == B_TERRAIN_ELECTRIC);

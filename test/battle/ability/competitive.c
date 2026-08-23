@@ -438,7 +438,7 @@ SINGLE_BATTLE_TEST("Competitive doesn't activate when Room Service lowers Speed"
 {
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_TRICK_ROOM) == EFFECT_TRICK_ROOM);
-        ASSUME(gItemsInfo[ITEM_ROOM_SERVICE].holdEffect == HOLD_EFFECT_ROOM_SERVICE);
+        ASSUME(GetItemHoldEffect(ITEM_ROOM_SERVICE) == HOLD_EFFECT_ROOM_SERVICE);
         PLAYER(SPECIES_IGGLYBUFF) { Ability(ABILITY_COMPETITIVE); Item(ITEM_ROOM_SERVICE); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {

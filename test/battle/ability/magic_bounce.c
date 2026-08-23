@@ -242,7 +242,7 @@ SINGLE_BATTLE_TEST("Magic Bounce bounces back status moves before Magic Coat")
 DOUBLE_BATTLE_TEST("Magic Bounce will trigger after all valid targets have been targetted")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_EJECT_PACK].holdEffect == HOLD_EFFECT_EJECT_PACK);
+        ASSUME(GetItemHoldEffect(ITEM_EJECT_PACK) == HOLD_EFFECT_EJECT_PACK);
         ASSUME_STAT_CHANGE(MOVE_LEER, defense: -1);
         ASSUME(GetMoveTarget(MOVE_LEER) == TARGET_BOTH);
         PLAYER(SPECIES_ABRA);

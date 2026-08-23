@@ -218,7 +218,7 @@ SINGLE_BATTLE_TEST("Clear Body, Full Metal Body, and White Smoke don't prevent S
         PARAMETRIZE{ species = SPECIES_TORKOAL; ability = ABILITY_WHITE_SMOKE; heldItem = heldItems[j]; }
     }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_IRON_BALL].holdEffect == HOLD_EFFECT_IRON_BALL);
+        ASSUME(GetItemHoldEffect(ITEM_IRON_BALL) == HOLD_EFFECT_IRON_BALL);
         PLAYER(SPECIES_WOBBUFFET) { Speed(4); }
         OPPONENT(species) { Speed(6); Ability(ability); Item(heldItem); }
     } WHEN {

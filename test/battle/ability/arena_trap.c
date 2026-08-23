@@ -67,7 +67,7 @@ SINGLE_BATTLE_TEST("Arena Trap doesn't prevent switch outs via moves that switch
 SINGLE_BATTLE_TEST("Arena Trap doesn't prevent switch outs via Shed Shell")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_SHED_SHELL].holdEffect == HOLD_EFFECT_SHED_SHELL);
+        ASSUME(GetItemHoldEffect(ITEM_SHED_SHELL) == HOLD_EFFECT_SHED_SHELL);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_SHED_SHELL); } // Grounded
         PLAYER(SPECIES_WYNAUT);
         OPPONENT(SPECIES_DIGLETT) { Ability(ABILITY_ARENA_TRAP); }
@@ -97,7 +97,7 @@ WILD_BATTLE_TEST("Arena Trap prevents switching but Run Away allows fleeing")
 WILD_BATTLE_TEST("Arena Trap prevents switching but Smoke Ball allows fleeing")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_SMOKE_BALL].holdEffect == HOLD_EFFECT_CAN_ALWAYS_RUN);
+        ASSUME(GetItemHoldEffect(ITEM_SMOKE_BALL) == HOLD_EFFECT_CAN_ALWAYS_RUN);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_SMOKE_BALL); }
         OPPONENT(SPECIES_DIGLETT) { Ability(ABILITY_ARENA_TRAP); }
     } WHEN {

@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_CLEAR_AMULET].holdEffect == HOLD_EFFECT_CLEAR_AMULET);
+    ASSUME(GetItemHoldEffect(ITEM_CLEAR_AMULET) == HOLD_EFFECT_CLEAR_AMULET);
 }
 
 SINGLE_BATTLE_TEST("Clear Amulet prevents Intimidate")

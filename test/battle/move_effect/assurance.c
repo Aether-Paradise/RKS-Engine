@@ -96,7 +96,7 @@ SINGLE_BATTLE_TEST("Assurance doubles in power if the target has been damaged by
     s16 hits[2];
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_LIFE_ORB].holdEffect == HOLD_EFFECT_LIFE_ORB);
+        ASSUME(GetItemHoldEffect(ITEM_LIFE_ORB) == HOLD_EFFECT_LIFE_ORB);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_LIFE_ORB); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -166,7 +166,7 @@ SINGLE_BATTLE_TEST("Assurance doubles in power if the target has been damaged by
     s16 hits[2];
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_ROCKY_HELMET].holdEffect == HOLD_EFFECT_ROCKY_HELMET);
+        ASSUME(GetItemHoldEffect(ITEM_ROCKY_HELMET) == HOLD_EFFECT_ROCKY_HELMET);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_ROCKY_HELMET); }
     } WHEN {
@@ -314,7 +314,7 @@ SINGLE_BATTLE_TEST("Assurance doubles in power if the target has been damaged by
     s16 hits[2];
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_JABOCA_BERRY].holdEffect == HOLD_EFFECT_JABOCA_BERRY);
+        ASSUME(GetItemHoldEffect(ITEM_JABOCA_BERRY) == HOLD_EFFECT_JABOCA_BERRY);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_JABOCA_BERRY); }
     } WHEN {
@@ -339,7 +339,7 @@ SINGLE_BATTLE_TEST("Assurance doubles in power if the target has been damaged by
 
     GIVEN {
         ASSUME(GetMoveCategory(MOVE_SWIFT) == DAMAGE_CATEGORY_SPECIAL);
-        ASSUME(gItemsInfo[ITEM_ROWAP_BERRY].holdEffect == HOLD_EFFECT_ROWAP_BERRY);
+        ASSUME(GetItemHoldEffect(ITEM_ROWAP_BERRY) == HOLD_EFFECT_ROWAP_BERRY);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_ROWAP_BERRY); }
     } WHEN {

@@ -633,7 +633,7 @@ AI_SINGLE_BATTLE_TEST("AI stays choice locked into moves in spite of the player'
     PARAMETRIZE { ability = ABILITY_BULLETPROOF;       playerMon = SPECIES_CHESNAUGHT;    aiMove = MOVE_BULLET_SEED; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_CHOICE_BAND].holdEffect == HOLD_EFFECT_CHOICE_BAND);
+        ASSUME(GetItemHoldEffect(ITEM_CHOICE_BAND) == HOLD_EFFECT_CHOICE_BAND);
         ASSUME(GetMovePriority(MOVE_QUICK_ATTACK) == 1);
         ASSUME(IsSoundMove(MOVE_BOOMBURST));
         ASSUME(IsBallisticMove(MOVE_BULLET_SEED));
@@ -704,7 +704,7 @@ AI_SINGLE_BATTLE_TEST("AI score for Mean Look will be decreased if target can es
 AI_SINGLE_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI considers Focus Sash when determining if it should switch out")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_FOCUS_SASH].holdEffect == HOLD_EFFECT_FOCUS_SASH);
+        ASSUME(GetItemHoldEffect(ITEM_FOCUS_SASH) == HOLD_EFFECT_FOCUS_SASH);
         AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_SMART_MON_CHOICES | AI_FLAG_SMART_SWITCHING | AI_FLAG_OMNISCIENT);
         PLAYER(SPECIES_BEAUTIFLY) { Speed(10); Moves(MOVE_AIR_SLASH); }
         OPPONENT(SPECIES_CACNEA) { Speed(1); Moves(MOVE_SCRATCH); }

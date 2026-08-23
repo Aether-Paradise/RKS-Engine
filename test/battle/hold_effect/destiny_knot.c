@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_DESTINY_KNOT].holdEffect == HOLD_EFFECT_DESTINY_KNOT);
+    ASSUME(GetItemHoldEffect(ITEM_DESTINY_KNOT) == HOLD_EFFECT_DESTINY_KNOT);
 }
 
 SINGLE_BATTLE_TEST("Destiny Knot infatuates back when holder is targeted")

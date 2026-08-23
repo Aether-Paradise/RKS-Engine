@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_BIG_ROOT].holdEffect == HOLD_EFFECT_BIG_ROOT);
+    ASSUME(GetItemHoldEffect(ITEM_BIG_ROOT) == HOLD_EFFECT_BIG_ROOT);
 }
 
 SINGLE_BATTLE_TEST("Big Root increases healing from absorbing moves", s16 damage, s16 heal)

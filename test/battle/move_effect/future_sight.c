@@ -189,7 +189,7 @@ SINGLE_BATTLE_TEST("Future Sight breaks Focus Sash and doesn't make the holder e
 {
     GIVEN {
         ASSUME(GetMovePower(MOVE_PSYCHIC) > 0);
-        ASSUME(gItemsInfo[ITEM_FOCUS_SASH].holdEffect == HOLD_EFFECT_FOCUS_SASH);
+        ASSUME(GetItemHoldEffect(ITEM_FOCUS_SASH) == HOLD_EFFECT_FOCUS_SASH);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_PIDGEY) { Level(1); Item(ITEM_FOCUS_SASH); }
     } WHEN {
@@ -234,7 +234,7 @@ SINGLE_BATTLE_TEST("Future Sight set up is not blocked by Protect")
 SINGLE_BATTLE_TEST("Future Sight does not trigger Red Card")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_RED_CARD].holdEffect == HOLD_EFFECT_RED_CARD);
+        ASSUME(GetItemHoldEffect(ITEM_RED_CARD) == HOLD_EFFECT_RED_CARD);
         PLAYER(SPECIES_WOBBUFFET);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_RED_CARD); }
@@ -253,7 +253,7 @@ SINGLE_BATTLE_TEST("Future Sight does not trigger Red Card")
 SINGLE_BATTLE_TEST("Future Sight does not trigger Eject Button")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_EJECT_BUTTON].holdEffect == HOLD_EFFECT_EJECT_BUTTON);
+        ASSUME(GetItemHoldEffect(ITEM_EJECT_BUTTON) == HOLD_EFFECT_EJECT_BUTTON);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_EJECT_BUTTON); }
         OPPONENT(SPECIES_WOBBUFFET);
@@ -272,7 +272,7 @@ SINGLE_BATTLE_TEST("Future Sight does not trigger Eject Button")
 SINGLE_BATTLE_TEST("Future Sight does not trigger Rowap Berry")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_ROWAP_BERRY].holdEffect == HOLD_EFFECT_ROWAP_BERRY);
+        ASSUME(GetItemHoldEffect(ITEM_ROWAP_BERRY) == HOLD_EFFECT_ROWAP_BERRY);
         ASSUME(GetMoveCategory(MOVE_FUTURE_SIGHT) == DAMAGE_CATEGORY_SPECIAL);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_ROWAP_BERRY); }

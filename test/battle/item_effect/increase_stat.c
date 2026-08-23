@@ -9,7 +9,7 @@ SINGLE_BATTLE_TEST("X Attack sharply raises battler's Attack stat", s16 damage)
     PARAMETRIZE { useItem = FALSE; }
     PARAMETRIZE { useItem = TRUE; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_X_ATTACK].battleUsage == EFFECT_ITEM_INCREASE_STAT);
+        ASSUME(GetItemBattleUsage(ITEM_X_ATTACK) == EFFECT_ITEM_INCREASE_STAT);
         ASSUME(GetMoveCategory(MOVE_SCRATCH) == DAMAGE_CATEGORY_PHYSICAL);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET);
@@ -33,7 +33,7 @@ SINGLE_BATTLE_TEST("X Defense sharply raises battler's Defense stat", s16 damage
     PARAMETRIZE { useItem = FALSE; }
     PARAMETRIZE { useItem = TRUE; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_X_DEFENSE].battleUsage == EFFECT_ITEM_INCREASE_STAT);
+        ASSUME(GetItemBattleUsage(ITEM_X_DEFENSE) == EFFECT_ITEM_INCREASE_STAT);
         ASSUME(GetMoveCategory(MOVE_SCRATCH) == DAMAGE_CATEGORY_PHYSICAL);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET);
@@ -57,7 +57,7 @@ SINGLE_BATTLE_TEST("X Sp. Atk sharply raises battler's Sp. Attack stat", s16 dam
     PARAMETRIZE { useItem = FALSE; }
     PARAMETRIZE { useItem = TRUE; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_X_SP_ATK].battleUsage == EFFECT_ITEM_INCREASE_STAT);
+        ASSUME(GetItemBattleUsage(ITEM_X_SP_ATK) == EFFECT_ITEM_INCREASE_STAT);
         ASSUME(GetMoveCategory(MOVE_DISARMING_VOICE) == DAMAGE_CATEGORY_SPECIAL);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET);
@@ -81,7 +81,7 @@ SINGLE_BATTLE_TEST("X Sp. Def sharply raises battler's Sp. Defense stat", s16 da
     PARAMETRIZE { useItem = FALSE; }
     PARAMETRIZE { useItem = TRUE; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_X_SP_DEF].battleUsage == EFFECT_ITEM_INCREASE_STAT);
+        ASSUME(GetItemBattleUsage(ITEM_X_SP_DEF) == EFFECT_ITEM_INCREASE_STAT);
         ASSUME(GetMoveCategory(MOVE_DISARMING_VOICE) == DAMAGE_CATEGORY_SPECIAL);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET);
@@ -105,7 +105,7 @@ SINGLE_BATTLE_TEST("X Speed sharply raises battler's Speed stat", s16 damage)
     PARAMETRIZE { useItem = FALSE; }
     PARAMETRIZE { useItem = TRUE; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_X_SPEED].battleUsage == EFFECT_ITEM_INCREASE_STAT);
+        ASSUME(GetItemBattleUsage(ITEM_X_SPEED) == EFFECT_ITEM_INCREASE_STAT);
         if (B_X_ITEMS_BUFF >= GEN_7)
         {
             PLAYER(SPECIES_WOBBUFFET) { Speed(3); }
@@ -172,7 +172,7 @@ SINGLE_BATTLE_TEST("X Accuracy sharply raises battler's Accuracy stat")
     else
         PASSES_RANDOMLY(GetMoveAccuracy(MOVE_SING) * 4 / 3, 100, RNG_ACCURACY);
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_X_ACCURACY].battleUsage == EFFECT_ITEM_INCREASE_STAT);
+        ASSUME(GetItemBattleUsage(ITEM_X_ACCURACY) == EFFECT_ITEM_INCREASE_STAT);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -190,7 +190,7 @@ SINGLE_BATTLE_TEST("Max Mushrooms raises battler's Attack stat", s16 damage)
     PARAMETRIZE { useItem = FALSE; }
     PARAMETRIZE { useItem = TRUE; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_MAX_MUSHROOMS].battleUsage == EFFECT_ITEM_INCREASE_ALL_STATS);
+        ASSUME(GetItemBattleUsage(ITEM_MAX_MUSHROOMS) == EFFECT_ITEM_INCREASE_ALL_STATS);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -210,7 +210,7 @@ SINGLE_BATTLE_TEST("Max Mushrooms raises battler's Defense stat", s16 damage)
     PARAMETRIZE { useItem = FALSE; }
     PARAMETRIZE { useItem = TRUE; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_MAX_MUSHROOMS].battleUsage == EFFECT_ITEM_INCREASE_ALL_STATS);
+        ASSUME(GetItemBattleUsage(ITEM_MAX_MUSHROOMS) == EFFECT_ITEM_INCREASE_ALL_STATS);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -230,7 +230,7 @@ SINGLE_BATTLE_TEST("Max Mushrooms raises battler's Sp. Attack stat", s16 damage)
     PARAMETRIZE { useItem = FALSE; }
     PARAMETRIZE { useItem = TRUE; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_MAX_MUSHROOMS].battleUsage == EFFECT_ITEM_INCREASE_ALL_STATS);
+        ASSUME(GetItemBattleUsage(ITEM_MAX_MUSHROOMS) == EFFECT_ITEM_INCREASE_ALL_STATS);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -250,7 +250,7 @@ SINGLE_BATTLE_TEST("Max Mushrooms battler's Sp. Defense stat", s16 damage)
     PARAMETRIZE { useItem = FALSE; }
     PARAMETRIZE { useItem = TRUE; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_MAX_MUSHROOMS].battleUsage == EFFECT_ITEM_INCREASE_ALL_STATS);
+        ASSUME(GetItemBattleUsage(ITEM_MAX_MUSHROOMS) == EFFECT_ITEM_INCREASE_ALL_STATS);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -270,7 +270,7 @@ SINGLE_BATTLE_TEST("Max Mushrooms raises battler's Speed stat", s16 damage)
     PARAMETRIZE { useItem = FALSE; }
     PARAMETRIZE { useItem = TRUE; }
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_MAX_MUSHROOMS].battleUsage == EFFECT_ITEM_INCREASE_ALL_STATS);
+        ASSUME(GetItemBattleUsage(ITEM_MAX_MUSHROOMS) == EFFECT_ITEM_INCREASE_ALL_STATS);
         PLAYER(SPECIES_WOBBUFFET) { Speed(4); }
         OPPONENT(SPECIES_WOBBUFFET) { Speed(5); }
     } WHEN {

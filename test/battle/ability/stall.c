@@ -51,7 +51,7 @@ SINGLE_BATTLE_TEST("Stall and Lagging Tail action order depends on Speed")
     PARAMETRIZE { speed = 101; }
 
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_LAGGING_TAIL].holdEffect == HOLD_EFFECT_LAGGING_TAIL);
+        ASSUME(GetItemHoldEffect(ITEM_LAGGING_TAIL) == HOLD_EFFECT_LAGGING_TAIL);
         PLAYER(SPECIES_SABLEYE) { Speed(100); Ability(ABILITY_STALL); }
         OPPONENT(SPECIES_WOBBUFFET) { Speed(speed); Item(ITEM_LAGGING_TAIL); }
     } WHEN {
@@ -79,7 +79,7 @@ SINGLE_BATTLE_TEST("Stall and Lagging Tail action order depends on Speed (Trick 
 
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_TRICK_ROOM) == EFFECT_TRICK_ROOM);
-        ASSUME(gItemsInfo[ITEM_LAGGING_TAIL].holdEffect == HOLD_EFFECT_LAGGING_TAIL);
+        ASSUME(GetItemHoldEffect(ITEM_LAGGING_TAIL) == HOLD_EFFECT_LAGGING_TAIL);
         PLAYER(SPECIES_SABLEYE) { Speed(100); Ability(ABILITY_STALL); }
         OPPONENT(SPECIES_WOBBUFFET) { Speed(speed); Item(ITEM_LAGGING_TAIL); }
     } WHEN {
@@ -104,7 +104,7 @@ SINGLE_BATTLE_TEST("Stall user can move before faster battlers when Quick Claw a
 {
     PASSES_RANDOMLY(2, 10, RNG_QUICK_CLAW);
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_QUICK_CLAW].holdEffect == HOLD_EFFECT_QUICK_CLAW);
+        ASSUME(GetItemHoldEffect(ITEM_QUICK_CLAW) == HOLD_EFFECT_QUICK_CLAW);
         PLAYER(SPECIES_SABLEYE) { Speed(1); Ability(ABILITY_STALL); Item(ITEM_QUICK_CLAW); }
         OPPONENT(SPECIES_WOBBUFFET) { Speed(100); }
     } WHEN {

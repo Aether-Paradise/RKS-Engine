@@ -65,8 +65,8 @@ SINGLE_BATTLE_TEST("Gale Wings doesn't increase priority of Flying-type Natural 
         // IV combinations sourced from https://www.smogon.com/forums/threads/hidden-power-iv-combinations.78083/
         ASSUME(GetMoveEffect(MOVE_HIDDEN_POWER) == EFFECT_HIDDEN_POWER);
         ASSUME(GetMoveEffect(MOVE_TERA_BLAST) == EFFECT_TERA_BLAST);
-        ASSUME(gItemsInfo[ITEM_SKY_PLATE].holdEffect == HOLD_EFFECT_PLATE);
-        ASSUME(gItemsInfo[ITEM_SKY_PLATE].secondaryId == TYPE_FLYING);
+        ASSUME(GetItemHoldEffect(ITEM_SKY_PLATE) == HOLD_EFFECT_PLATE);
+        ASSUME(GetItemSecondaryId(ITEM_SKY_PLATE) == TYPE_FLYING);
         ASSUME(gBerries[ItemIdToBerryType(ITEM_LUM_BERRY)].naturalGiftType == TYPE_FLYING);
         OPPONENT(SPECIES_TALONFLAME) { Ability(ABILITY_GALE_WINGS); Speed(1); Item(heldItem); HPIV(31); AttackIV(3); DefenseIV(31); SpAttackIV(30); SpDefenseIV(30); SpeedIV(30); TeraType(TYPE_FLYING); }
         PLAYER(SPECIES_WOBBUFFET) { Speed(100); }

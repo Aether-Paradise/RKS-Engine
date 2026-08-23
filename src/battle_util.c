@@ -440,7 +440,7 @@ bool32 ShouldTeraShellDistortTypeMatchups(struct DamageContext *ctx)
 
 bool32 IsUnnerveBlocked(enum BattlerId battler, enum Item itemId)
 {
-    if (GetItemPocket(itemId) != POCKET_BERRIES)
+    if (!ItemIsBerry(itemId))
         return FALSE;
 
     if (gBattleScripting.overrideBerryRequirements > 0) // Berries that aren't eaten naturally ignore unnerve
@@ -1496,7 +1496,7 @@ u32 TrySetCantSelectMoveBattleScript(enum BattlerId battler)
             limitations++;
     }
 
-    if (dynamaxBypassCheck && moveEffect == EFFECT_STUFF_CHEEKS && GetItemPocket(gBattleMons[battler].item) != POCKET_BERRIES && GetConfig(B_STUFF_CHEEKS_SELECTABLE) < GEN_CHAMPIONS)
+    if (dynamaxBypassCheck && moveEffect == EFFECT_STUFF_CHEEKS && !ItemIsBerry(gBattleMons[battler].item) && GetConfig(B_STUFF_CHEEKS_SELECTABLE) < GEN_CHAMPIONS)
     {
         if (SetCantSelectScript(battler, gCurrentMove, BattleScript_SelectingNotAllowedStuffCheeksInPalace, BattleScript_SelectingNotAllowedStuffCheeks))
             limitations++;
@@ -1664,7 +1664,7 @@ u32 CheckMoveLimitations(enum BattlerId battler, u8 unusableMoves, u32 check)
         else if (check & MOVE_LIMITATION_THROAT_CHOP && gBattleMons[battler].volatiles.throatChopTimer > 0 && IsSoundMove(move))
             unusableMoves |= 1u << i;
         // Stuff Cheeks
-        else if (check & MOVE_LIMITATION_STUFF_CHEEKS && moveEffect == EFFECT_STUFF_CHEEKS && GetItemPocket(gBattleMons[battler].item) != POCKET_BERRIES && GetConfig(B_STUFF_CHEEKS_SELECTABLE) < GEN_CHAMPIONS)
+        else if (check & MOVE_LIMITATION_STUFF_CHEEKS && moveEffect == EFFECT_STUFF_CHEEKS && !ItemIsBerry(gBattleMons[battler].item) && GetConfig(B_STUFF_CHEEKS_SELECTABLE) < GEN_CHAMPIONS)
             unusableMoves |= 1u << i;
         // Gorilla Tactics
         else if (check & MOVE_LIMITATION_CHOICE_ITEM && GetBattlerAbility(battler) == ABILITY_GORILLA_TACTICS && *choicedMove != MOVE_NONE && *choicedMove != MOVE_UNAVAILABLE && *choicedMove != move)
@@ -3609,7 +3609,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
             case ABILITY_HARVEST:
                 if ((IsBattlerWeatherAffected(GetBattlerHoldEffect(battler), GetWeather(), B_WEATHER_SUN) || RandomPercentage(RNG_HARVEST, 50))
                  && gBattleMons[battler].item == ITEM_NONE
-                 && GetItemPocket(GetBattlerPartyState(battler)->usedHeldItem) == POCKET_BERRIES)
+                 && ItemIsBerry(GetBattlerPartyState(battler)->usedHeldItem))
                 {
                     gLastUsedItem = GetBattlerPartyState(battler)->usedHeldItem;
                     BattleScriptCall(BattleScript_HarvestActivates);
@@ -3780,7 +3780,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
                     BattleScriptCall(BattleScript_CudChewActivates);
                     effect++;
                 }
-                else if (!gBattleMons[battler].volatiles.cudChew && GetItemPocket(GetBattlerPartyState(battler)->usedHeldItem) == POCKET_BERRIES)
+                else if (!gBattleMons[battler].volatiles.cudChew && ItemIsBerry(GetBattlerPartyState(battler)->usedHeldItem))
                 {
                     gBattleMons[battler].volatiles.cudChew = TRUE;
                 }
@@ -5516,7 +5516,7 @@ bool32 HasEnoughHpToEatBerry(enum BattlerId battler, enum Ability ability, u32 h
     if (gBattleMons[battler].hp <= gBattleMons[battler].maxHP / hpFraction)
         return TRUE;
 
-    if (hpFraction <= 4 && GetItemPocket(itemId) == POCKET_BERRIES
+    if (hpFraction <= 4 && ItemIsBerry(itemId)
          && gBattleMons[battler].hp <= gBattleMons[battler].maxHP / 2
          && IsAbilityAndRecord(battler, GetBattlerAbility(battler), ABILITY_GLUTTONY))
         return TRUE;
@@ -9160,7 +9160,7 @@ enum DamageCategory GetCategoryBasedOnStats(enum BattlerId battler)
 
 static u32 GetFlingPowerFromItemId(enum Item itemId)
 {
-    if (gItemsInfo[itemId].pocket == POCKET_TM_HM)
+    if (ItemIsTMHM(itemId))
     {
         u32 power = GetMovePower(ItemIdToBattleMoveId(itemId));
         if (power > 1)
@@ -9263,10 +9263,10 @@ void TryRestoreHeldItems(void)
         {
             enum Item lostItem = gBattleStruct->itemLost[B_TRAINER_PLAYER][i].originalItem;
 
-            if (GetItemPocket(lostItem) == POCKET_BERRIES && GetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_HELD_ITEM) != lostItem)
+            if (ItemIsBerry(lostItem) && GetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_HELD_ITEM) != lostItem)
                 lostItem = ITEM_NONE;
 
-            if ((lostItem != ITEM_NONE || returnNPCItems) && GetItemPocket(lostItem) != POCKET_BERRIES)
+            if ((lostItem != ITEM_NONE || returnNPCItems) && !ItemIsBerry(lostItem))
                 SetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_HELD_ITEM, &lostItem);
         }
     }

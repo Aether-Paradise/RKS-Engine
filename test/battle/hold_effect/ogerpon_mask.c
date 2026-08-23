@@ -3,12 +3,12 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_CORNERSTONE_MASK].holdEffect == HOLD_EFFECT_OGERPON_MASK);
-    ASSUME(gItemsInfo[ITEM_WELLSPRING_MASK].holdEffect == HOLD_EFFECT_OGERPON_MASK);
-    ASSUME(gItemsInfo[ITEM_HEARTHFLAME_MASK].holdEffect == HOLD_EFFECT_OGERPON_MASK);
-    ASSUME(gItemsInfo[ITEM_CORNERSTONE_MASK].holdEffectParam == 20);
-    ASSUME(gItemsInfo[ITEM_WELLSPRING_MASK].holdEffectParam == 20);
-    ASSUME(gItemsInfo[ITEM_HEARTHFLAME_MASK].holdEffectParam == 20);
+    ASSUME(GetItemHoldEffect(ITEM_CORNERSTONE_MASK) == HOLD_EFFECT_OGERPON_MASK);
+    ASSUME(GetItemHoldEffect(ITEM_WELLSPRING_MASK) == HOLD_EFFECT_OGERPON_MASK);
+    ASSUME(GetItemHoldEffect(ITEM_HEARTHFLAME_MASK) == HOLD_EFFECT_OGERPON_MASK);
+    ASSUME(GetItemHoldEffectParam(ITEM_CORNERSTONE_MASK) == 20);
+    ASSUME(GetItemHoldEffectParam(ITEM_WELLSPRING_MASK) == 20);
+    ASSUME(GetItemHoldEffectParam(ITEM_HEARTHFLAME_MASK) == 20);
 }
 
 SINGLE_BATTLE_TEST("Ogerpon Masks increase the base power of moves by 20%", s16 damage)
