@@ -183,7 +183,7 @@ static void TransferEggMovesFromBoxmonToBoxmon(struct BoxPokemon *receiver, stru
     if (GetBoxMonData(receiver, MON_DATA_MOVE4) != MOVE_NONE)
         return;
 
-    if (GetConfig(EGG_MOVE_TRANSFER) == GEN_8 && GET_BASE_SPECIES_ID(receiverSpecies) != GET_BASE_SPECIES_ID(giverSpecies))
+    if (GetConfig(EGG_MOVE_TRANSFER) == GEN_8 && GetBaseSpeciesId(receiverSpecies) != GetBaseSpeciesId(giverSpecies))
         return;
 
     if (GetConfig(EGG_MOVE_TRANSFER) >= GEN_9 && GetBoxMonData(receiver, MON_DATA_HELD_ITEM) != ITEM_MIRROR_HERB)
@@ -687,7 +687,7 @@ static void InheritPokeball(struct Pokemon *egg, struct DayCare *daycare)
         enum Species species0 = GetBoxMonData(&daycare->mons[0].mon, MON_DATA_SPECIES);
         enum Species species1 = GetBoxMonData(&daycare->mons[1].mon, MON_DATA_SPECIES);
 
-        if (GET_BASE_SPECIES_ID(species0) == GET_BASE_SPECIES_ID(species1))
+        if (GetBaseSpeciesId(species0) == GetBaseSpeciesId(species1))
             ballSlot = RandomPercentage(RNG_DAYCARE_PICK_BALL_PARENT, 50);
         inheritBall = GetBoxMonData(&daycare->mons[ballSlot].mon, MON_DATA_POKEBALL);
     }
@@ -958,11 +958,11 @@ static enum Species DetermineEggSpeciesAndParentSlots(struct DayCare *daycare, u
         eggSpecies = SPECIES_ILLUMISE;
     else if (eggSpecies == SPECIES_MANAPHY)
         eggSpecies = SPECIES_PHIONE;
-    else if (GET_BASE_SPECIES_ID(eggSpecies) == SPECIES_ROTOM)
+    else if (GetBaseSpeciesId(eggSpecies) == SPECIES_ROTOM)
         eggSpecies = SPECIES_ROTOM;
-    else if (GET_BASE_SPECIES_ID(eggSpecies) == SPECIES_SCATTERBUG)
+    else if (GetBaseSpeciesId(eggSpecies) == SPECIES_SCATTERBUG)
         eggSpecies = P_SCATTERBUG_LINE_FORM_BREED;
-    else if (GET_BASE_SPECIES_ID(eggSpecies) == SPECIES_FURFROU)
+    else if (GetBaseSpeciesId(eggSpecies) == SPECIES_FURFROU)
         eggSpecies = SPECIES_FURFROU;
     else if (eggSpecies == SPECIES_SINISTEA_ANTIQUE)
         eggSpecies = SPECIES_SINISTEA_PHONY;

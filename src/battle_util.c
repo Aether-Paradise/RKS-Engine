@@ -4707,7 +4707,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
              && gBattleMons[partner].species == SPECIES_DONDOZO
              && (gChosenActionByBattler[battler] != B_ACTION_SWITCH || HasBattlerActedThisTurn(battler))
              && (gChosenActionByBattler[partner] != B_ACTION_SWITCH || HasBattlerActedThisTurn(partner))
-             && GET_BASE_SPECIES_ID(GetMonData(GetBattlerMon(battler), MON_DATA_SPECIES)) == SPECIES_TATSUGIRI)
+             && GetBaseSpeciesId(GetMonData(GetBattlerMon(battler), MON_DATA_SPECIES)) == SPECIES_TATSUGIRI)
             {
                 gEffectBattler = partner;
                 PREPARE_MON_NICK_BUFFER(gBattleTextBuff1, partner, gBattlerPartyIndexes[partner]);
@@ -6718,15 +6718,15 @@ static inline u32 CalcMoveBasePowerAfterModifiers(struct DamageContext *ctx)
             modifier = uq4_12_multiply(modifier, uq4_12_add(UQ_4_12(1.0), PercentToUQ4_12_Floored(holdEffectParamAtk)));
         break;
     case HOLD_EFFECT_LUSTROUS_ORB:
-        if (GET_BASE_SPECIES_ID(gBattleMons[battlerAtk].species) == SPECIES_PALKIA && (moveType == TYPE_WATER || moveType == TYPE_DRAGON))
+        if (GetBaseSpeciesId(gBattleMons[battlerAtk].species) == SPECIES_PALKIA && (moveType == TYPE_WATER || moveType == TYPE_DRAGON))
             modifier = uq4_12_multiply(modifier, holdEffectModifier);
         break;
     case HOLD_EFFECT_ADAMANT_ORB:
-        if (GET_BASE_SPECIES_ID(gBattleMons[battlerAtk].species) == SPECIES_DIALGA && (moveType == TYPE_STEEL || moveType == TYPE_DRAGON))
+        if (GetBaseSpeciesId(gBattleMons[battlerAtk].species) == SPECIES_DIALGA && (moveType == TYPE_STEEL || moveType == TYPE_DRAGON))
             modifier = uq4_12_multiply(modifier, holdEffectModifier);
         break;
     case HOLD_EFFECT_GRISEOUS_ORB:
-        if (GET_BASE_SPECIES_ID(gBattleMons[battlerAtk].species) == SPECIES_GIRATINA && (moveType == TYPE_GHOST || moveType == TYPE_DRAGON))
+        if (GetBaseSpeciesId(gBattleMons[battlerAtk].species) == SPECIES_GIRATINA && (moveType == TYPE_GHOST || moveType == TYPE_DRAGON))
             modifier = uq4_12_multiply(modifier, holdEffectModifier);
         break;
     case HOLD_EFFECT_SOUL_DEW:
@@ -6745,7 +6745,7 @@ static inline u32 CalcMoveBasePowerAfterModifiers(struct DamageContext *ctx)
            modifier = uq4_12_multiply(modifier, UQ_4_12(1.1));
         break;
     case HOLD_EFFECT_OGERPON_MASK:
-        if (GET_BASE_SPECIES_ID(gBattleMons[battlerAtk].species) == SPECIES_OGERPON)
+        if (GetBaseSpeciesId(gBattleMons[battlerAtk].species) == SPECIES_OGERPON)
            modifier = uq4_12_multiply(modifier, UQ_4_12(1.2));
         break;
     default:
@@ -6811,7 +6811,7 @@ static inline u32 CalcAttackStat(struct DamageContext *ctx)
     enum Type moveType = ctx->moveType;
     enum BattleMoveEffects moveEffect = GetMoveEffect(move);
 
-    atkBaseSpeciesId = GET_BASE_SPECIES_ID(gBattleMons[battlerAtk].species);
+    atkBaseSpeciesId = GetBaseSpeciesId(gBattleMons[battlerAtk].species);
 
     if (moveEffect == EFFECT_FOUL_PLAY)
     {
@@ -7879,7 +7879,7 @@ static inline bool32 IsBattlerLeekAffected(enum BattlerId battler, enum HoldEffe
 {
     if (holdEffect == HOLD_EFFECT_LEEK)
     {
-        return GET_BASE_SPECIES_ID(gBattleMons[battler].species) == SPECIES_FARFETCHD
+        return GetBaseSpeciesId(gBattleMons[battler].species) == SPECIES_FARFETCHD
             || gBattleMons[battler].species == SPECIES_SIRFETCHD;
     }
     return FALSE;
@@ -8811,7 +8811,7 @@ bool32 CanBattlerGetOrLoseItem(enum BattlerId fromBattler, enum BattlerId battle
     else if (holdEffect == HOLD_EFFECT_BOOSTER_ENERGY
          && (IsSpeciesParadox(fromSpecies) || IsSpeciesParadox(otherSpecies)))
         return FALSE;
-    else if (holdEffect == HOLD_EFFECT_OGERPON_MASK && GET_BASE_SPECIES_ID(fromSpecies) == SPECIES_OGERPON)
+    else if (holdEffect == HOLD_EFFECT_OGERPON_MASK && GetBaseSpeciesId(fromSpecies) == SPECIES_OGERPON)
         return FALSE;
     else
         return TRUE;
@@ -9084,7 +9084,7 @@ void SetDynamicMoveCategory(enum BattlerId battlerAtk, enum BattlerId battlerDef
         }
         break;
     case EFFECT_TERA_STARSTORM:
-        if (GetActiveGimmick(battlerAtk) == GIMMICK_TERA && GET_BASE_SPECIES_ID(GetMonData(GetBattlerMon(battlerAtk), MON_DATA_SPECIES)) == SPECIES_TERAPAGOS)
+        if (GetActiveGimmick(battlerAtk) == GIMMICK_TERA && GetBaseSpeciesId(GetMonData(GetBattlerMon(battlerAtk), MON_DATA_SPECIES)) == SPECIES_TERAPAGOS)
         {
             if (GetCategoryBasedOnStats(battlerAtk) == DAMAGE_CATEGORY_PHYSICAL)
                 gBattleStruct->dynamicMoveCategory = DAMAGE_CATEGORY_PHYSICAL;
