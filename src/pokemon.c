@@ -4500,7 +4500,7 @@ enum Species NationalPokedexNumToSpecies(enum NationalDexOrder nationalNum)
     if (species == NUM_SPECIES)
         return SPECIES_NONE;
 
-    return GET_BASE_SPECIES_ID(species);
+    return GetBaseSpeciesId(species);
 }
 
 u32 NationalToRegionalOrder(enum NationalDexOrder nationalNum)
