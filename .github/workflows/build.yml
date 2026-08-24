@@ -46,12 +46,12 @@ jobs:
 
       - name: ROM (Emerald)
         env:
-          GAME_VERSION: EMERALD
+          BUILD: emerald
         run: make -j$(nproc) -O all
 
       - name: ROM (Emerald) - Override RKSE_PARTY_MENU_DESIGN (SwSh)
         env:
-          GAME_VERSION: EMERALD
+          BUILD: emerald
           OVR_RKSE_PARTY_MENU_DESIGN: PARTY_MENU_DESIGN_SWSH
         run: |
           make touch-config_overrides
@@ -177,7 +177,7 @@ jobs:
 
       - name: Release
         env:
-          GAME_VERSION: EMERALD
+          BUILD: leafgreen
         run: make -j$(nproc) release
 
   test:
@@ -216,7 +216,7 @@ jobs:
 
       - name: Test
         env:
-          GAME_VERSION: EMERALD
+          BUILD: leafgreen
           TEST: 1
         run: make -j$(nproc) check
 
