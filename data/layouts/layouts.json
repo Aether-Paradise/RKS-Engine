@@ -9323,6 +9323,80 @@
       "border_filepath": "data/layouts/OneIsland_KindleRoad_EmberSpa_Frlg/border.bin",
       "blockdata_filepath": "data/layouts/OneIsland_KindleRoad_EmberSpa_Frlg/map.bin",
       "layout_version": "frlg"
+    },
+    {
+      "id": "LAYOUT_DEMO_TOWN",
+      "name": "DemoTown_Layout",
+      "width": 20,
+      "height": 20,
+      "border_width": 2,
+      "border_height": 2,
+      "primary_tileset": "gTileset_General_Frlg",
+      "secondary_tileset": "gTileset_PalletTown",
+      "border_filepath": "data/layouts/DemoTown/border.bin",
+      "blockdata_filepath": "data/layouts/DemoTown/map.bin"
+    },
+    {
+      "id": "LAYOUT_DEMO_ROUTE",
+      "name": "DemoRoute_Layout",
+      "width": 30,
+      "height": 20,
+      "border_width": 2,
+      "border_height": 2,
+      "primary_tileset": "gTileset_General_Frlg",
+      "secondary_tileset": "gTileset_PalletTown",
+      "border_filepath": "data/layouts/DemoRoute/border.bin",
+      "blockdata_filepath": "data/layouts/DemoRoute/map.bin"
+    },
+    {
+      "id": "LAYOUT_DEMO_DEOXYS_EVENT",
+      "name": "DemoDeoxysEvent_Layout",
+      "width": 20,
+      "height": 20,
+      "border_width": 2,
+      "border_height": 2,
+      "primary_tileset": "gTileset_General_Frlg",
+      "secondary_tileset": "gTileset_PalletTown",
+      "border_filepath": "data/layouts/DemoDeoxysEvent/border.bin",
+      "blockdata_filepath": "data/layouts/DemoDeoxysEvent/map.bin"
+    },
+    {
+      "id": "LAYOUT_DEMO_CAVE1F",
+      "name": "DemoCave1F_Layout",
+      "width": 30,
+      "height": 30,
+      "border_width": 2,
+      "border_height": 2,
+      "primary_tileset": "gTileset_General_Frlg",
+      "secondary_tileset": "gTileset_Cave_Frlg",
+      "border_filepath": "data/layouts/DemoCave1F/border.bin",
+      "blockdata_filepath": "data/layouts/DemoCave1F/map.bin"
+    },
+    {
+      "id": "LAYOUT_DEMO_TOWN_START_HOUSE_1F",
+      "name": "DemoTown_StartHouse_1F_Layout",
+      "width": 13,
+      "height": 10,
+      "border_width": 2,
+      "border_height": 2,
+      "primary_tileset": "gTileset_BuildingFrlg",
+      "secondary_tileset": "gTileset_GenericBuilding1",
+      "border_filepath": "data/layouts/DemoTown_StartHouse_1F/border.bin",
+      "blockdata_filepath": "data/layouts/DemoTown_StartHouse_1F/map.bin",
+      "layout_version": "frlg"
+    },
+    {
+      "id": "LAYOUT_DEMO_TOWN_START_HOUSE_2F",
+      "name": "DemoTown_StartHouse_2F_Layout",
+      "width": 12,
+      "height": 9,
+      "border_width": 2,
+      "border_height": 2,
+      "primary_tileset": "gTileset_BuildingFrlg",
+      "secondary_tileset": "gTileset_GenericBuilding1",
+      "border_filepath": "data/layouts/DemoTown_StartHouse_2F/border.bin",
+      "blockdata_filepath": "data/layouts/DemoTown_StartHouse_2F/map.bin",
+      "layout_version": "frlg"
     }
   ]
 }

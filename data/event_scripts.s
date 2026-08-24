@@ -1665,14 +1665,14 @@ EventScript_BrailleCursorWaitButton::
 	special BrailleCursorToggle
 	return
 
-EventScript_PalletTown_PlayersHouse_2F_ShutDownPC::
+EventScript_DemoTown_StartHouse_2F_ShutDownPC::
 	setvar VAR_0x8004, PC_LOCATION_PLAYER_HOUSE_FRLG
 	playse SE_PC_OFF
 	special DoPCTurnOffEffect
 	releaseall
 	end
 
-EventScript_PalletTown_PlayersHouse_2F_TurnOnPC::
+EventScript_DemoTown_StartHouse_2F_TurnOnPC::
 	lockall
 	setvar VAR_0x8004, PC_LOCATION_PLAYER_HOUSE_FRLG
 	special DoPCTurnOnEffect
@@ -1738,3 +1738,21 @@ EventScript_PalletTown_PlayersHouse_2F_TurnOnPC::
 	.include "data/scripts/battle_frontier.inc"
 	.include "data/scripts/apricorn_tree.inc"
 	.include "data/scripts/wild_encounter.inc"
+
+	.include "data/maps/DemoTown/scripts.inc"
+	.include "data/maps/DemoTown/text.inc"
+
+	.include "data/maps/DemoRoute/scripts.inc"
+	.include "data/maps/DemoRoute/text.inc"
+
+	.include "data/maps/DemoDeoxysEvent/scripts.inc"
+	.include "data/maps/DemoDeoxysEvent/text.inc"
+
+	.include "data/maps/DemoCave1F/scripts.inc"
+	.include "data/maps/DemoCave1F/text.inc"
+
+	.include "data/maps/DemoTown_StartHouse_1F/scripts.inc"
+	.include "data/maps/DemoTown_StartHouse_1F/text.inc"
+
+	.include "data/maps/DemoTown_StartHouse_2F/scripts.inc"
+	.include "data/maps/DemoTown_StartHouse_2F/text.inc"

@@ -349,6 +349,14 @@
       "y": 12,
       "respawn_map": "MAP_SIX_ISLAND_POKEMON_CENTER_1F",
       "respawn_npc": "LOCALID_SIX_ISLAND_NURSE"
+    },
+    {
+      "id": "HEAL_LOCATION_DEMO_TOWN",
+      "map": "MAP_DEMO_TOWN",
+      "x": 3,
+      "y": 7,
+      "respawn_map": "MAP_DEMO_TOWN",
+      "respawn_npc": "1"
     }
   ]
 }
