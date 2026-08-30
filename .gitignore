@@ -31,6 +31,7 @@ tools/compresSmol/
 Thumbs.db
 build/
 SDL2/
+SDL2.dll
 .DS_Store
 *.ddump
 .idea/
