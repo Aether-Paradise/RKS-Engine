@@ -1630,6 +1630,14 @@
       "y": 4,
       "width": 1,
       "height": 1
+    },
+    {
+      "id": "MAPSEC_DEMO_TOWN",
+      "name": "DEMO TOWN",
+      "x": 8,
+      "y": 4,
+      "width": 1,
+      "height": 1
     }
   ]
 }
