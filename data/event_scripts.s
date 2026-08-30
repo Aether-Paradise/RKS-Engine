@@ -229,11 +229,6 @@ gStdScripts_End::
 	.include "data/maps/VerdanturfTown_House/scripts.inc"
 	.include "data/maps/PacifidlogTown_PokemonCenter_1F/scripts.inc"
 	.include "data/maps/PacifidlogTown_PokemonCenter_2F/scripts.inc"
-	.include "data/maps/PacifidlogTown_House1/scripts.inc"
-	.include "data/maps/PacifidlogTown_House2/scripts.inc"
-	.include "data/maps/PacifidlogTown_House3/scripts.inc"
-	.include "data/maps/PacifidlogTown_House4/scripts.inc"
-	.include "data/maps/PacifidlogTown_House5/scripts.inc"
 	.include "data/maps/PetalburgCity_WallysHouse/scripts.inc"
 	.include "data/maps/PetalburgCity_Gym/scripts.inc"
 	.include "data/maps/PetalburgCity_House1/scripts.inc"
@@ -546,7 +541,6 @@ gStdScripts_End::
 	.include "data/maps/BattleFrontier_Mart/scripts.inc"
 	.include "data/maps/FarawayIsland_Entrance/scripts.inc"
 	.include "data/maps/FarawayIsland_Interior/scripts.inc"
-	.include "data/maps/BirthIsland_Exterior/scripts.inc"
 	.include "data/maps/BirthIsland_Harbor/scripts.inc"
 	.include "data/maps/TrainerHill_Entrance/scripts.inc"
 	.include "data/maps/TrainerHill_1F/scripts.inc"
@@ -600,8 +594,6 @@ gStdScripts_End::
 	.include "data/maps/Route119_House/scripts.inc"
 	.include "data/maps/Route124_DivingTreasureHuntersHouse/scripts.inc"
 
-.if IS_FRLG
-
 @ FRLG scripts
 	.include "data/maps/BattleColosseum_2P_Frlg/scripts.inc"
 	.include "data/maps/TradeCenter_Frlg/scripts.inc"
@@ -609,9 +601,6 @@ gStdScripts_End::
 	.include "data/maps/BattleColosseum_4P_Frlg/scripts.inc"
 	.include "data/maps/UnionRoom_Frlg/scripts.inc"
 	.include "data/maps/ViridianForest_Frlg/scripts.inc"
-	.include "data/maps/MtMoon_1F_Frlg/scripts.inc"
-	.include "data/maps/MtMoon_B1F_Frlg/scripts.inc"
-	.include "data/maps/MtMoon_B2F_Frlg/scripts.inc"
 	.include "data/maps/SSAnne_Exterior_Frlg/scripts.inc"
 	.include "data/maps/SSAnne_1F_Corridor_Frlg/scripts.inc"
 	.include "data/maps/SSAnne_2F_Corridor_Frlg/scripts.inc"
@@ -787,7 +776,6 @@ gStdScripts_End::
 	.include "data/maps/NavelRock_BasePath_B11F_Frlg/scripts.inc"
 	.include "data/maps/NavelRock_B1F_Frlg/scripts.inc"
 	.include "data/maps/NavelRock_Fork_Frlg/scripts.inc"
-	.include "data/maps/BirthIsland_Exterior_Frlg/scripts.inc"
 	.include "data/maps/OneIsland_KindleRoad_EmberSpa_Frlg/scripts.inc"
 	.include "data/maps/BirthIsland_Harbor_Frlg/scripts.inc"
 	.include "data/maps/NavelRock_Harbor_Frlg/scripts.inc"
@@ -853,8 +841,6 @@ gStdScripts_End::
 	.include "data/maps/SevenIsland_SevaultCanyon_Entrance_Frlg/scripts.inc"
 	.include "data/maps/SevenIsland_SevaultCanyon_Frlg/scripts.inc"
 	.include "data/maps/SevenIsland_TanobyRuins_Frlg/scripts.inc"
-	.include "data/maps/PalletTown_PlayersHouse_1F_Frlg/scripts.inc"
-	.include "data/maps/PalletTown_PlayersHouse_2F_Frlg/scripts.inc"
 	.include "data/maps/PalletTown_RivalsHouse_Frlg/scripts.inc"
 	.include "data/maps/PalletTown_ProfessorOaksLab_Frlg/scripts.inc"
 	.include "data/maps/ViridianCity_House_Frlg/scripts.inc"
@@ -1046,8 +1032,6 @@ gStdScripts_End::
 	.include "data/text/ingame_trade_frlg.inc"
 	.include "data/scripts/flavor_text.inc"
 	.include "data/scripts/pkmn_center_nurse_frlg.inc"
-
-.endif
 
 	.include "data/scripts/std_msgbox.inc"
 	.include "data/scripts/trainer_battle.inc"

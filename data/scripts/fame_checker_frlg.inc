@@ -43,14 +43,6 @@ Route4_EventScript_Boy::
 	release
 	end
 
-MtMoon_1F_EventScript_BaldingMan::
-	lock
-	faceplayer
-	famechecker FAMECHECKER_BROCK, 4
-	msgbox MtMoon_1F_Text_BrockHelpsExcavateFossils
-	release
-	end
-
 PewterCity_Museum_1F_EventScript_PokemonJournalBrock::
 	lockall
 	famechecker FAMECHECKER_BROCK, 5

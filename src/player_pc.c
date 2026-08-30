@@ -491,7 +491,7 @@ static void PlayerPC_TurnOff(u8 taskId)
 {
     if (sTopMenuNumOptions == NUM_BEDROOM_PC_OPTIONS) // Flimsy way to determine if Bedroom PC is in use
     {
-        if (gMapHeader.mapLayoutId == LAYOUT_PALLET_TOWN_PLAYERS_HOUSE_2F_FRLG)
+        if (gMapHeader.mapLayoutId == LAYOUT_DEMO_TOWN_START_HOUSE_2F)
             ScriptContext_SetupScript(EventScript_DemoTown_StartHouse_2F_ShutDownPC);
         else if (gSaveBlock2Ptr->playerGender == MALE)
             ScriptContext_SetupScript(LittlerootTown_BrendansHouse_2F_EventScript_TurnOffPlayerPC);
