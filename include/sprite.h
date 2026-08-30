@@ -215,6 +215,7 @@ struct Sprite
     union {
         void (*spriteFuncPtr)(struct Sprite *);
         intptr_t intPtr;
+        uintptr_t uintPtr;
     } ptr;
 
     /*0x3E*/ u16 inUse:1;                   //1
