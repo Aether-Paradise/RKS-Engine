@@ -30,6 +30,7 @@ tools/compresSmol/
 *.sa*
 Thumbs.db
 build/
+SDL2/
 .DS_Store
 *.ddump
 .idea/

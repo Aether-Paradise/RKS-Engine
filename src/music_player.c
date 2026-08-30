@@ -10,6 +10,7 @@
 #define MIXED_AUDIO_BUFFER_SIZE 4907
 
 static u32 MidiKeyToFreq(struct WaveData2 *wav, u8 key, u8 pitch);
+void ChnVolSetAsm(struct MixerSource *chan, struct MP2KTrack *track);
 float *cgb_get_buffer();
 extern void * const gMPlayJumpTableTemplate[];
 extern const u8 gScaleTable[];
@@ -347,6 +348,8 @@ void MP2K_event_port(struct MP2KPlayerState *unused, struct MP2KTrack *track) {
 void MP2KPlayerMain(void *voidPtrPlayer) {
     struct MP2KPlayerState *player = (struct MP2KPlayerState *)voidPtrPlayer;
     struct SoundMixerState *mixer = SOUND_INFO_PTR;
+
+    player->hasBeenRanOnce = TRUE;
 
     if (player->lockStatus != PLAYER_UNLOCKED) {
         return;

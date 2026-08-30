@@ -3,7 +3,8 @@
 #include "global.h"
 
 #ifdef PORTABLE
-    #include "cgb_audio.h"
+#include "cgb_audio.h"
+void RunMixerFrame(void);
 #endif
 
 extern const u8 gCgb3Vol[];
@@ -685,6 +686,9 @@ void MPlayStart(struct MusicPlayerInfo *mplayInfo, struct SongHeader *songHeader
             m4aSoundMode(songHeader->reverb);
 
         mplayInfo->ident = ID_NUMBER;
+    #ifdef PORTABLE
+        mplayInfo->hasBeenRanOnce = FALSE;
+    #endif
     }
 }
 
@@ -1704,6 +1708,11 @@ void SetPokemonCryProgress(u32 val)
 bool32 IsPokemonCryPlaying(struct MusicPlayerInfo *mplayInfo)
 {
     struct MusicPlayerTrack *track = mplayInfo->tracks;
+
+#if defined PORTABLE && !defined SOUND_DISABLED
+    if (!mplayInfo->hasBeenRanOnce)
+        return TRUE;
+#endif
 
     if (track->chan && track->chan->track == track)
         return TRUE;
