@@ -3,6 +3,11 @@ TITLE        ?= POKEMON EMER
 GAME_CODE    ?= BPEE
 BUILD_NAME   ?= emerald
 MAP_VERSION  ?= emerald
+PORTABLE     ?= 0
+IS64BIT      ?= 1
+TARGET_PLATFORM ?= PLATFORM_SDL2
+TARGET_OS       ?= NONE
+TILE_RENDERER   ?= RENDERER_EASY_DRAW
 
 ifeq (firered, $(or $(BUILD), $(MAKECMDGOALS)))
   	GAME_VERSION 	:= FIRERED
@@ -56,6 +61,14 @@ endif
 ifeq (debug,$(MAKECMDGOALS))
   DEBUG := 1
 endif
+ifeq (winwsl,$(MAKECMDGOALS))
+  PORTABLE := 1
+  TARGET_OS := WINDOWS
+endif
+ifeq (linux,$(MAKECMDGOALS))
+  PORTABLE := 1
+  TARGET_OS := LINUX
+endif
 ifneq (,$(filter release tidyrelease,$(MAKECMDGOALS)))
   RELEASE := 1
 endif
@@ -79,15 +92,102 @@ ifneq (,$(TOOLCHAIN))
   endif
 endif
 
+BIT_WIDTH := 32
+OTHER_BIT_WIDTH := 64
+ASFLAGS64 :=
+CPPFLAGS64 :=
+
+# 64 bit specific stuff goes here
+ifeq ($(IS64BIT),1)
+  BIT_WIDTH := 64
+  OTHER_BIT_WIDTH := 32
+  ASFLAGS64 :=
+  CPPFLAGS64 := -D VER_64BIT
+endif
+
+ifeq ($(PORTABLE),1)
+  ifeq ($(TARGET_OS),WINDOWS)
+    ifeq ($(IS64BIT),1)
+      PREFIX := x86_64-w64-mingw32-
+    else
+      PREFIX := i686-w64-mingw32-
+    endif # IS64BIT
+  else # LINUX
+    PREFIX :=
+  endif # TARGET_OS
+else
 PREFIX := arm-none-eabi-
+endif
+
 OBJCOPY := $(PREFIX)objcopy
 OBJDUMP := $(PREFIX)objdump
+WINDRES := $(PREFIX)windres
 AS := $(PREFIX)as
 LD := $(PREFIX)ld
 
 EXE :=
 ifeq ($(OS),Windows_NT)
   EXE := .exe
+endif
+
+ifeq ($(PORTABLE),1)
+  ifeq ($(IS64BIT),1)
+    ifeq ($(TARGET_OS),WINDOWS)
+      SDL_DIR := ./SDL2/x86_64-w64-mingw32
+    endif
+    ASM_PSEUDO_OP_CONV := sed -e 's/\.4byte/\.int/g;s/\.2byte/\.short/g'
+    FIX_UNDERSCORE := $(OBJCOPY)
+    LEADING_UNDERSCORE_FLAG :=
+  else
+    SDL_DIR := ./SDL2/i686-w64-mingw32
+    ASM_PSEUDO_OP_CONV := sed -e 's/\.4byte/\.int/g;s/\.2byte/\.short/g'
+    #FIX_UNDERSCORE is required for 32 bit windows
+    ifeq ($(TARGET_OS),WINDOWS)
+      FIX_UNDERSCORE := $(OBJCOPY) --prefix-symbol _
+    else
+      FIX_UNDERSCORE := $(OBJCOPY)
+    endif
+    LEADING_UNDERSCORE_FLAG := -fleading-underscore
+  endif
+
+  PLATFORM_LFLAGS :=
+  PLATFORM_INCLUDES :=
+  PLATFORM_CFLAGS :=
+  BUILD_FEXTENSION :=
+  OS_CFLAGS :=
+  OS_LFLAGS :=
+
+  ifeq ($(TARGET_OS),WINDOWS)
+    OS_CFLAGS :=
+    OS_LFLAGS := -lwinmm -lxinput
+    BUILD_FEXTENSION := .exe
+  else
+    OS_CFLAGS :=
+    OS_LFLAGS := -no-pie
+  endif
+
+  #Windows only
+  ifeq ($(TARGET_OS),WINDOWS)
+    ifneq ($(NO_STD_LIB),1)
+      PLATFORM_LFLAGS += -lmingw32
+    endif
+  endif
+
+  ifeq ($(TARGET_PLATFORM), PLATFORM_SDL2)
+    PLATFORM_LFLAGS += -lSDL2main -lSDL2
+  endif
+
+  ifeq ($(TARGET_PLATFORM), PLATFORM_WIN32)
+    ifeq ($(NO_STD_LIB),1)
+      PLATFORM_LFLAGS += -Wl,-e__main -nostdlib
+      CPPFLAGS += -D NO_STD_LIB_ENABLED
+    endif
+    PLATFORM_LFLAGS += -lkernel32 -luser32 -lgdi32
+    PLATFORM_INCLUDES += -D SOUND_DISABLED
+  endif
+else
+  ASM_PSEUDO_OP_CONV := cat
+  FIX_UNDERSCORE := $(OBJCOPY)
 endif
 
 CPP := $(PREFIX)cpp
@@ -101,6 +201,10 @@ OBJ_DIR_NAME := $(BUILD_DIR)/$(BUILD_NAME)
 OBJ_DIR_NAME_TEST := $(BUILD_DIR)/$(BUILD_NAME)-test
 OBJ_DIR_NAME_DEBUG := $(BUILD_DIR)/$(BUILD_NAME)-debug
 OBJ_DIR_NAME_RELEASE := $(BUILD_DIR)/$(BUILD_NAME)-release
+PORTABLE_ROM_NAME := $(FILE_NAME)$(BIT_WIDTH)$(BUILD_FEXTENSION)
+PORTABLE_OBJ_DIR_NAME := $(BUILD_DIR)/pc$(BIT_WIDTH)
+PORTABLE_ROM_NAME_OTHER := $(FILE_NAME)$(OTHER_BIT_WIDTH)$(BUILD_FEXTENSION)
+PORTABLE_OBJ_DIR_NAME_OTHER := $(BUILD_DIR)/pc$(OTHER_BIT_WIDTH)
 ASSETS_DIR_NAME := $(BUILD_DIR)/assets
 
 ELF_NAME := $(ROM_NAME:.gba=.elf)
@@ -109,6 +213,11 @@ TESTELF := $(ROM_NAME:.gba=-test.elf)
 HEADLESSELF := $(ROM_NAME:.gba=-test-headless.elf)
 
 # Pick our active variables
+
+ifeq ($(PORTABLE),1)
+  ROM := $(PORTABLE_ROM_NAME)
+  OBJ_DIR := $(PORTABLE_OBJ_DIR_NAME)
+else
 ROM := $(ROM_NAME)
 ifeq ($(TESTELF),$(MAKECMDGOALS))
   TEST := 1
@@ -123,6 +232,7 @@ ifeq ($(DEBUG),1)
 endif
 ifeq ($(RELEASE),1)
   OBJ_DIR := $(OBJ_DIR_NAME_RELEASE)
+endif
 endif
 ELF := $(ROM:.gba=.elf)
 MAP := $(ROM:.gba=.map)
@@ -145,7 +255,11 @@ TEST_BUILDDIR = $(OBJ_DIR)/$(TEST_SUBDIR)
 SHELL := bash -o pipefail
 
 # Set flags for tools
+ifeq ($(PORTABLE),1)
+  ASFLAGS := --$(BIT_WIDTH) $(ASFLAGS64) --defsym VER_64BIT=$(IS64BIT) --defsym MODERN=1 --defsym PORTABLE=1 --defsym $(GAME_VERSION)=1
+else
 ASFLAGS := -mcpu=arm7tdmi -march=armv4t -meabi=5 --defsym MODERN=1 --defsym $(GAME_VERSION)=1
+endif
 
 INCLUDE_DIRS := include
 INCLUDE_CPP_ARGS := $(INCLUDE_DIRS:%=-iquote %)
@@ -157,6 +271,9 @@ else
 O_LEVEL ?= 2
 endif
 CPPFLAGS := $(INCLUDE_CPP_ARGS) -Wno-trigraphs -DMODERN=1 -DTESTING=$(TEST) -D$(GAME_VERSION) -std=gnu17
+ifeq ($(PORTABLE),1)
+  CPPFLAGS += -D NONMATCHING -D PORTABLE -D $(TARGET_PLATFORM) -D $(TILE_RENDERER) -D UBFIX $(CPPFLAGS64) $(PLATFORM_INCLUDES) -I$(SDL_DIR)/include -L$(SDL_DIR)/lib
+endif
 ifeq ($(RELEASE),1)
 	override CPPFLAGS += -DRELEASE
 	ifeq ($(USE_LTO_ON_RELEASE),1)
@@ -165,9 +282,17 @@ ifeq ($(RELEASE),1)
 endif
 ARMCC := $(PREFIX)gcc
 PATH_ARMCC := PATH="$(PATH)" $(ARMCC)
+ifeq ($(PORTABLE),1)
+CC1 := $(shell $(ARMCC) --print-prog-name=cc1) -quiet
+else
 CC1 := $(shell $(PATH_ARMCC) --print-prog-name=cc1) -quiet
+endif
 
+ifeq ($(PORTABLE),1)
+  override CFLAGS += $(OS_CFLAGS) $(PLATFORM_CFLAGS) -Werror=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -Wno-trigraphs -Wimplicit -Wparentheses -Wunused -m$(BIT_WIDTH) -std=gnu99 $(LEADING_UNDERSCORE_FLAG) -fno-dce -fno-builtin -Wno-unused-function -DPORTABLE -DNONMATCHING -D UBFIX
+else
 override CFLAGS += -mthumb -mthumb-interwork -O$(O_LEVEL) -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -Wno-pointer-to-int-cast -std=gnu17 -Werror -Wall -Wno-strict-aliasing -Wno-attribute-alias -Woverride-init -Wnonnull -Wenum-conversion
+endif
 
 ifneq ($(LTO),0)
   ifneq ($(TEST),1)
@@ -191,14 +316,26 @@ ifeq ($(DEPRECATED_ERROR),0)
   endif
 endif
 
+ifeq ($(PORTABLE),1)
+  LIB := $(LIBPATH) -lgcc -lc
+else
 LIBPATH := -L "$(dir $(shell $(PATH_ARMCC) -mthumb -print-file-name=libgcc.a))" -L "$(dir $(shell $(PATH_ARMCC) -mthumb -print-file-name=libnosys.a))" -L "$(dir $(shell $(PATH_ARMCC) -mthumb -print-file-name=libc.a))"
 LIB := $(LIBPATH) -lc -lnosys -lgcc -L../../libagbsyscall -lagbsyscall
+endif
 # Enable debug info if set
 ifeq ($(DINFO),1)
   override CFLAGS += -g
 else
   ifeq ($(DEBUG),1)
     override CFLAGS += -g
+  endif
+endif
+
+ifeq ($(PORTABLE),1)
+  ifeq ($(DINFO),1)
+    override CFLAGS += -O0
+  else
+    override CFLAGS += -O3
   endif
 endif
 
@@ -269,7 +406,7 @@ MAKEFLAGS += --no-print-directory
 .DELETE_ON_ERROR:
 
 RULES_NO_SCAN += libagbsyscall clean clean-assets tidy tidymodern tidycheck tidyrelease generated clean-generated clean-teachables clean-teachables_intermediates
-.PHONY: all rom agbcc modern compare check debug release
+.PHONY: all rom agbcc modern compare winwsl linux check debug release
 .PHONY: $(RULES_NO_SCAN)
 
 infoshell = $(foreach line, $(shell $1 | sed "s/ /__SPACE__/g"), $(info $(subst __SPACE__, ,$(line))))
@@ -324,7 +461,16 @@ DATA_ASM_OBJS := $(patsubst $(DATA_ASM_SUBDIR)/%.s,$(DATA_ASM_BUILDDIR)/%.o,$(DA
 MID_SRCS := $(wildcard $(MID_SUBDIR)/*.mid)
 MID_OBJS := $(patsubst $(MID_SUBDIR)/%.mid,$(MID_BUILDDIR)/%.o,$(MID_SRCS))
 
+ifeq ($(PORTABLE),1)
+  OBJS     := $(C_OBJS) $(ASM_OBJS) $(DATA_ASM_OBJS) $(MID_OBJS)
+else
 OBJS     := $(C_OBJS) $(C_ASM_OBJS) $(ASM_OBJS) $(DATA_ASM_OBJS) $(MID_OBJS)
+endif
+
+ifeq ($(TARGET_OS),WINDOWS)
+  OBJS += $(OBJ_DIR)/res.o
+endif
+
 OBJS_REL := $(patsubst $(OBJ_DIR)/%,%,$(OBJS))
 
 SUBDIRS  := $(sort $(dir $(OBJS) $(dir $(TEST_OBJS))))
@@ -333,6 +479,8 @@ $(shell mkdir -p $(SUBDIRS))
 # Pretend rules that are actually flags defer to `make all`
 modern: all
 compare: all
+winwsl: all
+linux: all
 debug: all
 release: all
 # Uncomment the next line, and then comment the 4 lines after it to reenable agbcc.
@@ -385,11 +533,23 @@ clean-assets:
 	find . \( -iname '*.1bpp' -o -iname '*.4bpp' -o -iname '*.8bpp' -o -iname '*.gbapal' -o -iname '*.lz' -o -iname '*.smol' -o -iname '*.fastSmol' -o -iname '*.smolTM' -o -iname '*.rl' -o -iname '*.latfont' -o -iname '*.hwjpnfont' -o -iname '*.fwjpnfont' \) -exec rm {} +
 	find $(DATA_ASM_SUBDIR)/maps \( -iname 'connections.inc' -o -iname 'events.inc' -o -iname 'header.inc' \) -exec rm {} +
 
-tidy: tidymodern tidycheck tidydebug tidyrelease
+tidy: tidymodern tidycheck tidydebug tidyrelease tidyportable
 
 tidymodern:
 	rm -f poke*.gba poke*.elf poke*.map
 	rm -rf $(OBJ_DIR_NAME)
+
+tidyportable:
+	rm -f $(PORTABLE_ROM_NAME)
+	rm -f $(PORTABLE_ROM_NAME).exe
+	rm -rf $(PORTABLE_OBJ_DIR_NAME)
+	rm -f $(PORTABLE_ROM_NAME_OTHER)
+	rm -f $(PORTABLE_ROM_NAME_OTHER).exe
+	rm -rf $(PORTABLE_OBJ_DIR_NAME_OTHER)
+
+clean-platform:
+	rm -f $(PORTABLE_ROM_NAME)
+	rm -rf $(PORTABLE_OBJ_DIR_NAME)/src/platform
 
 tidycheck:
 	rm -f $(TESTELF) $(HEADLESSELF)
@@ -450,10 +610,12 @@ clean-teachables: clean-teachables_intermediates
 	rm -f $(ALL_LEARNABLES_JSON)
 	@touch $(C_SUBDIR)/pokemon.c
 
+ifneq ($(PORTABLE),1)
 $(C_BUILDDIR)/librfu_intr.o: CFLAGS := -mthumb-interwork -O2 -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -fno-toplevel-reorder -Wno-pointer-to-int-cast
 $(C_BUILDDIR)/berry_crush.o: override CFLAGS += -Wno-address-of-packed-member
-$(C_BUILDDIR)/agb_flash.o: override CFLAGS += -fno-toplevel-reorder
 $(C_BUILDDIR)/pokedex_plus_hgss.o: CFLAGS := -mthumb -mthumb-interwork -O2 -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -Wno-pointer-to-int-cast -std=gnu17 -Werror -Wall -Wno-strict-aliasing -Wno-attribute-alias -Woverride-init
+endif
+$(C_BUILDDIR)/agb_flash.o: override CFLAGS += -fno-toplevel-reorder
 # Annoyingly we can't turn this on just for src/data/trainers.h
 $(C_BUILDDIR)/data.o: CFLAGS += -fno-show-column -fno-diagnostics-show-caret
 
@@ -502,6 +664,7 @@ endif
 
 $(ASM_BUILDDIR)/%.o: $(ASM_SUBDIR)/%.s
 	$(AS) $(ASFLAGS) -o $@ $<
+	$(FIX_UNDERSCORE) $@
 
 $(ASM_BUILDDIR)/%.d: $(ASM_SUBDIR)/%.s
 	$(SCANINC) -M $@ -g $(ASSETS_DIR_NAME) $(INCLUDE_SCANINC_ARGS) -I "" $<
@@ -521,7 +684,8 @@ ifneq ($(NODEP),1)
 endif
 
 $(DATA_ASM_BUILDDIR)/%.o: $(DATA_ASM_SUBDIR)/%.s
-	$(PREPROC) -s $< charmap.txt | $(CPP) $(CPPFLAGS) $(INCLUDE_SCANINC_ARGS) - | $(PREPROC) -ie $< charmap.txt | $(AS) $(ASFLAGS) -o $@
+	$(PREPROC) -s $< charmap.txt | $(CPP) $(CPPFLAGS) $(INCLUDE_SCANINC_ARGS) - | $(PREPROC) -ie $< charmap.txt | $(ASM_PSEUDO_OP_CONV) | $(AS) $(ASFLAGS) -o $@
+	$(FIX_UNDERSCORE) $@
 
 $(DATA_ASM_BUILDDIR)/%.d: $(DATA_ASM_SUBDIR)/%.s
 	$(SCANINC) -M $@ -g $(ASSETS_DIR_NAME) $(INCLUDE_SCANINC_ARGS) -I "" $<
@@ -538,6 +702,9 @@ $(OBJ_DIR)/sym_common.ld: sym_common.txt $(C_OBJS) $(wildcard common_syms/*.txt)
 
 $(OBJ_DIR)/sym_ewram.ld: sym_ewram.txt
 	$(RAMSCRGEN) ewram_data $< ENGLISH > $@
+
+$(OBJ_DIR)/res.o: $(C_SUBDIR)/platform/win32res/res.rc $(C_SUBDIR)/platform/win32res/icon.ico
+	$(WINDRES) $< -o $@
 
 TEACHABLE_DEPS := $(ALL_LEARNABLES_JSON) $(INCLUDE_DIRS)/constants/tms_hms.h $(INCLUDE_DIRS)/config/pokemon.h $(DATA_SRC_SUBDIR)/pokemon/special_movesets.json $(INCLUDE_DIRS)/config/pokedex_plus_hgss.h $(LEARNSET_HELPERS_DIR)/make_teachables.py
 
@@ -567,6 +734,7 @@ LD_SCRIPT := ld_script_modern.ld
 libagbsyscall:
 	@$(MAKE) -C libagbsyscall TOOLCHAIN=$(TOOLCHAIN) MODERN=1
 
+ifneq ($(PORTABLE),1)
 # Enable LTO LDFLAGS if set
 ifneq ($(LTO),0)
 LDFLAGS := -march=armv4t -mabi=apcs-gnu -mcpu=arm7tdmi -Xlinker -Map=../../$(MAP) -Xlinker --print-memory-usage -Xassembler -meabi=5 -Xassembler -march=armv4t -Xassembler -mcpu=arm7tdmi -Xlinker --gc-sections
@@ -589,9 +757,14 @@ $(ROM): $(ELF)
 	$(OBJCOPY) -O binary $< $@
 	$(FIX) $@ -p --silent
 
-emerald: all
-firered: all
-leafgreen: all
 # Symbol file (`make syms`)
 $(SYM): $(ELF)
 	$(OBJDUMP) -t $< | sort -u | grep -E "^0[2389]" | $(PERL) -p -e 's/^(\w{8}) (\w).{6} \S+\t(\w{8}) (\S+)$$/\1 \2 \3 \4/g' > $@
+else
+$(ROM): $(OBJS)
+	$(MODERNCC) $(CFLAGS) -Wl,--demangle $^ -static-libgcc -L$(SDL_DIR)/lib $(PLATFORM_LFLAGS) $(OS_LFLAGS) -o $@
+endif
+
+emerald: all
+firered: all
+leafgreen: all
