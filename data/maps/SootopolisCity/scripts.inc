@@ -142,7 +142,7 @@ SootopolisCity_EventScript_SetExpertBlockCaveEntrance::
 
 SootopolisCity_OnWarp:
 	map_script_2 VAR_SOOTOPOLIS_CITY_STATE, 5, SootopolisCity_EventScript_PlayerFaceLegendaries
-	.short 0
+	.2byte 0
 
 SootopolisCity_EventScript_PlayerFaceLegendaries::
 	call_if_eq VAR_SKY_PILLAR_STATE, 1, SootopolisCity_EventScript_PlayerFaceLegendaries1
@@ -165,9 +165,9 @@ SootopolisCity_OnResume:
 SootopolisCity_OnFrame:
 	map_script_2 VAR_SOOTOPOLIS_CITY_STATE, 1, SootopolisCity_EventScript_StartLegendariesScene
 	map_script_2 VAR_SKY_PILLAR_STATE, 1, SootopolisCity_EventScript_StartRayquazaScene
-	.short 0
+	.2byte 0
 
-/* If not at PokeCenter, assumed to have arrived via Dive*/
+@ If not at PokeCenter, assumed to have arrived via Dive
 SootopolisCity_EventScript_StartLegendariesScene::
 	lockall
 	special StorePlayerCoordsInVars
@@ -186,7 +186,7 @@ SootopolisCity_EventScript_LegendariesSceneFromPokeCenter::
 	fadescreenspeed FADE_TO_BLACK, 8
 	setweather WEATHER_ABNORMAL
 	doweather
-	setvar VAR_0x8004, FALSE /* Just do Groudon/Kyogre fight scene*/
+	setvar VAR_0x8004, FALSE @ Just do Groudon/Kyogre fight scene
 	special Script_DoRayquazaScene
 	applymovement LOCALID_SOOTOPOLIS_KYOGRE, Common_Movement_WalkInPlaceFasterLeft
 	applymovement LOCALID_SOOTOPOLIS_GROUDON, Common_Movement_WalkInPlaceFasterRight
@@ -197,10 +197,10 @@ SootopolisCity_EventScript_LegendariesSceneFromPokeCenter::
 	applymovement LOCALID_SOOTOPOLIS_KYOGRE, SootopolisCity_Movement_KyogreAttack
 	applymovement LOCALID_SOOTOPOLIS_GROUDON, SootopolisCity_Movement_GroudonDefend
 	waitmovement 0
-	setvar VAR_0x8004, 1  /* vertical pan*/
-	setvar VAR_0x8005, 1  /* horizontal pan*/
-	setvar VAR_0x8006, 8  /* num shakes*/
-	setvar VAR_0x8007, 5  /* shake delay*/
+	setvar VAR_0x8004, 1  @ vertical pan
+	setvar VAR_0x8005, 1  @ horizontal pan
+	setvar VAR_0x8006, 8  @ num shakes
+	setvar VAR_0x8007, 5  @ shake delay
 	special ShakeCamera
 	waitstate
 	applymovement LOCALID_SOOTOPOLIS_KYOGRE, SootopolisCity_Movement_KyogreMoveBack
@@ -211,10 +211,10 @@ SootopolisCity_EventScript_LegendariesSceneFromPokeCenter::
 	applymovement LOCALID_SOOTOPOLIS_KYOGRE, SootopolisCity_Movement_KyogreDefend
 	applymovement LOCALID_SOOTOPOLIS_GROUDON, SootopolisCity_Movement_GroudonAttack
 	waitmovement 0
-	setvar VAR_0x8004, 1  /* vertical pan*/
-	setvar VAR_0x8005, 1  /* horizontal pan*/
-	setvar VAR_0x8006, 8  /* num shakes*/
-	setvar VAR_0x8007, 5  /* shake delay*/
+	setvar VAR_0x8004, 1  @ vertical pan
+	setvar VAR_0x8005, 1  @ horizontal pan
+	setvar VAR_0x8006, 8  @ num shakes
+	setvar VAR_0x8007, 5  @ shake delay
 	special ShakeCamera
 	waitstate
 	applymovement LOCALID_SOOTOPOLIS_KYOGRE, SootopolisCity_Movement_KyogreMoveBack
@@ -225,10 +225,10 @@ SootopolisCity_EventScript_LegendariesSceneFromPokeCenter::
 	applymovement LOCALID_SOOTOPOLIS_KYOGRE, SootopolisCity_Movement_KyogreAttack
 	applymovement LOCALID_SOOTOPOLIS_GROUDON, SootopolisCity_Movement_GroudonDefend
 	waitmovement 0
-	setvar VAR_0x8004, 1  /* vertical pan*/
-	setvar VAR_0x8005, 1  /* horizontal pan*/
-	setvar VAR_0x8006, 8  /* num shakes*/
-	setvar VAR_0x8007, 5  /* shake delay*/
+	setvar VAR_0x8004, 1  @ vertical pan
+	setvar VAR_0x8005, 1  @ horizontal pan
+	setvar VAR_0x8006, 8  @ num shakes
+	setvar VAR_0x8007, 5  @ shake delay
 	special ShakeCamera
 	waitstate
 	applymovement LOCALID_SOOTOPOLIS_KYOGRE, SootopolisCity_Movement_KyogreMoveBack
@@ -285,7 +285,7 @@ SootopolisCity_EventScript_LegendariesSceneFromDive::
 	fadescreenspeed FADE_TO_BLACK, 8
 	setweather WEATHER_ABNORMAL
 	doweather
-	setvar VAR_0x8004, FALSE /* Just do Groudon/Kyogre fight scene*/
+	setvar VAR_0x8004, FALSE @ Just do Groudon/Kyogre fight scene
 	special Script_DoRayquazaScene
 	applymovement LOCALID_SOOTOPOLIS_KYOGRE, Common_Movement_WalkInPlaceFasterLeft
 	applymovement LOCALID_SOOTOPOLIS_GROUDON, Common_Movement_WalkInPlaceFasterRight
@@ -296,10 +296,10 @@ SootopolisCity_EventScript_LegendariesSceneFromDive::
 	applymovement LOCALID_SOOTOPOLIS_KYOGRE, SootopolisCity_Movement_KyogreAttack
 	applymovement LOCALID_SOOTOPOLIS_GROUDON, SootopolisCity_Movement_GroudonDefend
 	waitmovement 0
-	setvar VAR_0x8004, 1  /* vertical pan*/
-	setvar VAR_0x8005, 1  /* horizontal pan*/
-	setvar VAR_0x8006, 8  /* num shakes*/
-	setvar VAR_0x8007, 5  /* shake delay*/
+	setvar VAR_0x8004, 1  @ vertical pan
+	setvar VAR_0x8005, 1  @ horizontal pan
+	setvar VAR_0x8006, 8  @ num shakes
+	setvar VAR_0x8007, 5  @ shake delay
 	special ShakeCamera
 	waitstate
 	applymovement LOCALID_SOOTOPOLIS_KYOGRE, SootopolisCity_Movement_KyogreMoveBack
@@ -310,10 +310,10 @@ SootopolisCity_EventScript_LegendariesSceneFromDive::
 	applymovement LOCALID_SOOTOPOLIS_KYOGRE, SootopolisCity_Movement_KyogreDefend
 	applymovement LOCALID_SOOTOPOLIS_GROUDON, SootopolisCity_Movement_GroudonAttack
 	waitmovement 0
-	setvar VAR_0x8004, 1  /* vertical pan*/
-	setvar VAR_0x8005, 1  /* horizontal pan*/
-	setvar VAR_0x8006, 8  /* num shakes*/
-	setvar VAR_0x8007, 5  /* shake delay*/
+	setvar VAR_0x8004, 1  @ vertical pan
+	setvar VAR_0x8005, 1  @ horizontal pan
+	setvar VAR_0x8006, 8  @ num shakes
+	setvar VAR_0x8007, 5  @ shake delay
 	special ShakeCamera
 	waitstate
 	applymovement LOCALID_SOOTOPOLIS_KYOGRE, SootopolisCity_Movement_KyogreMoveBack
@@ -324,10 +324,10 @@ SootopolisCity_EventScript_LegendariesSceneFromDive::
 	applymovement LOCALID_SOOTOPOLIS_KYOGRE, SootopolisCity_Movement_KyogreAttack
 	applymovement LOCALID_SOOTOPOLIS_GROUDON, SootopolisCity_Movement_GroudonDefend
 	waitmovement 0
-	setvar VAR_0x8004, 1  /* vertical pan*/
-	setvar VAR_0x8005, 1  /* horizontal pan*/
-	setvar VAR_0x8006, 8  /* num shakes*/
-	setvar VAR_0x8007, 5  /* shake delay*/
+	setvar VAR_0x8004, 1  @ vertical pan
+	setvar VAR_0x8005, 1  @ horizontal pan
+	setvar VAR_0x8006, 8  @ num shakes
+	setvar VAR_0x8007, 5  @ shake delay
 	special ShakeCamera
 	waitstate
 	applymovement LOCALID_SOOTOPOLIS_KYOGRE, SootopolisCity_Movement_KyogreMoveBack
@@ -454,7 +454,7 @@ SootopolisCity_Movement_GroudonIdle:
 	walk_in_place_slow_right
 	step_end
 
-/* If not at PokeCenter, assumed to have arrived via Dive*/
+@ If not at PokeCenter, assumed to have arrived via Dive
 SootopolisCity_EventScript_StartRayquazaScene::
 	lockall
 	special StorePlayerCoordsInVars
@@ -483,18 +483,18 @@ SootopolisCity_EventScript_RayquazaSceneFromPokeCenter::
 	waitmovement 0
 	waitse
 	playmoncry SPECIES_RAYQUAZA, CRY_MODE_ENCOUNTER
-	setvar VAR_0x8004, 1  /* vertical pan*/
-	setvar VAR_0x8005, 1  /* horizontal pan*/
-	setvar VAR_0x8006, 8  /* num shakes*/
-	setvar VAR_0x8007, 3  /* shake delay*/
+	setvar VAR_0x8004, 1  @ vertical pan
+	setvar VAR_0x8005, 1  @ horizontal pan
+	setvar VAR_0x8006, 8  @ num shakes
+	setvar VAR_0x8007, 3  @ shake delay
 	special ShakeCamera
 	waitstate
 	waitse
 	playmoncry SPECIES_RAYQUAZA, CRY_MODE_ENCOUNTER
-	setvar VAR_0x8004, 1  /* vertical pan*/
-	setvar VAR_0x8005, 2  /* horizontal pan*/
-	setvar VAR_0x8006, 8  /* num shakes*/
-	setvar VAR_0x8007, 5  /* shake delay*/
+	setvar VAR_0x8004, 1  @ vertical pan
+	setvar VAR_0x8005, 2  @ horizontal pan
+	setvar VAR_0x8006, 8  @ num shakes
+	setvar VAR_0x8007, 5  @ shake delay
 	special ShakeCamera
 	waitstate
 	waitmoncry
@@ -534,18 +534,18 @@ SootopolisCity_EventScript_RayquazaSceneFromDive::
 	waitmovement 0
 	waitse
 	playmoncry SPECIES_RAYQUAZA, CRY_MODE_ENCOUNTER
-	setvar VAR_0x8004, 1  /* vertical pan*/
-	setvar VAR_0x8005, 1  /* horizontal pan*/
-	setvar VAR_0x8006, 8  /* num shakes*/
-	setvar VAR_0x8007, 3  /* shake delay*/
+	setvar VAR_0x8004, 1  @ vertical pan
+	setvar VAR_0x8005, 1  @ horizontal pan
+	setvar VAR_0x8006, 8  @ num shakes
+	setvar VAR_0x8007, 3  @ shake delay
 	special ShakeCamera
 	waitstate
 	waitse
 	playmoncry SPECIES_RAYQUAZA, CRY_MODE_ENCOUNTER
-	setvar VAR_0x8004, 1  /* vertical pan*/
-	setvar VAR_0x8005, 2  /* horizontal pan*/
-	setvar VAR_0x8006, 8  /* num shakes*/
-	setvar VAR_0x8007, 5  /* shake delay*/
+	setvar VAR_0x8004, 1  @ vertical pan
+	setvar VAR_0x8005, 2  @ horizontal pan
+	setvar VAR_0x8006, 8  @ num shakes
+	setvar VAR_0x8007, 5  @ shake delay
 	special ShakeCamera
 	waitstate
 	waitmoncry
@@ -616,7 +616,7 @@ SootopolisCity_Movement_PlayerApproachLegendaries:
 	walk_up
 	step_end
 
-/* Unused*/
+@ Unused
 SootopolisCity_Movement_PlayerApproachLegendariesDown:
 	walk_down
 	walk_down
@@ -624,7 +624,7 @@ SootopolisCity_Movement_PlayerApproachLegendariesDown:
 	walk_down
 	step_end
 
-/* Unused*/
+@ Unused
 SootopolisCity_Movement_UnusedPanUp:
 	walk_slow_diag_northeast
 	walk_slow_diag_northeast
@@ -640,7 +640,7 @@ SootopolisCity_Movement_UnusedPanUp:
 	walk_right
 	step_end
 
-/* Unused*/
+@ Unused
 SootopolisCity_Movement_UnusedPanBack:
 	walk_down
 	walk_down
@@ -701,7 +701,7 @@ SootopolisCity_EventScript_KiriRayquaza::
 	release
 	end
 
-/* Gives 2 berries daily. First ranges from FIRST_KIRI_BERRY to LAST_KIRI_BERRY, second is always Figy or Iapapa*/
+@ Gives 2 berries daily. First ranges from FIRST_KIRI_BERRY to LAST_KIRI_BERRY, second is always Figy or Iapapa
 SootopolisCity_EventScript_KiriGiveBerry::
 	dotimebasedevents
 	special GetPlayerBigGuyGirlString
@@ -1370,12 +1370,12 @@ SootopolisCity_EventScript_MaxieArchieLeave::
 	releaseall
 	end
 
-/* Unused*/
+@ Unused
 SootopolisCity_Movement_Levitate::
 	levitate
 	step_end
 
-/* Unused*/
+@ Unused
 SootopolisCity_Movement_DestroyTask::
 	destroy_extra_task
 	step_end

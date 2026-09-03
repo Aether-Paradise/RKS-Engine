@@ -11,7 +11,7 @@ TrainerHill_Entrance_OnTransition:
 	getplayerxy VAR_TEMP_D, VAR_RESULT
 	end
 
-/* Unused*/
+@ Unused
 TrainerHill_Entrance_OnWarp:
 	end
 
@@ -53,7 +53,7 @@ TrainerHill_Entrance_OnFrame:
 	map_script_2 VAR_TEMP_D, 17, TrainerHill_Entrance_EventScript_ExitElevator
 	map_script_2 VAR_TEMP_5, 1, TrainerHill_Entrance_EventScript_EntryTrigger
 	map_script_2 VAR_TEMP_1, 1, TrainerHill_EventScript_WarpToEntranceCounter
-	.short 0
+	.2byte 0
 
 TrainerHill_Entrance_EventScript_ExitElevator::
 	lockall
@@ -200,7 +200,7 @@ TrainerHill_Entrance_Movement_PushPlayerBackFromCounter:
 	walk_down
 	step_end
 
-/* Unused*/
+@ Unused
 TrainerHill_Entrance_Movement_FaceUp:
 	face_up
 	step_end
@@ -248,17 +248,17 @@ TrainerHill_Entrance_EventScript_Clerk::
 
 	.align 2
 TrainerHill_Entrance_Pokemart_Basic:
-	.short ITEM_SUPER_POTION
-	.short ITEM_ANTIDOTE
-	.short ITEM_PARALYZE_HEAL
-	.short ITEM_AWAKENING
-	.short ITEM_X_SPEED
-	.short ITEM_X_SPECIAL
-	.short ITEM_X_ATTACK
-	.short ITEM_X_DEFEND
-	.short ITEM_DIRE_HIT
-	.short ITEM_GUARD_SPEC
-	.short ITEM_X_ACCURACY
+	.2byte ITEM_SUPER_POTION
+	.2byte ITEM_ANTIDOTE
+	.2byte ITEM_PARALYZE_HEAL
+	.2byte ITEM_AWAKENING
+	.2byte ITEM_X_SPEED
+	.2byte ITEM_X_SPECIAL
+	.2byte ITEM_X_ATTACK
+	.2byte ITEM_X_DEFEND
+	.2byte ITEM_DIRE_HIT
+	.2byte ITEM_GUARD_SPEC
+	.2byte ITEM_X_ACCURACY
 	pokemartlistend
 
 TrainerHill_Entrance_EventScript_ExpandedPokemart::
@@ -269,18 +269,18 @@ TrainerHill_Entrance_EventScript_ExpandedPokemart::
 
 	.align 2
 TrainerHill_Entrance_Pokemart_Expanded:
-	.short ITEM_HYPER_POTION
-	.short ITEM_MAX_POTION
-	.short ITEM_FULL_RESTORE
-	.short ITEM_FULL_HEAL
-	.short ITEM_REVIVE
-	.short ITEM_X_SPEED
-	.short ITEM_X_SPECIAL
-	.short ITEM_X_ATTACK
-	.short ITEM_X_DEFEND
-	.short ITEM_DIRE_HIT
-	.short ITEM_GUARD_SPEC
-	.short ITEM_X_ACCURACY
+	.2byte ITEM_HYPER_POTION
+	.2byte ITEM_MAX_POTION
+	.2byte ITEM_FULL_RESTORE
+	.2byte ITEM_FULL_HEAL
+	.2byte ITEM_REVIVE
+	.2byte ITEM_X_SPEED
+	.2byte ITEM_X_SPECIAL
+	.2byte ITEM_X_ATTACK
+	.2byte ITEM_X_DEFEND
+	.2byte ITEM_DIRE_HIT
+	.2byte ITEM_GUARD_SPEC
+	.2byte ITEM_X_ACCURACY
 	pokemartlistend
 
 TrainerHill_Entrance_Text_StillGettingReady:
@@ -358,7 +358,7 @@ TrainerHill_Entrance_Text_ExplainTrainerHill:
 	.string "neither Exp. Points nor money will\l"
 	.string "be awarded.$"
 
-/* Unused*/
+@ Unused
 TrainerHill_Entrance_Text_NeedAtLeastTwoPokemon:
 	.string "Oh, I'm sorry, but you appear to have\n"
 	.string "only one POKéMON with you.\p"
@@ -408,7 +408,7 @@ TrainerHill_Roof_Text_ArriveZippierNextTime:
 	.string "a tag team with you!\p"
 	.string "Until we meet again, amigo!$"
 
-/* Unused*/
+@ Unused
 TrainerHill_Roof_Text_BuiltTrainerHillToFindPartner:
 	.string "I had the TRAINER HILL built for but\n"
 	.string "one reason and one only!\p"

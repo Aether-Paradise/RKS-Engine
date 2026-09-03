@@ -24,8 +24,8 @@
 
 	.set VRAM,      0x6000000
 	.set BG_VRAM,   VRAM
-	.set OBJ_VRAM0, VRAM + 0x10000 /* text-mode BG*/
-	.set OBJ_VRAM1, VRAM + 0x14000 /* bitmap-mode BG*/
+	.set OBJ_VRAM0, VRAM + 0x10000 @ text-mode BG
+	.set OBJ_VRAM1, VRAM + 0x14000 @ bitmap-mode BG
 
 	.set OAM, 0x7000000
 
@@ -51,9 +51,9 @@
 	.set VCOUNT_VBLANK, 160
 	.set TOTAL_SCANLINES, 228
 
-	.set REG_BASE, 0x4000000 /* I/O register base address*/
+	.set REG_BASE, 0x4000000 @ I/O register base address
 
-/* I/O register offsets*/
+@ I/O register offsets
 	.set OFFSET_REG_DISPCNT,     0x0
 	.set OFFSET_REG_DISPSTAT,    0x4
 	.set OFFSET_REG_VCOUNT,      0x6
@@ -241,7 +241,7 @@
 
 	.set OFFSET_REG_WAITCNT,     0x204
 
-/* I/O register addresses*/
+@ I/O register addresses
 	.set REG_DISPCNT,     REG_BASE + OFFSET_REG_DISPCNT
 	.set REG_DISPSTAT,    REG_BASE + OFFSET_REG_DISPSTAT
 	.set REG_VCOUNT,      REG_BASE + OFFSET_REG_VCOUNT
@@ -429,7 +429,7 @@
 
 	.set REG_WAITCNT,     REG_BASE + OFFSET_REG_WAITCNT
 
-/* DMA register constants*/
+@ DMA register constants
 
 	.set DMA_DEST_INC,      0x0000
 	.set DMA_DEST_DEC,      0x0020
@@ -449,7 +449,7 @@
 	.set DMA_INTR_ENABLE,   0x4000
 	.set DMA_ENABLE,        0x8000
 
-/* OAM attribute constants*/
+@ OAM attribute constants
 
 	.set OAM_OBJ_NORMAL,         0x00000000
 	.set OAM_OBJ_BLEND,          0x00000400
@@ -492,7 +492,7 @@
 	.set OAM_SIZE_16x32,         OAM_SIZE_2 | OAM_V_RECTANGLE
 	.set OAM_SIZE_32x64,         OAM_SIZE_3 | OAM_V_RECTANGLE
 
-/* BLDCNT*/
+@ BLDCNT
 
 	.set BLDCNT_TGT1_BG0,       1 << 0
 	.set BLDCNT_TGT1_BG1,       1 << 1

@@ -26,7 +26,7 @@ RustboroCity_EventScript_HideMapNamePopup::
 
 RustboroCity_OnFrame:
 	map_script_2 VAR_RUSTBORO_CITY_STATE, 6, RustboroCity_EventScript_ScientistAddMatchCall
-	.short 0
+	.2byte 0
 
 RustboroCity_EventScript_ScientistAddMatchCall::
 	lockall
@@ -112,7 +112,7 @@ RustboroCity_Movement_ScientistApproachPlayer:
 	delay_16
 	step_end
 
-/* Unused*/
+@ Unused
 RustboroCity_Movement_ScientistWalkAroundPlayer:
 	delay_16
 	walk_left
@@ -197,7 +197,7 @@ RustboroCity_EventScript_GymSign::
 	msgbox RustboroCity_Text_GymSign, MSGBOX_SIGN
 	end
 
-/* Unused*/
+@ Unused
 RustboroCity_EventScript_DevonCorpBranchOfficeSign::
 	msgbox RustboroCity_Text_DevonCorpBranchOfficeSign, MSGBOX_SIGN
 	end
@@ -310,41 +310,41 @@ RustboroCity_EventScript_StolenGoodsScene::
 	releaseall
 	end
 
-/* Unused*/
+@ Unused
 RustboroCity_EventScript_ShadyCharacterTookOff::
 	msgbox RustboroCity_Text_ShadyCharacterTookOffTowardsTunnel, MSGBOX_DEFAULT
 	return
 
-/* Unused*/
+@ Unused
 RustboroCity_EventScript_YouGotItThankYou::
 	msgbox RustboroCity_Text_YouGotItThankYou, MSGBOX_DEFAULT
 	return
 
-/* Unknown, unused employee movements. Based on the differences in movement theyre for approaching an object (probably the player) in different positions*/
+@ Unknown, unused employee movements. Based on the differences in movement theyre for approaching an object (probably the player) in different positions
 RustboroCity_EventScript_EmployeeApproachUp::
 	applymovement LOCALID_RUSTBORO_DEVON_EMPLOYEE, RustboroCity_Movement_EmployeeApproachUp
 	waitmovement 0
 	return
 
-/* Unused, see above*/
+@ Unused, see above
 RustboroCity_EventScript_EmployeeApproachLeft::
 	applymovement LOCALID_RUSTBORO_DEVON_EMPLOYEE, RustboroCity_Movement_EmployeeApproachLeft
 	waitmovement 0
 	return
 
-/* Unused, see above*/
+@ Unused, see above
 RustboroCity_EventScript_EmployeeApproachRight::
 	applymovement LOCALID_RUSTBORO_DEVON_EMPLOYEE, RustboroCity_Movement_EmployeeApproachRight
 	waitmovement 0
 	return
 
-/* Unused, see above*/
+@ Unused, see above
 RustboroCity_EventScript_EmployeeApproachDown::
 	applymovement LOCALID_RUSTBORO_DEVON_EMPLOYEE, RustboroCity_Movement_EmployeeApproachDown
 	waitmovement 0
 	return
 
-/* Unused, similar movement to the above scripts*/
+@ Unused, similar movement to the above scripts
 RustboroCity_EventScript_EmployeeApproachPlayerFar::
 	applymovement LOCALID_RUSTBORO_DEVON_EMPLOYEE, RustboroCity_Movement_EmployeeApproachPlayerFar
 	waitmovement 0
@@ -352,7 +352,7 @@ RustboroCity_EventScript_EmployeeApproachPlayerFar::
 	waitmovement 0
 	return
 
-/* Unused*/
+@ Unused
 RustboroCity_Movement_GruntEscapeExtended:
 	walk_faster_right
 	walk_faster_right
@@ -412,14 +412,14 @@ RustboroCity_Movement_EmployeeChaseGrunt2:
 	walk_up
 	step_end
 
-/* Functionally unused*/
+@ Functionally unused
 RustboroCity_Movement_EmployeeApproachUp:
 	walk_down
 	walk_right
 	walk_right
 	step_end
 
-/* Functionally unused*/
+@ Functionally unused
 RustboroCity_Movement_EmployeeApproachLeft:
 	walk_down
 	walk_down
@@ -427,7 +427,7 @@ RustboroCity_Movement_EmployeeApproachLeft:
 	walk_right
 	step_end
 
-/* Functionally unused*/
+@ Functionally unused
 RustboroCity_Movement_EmployeeApproachRight:
 	walk_down
 	walk_down
@@ -435,7 +435,7 @@ RustboroCity_Movement_EmployeeApproachRight:
 	walk_right
 	step_end
 
-/* Functionally unused*/
+@ Functionally unused
 RustboroCity_Movement_EmployeeApproachDown:
 	walk_down
 	walk_down
@@ -444,7 +444,7 @@ RustboroCity_Movement_EmployeeApproachDown:
 	walk_right
 	step_end
 
-/* Functionally unused*/
+@ Functionally unused
 RustboroCity_Movement_EmployeeApproachPlayerFar:
 	walk_down
 	walk_down
@@ -505,7 +505,7 @@ RustboroCity_EventScript_EmployeeAskToGetGoods::
 	releaseall
 	end
 
-/* The below movement scripts are either partially or fully duplicated by the movement scripts when the player returns the goods*/
+@ The below movement scripts are either partially or fully duplicated by the movement scripts when the player returns the goods
 RustboroCity_EventScript_EmployeeFacePlayerUp1::
 	applymovement LOCALID_RUSTBORO_DEVON_EMPLOYEE, Common_Movement_WalkInPlaceFasterUp
 	waitmovement 0

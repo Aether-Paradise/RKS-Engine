@@ -50,7 +50,7 @@ MeteorFalls_1F_2R_EventScript_Jay::
 	end
 
 MeteorFalls_1F_2R_EventScript_RegisterJay::
-	msgbox MeteorFalls_1F_2R_Text_JohnRegister, MSGBOX_DEFAULT  /* John speaks for both during register*/
+	msgbox MeteorFalls_1F_2R_Text_JohnRegister, MSGBOX_DEFAULT  @ John speaks for both during register
 	register_matchcall TRAINER_JOHN_AND_JAY_1
 	release
 	end

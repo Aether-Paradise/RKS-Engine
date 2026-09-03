@@ -20,7 +20,7 @@ LilycoveCity_DepartmentStoreElevator_EventScript_Attendant::
 	case 4, LilycoveCity_DepartmentStoreElevator_EventScript_ChooseFloorFrom1st
 	end
 
-/* Below scripts ensure the cursor for floor select always starts on the current floor*/
+@ Below scripts ensure the cursor for floor select always starts on the current floor
 LilycoveCity_DepartmentStoreElevator_EventScript_ChooseFloorFrom5th::
 	multichoicedefault 0, 0, MULTI_FLOORS, 0, FALSE
 	goto LilycoveCity_DepartmentStoreElevator_EventScript_ChooseFloor

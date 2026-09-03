@@ -62,7 +62,7 @@ MauvilleCity_BikeShop_EventScript_AskSwitchBikes::
 	goto_if_eq VAR_RESULT, NO, MauvilleCity_BikeShop_EventScript_KeepBike
 	end
 
-/* If the player does not have a bike on them Rydel assumes its stored in the PC*/
+@ If the player does not have a bike on them Rydel assumes its stored in the PC
 MauvilleCity_BikeShop_EventScript_SwitchBikes::
 	msgbox MauvilleCity_BikeShop_Text_IllSwitchBikes, MSGBOX_DEFAULT
 	checkitem ITEM_ACRO_BIKE

@@ -28,7 +28,6 @@ gMPlayTrack_SE3::
 	.section .rodata
 
 	.align 2
-    
 gMPlayTable::
 	music_player gMPlayInfo_BGM, gMPlayTrack_BGM, NUM_TRACKS_BGM, 0
 	music_player gMPlayInfo_SE1, gMPlayTrack_SE1, NUM_TRACKS_SE1, 1

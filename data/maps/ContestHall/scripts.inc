@@ -56,11 +56,11 @@ ContestHall_EventScript_ReShowAudience::
 
 ContestHall_OnFrame:
 	map_script_2 VAR_CONTEST_HALL_STATE, 1, ContestHall_EventScript_Contest
-	.short 0
+	.2byte 0
 
 ContestHall_OnWarp:
 	map_script_2 VAR_CONTEST_HALL_STATE, 1, ContestHall_EventScript_SetContestObjects
-	.short 0
+	.2byte 0
 
 ContestHall_EventScript_Contest::
 	call ContestHall_EventScript_DoContest
@@ -73,8 +73,8 @@ ContestHall_EventScript_SetContestObjects::
 	call ContestHall_EventScript_CreateAudience
 	end
 
-/* There are 8 audience member object events, 7 of which are given random gfx below (the 8th is the Artist)*/
-/* The rest of the audience is created statically by ContestHall_EventScript_CreateAudience*/
+@ There are 8 audience member object events, 7 of which are given random gfx below (the 8th is the Artist)
+@ The rest of the audience is created statically by ContestHall_EventScript_CreateAudience
 ContestHall_EventScript_AddRandomAudienceMembers::
 	call ContestHall_EventScript_GetRandomAudienceGfxId
 	call ContestHall_EventScript_SetRandomAudienceGfx

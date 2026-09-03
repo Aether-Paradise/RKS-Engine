@@ -68,7 +68,7 @@ MtPyre_Summit_EventScript_ArchieFacePlayer0::
 	waitmovement 0
 	return
 
-/* Archie is already facing player*/
+@ Archie is already facing player
 MtPyre_Summit_EventScript_ArchieFacePlayer1::
 	return
 

@@ -19,7 +19,7 @@ SootopolisCity_Gym_1F_OnLoad:
 	end
 
 SootopolisCity_Gym_1F_EventScript_CheckSetStairMetatiles::
-	goto_if_lt VAR_ICE_STEP_COUNT, 8, SootopolisCity_Gym_1F_EventScript_StopCheckingStairs  /* All stairs ice*/
+	goto_if_lt VAR_ICE_STEP_COUNT, 8, SootopolisCity_Gym_1F_EventScript_StopCheckingStairs  @ All stairs ice
 	goto_if_lt VAR_ICE_STEP_COUNT, 28, SootopolisCity_Gym_1F_EventScript_OpenFirstStairs
 	goto_if_lt VAR_ICE_STEP_COUNT, 67, SootopolisCity_Gym_1F_EventScript_OpenFirstAndSecondStairs
 	setmetatile 8, 4, METATILE_SootopolisGym_Stairs, FALSE
@@ -38,7 +38,7 @@ SootopolisCity_Gym_1F_OnFrame:
 	map_script_2 VAR_ICE_STEP_COUNT, 28, SootopolisCity_Gym_1F_EventScript_UnlockSecondStairs
 	map_script_2 VAR_ICE_STEP_COUNT, 67, SootopolisCity_Gym_1F_EventScript_UnlockThirdStairs
 	map_script_2 VAR_ICE_STEP_COUNT, 0, SootopolisCity_Gym_1F_EventScript_FallThroughIce
-	.short 0
+	.2byte 0
 
 SootopolisCity_Gym_1F_EventScript_UnlockFirstStairs::
 	addvar VAR_ICE_STEP_COUNT, 1
@@ -213,10 +213,10 @@ SootopolisCity_Gym_1F_Text_JuanIntro:
 	.string "A grand illusion of water sculpted\n"
 	.string "by POKéMON and myself!$"
 
-/* NOTE: This defeat text actually causes a buffer overflow. It's about 50 bytes too long for*/
-/* the gDisplayedStringBattle buffer that it's put into, and it stomps all over the gBattleTextBuffs*/
-/* after, as well as the otherwise unused array after that. One wonders if that's the reason for*/
-/* the existence of that unused array of ints.*/
+@ NOTE: This defeat text actually causes a buffer overflow. It's about 50 bytes too long for
+@ the gDisplayedStringBattle buffer that it's put into, and it stomps all over the gBattleTextBuffs
+@ after, as well as the otherwise unused array after that. One wonders if that's the reason for
+@ the existence of that unused array of ints.
 SootopolisCity_Gym_1F_Text_JuanDefeat:
 	.string "Ahahaha, excellent!\n"
 	.string "Very well, you are the winner.\p"

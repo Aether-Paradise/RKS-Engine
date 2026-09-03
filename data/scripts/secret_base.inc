@@ -274,7 +274,7 @@ SecretBase_EventScript_PutAwayDecorationLoop::
 	addvar VAR_0x8004, 1
 	goto_if_eq VAR_0x8005, 0, SecretBase_EventScript_PutAwayDecorationLoop
 	removeobject VAR_0x8006
-	setflag VAR_0x8005  /* UB: VAR_0x8005 is set to a flag by PutAwayDecorationIteration, but ScrCmd_setflag doesn't use VarGet*/
+	setflag VAR_0x8005  @ UB: VAR_0x8005 is set to a flag by PutAwayDecorationIteration, but ScrCmd_setflag doesn't use VarGet
 	goto SecretBase_EventScript_PutAwayDecorationLoop
 	end
 
@@ -295,7 +295,7 @@ SecretBase_EventScript_RecordMixTrainer::
 	goto_if_eq VAR_0x8004, 9, SecretBase_EventScript_Trainer9
 	end
 
-/* VAR_RESULT is initially set by GetSecretBaseOwnerAndState*/
+@ VAR_RESULT is initially set by GetSecretBaseOwnerAndState
 SecretBase_EventScript_Trainer0::
 	lock
 	faceplayer
@@ -329,7 +329,7 @@ SecretBase_EventScript_Trainer0PostBattle::
 	release
 	end
 
-/* VAR_RESULT is initially set by GetSecretBaseOwnerAndState*/
+@ VAR_RESULT is initially set by GetSecretBaseOwnerAndState
 SecretBase_EventScript_Trainer1::
 	lock
 	faceplayer
@@ -363,7 +363,7 @@ SecretBase_EventScript_Trainer1PostBattle::
 	release
 	end
 
-/* VAR_RESULT is initially set by GetSecretBaseOwnerAndState*/
+@ VAR_RESULT is initially set by GetSecretBaseOwnerAndState
 SecretBase_EventScript_Trainer2::
 	lock
 	faceplayer
@@ -397,7 +397,7 @@ SecretBase_EventScript_Trainer2PostBattle::
 	release
 	end
 
-/* VAR_RESULT is initially set by GetSecretBaseOwnerAndState*/
+@ VAR_RESULT is initially set by GetSecretBaseOwnerAndState
 SecretBase_EventScript_Trainer3::
 	lock
 	faceplayer
@@ -431,7 +431,7 @@ SecretBase_EventScript_Trainer3PostBattle::
 	release
 	end
 
-/* VAR_RESULT is initially set by GetSecretBaseOwnerAndState*/
+@ VAR_RESULT is initially set by GetSecretBaseOwnerAndState
 SecretBase_EventScript_Trainer4::
 	lock
 	faceplayer
@@ -465,7 +465,7 @@ SecretBase_EventScript_Trainer4PostBattle::
 	release
 	end
 
-/* VAR_RESULT is initially set by GetSecretBaseOwnerAndState*/
+@ VAR_RESULT is initially set by GetSecretBaseOwnerAndState
 SecretBase_EventScript_Trainer5::
 	lock
 	faceplayer
@@ -499,7 +499,7 @@ SecretBase_EventScript_Trainer5PostBattle::
 	release
 	end
 
-/* VAR_RESULT is initially set by GetSecretBaseOwnerAndState*/
+@ VAR_RESULT is initially set by GetSecretBaseOwnerAndState
 SecretBase_EventScript_Trainer6::
 	lock
 	faceplayer
@@ -533,7 +533,7 @@ SecretBase_EventScript_Trainer6PostBattle::
 	release
 	end
 
-/* VAR_RESULT is initially set by GetSecretBaseOwnerAndState*/
+@ VAR_RESULT is initially set by GetSecretBaseOwnerAndState
 SecretBase_EventScript_Trainer7::
 	lock
 	faceplayer
@@ -567,7 +567,7 @@ SecretBase_EventScript_Trainer7PostBattle::
 	release
 	end
 
-/* VAR_RESULT is initially set by GetSecretBaseOwnerAndState*/
+@ VAR_RESULT is initially set by GetSecretBaseOwnerAndState
 SecretBase_EventScript_Trainer8::
 	lock
 	faceplayer
@@ -601,7 +601,7 @@ SecretBase_EventScript_Trainer8PostBattle::
 	release
 	end
 
-/* VAR_RESULT is initially set by GetSecretBaseOwnerAndState*/
+@ VAR_RESULT is initially set by GetSecretBaseOwnerAndState
 SecretBase_EventScript_Trainer9::
 	lock
 	faceplayer

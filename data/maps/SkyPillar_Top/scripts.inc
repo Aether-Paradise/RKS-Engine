@@ -34,7 +34,7 @@ SkyPillar_Top_EventScript_ShowRayquaza::
 
 SkyPillar_Top_OnWarp:
 	map_script_2 VAR_SKY_PILLAR_STATE, 0, SkyPillar_Top_EventScript_RayquazaFaceDown
-	.short 0
+	.2byte 0
 
 SkyPillar_Top_EventScript_RayquazaFaceDown::
 	turnobject LOCALID_RAYQUAZA_SLEEPING, DIR_SOUTH
@@ -97,18 +97,18 @@ SkyPillar_Top_EventScript_AwakenRayquaza::
 	waitmovement 0
 	waitse
 	playmoncry SPECIES_RAYQUAZA, CRY_MODE_ENCOUNTER
-	setvar VAR_0x8004, 1  /* vertical pan*/
-	setvar VAR_0x8005, 1  /* horizontal pan*/
-	setvar VAR_0x8006, 8  /* num shakes*/
-	setvar VAR_0x8007, 3  /* shake delay*/
+	setvar VAR_0x8004, 1  @ vertical pan
+	setvar VAR_0x8005, 1  @ horizontal pan
+	setvar VAR_0x8006, 8  @ num shakes
+	setvar VAR_0x8007, 3  @ shake delay
 	special ShakeCamera
 	waitstate
 	waitse
 	playmoncry SPECIES_RAYQUAZA, CRY_MODE_ENCOUNTER
-	setvar VAR_0x8004, 1  /* vertical pan*/
-	setvar VAR_0x8005, 2  /* horizontal pan*/
-	setvar VAR_0x8006, 8  /* num shakes*/
-	setvar VAR_0x8007, 5  /* shake delay*/
+	setvar VAR_0x8004, 1  @ vertical pan
+	setvar VAR_0x8005, 2  @ horizontal pan
+	setvar VAR_0x8006, 8  @ num shakes
+	setvar VAR_0x8007, 5  @ shake delay
 	special ShakeCamera
 	waitstate
 	waitmoncry
@@ -129,19 +129,19 @@ SkyPillar_Top_EventScript_AwakenRayquaza::
 	releaseall
 	end
 
-/* Rayquaza has unusual movement frames*/
-/* See comments, or sAnimTable_Rayquaza*/
+@ Rayquaza has unusual movement frames
+@ See comments, or sAnimTable_Rayquaza
 SkyPillar_Top_Movement_RayquazaStir:
 	delay_16
-	walk_in_place_fast_left  /* Coiled, awake*/
+	walk_in_place_fast_left  @ Coiled, awake
 	delay_16
 	delay_16
 	delay_16
 	delay_16
 	delay_16
-	walk_in_place_left  /* Coiled, mouth open*/
+	walk_in_place_left  @ Coiled, mouth open
 	delay_16
-	walk_in_place_right  /* Normal, awake*/
+	walk_in_place_right  @ Normal, awake
 	delay_16
 	delay_16
 	delay_16
@@ -152,11 +152,11 @@ SkyPillar_Top_Movement_RayquazaStir:
 
 SkyPillar_Top_Movement_RayquazaFlyOff:
 	delay_16
-	walk_in_place_down  /* Coiled, asleep*/
+	walk_in_place_down  @ Coiled, asleep
 	delay_8
-	walk_in_place_right  /* Normal, awake*/
+	walk_in_place_right  @ Normal, awake
 	delay_8
-	walk_faster_up  /* Fly up*/
+	walk_faster_up  @ Fly up
 	slide_up
 	slide_up
 	slide_up

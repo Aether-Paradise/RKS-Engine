@@ -4,14 +4,14 @@ Route110_TrickHouseEntrance_MapScripts::
 	map_script MAP_SCRIPT_ON_WARP_INTO_MAP_TABLE, Route110_TrickHouseEntrance_OnWarp
 	.byte 0
 
-	/* State descriptions for VAR_TRICK_HOUSE_ENTRANCE_STATE*/
-	/* 0: Trick Master is hiding*/
-	/* 1: Trick Master has left at start of challenge*/
-	/* 2: Trick Master ready to give normal reward from previous challenge (if bag was full)*/
-	/* 3: Trick Master still making next puzzle*/
-	/* 4: Finished final puzzle*/
-	/* 5: Completed previous challenge*/
-	/* 6: 'Trick Master' mechadoll ready to give Tent reward from final challenge (if bag was full)*/
+	@ State descriptions for VAR_TRICK_HOUSE_ENTRANCE_STATE
+	@ 0: Trick Master is hiding
+	@ 1: Trick Master has left at start of challenge
+	@ 2: Trick Master ready to give normal reward from previous challenge (if bag was full)
+	@ 3: Trick Master still making next puzzle
+	@ 4: Finished final puzzle
+	@ 5: Completed previous challenge
+	@ 6: 'Trick Master' mechadoll ready to give Tent reward from final challenge (if bag was full)
 
 Route110_TrickHouseEntrance_OnTransition:
 	setflag FLAG_LANDMARK_TRICK_HOUSE
@@ -121,7 +121,7 @@ Route110_TrickHouseEntrance_OnWarp:
 	map_script_2 VAR_TRICK_HOUSE_ENTRANCE_STATE, 4, Route110_TrickHouseEntrance_EventScript_RemoveTrickMaster
 	map_script_2 VAR_TRICK_HOUSE_ENTRANCE_STATE, 5, Route110_TrickHouseEntrance_EventScript_RemoveTrickMaster
 	map_script_2 VAR_TRICK_HOUSE_ENTRANCE_STATE, 6, Route110_TrickHouseEntrance_EventScript_SetTrickMasterInFrontOfDoor
-	.short 0
+	.2byte 0
 
 Route110_TrickHouseEntrance_EventScript_TrickMasterFound::
 	addobject LOCALID_TRICK_MASTER
@@ -194,7 +194,7 @@ Route110_TrickHouseEntrance_EventScript_SetTrickMasterInFrontOfDoor::
 
 Route110_TrickHouseEntrance_OnFrame:
 	map_script_2 VAR_TRICK_HOUSE_FOUND_TRICK_MASTER, 1, Route110_TrickHouseEntrance_EventScript_BeginChallenge
-	.short 0
+	.2byte 0
 
 Route110_TrickHouseEntrance_EventScript_BeginChallenge::
 	lockall
@@ -670,20 +670,20 @@ Route110_TrickHouseEntrance_EventScript_TrickMasterHiding::
 	end
 
 Route110_TrickHouseEntrance_EventScript_DoHidingSpotSparkle1::
-	setvar VAR_0x8004, 6  /* x*/
-	setvar VAR_0x8005, 3  /* y*/
+	setvar VAR_0x8004, 6  @ x
+	setvar VAR_0x8005, 3  @ y
 	call Route110_TrickHouseEntrance_EventScript_DoHidingSpotSparkle
 	return
 
 Route110_TrickHouseEntrance_EventScript_DoHidingSpotSparkle2::
-	setvar VAR_0x8004, 11  /* x*/
-	setvar VAR_0x8005, 5   /* y*/
+	setvar VAR_0x8004, 11  @ x
+	setvar VAR_0x8005, 5   @ y
 	call Route110_TrickHouseEntrance_EventScript_DoHidingSpotSparkle
 	return
 
 Route110_TrickHouseEntrance_EventScript_DoHidingSpotSparkle3::
-	setvar VAR_0x8004, 9  /* x*/
-	setvar VAR_0x8005, 2  /* y*/
+	setvar VAR_0x8004, 9  @ x
+	setvar VAR_0x8005, 2  @ y
 	call Route110_TrickHouseEntrance_EventScript_DoHidingSpotSparkle
 	return
 

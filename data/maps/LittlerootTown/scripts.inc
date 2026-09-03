@@ -4,34 +4,34 @@ LittlerootTown_MapScripts::
 	map_script MAP_SCRIPT_ON_WARP_INTO_MAP_TABLE, LittlerootTown_OnWarp
 	.byte 0
 
-	/* State descriptions for VAR_LITTLEROOT_TOWN_STATE*/
-	/* 1: Met Rival*/
-	/* 2: Saving Birch*/
-	/* 3: Received Pokedex*/
-	/* 4: Received Running Shoes*/
+	@ State descriptions for VAR_LITTLEROOT_TOWN_STATE
+	@ 1: Met Rival
+	@ 2: Saving Birch
+	@ 3: Received Pokedex
+	@ 4: Received Running Shoes
 
-	/* State descriptions for VAR_LITTLEROOT_INTRO_STATE*/
-	/* 1: In truck male*/
-	/* 2: In truck female*/
-	/* 3: Entered house*/
-	/* 4: Told to go set clock*/
-	/* 5: Entered 2F to set clock*/
-	/* 6: Set clock*/
-	/* 7: Told to go meet rival*/
+	@ State descriptions for VAR_LITTLEROOT_INTRO_STATE
+	@ 1: In truck male
+	@ 2: In truck female
+	@ 3: Entered house
+	@ 4: Told to go set clock
+	@ 5: Entered 2F to set clock
+	@ 6: Set clock
+	@ 7: Told to go meet rival
 
-	/* State descriptions for VAR_LITTLEROOT_HOUSES_STATE_MAY*/
-	/*                    and VAR_LITTLEROOT_HOUSES_STATE_BRENDAN*/
-	/* 1: On Truck (and is corresponding gender)*/
-	/* 2: Met Rival's Mom (and is corresponding gender)*/
-	/* 3: Entered Hall of Fame*/
-	/* 4: Completed Lati TV / SS Ticket event*/
-	/* 5: Exited house after above event*/
+	@ State descriptions for VAR_LITTLEROOT_HOUSES_STATE_MAY
+	@                    and VAR_LITTLEROOT_HOUSES_STATE_BRENDAN
+	@ 1: On Truck (and is corresponding gender)
+	@ 2: Met Rival's Mom (and is corresponding gender)
+	@ 3: Entered Hall of Fame
+	@ 4: Completed Lati TV / SS Ticket event
+	@ 5: Exited house after above event
 
-	/* State descriptions for VAR_LITTLEROOT_RIVAL_STATE*/
-	/* 1: Never occurs*/
-	/* 2: Entered Rival's bedroom*/
-	/* 3: Met Rival*/
-	/* 4: Received Pokedex*/
+	@ State descriptions for VAR_LITTLEROOT_RIVAL_STATE
+	@ 1: Never occurs
+	@ 2: Entered Rival's bedroom
+	@ 3: Met Rival
+	@ 4: Received Pokedex
 
 
 LittlerootTown_OnTransition:
@@ -105,7 +105,7 @@ LittlerootTown_OnFrame:
 	map_script_2 VAR_LITTLEROOT_INTRO_STATE, 1, LittlerootTown_EventScript_StepOffTruckMale
 	map_script_2 VAR_LITTLEROOT_INTRO_STATE, 2, LittlerootTown_EventScript_StepOffTruckFemale
 	map_script_2 VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 1, LittlerootTown_EventScript_BeginDexUpgradeScene
-	.short 0
+	.2byte 0
 
 LittlerootTown_EventScript_StepOffTruckMale::
 	lockall
@@ -221,7 +221,7 @@ LittlerootTown_EventScript_BeginDexUpgradeScene::
 
 LittlerootTown_OnWarp:
 	map_script_2 VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 1, LittlerootTown_EventScript_SetRivalBirchPosForDexUpgrade
-	.short 0
+	.2byte 0
 
 LittlerootTown_EventScript_SetRivalBirchPosForDexUpgrade::
 	addobject LOCALID_LITTLEROOT_BIRCH

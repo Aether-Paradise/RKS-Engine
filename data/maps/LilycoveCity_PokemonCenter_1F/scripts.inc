@@ -8,7 +8,7 @@ LilycoveCity_PokemonCenter_1F_OnTransition:
 	goto LilycoveCity_PokemonCenter_1F_EventScript_SetLilycoveLadyGfx
 	end
 
-/* SetLilycoveLadyGfx returns TRUE if its the Contest Lady*/
+@ SetLilycoveLadyGfx returns TRUE if its the Contest Lady
 LilycoveCity_PokemonCenter_1F_EventScript_SetLilycoveLadyGfx::
 	special SetLilycoveLadyGfx
 	goto_if_eq VAR_RESULT, FALSE, LilycoveCity_PokemonCenter_1F_EventScript_HideContestLadyMon

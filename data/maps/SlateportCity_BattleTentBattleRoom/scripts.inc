@@ -29,7 +29,7 @@ SlateportCity_BattleTentBattleRoom_EventScript_SetPlayerGfxFemale::
 
 SlateportCity_BattleTentBattleRoom_OnWarp:
 	map_script_2 VAR_TEMP_1, 0, SlateportCity_BattleTentBattleRoom_EventScript_SetUpObjects
-	.short 0
+	.2byte 0
 
 SlateportCity_BattleTentBattleRoom_EventScript_SetUpObjects::
 	setvar VAR_TEMP_1, 1
@@ -39,7 +39,7 @@ SlateportCity_BattleTentBattleRoom_EventScript_SetUpObjects::
 
 SlateportCity_BattleTentBattleRoom_OnFrame:
 	map_script_2 VAR_TEMP_0, 0, SlateportCity_BattleTentBattleRoom_EventScript_EnterRoom
-	.short 0
+	.2byte 0
 
 SlateportCity_BattleTentBattleRoom_EventScript_EnterRoom::
 	applymovement LOCALID_SLATEPORT_TENT_BATTLE_PLAYER, SlateportCity_BattleTentBattleRoom_Movement_PlayerEnter
@@ -66,7 +66,7 @@ SlateportCity_BattleTent_EventScript_WarpToLobbyLost::
 	special LoadPlayerParty
 	warp MAP_SLATEPORT_CITY_BATTLE_TENT_LOBBY, 6, 6
 	waitstate
-/* forced stop*/
+@ forced stop
 
 SlateportCity_BattleTentBattleRoom_EventScript_DefeatedOpponent::
 	frontier_get FRONTIER_DATA_BATTLE_NUM
@@ -77,14 +77,14 @@ SlateportCity_BattleTentBattleRoom_EventScript_DefeatedOpponent::
 	setvar VAR_0x8006, 1
 	warp MAP_SLATEPORT_CITY_BATTLE_TENT_CORRIDOR, 2, 3
 	waitstate
-/* forced stop*/
+@ forced stop
 
 SlateportCity_BattleTentBattleRoom_EventScript_WarpToLobbyWon::
 	frontier_set FRONTIER_DATA_CHALLENGE_STATUS, CHALLENGE_STATUS_WON
 	special LoadPlayerParty
 	warp MAP_SLATEPORT_CITY_BATTLE_TENT_LOBBY, 6, 6
 	waitstate
-/* forced stop*/
+@ forced stop
 
 SlateportCity_BattleTentBattleRoom_Movement_PlayerEnter:
 	walk_up

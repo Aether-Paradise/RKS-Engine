@@ -13,28 +13,28 @@
 
 	.align 2
 gBattlescriptsForBallThrow::
-	ptrvalue BattleScript_BallThrow        /* ITEM_NONE*/
-	ptrvalue BattleScript_BallThrow        /* ITEM_MASTER_BALL*/
-	ptrvalue BattleScript_BallThrow        /* ITEM_ULTRA_BALL*/
-	ptrvalue BattleScript_BallThrow        /* ITEM_GREAT_BALL*/
-	ptrvalue BattleScript_BallThrow        /* ITEM_POKE_BALL*/
-	ptrvalue BattleScript_SafariBallThrow  /* ITEM_SAFARI_BALL*/
-	ptrvalue BattleScript_BallThrow        /* ITEM_NET_BALL*/
-	ptrvalue BattleScript_BallThrow        /* ITEM_DIVE_BALL*/
-	ptrvalue BattleScript_BallThrow        /* ITEM_NEST_BALL*/
-	ptrvalue BattleScript_BallThrow        /* ITEM_REPEAT_BALL*/
-	ptrvalue BattleScript_BallThrow        /* ITEM_TIMER_BALL*/
-	ptrvalue BattleScript_BallThrow        /* ITEM_LUXURY_BALL*/
-	ptrvalue BattleScript_BallThrow        /* ITEM_PREMIER_BALL*/
+	ptrvalue BattleScript_BallThrow        @ ITEM_NONE
+	ptrvalue BattleScript_BallThrow        @ ITEM_MASTER_BALL
+	ptrvalue BattleScript_BallThrow        @ ITEM_ULTRA_BALL
+	ptrvalue BattleScript_BallThrow        @ ITEM_GREAT_BALL
+	ptrvalue BattleScript_BallThrow        @ ITEM_POKE_BALL
+	ptrvalue BattleScript_SafariBallThrow  @ ITEM_SAFARI_BALL
+	ptrvalue BattleScript_BallThrow        @ ITEM_NET_BALL
+	ptrvalue BattleScript_BallThrow        @ ITEM_DIVE_BALL
+	ptrvalue BattleScript_BallThrow        @ ITEM_NEST_BALL
+	ptrvalue BattleScript_BallThrow        @ ITEM_REPEAT_BALL
+	ptrvalue BattleScript_BallThrow        @ ITEM_TIMER_BALL
+	ptrvalue BattleScript_BallThrow        @ ITEM_LUXURY_BALL
+	ptrvalue BattleScript_BallThrow        @ ITEM_PREMIER_BALL
 
 	.align 2
 gBattlescriptsForUsingItem::
 	ptrvalue BattleScript_PlayerUsesItem
-	ptrvalue BattleScript_OpponentUsesHealItem        /* AI_ITEM_FULL_RESTORE*/
-	ptrvalue BattleScript_OpponentUsesHealItem        /* AI_ITEM_HEAL_HP*/
-	ptrvalue BattleScript_OpponentUsesStatusCureItem  /* AI_ITEM_CURE_CONDITION*/
-	ptrvalue BattleScript_OpponentUsesXItem           /* AI_ITEM_X_STAT*/
-	ptrvalue BattleScript_OpponentUsesGuardSpec       /* AI_ITEM_GUARD_SPEC*/
+	ptrvalue BattleScript_OpponentUsesHealItem        @ AI_ITEM_FULL_RESTORE
+	ptrvalue BattleScript_OpponentUsesHealItem        @ AI_ITEM_HEAL_HP
+	ptrvalue BattleScript_OpponentUsesStatusCureItem  @ AI_ITEM_CURE_CONDITION
+	ptrvalue BattleScript_OpponentUsesXItem           @ AI_ITEM_X_STAT
+	ptrvalue BattleScript_OpponentUsesGuardSpec       @ AI_ITEM_GUARD_SPEC
 
 	.align 2
 gBattlescriptsForRunningByItem::

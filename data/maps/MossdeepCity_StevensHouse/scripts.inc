@@ -23,7 +23,7 @@ MossdeepCity_StevensHouse_EventScript_SetStevenPos::
 
 MossdeepCity_StevensHouse_OnFrame:
 	map_script_2 VAR_STEVENS_HOUSE_STATE, 1, MossdeepCity_StevensHouse_EventScript_StevenGivesDive
-	.short 0
+	.2byte 0
 
 MossdeepCity_StevensHouse_EventScript_StevenGivesDive::
 	lockall
@@ -141,7 +141,7 @@ MossdeepCity_StevensHouse_EventScript_Letter::
 	releaseall
 	end
 
-/* Unused, leftover from RS*/
+@ Unused, leftover from RS
 MossdeepCity_StevensHouse_EventScript_DiveItemBall::
 	finditem ITEM_HM_DIVE
 	setflag FLAG_RECEIVED_HM_DIVE
@@ -183,7 +183,7 @@ MossdeepCity_StevensHouse_Text_TakeBallContainingBeldum:
 MossdeepCity_StevensHouse_Text_ObtainedBeldum:
 	.string "{PLAYER} obtained a BELDUM.$"
 
-/* Unused*/
+@ Unused
 MossdeepCity_StevensHouse_Text_NoSpaceForAnotherMon:
 	.string "There is no space for another POKéMON.$"
 

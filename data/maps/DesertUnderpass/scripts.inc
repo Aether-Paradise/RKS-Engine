@@ -26,11 +26,11 @@ DesertUnderpass_EventScript_GiveRootFossil::
 	release
 	end
 
-/* Unused*/
+@ Unused
 DesertUnderpass_Text_FoundRootFossil::
 	.string "{PLAYER} found the ROOT FOSSIL.$"
 
-/* Unused*/
+@ Unused
 DesertUnderpass_Text_FoundClawFossil::
 	.string "{PLAYER} found the CLAW FOSSIL.$"
 

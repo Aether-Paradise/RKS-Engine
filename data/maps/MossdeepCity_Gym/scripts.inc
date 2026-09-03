@@ -2,9 +2,9 @@ MossdeepCity_Gym_MapScripts::
 	map_script MAP_SCRIPT_ON_LOAD, MossdeepCity_Gym_OnLoad
 	.byte 0
 
-/* NOTE: Mossdeep Gym was redesigned between R/S and E. Leftover (and now functionally unused) scripts are commented below*/
+@ NOTE: Mossdeep Gym was redesigned between R/S and E. Leftover (and now functionally unused) scripts are commented below
 
-/* All the below checks are leftover from RS. FLAG_MOSSDEEP_GYM_SWITCH_X is never set*/
+@ All the below checks are leftover from RS. FLAG_MOSSDEEP_GYM_SWITCH_X is never set
 MossdeepCity_Gym_OnLoad:
 	goto_if_set FLAG_MOSSDEEP_GYM_SWITCH_1, MossdeepCity_Gym_EventScript_SetSwitch1Metatiles
 	goto MossdeepCity_Gym_EventScript_CheckSwitch2
@@ -24,7 +24,7 @@ MossdeepCity_Gym_EventScript_CheckSwitch4::
 	goto_if_set FLAG_MOSSDEEP_GYM_SWITCH_4, MossdeepCity_Gym_EventScript_SetSwitch4Metatiles
 	end
 
-/* All the below set metatile scripts are leftover from RS and are functionally unused*/
+@ All the below set metatile scripts are leftover from RS and are functionally unused
 MossdeepCity_Gym_EventScript_SetSwitch1Metatiles::
 	setmetatile 5, 5, METATILE_RSMossdeepGym_RedArrow_Right, FALSE
 	setmetatile 2, 7, METATILE_RSMossdeepGym_Switch_Down, TRUE
@@ -109,7 +109,7 @@ MossdeepCity_Gym_EventScript_TateAndLizaRematch::
 	msgbox MossdeepCity_Gym_Text_TateAndLizaPostRematch, MSGBOX_AUTOCLOSE
 	end
 
-/* All the below switch scripts are leftover from RS and are functionally unused*/
+@ All the below switch scripts are leftover from RS and are functionally unused
 MossdeepCity_Gym_EventScript_Switch1::
 	lockall
 	goto_if_set FLAG_MOSSDEEP_GYM_SWITCH_1, MossdeepCity_Gym_EventScript_ClearSwitch1
@@ -276,7 +276,7 @@ MossdeepCity_Gym_EventScript_GymGuidePostVictory::
 	release
 	end
 
-/* Leftover from RS, functionally unused*/
+@ Leftover from RS, functionally unused
 MossdeepCity_Gym_Movement_WaitAfterSwitchUse:
 	delay_16
 	delay_16

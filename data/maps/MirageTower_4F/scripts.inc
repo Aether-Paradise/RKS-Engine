@@ -42,10 +42,10 @@ MirageTower_4F_EventScript_LeaveClawFossil::
 	end
 
 MirageTower_4F_EventScript_CollapseMirageTower::
-	setvar VAR_0x8004, 1   /* vertical pan*/
-	setvar VAR_0x8005, 1   /* horizontal pan*/
-	setvar VAR_0x8006, 32  /* num shakes*/
-	setvar VAR_0x8007, 2   /* shake delay*/
+	setvar VAR_0x8004, 1   @ vertical pan
+	setvar VAR_0x8005, 1   @ horizontal pan
+	setvar VAR_0x8006, 32  @ num shakes
+	setvar VAR_0x8007, 2   @ shake delay
 	special ShakeCamera
 	waitstate
 	special DoMirageTowerCeilingCrumble

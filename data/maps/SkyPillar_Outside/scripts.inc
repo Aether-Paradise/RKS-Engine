@@ -28,7 +28,7 @@ SkyPillar_Outside_EventScript_OpenDoor::
 
 SkyPillar_Outside_OnFrame:
 	map_script_2 VAR_SOOTOPOLIS_CITY_STATE, 3, SkyPillar_Outside_EventScript_WallaceScene
-	.short 0
+	.2byte 0
 
 SkyPillar_Outside_EventScript_WallaceScene::
 	lockall
@@ -39,10 +39,10 @@ SkyPillar_Outside_EventScript_WallaceScene::
 	msgbox SkyPillar_Outside_Text_OpenedDoorToSkyPillar, MSGBOX_DEFAULT
 	closemessage
 	delay 30
-	setvar VAR_0x8004, 1  /* vertical pan*/
-	setvar VAR_0x8005, 1  /* horizontal pan*/
-	setvar VAR_0x8006, 8  /* num shakes*/
-	setvar VAR_0x8007, 3  /* shake delay*/
+	setvar VAR_0x8004, 1  @ vertical pan
+	setvar VAR_0x8005, 1  @ horizontal pan
+	setvar VAR_0x8006, 8  @ num shakes
+	setvar VAR_0x8007, 3  @ shake delay
 	special ShakeCamera
 	waitstate
 	delay 40
@@ -51,10 +51,10 @@ SkyPillar_Outside_EventScript_WallaceScene::
 	applymovement LOCALID_PLAYER, SkyPillar_Outside_Movement_PlayerClimbSkyPillar
 	applymovement LOCALID_SKY_PILLAR_WALLACE, SkyPillar_Outside_Movement_WallaceClimbSkyPillar
 	waitmovement 0
-	setvar VAR_0x8004, 1   /* vertical pan*/
-	setvar VAR_0x8005, 3   /* horizontal pan*/
-	setvar VAR_0x8006, 20  /* num shakes*/
-	setvar VAR_0x8007, 5   /* shake delay*/
+	setvar VAR_0x8004, 1   @ vertical pan
+	setvar VAR_0x8005, 3   @ horizontal pan
+	setvar VAR_0x8006, 20  @ num shakes
+	setvar VAR_0x8007, 5   @ shake delay
 	special ShakeCamera
 	waitstate
 	delay 20

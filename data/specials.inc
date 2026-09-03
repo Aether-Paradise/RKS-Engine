@@ -521,7 +521,7 @@ gSpecials::
 	def_special LinkRetireStatusWithBattleTowerPartner, waitstate=1
 	def_special BattleTowerReconnectLink
 	def_special CallTrainerHillFunction
-	def_special Script_DoRayquazaScene, waitstate=1 /* Listed twice*/
+	def_special Script_DoRayquazaScene, waitstate=1 @ Listed twice
 	def_special LoopWingFlapSE
 	def_special DestroyMewEmergingGrassSprite
 	def_special ShowBerryCrushRankings, waitstate=1

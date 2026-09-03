@@ -5,7 +5,7 @@ BattleFrontier_BattleFactoryLobby_MapScripts::
 
 BattleFrontier_BattleFactoryLobby_OnWarp:
 	map_script_2 VAR_TEMP_1, 0, BattleFrontier_BattleFactoryLobby_EventScript_TurnPlayerNorth
-	.short 0
+	.2byte 0
 
 BattleFrontier_BattleFactoryLobby_EventScript_TurnPlayerNorth::
 	setvar VAR_TEMP_1, 1
@@ -18,7 +18,7 @@ BattleFrontier_BattleFactoryLobby_OnFrame:
 	map_script_2 VAR_TEMP_CHALLENGE_STATUS, CHALLENGE_STATUS_PAUSED, BattleFrontier_BattleFactoryLobby_EventScript_ResumeChallenge
 	map_script_2 VAR_TEMP_CHALLENGE_STATUS, CHALLENGE_STATUS_WON, BattleFrontier_BattleFactoryLobby_EventScript_WonChallenge
 	map_script_2 VAR_TEMP_CHALLENGE_STATUS, CHALLENGE_STATUS_LOST, BattleFrontier_BattleFactoryLobby_EventScript_LostChallenge
-	.short 0
+	.2byte 0
 
 BattleFrontier_BattleFactoryLobby_EventScript_GetChallengeStatus::
 	frontier_getstatus
@@ -359,7 +359,7 @@ BattleFrontier_BattleFactoryLobby_Text_OkayToSaveBeforeChallenge:
 	.string "Before you begin your challenge,\n"
 	.string "I need to save the game. Is that okay?$"
 
-/* Unused*/
+@ Unused
 BattleFrontier_BattleFactoryLobby_Text_WillHoldMonsForSafekeeping:
 	.string "Okay, I will hold your POKéMON for\n"
 	.string "safekeeping while you compete.$"
@@ -374,7 +374,7 @@ BattleFrontier_BattleFactoryLobby_Text_ReturnMonsSaveResults:
 	.string "I must also save the event results.\n"
 	.string "Please wait.$"
 
-/* Unused*/
+@ Unused
 BattleFrontier_BattleFactoryLobby_Text_ReturnMons:
 	.string "I will return your POKéMON in exchange\n"
 	.string "for our rental POKéMON.$"
@@ -383,12 +383,12 @@ BattleFrontier_BattleFactoryLobby_Text_CongratsSevenWins:
 	.string "Congratulations! You've won seven\n"
 	.string "straight Battle Swap matches!$"
 
-/* Unused*/
+@ Unused
 BattleFrontier_BattleFactoryLobby_Text_AwardBattlePointsForStreak:
 	.string "In recognition of your 7-win streak,\n"
 	.string "we award you these Battle Point(s).$"
 
-/* Unused*/
+@ Unused
 BattleFrontier_BattleFactoryLobby_Text_MaxBattlePoints:
 	.string "Oh, oh, oh!\p"
 	.string "Your Battle Points are maxed.\p"
@@ -406,11 +406,11 @@ BattleFrontier_BattleFactoryLobby_Text_DidntSaveBeforeQuitting:
 	.string "As a result, you have been disqualified\n"
 	.string "from your challenge.$"
 
-/* Unused*/
+@ Unused
 BattleFrontier_BattleFactoryLobby_Text_WellReturnMons:
 	.string "We'll return your personal POKéMON.$"
 
-/* Unused*/
+@ Unused
 BattleFrontier_BattleFactoryLobby_Text_ReceivedPrizeItem:
 	.string "{PLAYER} received the prize\n"
 	.string "{STR_VAR_1}.$"
@@ -495,7 +495,7 @@ BattleFrontier_BattleFactoryLobby_Text_CantFigureOutStaffHints:
 	.string "Well, I'm a full-grown man, but I have\n"
 	.string "trouble figuring out their hints.$"
 
-/* Unused*/
+@ Unused
 BattleFrontier_BattleFactoryLobby_Text_RentalMonsAreVaried:
 	.string "Like, I'm really tough, but I get bored\n"
 	.string "really easily, so I just kept swapping\l"

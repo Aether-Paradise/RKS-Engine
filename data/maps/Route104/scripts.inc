@@ -5,7 +5,7 @@ Route104_MapScripts::
 
 Route104_OnFrame:
 	map_script_2 VAR_BOARD_BRINEY_BOAT_STATE, 1, Route104_EventScript_StartSailToDewford
-	.short 0
+	.2byte 0
 
 Route104_EventScript_StartSailToDewford::
 	lockall
@@ -69,7 +69,7 @@ Route104_EventScript_RivalTrigger::
 	waitmovement 0
 	goto Route104_EventScript_RivalEncounter
 
-/* Unused, shares script with Rustboro encounter instead*/
+@ Unused, shares script with Rustboro encounter instead
 Route104_EventScript_PlayRivalMusic::
 	checkplayergender
 	goto_if_eq VAR_RESULT, MALE, Route104_EventScript_PlayMayMusic

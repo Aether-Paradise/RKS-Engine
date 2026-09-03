@@ -7,7 +7,7 @@ LavaridgeTown_Gym_1F_OnTransition:
 	call LavaridgeTown_Gym_1F_EventScript_CheckBuryTrainers
 	end
 
-/* Unclear where/if these temp vars are getting checked*/
+@ Unclear where/if these temp vars are getting checked
 LavaridgeTown_Gym_1F_EventScript_SetTrainerTempVars::
 	setvar VAR_TEMP_B, 0
 	setvar VAR_TEMP_C, 0

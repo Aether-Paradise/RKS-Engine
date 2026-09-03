@@ -38,7 +38,7 @@ LittlerootTown_MaysHouse_2F_EventScript_SetReadyToMeetMay::
 
 LittlerootTown_MaysHouse_2F_OnWarp:
 	map_script_2 VAR_SECRET_BASE_INITIALIZED, 0, LittlerootTown_MaysHouse_2F_EventScript_CheckInitDecor
-	.short 0
+	.2byte 0
 
 LittlerootTown_MaysHouse_2F_EventScript_CheckInitDecor::
 	checkplayergender
@@ -200,7 +200,7 @@ LittlerootTown_MaysHouse_2F_Movement_MayWalkToPCWest:
 	walk_in_place_faster_up
 	step_end
 
-/* Unused, the player is already facing this direction so its unneeded*/
+@ Unused, the player is already facing this direction so its unneeded
 LittlerootTown_MaysHouse_2F_Movement_PlayerWatchMayWest:
 	delay_16
 	delay_16

@@ -1,4 +1,4 @@
-/* Contest move effect descriptions*/
+@ Contest move effect descriptions
 
 gText_HighlyAppealingMove::
 	.string "A highly appealing move.$"
@@ -191,7 +191,7 @@ gText_TemporarilyStopCrowdExcited::
 	.string "Temporarily stops the\n"
 	.string "crowd from growing excited.$"
 
-/* Unused move names*/
+@ Unused move names
 
 gText_RainDance::
 	.string "RAIN DANCE$"
@@ -232,7 +232,7 @@ gText_DefenseCurl::
 gText_LockOn::
 	.string "LOCK-ON$"
 
-/* Contest type names*/
+@ Contest type names
 
 gContestMoveTypeCoolText::
 	.string "COOL$"
@@ -269,7 +269,7 @@ gText_AllOutOfAppealTime::
 	.string "We're all out of\n"
 	.string "Appeal Time!{PAUSE 15}{PAUSE 15}{PAUSE 15}{PAUSE 15}$"
 
-/* Unused appeal result texts*/
+@ Unused appeal result texts
 
 gText_ButAppealWasJammed::
 	.string "But the appeal was\n"
@@ -317,7 +317,7 @@ gText_WorkedLittleBetterThanUsual::
 	.string "It worked a little better\n"
 	.string "than usual.$"
 
-/* Round result texts*/
+@ Round result texts
 
 gText_MonFailedToStandOutAtAll::
 	.string "{STR_VAR_1} failed to\n"
@@ -439,7 +439,7 @@ gText_EveryonesAppealsMadeSame::
 	.string "Everyone's appeals were\n"
 	.string "made the same.$"
 
-/* Appeal result texts*/
+@ Appeal result texts
 
 gText_BecameMoreConsciousOfOtherMons::
 	.string "It became more conscious\n"

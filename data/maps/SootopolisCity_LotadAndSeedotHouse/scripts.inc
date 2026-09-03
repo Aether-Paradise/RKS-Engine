@@ -121,7 +121,7 @@ SootopolisCity_LotadAndSeedotHouse_Text_GoshMightBeBiggerThanLotad:
 	.string "Thanks for showing me.\n"
 	.string "This is my thanks!$"
 
-/* Unused*/
+@ Unused
 SootopolisCity_LotadAndSeedotHouse_Text_ReceivedPotion1:
 	.string "{PLAYER} received a POTION.$"
 
@@ -169,7 +169,7 @@ SootopolisCity_LotadAndSeedotHouse_Text_WowMightBeBiggerThanSeedot:
 	.string "Thanks for showing me!\n"
 	.string "This is my thanks!$"
 
-/* Unused*/
+@ Unused
 SootopolisCity_LotadAndSeedotHouse_Text_ReceivedPotion2:
 	.string "{PLAYER} received a POTION.$"
 

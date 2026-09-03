@@ -5,8 +5,8 @@ Route110_TrickHousePuzzle7_MapScripts::
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, Route110_TrickHousePuzzle7_OnFrame
 	.byte 0
 
-/* Puzzle Room 7 in RSE uses whatever puzzle Mossdeep Gym uses*/
-/* Because Mossdeep Gym was redesigned for Emerald, theres a good deal of leftover script from the old R/S puzzle*/
+@ Puzzle Room 7 in RSE uses whatever puzzle Mossdeep Gym uses
+@ Because Mossdeep Gym was redesigned for Emerald, theres a good deal of leftover script from the old R/S puzzle
 
 Route110_TrickHousePuzzle7_OnResume:
 	call Route110_TrickHousePuzzle7_EventScript_UpdateSwitchMetatiles
@@ -20,7 +20,7 @@ Route110_TrickHousePuzzle7_EventScript_UpdateSwitchMetatiles::
 	call_if_set FLAG_TRICK_HOUSE_PUZZLE_7_SWITCH_5, Route110_TrickHousePuzzle7_EventScript_SetSwitch5MetatilesOn
 	return
 
-/* Leftover from R/S, none of the below metatile scripts are ever called*/
+@ Leftover from R/S, none of the below metatile scripts are ever called
 Route110_TrickHousePuzzle7_EventScript_SetSwitch1MetatilesOn::
 	setmetatile 13, 17, METATILE_TrickHousePuzzle_Arrow_RedOnBlack_Up, FALSE
 	setmetatile 12, 16, METATILE_TrickHousePuzzle_Lever_On, TRUE
@@ -89,7 +89,7 @@ Route110_TrickHousePuzzle7_OnLoad:
 
 Route110_TrickHousePuzzle7_OnFrame:
 	map_script_2 VAR_TRICK_HOUSE_PUZZLE_7_STATE_2, 1, Route110_TrickHousePuzzle7_EventScript_ClearState2
-	.short 0
+	.2byte 0
 
 Route110_TrickHousePuzzle7_EventScript_ClearState2::
 	setvar VAR_TRICK_HOUSE_PUZZLE_7_STATE_2, 0
@@ -106,7 +106,7 @@ Route110_TrickHousePuzzle7_EventScript_FoundScroll::
 	goto Route110_TrickHousePuzzle_EventScript_FoundScroll
 	end
 
-/* Unused, leftover from R/S*/
+@ Unused, leftover from R/S
 Route110_TrickHousePuzzle7_EventScript_TeleportPad::
 	lockall
 	setvar VAR_TRICK_HOUSE_PUZZLE_7_STATE_2, 1
@@ -115,7 +115,7 @@ Route110_TrickHousePuzzle7_EventScript_TeleportPad::
 	releaseall
 	end
 
-/* All the below switch scripts are unused leftover from R/S*/
+@ All the below switch scripts are unused leftover from R/S
 Route110_TrickHousePuzzle7_EventScript_Switch1::
 	lockall
 	delay 32
@@ -171,7 +171,7 @@ Route110_TrickHousePuzzle7_EventScript_Switch5::
 	goto_if_set FLAG_TRICK_HOUSE_PUZZLE_7_SWITCH_5, Route110_TrickHousePuzzle7_EventScript_SetSwitch5Off
 	end
 
-/* All the below switch scripts are unused leftover from R/S*/
+@ All the below switch scripts are unused leftover from R/S
 Route110_TrickHousePuzzle7_EventScript_SetSwitch1On::
 	setflag FLAG_TRICK_HOUSE_PUZZLE_7_SWITCH_1
 	releaseall
@@ -222,7 +222,7 @@ Route110_TrickHousePuzzle7_EventScript_SetSwitch5Off::
 	releaseall
 	end
 
-/* From here is where the new, actually used puzzle scripts begin*/
+@ From here is where the new, actually used puzzle scripts begin
 Route110_TrickHousePuzzle7_EventScript_YellowButton::
 	playse SE_SWITCH
 	waitse
@@ -271,7 +271,7 @@ Route110_TrickHousePuzzle7_EventScript_PurpleButton::
 	freerotatingtilepuzzle
 	end
 
-/* Unused*/
+@ Unused
 Route110_TrickHousePuzzle7_EventScript_RedButton::
 	playse SE_SWITCH
 	waitse

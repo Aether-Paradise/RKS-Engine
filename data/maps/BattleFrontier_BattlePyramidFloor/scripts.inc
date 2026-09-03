@@ -8,11 +8,11 @@ BattleFrontier_BattlePyramidFloor_OnFrame:
 	map_script_2 VAR_TEMP_D, 1, BattleFrontier_BattlePyramidFloor_EventScript_UpdateLight
 	map_script_2 VAR_TEMP_PLAYING_PYRAMID_MUSIC, 0, BattleFrontier_BattlePyramidFloor_EventScript_PlayPyramidMusic
 	map_script_2 VAR_TEMP_F, 1, BattleFrontier_BattlePyramidFloor_EventScript_ShowMapName
-	.short 0
+	.2byte 0
 
 BattleFrontier_BattlePyramidFloor_EventScript_UpdateLight::
 	lockall
-	/* pyramid_updatelight, cant use macro because it straddles the loop*/
+	@ pyramid_updatelight, cant use macro because it straddles the loop
 	setvar VAR_0x8004, BATTLE_PYRAMID_FUNC_UPDATE_LIGHT
 	setvar VAR_0x8005, 4
 	setvar VAR_0x8006, PYRAMID_LIGHT_INCR_RADIUS
@@ -50,7 +50,7 @@ BattleFrontier_BattlePyramidFloor_OnResume:
 	goto_if_eq VAR_RESULT, B_OUTCOME_LOST, BattleFrontier_BattlePyramid_EventScript_WarpToLobbyLost
 	goto_if_eq VAR_RESULT, B_OUTCOME_DREW, BattleFrontier_BattlePyramid_EventScript_WarpToLobbyLost
 	goto_if_eq VAR_RESULT, B_OUTCOME_FORFEITED, BattleFrontier_BattlePyramid_EventScript_WarpToLobbyLost
-	frontier_isbattletype BATTLE_TYPE_TRAINER  /* VAR_RESULT seems to be ignored here*/
+	frontier_isbattletype BATTLE_TYPE_TRAINER  @ VAR_RESULT seems to be ignored here
 	setvar VAR_TEMP_D, 1
 BattleFrontier_BattlePyramidFloor_EventScript_ResetParty::
 	pyramid_resetparty
@@ -87,7 +87,7 @@ BattleFrontier_BattlePyramidFloor_EventScript_SetLightRadius::
 
 BattlePyramid_WarpToNextFloor::
 	call BattleFrontier_EventScript_IncrementWinStreak
-	frontier_get FRONTIER_DATA_BATTLE_NUM  /* Floor number*/
+	frontier_get FRONTIER_DATA_BATTLE_NUM  @ Floor number
 	addvar VAR_RESULT, 1
 	frontier_set FRONTIER_DATA_BATTLE_NUM, VAR_RESULT
 	goto_if_eq VAR_RESULT, 7, BattlePyramid_WarpToTop
@@ -103,7 +103,7 @@ BattlePyramid_WarpToTop::
 	waitstate
 	end
 
-/* TRAINER_PHILLIP is used as a placeholder*/
+@ TRAINER_PHILLIP is used as a placeholder
 BattlePyramid_TrainerBattle::
 	trainerbattle TRAINER_BATTLE_PYRAMID, TRAINER_PHILLIP, LOCALID_NONE, BattleFacility_TrainerBattle_PlaceholderText, BattleFacility_TrainerBattle_PlaceholderText
 	pyramid_showhint
@@ -124,7 +124,7 @@ BattlePyramid_FindItemBallEnd::
 BattlePyramid_Retire::
 	goto BattleFrontier_BattlePyramid_EventScript_WarpToLobbyLost
 
-/* Also used by Trainer Hill*/
+@ Also used by Trainer Hill
 BattleFacility_TrainerBattle_PlaceholderText:
 	.string "This is a sample message.$"
 

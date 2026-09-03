@@ -5,7 +5,7 @@ BattleFrontier_BattleDomePreBattleRoom_MapScripts::
 
 BattleFrontier_BattleDomePreBattleRoom_OnWarp:
 	map_script_2 VAR_TEMP_1, 0, BattleFrontier_BattleDomePreBattleRoom_EventScript_TurnPlayerNorth
-	.short 0
+	.2byte 0
 
 BattleFrontier_BattleDomePreBattleRoom_EventScript_TurnPlayerNorth::
 	setvar VAR_TEMP_1, 1
@@ -14,7 +14,7 @@ BattleFrontier_BattleDomePreBattleRoom_EventScript_TurnPlayerNorth::
 
 BattleFrontier_BattleDomePreBattleRoom_OnFrame:
 	map_script_2 VAR_TEMP_0, 0, BattleFrontier_BattleDomePreBattleRoom_EventScript_EnterRoom
-	.short 0
+	.2byte 0
 
 BattleFrontier_BattleDomePreBattleRoom_EventScript_EnterRoom::
 	goto_if_eq VAR_0x8006, 1, BattleFrontier_BattleDomePreBattleRoom_EventScript_ReturnFromBattle
@@ -26,7 +26,7 @@ BattleFrontier_BattleDomePreBattleRoom_EventScript_EnterRoom::
 BattleFrontier_BattleDomePreBattleRoom_EventScript_AskReadyForNextRound::
 	call BattleFrontier_BattleDomePreBattleRoom_EventScript_ReadyForNextRoundMessage
 	waitmessage
-	switch VAR_RESULT  /* No case?*/
+	switch VAR_RESULT  @ No case?
 	call BattleFrontier_EventScript_GetCantRecordBattle
 	goto_if_eq VAR_RESULT, TRUE, BattleFrontier_BattleDomePreBattleRoom_EventScript_AskReadyForNextRoundNoRecord
 	multichoice 16, 0, MULTI_TOURNEY_WITH_RECORD, TRUE
@@ -138,7 +138,7 @@ BattleFrontier_BattleDomePreBattleRoom_EventScript_ContinueChallenge::
 	fadescreen FADE_TO_BLACK
 	call BattleFrontier_EventScript_GetLvlMode
 	copyvar VAR_0x8004, VAR_RESULT
-	setvar VAR_0x8005, DOME_BATTLE_PARTY_SIZE  /* 2 of the 3 party mons are selected for battle*/
+	setvar VAR_0x8005, DOME_BATTLE_PARTY_SIZE  @ 2 of the 3 party mons are selected for battle
 	special ChoosePartyForBattleFrontier
 	frontier_resetsketch
 	goto_if_eq VAR_RESULT, 0, BattleFrontier_BattleDomePreBattleRoom_EventScript_AskReadyForNextRound
@@ -311,21 +311,21 @@ BattleFrontier_BattleDomePreBattleRoom_Text_SemifinalsComplete:
 	.string "completed.\p"
 	.string "These are the teams that advanced!$"
 
-/* Unused*/
+@ Unused
 BattleFrontier_BattleDomePreBattleRoom_Text_CongratsReadyForRound2:
 	.string "Congratulations for getting through\n"
 	.string "the 1st round.\p"
 	.string "The 2nd round is next.\n"
 	.string "Are you ready?$"
 
-/* Unused*/
+@ Unused
 BattleFrontier_BattleDomePreBattleRoom_Text_CongratsReadyForSemifinals:
 	.string "Congratulations for advancing\n"
 	.string "to the semifinals.\p"
 	.string "The best four teams meet in this round.\n"
 	.string "Are you ready?$"
 
-/* Unused*/
+@ Unused
 BattleFrontier_BattleDomePreBattleRoom_Text_CongratsReadyForFinals:
 	.string "Congratulations for advancing\n"
 	.string "to the final match.\p"
@@ -371,7 +371,7 @@ BattleFrontier_BattleDomePreBattleRoom_Text_ReadyForTuckerSilver:
 	.string "the DOME ACE TUCKER.\p"
 	.string "Are you ready?$"
 
-/* Identical to ReadyForTuckerSilver*/
+@ Identical to ReadyForTuckerSilver
 BattleFrontier_BattleDomePreBattleRoom_Text_ReadyForTuckerGold:
 	.string "Congratulations for advancing\n"
 	.string "to the final match.\p"
@@ -383,7 +383,7 @@ BattleFrontier_BattleDomePreBattleRoom_Text_ReadyForTuckerSilverShort:
 	.string "Your final battle against TUCKER is\n"
 	.string "next. Are you ready?$"
 
-/* Identical again*/
+@ Identical again
 BattleFrontier_BattleDomePreBattleRoom_Text_ReadyForTuckerGoldShort:
 	.string "Your final battle against TUCKER is\n"
 	.string "next. Are you ready?$"

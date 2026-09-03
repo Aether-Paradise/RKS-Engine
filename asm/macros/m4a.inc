@@ -1,7 +1,7 @@
 	.macro song label:req, music_player:req, unknown:req
 	ptrvalue \label
-	.short \music_player
-	.short \unknown
+	.2byte \music_player
+	.2byte \unknown
 	space64 4
 	.endm
 
@@ -9,8 +9,8 @@
 	ptrvalue \info_struct
 	ptrvalue \track_struct
 	.byte \num_tracks
-	.space 1  /* Padding*/
-	.short \unknown
+	.space 1  @ Padding
+	.2byte \unknown
 	space64 4  /* Padding*/
 	.endm
 

@@ -88,7 +88,7 @@ CheckIfLevitateCancelsGroundMove:
 	if_equal_ TYPE_GROUND, Score_Minus10
 AI_CheckBadMove_CheckSoundproof_:
 	get_how_powerful_move_is
-	if_equal MOVE_POWER_OTHER, AI_CheckBadMove_CheckSoundproof  /* Pointless check */
+	if_equal MOVE_POWER_OTHER, AI_CheckBadMove_CheckSoundproof  @ Pointless check
 AI_CheckBadMove_CheckSoundproof:
 	get_ability AI_TARGET
 	if_not_equal ABILITY_SOUNDPROOF, AI_CheckBadMove_CheckEffect
@@ -852,46 +852,46 @@ AI_CV_MirrorMove_End:
 	end
 
 AI_CV_MirrorMove_EncouragedMovesToMirror:
-	.short MOVE_SLEEP_POWDER
-	.short MOVE_LOVELY_KISS
-	.short MOVE_SPORE
-	.short MOVE_HYPNOSIS
-	.short MOVE_SING
-	.short MOVE_GRASS_WHISTLE
-	.short MOVE_SHADOW_PUNCH
-	.short MOVE_SAND_ATTACK
-	.short MOVE_SMOKESCREEN
-	.short MOVE_TOXIC
-	.short MOVE_GUILLOTINE
-	.short MOVE_HORN_DRILL
-	.short MOVE_FISSURE
-	.short MOVE_SHEER_COLD
-	.short MOVE_CROSS_CHOP
-	.short MOVE_AEROBLAST
-	.short MOVE_CONFUSE_RAY
-	.short MOVE_SWEET_KISS
-	.short MOVE_SCREECH
-	.short MOVE_COTTON_SPORE
-	.short MOVE_SCARY_FACE
-	.short MOVE_FAKE_TEARS
-	.short MOVE_METAL_SOUND
-	.short MOVE_THUNDER_WAVE
-	.short MOVE_GLARE
-	.short MOVE_POISON_POWDER
-	.short MOVE_SHADOW_BALL
-	.short MOVE_DYNAMIC_PUNCH
-	.short MOVE_HYPER_BEAM
-	.short MOVE_EXTREME_SPEED
-	.short MOVE_THIEF
-	.short MOVE_COVET
-	.short MOVE_ATTRACT
-	.short MOVE_SWAGGER
-	.short MOVE_TORMENT
-	.short MOVE_FLATTER
-	.short MOVE_TRICK
-	.short MOVE_SUPERPOWER
-	.short MOVE_SKILL_SWAP
-	.short -1
+	.2byte MOVE_SLEEP_POWDER
+	.2byte MOVE_LOVELY_KISS
+	.2byte MOVE_SPORE
+	.2byte MOVE_HYPNOSIS
+	.2byte MOVE_SING
+	.2byte MOVE_GRASS_WHISTLE
+	.2byte MOVE_SHADOW_PUNCH
+	.2byte MOVE_SAND_ATTACK
+	.2byte MOVE_SMOKESCREEN
+	.2byte MOVE_TOXIC
+	.2byte MOVE_GUILLOTINE
+	.2byte MOVE_HORN_DRILL
+	.2byte MOVE_FISSURE
+	.2byte MOVE_SHEER_COLD
+	.2byte MOVE_CROSS_CHOP
+	.2byte MOVE_AEROBLAST
+	.2byte MOVE_CONFUSE_RAY
+	.2byte MOVE_SWEET_KISS
+	.2byte MOVE_SCREECH
+	.2byte MOVE_COTTON_SPORE
+	.2byte MOVE_SCARY_FACE
+	.2byte MOVE_FAKE_TEARS
+	.2byte MOVE_METAL_SOUND
+	.2byte MOVE_THUNDER_WAVE
+	.2byte MOVE_GLARE
+	.2byte MOVE_POISON_POWDER
+	.2byte MOVE_SHADOW_BALL
+	.2byte MOVE_DYNAMIC_PUNCH
+	.2byte MOVE_HYPER_BEAM
+	.2byte MOVE_EXTREME_SPEED
+	.2byte MOVE_THIEF
+	.2byte MOVE_COVET
+	.2byte MOVE_ATTRACT
+	.2byte MOVE_SWAGGER
+	.2byte MOVE_TORMENT
+	.2byte MOVE_FLATTER
+	.2byte MOVE_TRICK
+	.2byte MOVE_SUPERPOWER
+	.2byte MOVE_SKILL_SWAP
+	.2byte -1
 
 AI_CV_AttackUp:
 	if_stat_level_less_than AI_USER, STAT_ATK, 9, AI_CV_AttackUp2
@@ -1109,9 +1109,9 @@ AI_CV_AttackDown4:
 AI_CV_AttackDown_End:
 	end
 
-/* If the target is not of any type in this list then using the move may be discouraged.*/
-/* It seems likely this was meant to be "discourage reducing the target's attack if they're*/
-/* not a physical type", but they've left out Flying, Poison, and Ghost.*/
+@ If the target is not of any type in this list then using the move may be discouraged.
+@ It seems likely this was meant to be "discourage reducing the target's attack if they're
+@ not a physical type", but they've left out Flying, Poison, and Ghost.
 AI_CV_AttackDown_PhysicalTypeList:
 	.byte TYPE_NORMAL
 	.byte TYPE_FIGHTING
@@ -1935,8 +1935,8 @@ AI_CV_Protect_ScoreDown2:
 AI_CV_Protect_End:
 	end
 
-/* BUG: Foresight is only encouraged if the user is Ghost type or*/
-/*      has high evasion, but should check target instead*/
+@ BUG: Foresight is only encouraged if the user is Ghost type or
+@      has high evasion, but should check target instead
 AI_CV_Foresight:
 #ifdef BUGFIX
 	get_target_type1
@@ -2199,8 +2199,8 @@ AI_CV_SemiInvulnerable:
 	score -1
 	goto AI_CV_SemiInvulnerable_End
 
-/* BUG: The scripts for checking type-resistance to weather for semi-invulnerable moves are swapped*/
-/*      The result is that the AI is encouraged to stall while taking damage from weather*/
+@ BUG: The scripts for checking type-resistance to weather for semi-invulnerable moves are swapped
+@      The result is that the AI is encouraged to stall while taking damage from weather
 AI_CV_SemiInvulnerable2:
 	if_status AI_TARGET, STATUS1_TOXIC_POISON, AI_CV_SemiInvulnerable_TryEncourage
 	if_status2 AI_TARGET, STATUS2_CURSED, AI_CV_SemiInvulnerable_TryEncourage
@@ -2275,7 +2275,7 @@ AI_CV_Hail_ScoreDown1:
 AI_CV_Hail_End:
 	end
 
-/* BUG: Facade score is increased if the target is statused, but should be if the user is*/
+@ BUG: Facade score is increased if the target is statused, but should be if the user is
 AI_CV_Facade:
 #ifdef BUGFIX
 	if_not_status AI_USER, STATUS1_POISON | STATUS1_BURN | STATUS1_PARALYSIS | STATUS1_TOXIC_POISON, AI_CV_Facade_End
@@ -2704,8 +2704,8 @@ AI_SetupFirstTurn_SetupEffectsToEncourage:
 	.byte EFFECT_CAMOUFLAGE
 	.byte -1
 
-/* ~60% chance to prefer moves that do 0 or 1 damage, or are in sIgnoredPowerfulMoveEffects*/
-/* Oddly this group includes moves like Explosion and Eruption, so the AI strategy isn't very coherent */
+@ ~60% chance to prefer moves that do 0 or 1 damage, or are in sIgnoredPowerfulMoveEffects
+@ Oddly this group includes moves like Explosion and Eruption, so the AI strategy isn't very coherent
 AI_PreferPowerExtremes:
 	if_target_is_ally AI_Ret
 	get_how_powerful_move_is
@@ -2775,9 +2775,9 @@ AI_PreferBatonPass_End:
 	end
 
 sMovesTable_ProtectMoves:
-	.short MOVE_PROTECT
-	.short MOVE_DETECT
-	.short -1
+	.2byte MOVE_PROTECT
+	.2byte MOVE_DETECT
+	.2byte -1
 
 AI_PreferBatonPass_EncourageIfHighStats:
 	get_turn_count
@@ -3194,12 +3194,12 @@ AI_HPAware_DiscouragedEffectsWhenTargetLowHP:
 	.byte EFFECT_DRAGON_DANCE
 	.byte -1
 
-/* Given the AI_TryOnAlly at the beginning it's possible that this was the start of a more*/
-/* comprehensive double battle AI script */
+@ Given the AI_TryOnAlly at the beginning it's possible that this was the start of a more
+@ comprehensive double battle AI script
 AI_TrySunnyDayStart:
 	if_target_is_ally AI_TryOnAlly
 	if_not_effect EFFECT_SUNNY_DAY, AI_TrySunnyDayStart_End
-#ifndef BUGFIX  /* funcResult has not been set in this script yet, below call is nonsense*/
+#ifndef BUGFIX  @ funcResult has not been set in this script yet, below call is nonsense
 	if_equal FALSE, AI_TrySunnyDayStart_End
 #endif
 	is_first_turn_for AI_USER

@@ -4,15 +4,15 @@ AbandonedShip_HiddenFloorRooms_MapScripts::
 
 AbandonedShip_HiddenFloorRooms_OnFrame:
 	map_script_2 VAR_TEMP_1, 0, AbandonedShip_HiddenFloorRooms_EventScript_DoHiddenItemSparkle
-	.short 0
+	.2byte 0
 
-/* After the below calculation, VAR_TEMP_4 is the room number of the door the player entered*/
-/* Bottom row, left column   (Rm 1)*/
-/* Bottom row, middle column (Rm 2)*/
-/* Bottom row, right column	(Rm 3)*/
-/* Upper row,  left column   (Rm 4)*/
-/* Upper row,  middle column (Rm 5)*/
-/* Upper row,  right column  (Rm 6)*/
+@ After the below calculation, VAR_TEMP_4 is the room number of the door the player entered
+@ Bottom row, left column   (Rm 1)
+@ Bottom row, middle column (Rm 2)
+@ Bottom row, right column	(Rm 3)
+@ Upper row,  left column   (Rm 4)
+@ Upper row,  middle column (Rm 5)
+@ Upper row,  right column  (Rm 6)
 AbandonedShip_HiddenFloorRooms_EventScript_DoHiddenItemSparkle::
 	setvar VAR_TEMP_1, 1
 	getplayerxy VAR_TEMP_2, VAR_TEMP_3

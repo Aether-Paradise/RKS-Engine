@@ -25,7 +25,7 @@ SootopolisCity_MysteryEventsHouse_1F_OnFrame:
 	map_script_2 VAR_SOOTOPOLIS_MYSTERY_EVENTS_STATE, 1, SootopolisCity_MysteryEventsHouse_1F_EventScript_OldManCommentOnBattle
 	map_script_2 VAR_SOOTOPOLIS_MYSTERY_EVENTS_STATE, 2, SootopolisCity_MysteryEventsHouse_1F_EventScript_OldManCommentOnBattle
 	map_script_2 VAR_SOOTOPOLIS_MYSTERY_EVENTS_STATE, 3, SootopolisCity_MysteryEventsHouse_1F_EventScript_OldManCommentOnBattle
-	.short 0
+	.2byte 0
 
 SootopolisCity_MysteryEventsHouse_1F_EventScript_OldManCommentOnBattle::
 	lockall
@@ -195,7 +195,7 @@ SootopolisCity_MysteryEventsHouse_1F_Text_SaveProgressBeforeBattle:
 SootopolisCity_MysteryEventsHouse_1F_Text_HopeToSeeGoodMatch:
 	.string "I hope to see a good match!$"
 
-/* Unused*/
+@ Unused
 SootopolisCity_MysteryEventsHouse_1F_Text_StrVar1Tie:
 	.string "{STR_VAR_1}$"
 
@@ -207,7 +207,7 @@ SootopolisCity_MysteryEventsHouse_1F_Text_BrilliantStandoff:
 	.string "It was a brilliant match in which\n"
 	.string "neither side conceded a step!$"
 
-/* Unused*/
+@ Unused
 SootopolisCity_MysteryEventsHouse_1F_Text_StrVar1Won:
 	.string "{STR_VAR_1}$"
 
@@ -216,7 +216,7 @@ SootopolisCity_MysteryEventsHouse_1F_Text_ThatWasSuperlative:
 	.string "Why, it was like seeing myself in\n"
 	.string "my youth again!$"
 
-/* Unused*/
+@ Unused
 SootopolisCity_MysteryEventsHouse_1F_Text_StrVar1Lost:
 	.string "{STR_VAR_1}$"
 

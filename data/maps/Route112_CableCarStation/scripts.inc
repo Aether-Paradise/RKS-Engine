@@ -15,7 +15,7 @@ Route112_CableCarStation_EventScript_MoveAttendantAside::
 
 Route112_CableCarStation_OnFrame:
 	map_script_2 VAR_CABLE_CAR_STATION_STATE, 2, Route112_CableCarStation_EventScript_ExitCableCar
-	.short 0
+	.2byte 0
 
 Route112_CableCarStation_EventScript_ExitCableCar::
 	lockall
@@ -42,7 +42,7 @@ Route112_CableCarStation_EventScript_RideCableCar::
 	applymovement LOCALID_ROUTE112_CABLE_CAR_ATTENDANT, Route112_CableCarStation_Movement_LeadPlayerToCableCar
 	applymovement LOCALID_PLAYER, Route112_CableCarStation_Movement_BoardCableCar
 	waitmovement 0
-	setvar VAR_0x8004, FALSE  /* Going up*/
+	setvar VAR_0x8004, FALSE  @ Going up
 	setvar VAR_CABLE_CAR_STATION_STATE, 1
 	incrementgamestat GAME_STAT_RODE_CABLE_CAR
 	special CableCarWarp

@@ -10,7 +10,7 @@ PetalburgCity_Gym_OnLoad:
 	call_if_ge VAR_PETALBURG_GYM_STATE, 7, PetalburgCity_Gym_EventScript_UnlockAllDoors
 	end
 
-/* NOTE: Strength and OHKO rooms are misleading. Both are more accurately Critical-Hit*/
+@ NOTE: Strength and OHKO rooms are misleading. Both are more accurately Critical-Hit
 PetalburgCity_Gym_EventScript_OpenUnlockedDoors::
 	setvar VAR_0x8005, 1
 	call PetalburgCity_Gym_EventScript_OpenGymEntranceDoors
@@ -63,7 +63,7 @@ PetalburgCity_Gym_EventScript_DontMoveNormanToFront::
 
 PetalburgCity_Gym_OnWarp:
 	map_script_2 VAR_PETALBURG_GYM_STATE, 1, PetalburgCity_Gym_EventScript_TurnPlayerNorth
-	.short 0
+	.2byte 0
 
 PetalburgCity_Gym_EventScript_TurnPlayerNorth::
 	turnobject LOCALID_PLAYER, DIR_NORTH
@@ -71,7 +71,7 @@ PetalburgCity_Gym_EventScript_TurnPlayerNorth::
 
 PetalburgCity_Gym_OnFrame:
 	map_script_2 VAR_PETALBURG_GYM_STATE, 1, PetalburgCity_Gym_EventScript_ReturnFromWallyTutorial
-	.short 0
+	.2byte 0
 
 PetalburgCity_Gym_EventScript_ReturnFromWallyTutorial::
 	lockall
@@ -313,7 +313,7 @@ PetalburgCity_Gym_EventScript_NormanThreeBadges::
 PetalburgCity_Gym_EventScript_NormanFaceDoorSouth::
 	return
 
-/* For all other NormanFaceDoorX, Norman is already facing the door from NormanAddressWallyX*/
+@ For all other NormanFaceDoorX, Norman is already facing the door from NormanAddressWallyX
 PetalburgCity_Gym_EventScript_NormanFaceDoorNorth::
 	applymovement LOCALID_PETALBURG_GYM_NORMAN, Common_Movement_WalkInPlaceFasterDown
 	waitmovement 0
@@ -757,7 +757,7 @@ PetalburgCity_Gym_EventScript_DoorLocked::
 	releaseall
 	end
 
-/* VAR_0x8008 and VAR_0x8009 below are the x and y coordinates of the warp*/
+@ VAR_0x8008 and VAR_0x8009 below are the x and y coordinates of the warp
 PetalburgCity_Gym_EventScript_AccuracyRoomDoor::
 	lockall
 	goto_if_lt VAR_PETALBURG_GYM_STATE, 6, PetalburgCity_Gym_EventScript_DoorLocked
@@ -987,8 +987,8 @@ PetalburgCity_Gym_EventScript_JodyPostBadge::
 	msgbox PetalburgCity_Gym_Text_JodyPostBadge, MSGBOX_NPC
 	end
 
-/* VAR_0x8004 below is the room number*/
-/* VAR_0x8005 below is 0 when the door should be slid open and 1 when it should be unlocked immediately*/
+@ VAR_0x8004 below is the room number
+@ VAR_0x8005 below is 0 when the door should be slid open and 1 when it should be unlocked immediately
 PetalburgCity_Gym_EventScript_OpenGymEntranceDoors::
 	setvar VAR_0x8004, 1
 	call_if_eq VAR_0x8005, 0, PetalburgCity_Gym_EventScript_SlideOpenRoomDoors
@@ -1508,7 +1508,7 @@ PetalburgCity_Gym_Text_EnterSpeedRoom:
 	.string "“SPEED ROOM,” the sign says.\p"
 	.string "Do you want to go through?$"
 
-/* Unused*/
+@ Unused
 PetalburgCity_Gym_Text_DoorAppearsLocked2:
 	.string "This door appears to be locked\n"
 	.string "right now…$"

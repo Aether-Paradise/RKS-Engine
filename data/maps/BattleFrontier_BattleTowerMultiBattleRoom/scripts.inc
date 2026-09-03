@@ -32,7 +32,7 @@ BattleFrontier_BattleTowerMultiBattleRoom_EventScript_SetLinkPlayerGfx::
 
 BattleFrontier_BattleTowerMultiBattleRoom_OnWarp:
 	map_script_2 VAR_TEMP_1, 0, BattleFrontier_BattleTowerMultiBattleRoom_EventScript_HidePlayerObj
-	.short 0
+	.2byte 0
 
 BattleFrontier_BattleTowerMultiBattleRoom_EventScript_HidePlayerObj::
 	hideobjectat LOCALID_PLAYER, MAP_BATTLE_FRONTIER_BATTLE_TOWER_MULTI_BATTLE_ROOM
@@ -40,7 +40,7 @@ BattleFrontier_BattleTowerMultiBattleRoom_EventScript_HidePlayerObj::
 
 BattleFrontier_BattleTowerMultiBattleRoom_OnFrame:
 	map_script_2 VAR_TEMP_0, 0, BattleFrontier_BattleTowerMultiBattleRoom_EventScript_EnterRoom
-	.short 0
+	.2byte 0
 
 BattleFrontier_BattleTowerMultiBattleRoom_EventScript_EnterRoom::
 	setvar VAR_TEMP_0, 1
@@ -461,32 +461,32 @@ BattleFrontier_BattleTowerMultiBattleRoom_Text_ReadyFor7thOpponentSet:
 	.string "The 7th set of opponents is next.\n"
 	.string "Are you ready?$"
 
-/* Unused*/
+@ Unused
 BattleFrontier_BattleTowerMultiBattleRoom_Text_2ndOpponentSetNext:
 	.string "The 2nd set of opponents is next.\n"
 	.string "Do your best!$"
 
-/* Unused*/
+@ Unused
 BattleFrontier_BattleTowerMultiBattleRoom_Text_3rdOpponentSetNext:
 	.string "The 3rd set of opponents is next.\n"
 	.string "Do your best!$"
 
-/* Unused*/
+@ Unused
 BattleFrontier_BattleTowerMultiBattleRoom_Text_4thOpponentSetNext:
 	.string "The 4th set of opponents is next.\n"
 	.string "Do your best!$"
 
-/* Unused*/
+@ Unused
 BattleFrontier_BattleTowerMultiBattleRoom_Text_5thOpponentSetNext:
 	.string "The 5th set of opponents is next.\n"
 	.string "Do your best!$"
 
-/* Unused*/
+@ Unused
 BattleFrontier_BattleTowerMultiBattleRoom_Text_6thOpponentSetNext:
 	.string "The 6th set of opponents is next.\n"
 	.string "Do your best!$"
 
-/* Unused*/
+@ Unused
 BattleFrontier_BattleTowerMultiBattleRoom_Text_7thOpponentSetNext:
 	.string "The 7th set of opponents is next.\n"
 	.string "Do your best!$"

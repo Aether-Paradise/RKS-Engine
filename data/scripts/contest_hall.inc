@@ -127,8 +127,8 @@ LilycoveCity_ContestLobby_EventScript_EnterMasterRank::
 	goto LilycoveCity_ContestLobby_EventScript_ChooseContestType
 	end
 
-/* The multichoice selection IDs are equal to the CATEGORY values*/
-/* So rather than list the cases they just copy VAR_RESULT for a valid selection into VAR_CONTEST_CATEGORY*/
+@ The multichoice selection IDs are equal to the CATEGORY values
+@ So rather than list the cases they just copy VAR_RESULT for a valid selection into VAR_CONTEST_CATEGORY
 LilycoveCity_ContestLobby_EventScript_ChooseContestType::
 	message LilycoveCity_ContestLobby_Text_EnterWhichContest1
 	waitmessage
@@ -146,7 +146,7 @@ LilycoveCity_ContestLobby_EventScript_CantEnterLowRank::
 	release
 	end
 
-/* Unused*/
+@ Unused
 LilycoveCity_ContestLobby_EventScript_ConfirmEntry::
 	msgbox LilycoveCity_ContestLobby_Text_ConfirmContestMon, MSGBOX_YESNO
 	switch VAR_RESULT
@@ -173,7 +173,7 @@ LilycoveCity_ContestLobby_EventScript_CantEnterFainted::
 	release
 	end
 
-/* The return here is back to LilycoveCity_ContestLobby_EventScript_ContestReceptionist*/
+@ The return here is back to LilycoveCity_ContestLobby_EventScript_ContestReceptionist
 LilycoveCity_ContestLobby_EventScript_EnterMon::
 	msgbox LilycoveCity_ContestLobby_Text_YourMonIsEntryNum4, MSGBOX_DEFAULT
 	closemessage
@@ -228,7 +228,7 @@ ContestHall_EventScript_GetMasterStringId::
 	setvar VAR_0x8009, STDSTRING_MASTER
 	return
 
-/* This whole switch is equivalent to copyvar VAR_0x8008, VAR_CONTEST_CATEGORY*/
+@ This whole switch is equivalent to copyvar VAR_0x8008, VAR_CONTEST_CATEGORY
 ContestHall_EventScript_GetContestCategory::
 	switch VAR_CONTEST_CATEGORY
 	case CONTEST_CATEGORY_COOL, ContestHall_EventScript_GetCategoryCool
@@ -466,11 +466,11 @@ ContestHall_EventScript_AudienceReactToContestant::
 	call ContestHall_EventScript_TryWaitForLink
 	return
 
-/* For below VAR_TEMP_0 is the number of heart emotes to try to display in the audience*/
-/* The number of hearts to try to display is based on the condition of the presented pokemon and the rank*/
-/* For each heart to display a random audience member is chosen, and a new one chosen if they already displayed a heart*/
-/* VAR_TEMP_1 through VAR_TEMP_8 represent each of the 8 audience members that are actual object events*/
-/*    and are set to 9 if they havent displayed a heart yet, and 1 if they have*/
+@ For below VAR_TEMP_0 is the number of heart emotes to try to display in the audience
+@ The number of hearts to try to display is based on the condition of the presented pokemon and the rank
+@ For each heart to display a random audience member is chosen, and a new one chosen if they already displayed a heart
+@ VAR_TEMP_1 through VAR_TEMP_8 represent each of the 8 audience members that are actual object events
+@    and are set to 9 if they havent displayed a heart yet, and 1 if they have
 ContestHall_EventScript_AudienceHeartEmotes::
 	special GetContestMonCondition
 	call_if_eq VAR_CONTEST_TYPE, CONTEST_TYPE_NPC_NORMAL, ContestHall_EventScript_GetNumberOfHeartsNormal
@@ -508,7 +508,7 @@ ContestHall_EventScript_DisplayHearts::
 	call_if_eq VAR_RESULT, 5, ContestHall_EventScript_TryDisplayHeartAudienceMember6
 	call_if_eq VAR_RESULT, 6, ContestHall_EventScript_TryDisplayHeartAudienceMember7
 	call_if_eq VAR_RESULT, 7, ContestHall_EventScript_TryDisplayHeartAudienceMember8
-	goto_if_gt VAR_TEMP_0, 0, ContestHall_EventScript_DisplayHearts  /* Still more hearts to display*/
+	goto_if_gt VAR_TEMP_0, 0, ContestHall_EventScript_DisplayHearts  @ Still more hearts to display
 	waitmovement 0
 	return
 
@@ -1042,7 +1042,7 @@ ContestHall_EventScript_CheckRankIsMaster::
 ContestHall_EventScript_DontSkipPrize::
 	return
 
-/* This flag is never read*/
+@ This flag is never read
 ContestHall_EventScript_SetSketchFlag::
 	setflag FLAG_CONTEST_SKETCH_CREATED
 	return
@@ -1064,7 +1064,7 @@ ContestHall_EventScript_SetReadyForLinkContestArtist::
 	setvar VAR_LILYCOVE_CONTEST_LOBBY_STATE, 2
 	return
 
-/* Unused*/
+@ Unused
 ContestHall_EventScript_Ret::
 	return
 
@@ -1104,7 +1104,7 @@ ContestHall_EventScript_Player4ApproachForPrize::
 	releaseall
 	return
 
-/* In NPC Contests, the player is always entry 4 (id number 3)*/
+@ In NPC Contests, the player is always entry 4 (id number 3)
 ContestHall_EventScript_GivePrizeIfWinner::
 	special GetContestWinnerId
 	goto_if_eq VAR_0x8005, 3, ContestHall_EventScript_GiveContestPrizes
@@ -1336,7 +1336,7 @@ ContestHall_Movement_Player2ApproachForPrize:
 	walk_up
 	step_end
 
-/* IsContestWithRSPlayer has no side effect, so this is nop*/
+@ IsContestWithRSPlayer has no side effect, so this is nop
 ContestHall_EventScript_CheckIfContestWithRSPlayer::
 	specialvar VAR_RESULT, IsContestWithRSPlayer
 	goto_if_eq VAR_RESULT, TRUE, ContestHall_EventScript_RetRSPlayer
@@ -1375,7 +1375,7 @@ LilycoveCity_ContestLobby_Text_ContestReception:
 	.string "This is the reception counter for\n"
 	.string "POKéMON CONTESTS.$"
 
-/* Unused*/
+@ Unused
 LilycoveCity_ContestLobby_Text_CounterOnlyFor4PlayerContests:
 	.string "Hello!\p"
 	.string "This reception counter is only\n"
@@ -1572,7 +1572,7 @@ ContestHall_Text_PickUpPrizeAtCounterLater:
 	.string "the reception counter later.\l"
 	.string "Please do compete again!$"
 
-/* Unused*/
+@ Unused
 ContestHall_Text_OnlyRegister4Players:
 	.string "I only register four players for\n"
 	.string "POKéMON CONTESTS.\p"
@@ -1588,11 +1588,11 @@ LilycoveCity_ContestLobby_Text_ParticipateAnotherTime:
 	.string "We hope you will participate another\n"
 	.string "time.$"
 
-/* Unused*/
+@ Unused
 LilycoveCity_ContestLobby_Text_EnterContest2:
 	.string "Would you like to enter a CONTEST?$"
 
-/* Unused*/
+@ Unused
 LilycoveCity_ContestLobby_Text_Explain4PlayerContest:
 	.string "When four players are ready, connect\n"
 	.string "over a Game Link cable, and register\l"
@@ -1604,11 +1604,11 @@ LilycoveCity_ContestLobby_Text_Explain4PlayerContest:
 	.string "After that, the usual CONTEST rules\n"
 	.string "apply.$"
 
-/* Unused*/
+@ Unused
 LilycoveCity_ContestLobby_Text_EnterWhichContest2:
 	.string "Which CONTEST would you like to enter?$"
 
-/* Unused*/
+@ Unused
 LilycoveCity_ContestLobby_Text_EnterWhichPokemon2:
 	.string "Which POKéMON would you like to enter?$"
 
@@ -1630,12 +1630,12 @@ LilycoveCity_ContestLobby_Text_PleaseWaitBButtonCancel:
 	.string "Please wait.\n"
 	.string "… … B Button: Cancel$"
 
-/* Unused*/
+@ Unused
 LilycoveCity_ContestLobby_Text_ParticipateAnotherTime2:
 	.string "We hope you will participate another\n"
 	.string "time.$"
 
-/* Unused*/
+@ Unused
 LilycoveCity_ContestLobby_Text_TransmissionErrorTryAgain:
 	.string "Transmission error.\n"
 	.string "Please try again.$"

@@ -67,7 +67,7 @@ DewfordTown_Gym_EventScript_BrightenRoom::
 DewfordTown_Gym_EventScript_NoLightChange::
 	return
 
-/* NOTE: A little confusingly, a larger animateflash param value is a smaller flash radius*/
+@ NOTE: A little confusingly, a larger animateflash param value is a smaller flash radius
 DewfordTown_Gym_EventScript_AnimateFlash1Trainer::
 	playse SE_SWITCH
 	animateflash 6

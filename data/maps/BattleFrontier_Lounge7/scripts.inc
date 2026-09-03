@@ -237,10 +237,10 @@ BattleFrontier_Lounge7_EventScript_CancelChooseMon::
 	release
 	end
 
-/* VAR_0x8008 is the price*/
-/* VAR_TEMP_C is the scroll multichoice ID*/
-/* VAR_TEMP_FRONTIER_TUTOR_SELECTION is the move selection*/
-/* VAR_TEMP_FRONTIER_TUTOR_ID is which move tutor was spoken to*/
+@ VAR_0x8008 is the price
+@ VAR_TEMP_C is the scroll multichoice ID
+@ VAR_TEMP_FRONTIER_TUTOR_SELECTION is the move selection
+@ VAR_TEMP_FRONTIER_TUTOR_ID is which move tutor was spoken to
 BattleFrontier_Lounge7_EventScript_ConfirmMoveSelection::
 	copyvar VAR_0x8004, VAR_TEMP_FRONTIER_TUTOR_SELECTION
 	copyvar VAR_0x8005, VAR_TEMP_FRONTIER_TUTOR_ID

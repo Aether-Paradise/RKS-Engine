@@ -1,7 +1,7 @@
 AquaHideout_1F_MapScripts::
 	.byte 0
 
-/* The below two entrance guards give hints about what to do to progress the story*/
+@ The below two entrance guards give hints about what to do to progress the story
 AquaHideout_1F_EventScript_HideoutEntranceGrunt1::
 	lock
 	faceplayer

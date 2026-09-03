@@ -94,17 +94,17 @@ gSpecialVars::
 	.include "data/specials.inc"
 
 gStdScripts::
-	ptrvalue Std_ObtainItem              /* STD_OBTAIN_ITEM*/
-	ptrvalue Std_FindItem                /* STD_FIND_ITEM*/
-	ptrvalue Std_MsgboxNPC               /* MSGBOX_NPC*/
-	ptrvalue Std_MsgboxSign              /* MSGBOX_SIGN*/
-	ptrvalue Std_MsgboxDefault           /* MSGBOX_DEFAULT*/
-	ptrvalue Std_MsgboxYesNo             /* MSGBOX_YESNO*/
-	ptrvalue Std_MsgboxAutoclose         /* MSGBOX_AUTOCLOSE*/
-	ptrvalue Std_ObtainDecoration        /* STD_OBTAIN_DECORATION*/
-	ptrvalue Std_RegisteredInMatchCall   /* STD_REGISTER_MATCH_CALL*/
-	ptrvalue Std_MsgboxGetPoints         /* MSGBOX_GETPOINTS*/
-	ptrvalue Std_MsgboxPokenav           /* MSGBOX_POKENAV*/
+	ptrvalue Std_ObtainItem              @ STD_OBTAIN_ITEM
+	ptrvalue Std_FindItem                @ STD_FIND_ITEM
+	ptrvalue Std_MsgboxNPC               @ MSGBOX_NPC
+	ptrvalue Std_MsgboxSign              @ MSGBOX_SIGN
+	ptrvalue Std_MsgboxDefault           @ MSGBOX_DEFAULT
+	ptrvalue Std_MsgboxYesNo             @ MSGBOX_YESNO
+	ptrvalue Std_MsgboxAutoclose         @ MSGBOX_AUTOCLOSE
+	ptrvalue Std_ObtainDecoration        @ STD_OBTAIN_DECORATION
+	ptrvalue Std_RegisteredInMatchCall   @ STD_REGISTER_MATCH_CALL
+	ptrvalue Std_MsgboxGetPoints         @ MSGBOX_GETPOINTS
+	ptrvalue Std_MsgboxPokenav           @ MSGBOX_POKENAV
 gStdScripts_End::
 
 	.include "data/maps/PetalburgCity/scripts.inc"
@@ -658,7 +658,7 @@ EventScript_SetBrineyLocation_Route109::
 	.include "data/scripts/record_mix.inc"
 	.include "data/scripts/pc.inc"
 
-/* scripts/notices.inc? signs.inc? See comment about text/notices.inc*/
+@ scripts/notices.inc? signs.inc? See comment about text/notices.inc
 Common_EventScript_ShowPokemartSign::
 	msgbox gText_PokemartSign, MSGBOX_SIGN
 	end
@@ -748,7 +748,7 @@ Common_EventScript_StopBrineysBoatMusic::
 
 	.include "data/scripts/prof_birch.inc"
 
-/* Below could be split as ferry.inc aside from the Rusturf tunnel script*/
+@ Below could be split as ferry.inc aside from the Rusturf tunnel script
 Common_EventScript_FerryDepart::
 	delay 60
 	applymovement VAR_0x8004, Movement_FerryDepart
@@ -835,7 +835,7 @@ Common_EventScript_PlayerHandedOverTheItem::
 	.include "data/text/mart_clerk.inc"
 	.include "data/text/obtain_item.inc"
 
-/* The below and surf.inc could be split into some text/notices.inc*/
+@ The below and surf.inc could be split into some text/notices.inc
 gText_PokemartSign::
 	.string "“Selected items for your convenience!”\n"
 	.string "POKéMON MART$"
@@ -924,12 +924,12 @@ gText_UndergoingAdjustments::
 	.string "It appears to be undergoing\n"
 	.string "adjustments…$"
 
-/* Unused*/
+@ Unused
 gText_SorryTradeCenterInspections::
 	.string "I'm terribly sorry. The TRADE CENTER\n"
 	.string "is undergoing inspections.$"
 
-/* Unused*/
+@ Unused
 gText_SorryRecordCornerPreparation::
 	.string "I'm terribly sorry. The RECORD CORNER\n"
 	.string "is under preparation.$"
@@ -967,7 +967,7 @@ EventScript_SelectWithoutRegisteredItem::
 Common_EventScript_NopReturn::
 	return
 
-/* Unused*/
+@ Unused
 EventScript_CableClub_SetVarResult1::
 	setvar VAR_RESULT, 1
 	return
