@@ -62,6 +62,10 @@
 
 #define PLTT      0x5000000
 #else
+
+#define ROM_START 0x8000000
+#define ROM_END 0xA000000
+
 extern struct SoundInfo * SOUND_INFO_PTR;
 extern unsigned short INTR_CHECK;
 extern void * INTR_VECTOR;

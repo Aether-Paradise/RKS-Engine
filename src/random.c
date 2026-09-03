@@ -1,7 +1,9 @@
 #include "global.h"
 #include "random.h"
-#if MODERN
+#ifndef PORTABLE
 #include <alloca.h>
+#else
+#include <malloc.h>
 #endif
 
 // IWRAM common
