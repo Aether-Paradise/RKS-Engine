@@ -666,9 +666,14 @@ ifneq ($(NODEP),1)
 -include $(addprefix $(OBJ_DIR)/,$(C_ASM_SRCS:.s=.d))
 endif
 
+ifneq ($(PORTABLE),1)
 $(DATA_ASM_BUILDDIR)/%.o: $(DATA_ASM_SUBDIR)/%.s
-	$(PREPROC) -s $< charmap.txt | $(CPP) $(CPPFLAGS) $(INCLUDE_SCANINC_ARGS) - | $(PREPROC) -ie $< charmap.txt | $(ASM_PSEUDO_OP_CONV) | $(AS) $(ASFLAGS) -o $@
+	$(PREPROC) -s $< charmap.txt | $(CPP) $(CPPFLAGS) $(INCLUDE_SCANINC_ARGS) - | $(PREPROC) -ie $< charmap.txt | $(AS) $(ASFLAGS) -o $@
+else
+$(DATA_ASM_BUILDDIR)/%.o: $(DATA_ASM_SUBDIR)/%.s
+	$(PREPROC) $< charmap.txt | $(CPP) $(CPPFLAGS) $(INCLUDE_SCANINC_ARGS) - | $(PREPROC) -ie $< charmap.txt | $(ASM_PSEUDO_OP_CONV) | $(AS) $(ASFLAGS) -o $@
 	$(FIX_UNDERSCORE) $@
+endif
 
 $(DATA_ASM_BUILDDIR)/%.d: $(DATA_ASM_SUBDIR)/%.s
 	$(SCANINC) -M $@ -g $(ASSETS_DIR_NAME) $(INCLUDE_SCANINC_ARGS) -I "" $<
