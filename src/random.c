@@ -1,10 +1,6 @@
 #include "global.h"
 #include "random.h"
-#ifndef PORTABLE
-#include <alloca.h>
-#else
-#include <malloc.h>
-#endif
+#include "malloc.h"
 
 // IWRAM common
 COMMON_DATA rng_value_t gRngValue = {0};
@@ -145,7 +141,7 @@ void Shuffle32(void *data_, size_t n)
 
 void ShuffleN(void *data, size_t n, size_t size)
 {
-    void *tmp = alloca(size);
+    void *tmp = Alloc(size);
     LOOP_RANDOM_START;
     --n;
 
