@@ -537,7 +537,7 @@ void PrintAgbTrack(std::vector<Event>& events)
 
 void PrintAgbTrackLoop(std::vector<Event>& events, int trackLoops)
 {
-    std::fprintf(g_outputFile, "\n@**************** Track %u (Midi-Chn.%u) ****************@\n\n", g_agbTrack, g_midiChan + 1);
+    std::fprintf(g_outputFile, "\n/**************** Track %u (Midi-Chn.%u) ****************/\n\n", g_agbTrack, g_midiChan + 1);
     std::fprintf(g_outputFile, "%s_%u:\n", g_asmLabel.c_str(), g_agbTrack);
     int wholeNoteCount = 0;
 
@@ -579,7 +579,7 @@ void PrintAgbTrackLoop(std::vector<Event>& events, int trackLoops)
 
             // added `&& (i % 2 == 0)` to cut down on excess comments created in the .s file
             if ((event.type == EventType::WholeNoteMark || event.type == EventType::Pattern) && (i % 2 == 0))
-                std::fprintf(g_outputFile, "@ %03d   ----------------------------------------\n", wholeNoteCount++);
+                std::fprintf(g_outputFile, "/* %03d   ---------------------------------------- */\n", wholeNoteCount++);
 
             switch (event.type)
             {
