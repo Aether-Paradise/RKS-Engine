@@ -23,6 +23,7 @@
 #include "intro.h"
 #include "main.h"
 #include "trainer_hill.h"
+#include "test_runner.h"
 #include "platform.h"
 #include "constants/rgb.h"
 
@@ -32,9 +33,13 @@ static void VCountIntr(void);
 static void SerialIntr(void);
 static void IntrDummy(void);
 
-const u8 gGameVersion = GAME_VERSION;
+// Defined in the linker script so that the test build can override it.
+extern void gInitialMainCB2(void);
+extern void CB2_FlashNotDetectedScreen(void);
 
-const u8 gGameLanguage = GAME_LANGUAGE; // English
+const enum GameVersion gGameVersion = GAME_VERSION;
+
+const enum Language gGameLanguage = GAME_LANGUAGE; // English
 
 const char BuildDateTime[] = "2005 02 21 11:10";
 
@@ -58,20 +63,18 @@ const IntrFunc gIntrTableTemplate[] =
 
 #define INTR_COUNT ((int)(sizeof(gIntrTableTemplate)/sizeof(IntrFunc)))
 
-static u16 sUnusedVar; // Never read
-
 #ifdef PORTABLE
 u8 gHeap[HEAP_SIZE];
 #endif
-u16 gKeyRepeatStartDelay;
-bool8 gLinkTransferringData;
-struct Main gMain;
-u16 gKeyRepeatContinueDelay;
-bool8 gSoftResetDisabled;
-IntrFunc gIntrTable[INTR_COUNT];
-u8 gLinkVSyncDisabled;
-u32 IntrMain_Buffer[0x200];
-s8 gPcmDmaCounter;
+COMMON_DATA u16 gKeyRepeatStartDelay = 0;
+COMMON_DATA bool8 gLinkTransferringData = 0;
+COMMON_DATA struct Main gMain = {0};
+COMMON_DATA u16 gKeyRepeatContinueDelay = 0;
+COMMON_DATA bool8 gSoftResetDisabled = 0;
+COMMON_DATA IntrFunc gIntrTable[INTR_COUNT] = {0};
+COMMON_DATA u8 gLinkVSyncDisabled = 0;
+COMMON_DATA s8 gPcmDmaCounter = 0;
+COMMON_DATA void *gAgbMainLoop_sp = NULL;
 
 static EWRAM_DATA u16 sTrainerId = 0;
 
@@ -131,17 +134,14 @@ void MainLoop()
 
 void AgbMain(void)
 {
-    // Modern compilers are liberal with the stack on entry to this function,
-    // so RegisterRamReset may crash if it resets IWRAM.
-#if !MODERN
-    RegisterRamReset(RESET_ALL);
-#endif //MODERN
 #ifdef PORTABLE
     REG_VCOUNT = 161; // prep for being in VBlank period
 #endif
     *(vu16 *)BG_PLTT = RGB_WHITE; // Set the backdrop to white on startup
     InitGpuRegManager();
-    REG_WAITCNT = WAITCNT_PREFETCH_ENABLE | WAITCNT_WS0_S_1 | WAITCNT_WS0_N_3;
+    REG_WAITCNT = WAITCNT_PREFETCH_ENABLE
+            | WAITCNT_WS0_S_1 | WAITCNT_WS0_N_3
+            | WAITCNT_WS1_S_1 | WAITCNT_WS1_N_3;
     InitKeys();
     InitIntrHandlers();
     m4aSoundInit();
@@ -165,11 +165,10 @@ void AgbMain(void)
 
 #ifndef PORTABLE
     if (gFlashMemoryPresent != TRUE)
-        SetMainCallback2(NULL);
+        SetMainCallback2(CB2_FlashNotDetectedScreen);
 #endif
 
     gLinkTransferringData = FALSE;
-    sUnusedVar = 0xFC0;
 
 #ifndef NDEBUG
 #if (LOG_HANDLER == LOG_HANDLER_MGBA_PRINT)
@@ -178,6 +177,12 @@ void AgbMain(void)
     AGBPrintInit();
 #endif
 #endif
+    gAgbMainLoop_sp = __builtin_frame_address(0);
+    AgbMainLoop();
+}
+
+void AgbMainLoop(void)
+{
 #ifndef PORTABLE
     for (;;)
     {
@@ -198,7 +203,7 @@ static void InitMainCallbacks(void)
     gTrainerHillVBlankCounter = NULL;
     gMain.vblankCounter2 = 0;
     gMain.callback1 = NULL;
-    SetMainCallback2(CB2_InitCopyrightScreenAfterBootup);
+    SetMainCallback2(gInitialMainCB2);
     gSaveBlock2Ptr = &gSaveblock2.block;
     gPokemonStoragePtr = &gPokemonStorage.block;
 }
@@ -220,15 +225,22 @@ void SetMainCallback2(MainCallback callback)
 
 void StartTimer1(void)
 {
-    REG_TM1CNT_H = 0x80;
+
+    REG_TM2CNT_L = 0;
+    REG_TM2CNT_H = TIMER_ENABLE | TIMER_COUNTUP;
+    REG_TM1CNT_H = TIMER_ENABLE;
 }
 
 void SeedRngAndSetTrainerId(void)
 {
-    u16 val = REG_TM1CNT_L;
-    SeedRng(val);
+    u32 val;
+
     REG_TM1CNT_H = 0;
-    sTrainerId = val;
+    REG_TM2CNT_H = 0;
+    val = ((u32)REG_TM2CNT_L) << 16;
+    val |= REG_TM1CNT_L;
+    SeedRng(val);
+    sTrainerId = Random();
 }
 
 u16 GetGeneratedTrainerIdLower(void)
@@ -247,9 +259,16 @@ void EnableVCountIntrAtLine150(void)
 #ifdef BUGFIX
 static void SeedRngWithRtc(void)
 {
-    u32 seed = RtcGetMinuteCount();
-    seed = (seed >> 16) ^ (seed & 0xFFFF);
-    SeedRng(seed);
+    #define BCD8(x) ((((x) >> 4) & 0xF) * 10 + ((x) & 0xF))
+    u32 seconds;
+    struct SiiRtcInfo rtc;
+    RtcGetInfo(&rtc);
+    seconds =
+        ((HOURS_PER_DAY * RtcGetDayCount(&rtc) + BCD8(rtc.hour))
+        * MINUTES_PER_HOUR + BCD8(rtc.minute))
+        * SECONDS_PER_MINUTE + BCD8(rtc.second);
+    SeedRng(seconds);
+    #undef BCD8
 }
 #endif
 
@@ -320,9 +339,7 @@ void InitIntrHandlers(void)
     for (i = 0; i < INTR_COUNT; i++)
         gIntrTable[i] = gIntrTableTemplate[i];
 
-    DmaCopy32(3, IntrMain, IntrMain_Buffer, sizeof(IntrMain_Buffer));
-
-    INTR_VECTOR = IntrMain_Buffer;
+    INTR_VECTOR = IntrMain;
 
     SetVBlankCallback(NULL);
     SetHBlankCallback(NULL);
@@ -341,11 +358,6 @@ void SetVBlankCallback(IntrCallback callback)
 void SetHBlankCallback(IntrCallback callback)
 {
     gMain.hblankCallback = callback;
-}
-
-void SetVCountCallback(IntrCallback callback)
-{
-    gMain.vcountCallback = callback;
 }
 
 void RestoreSerialTimer3IntrHandlers(void)
@@ -386,8 +398,8 @@ static void VBlankIntr(void)
 #endif
     TryReceiveLinkBattleData();
 
-    if (!gMain.inBattle || !(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_FRONTIER | BATTLE_TYPE_RECORDED)))
-        Random();
+    if (!gTestRunnerEnabled && (!gMain.inBattle || !(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_FRONTIER | BATTLE_TYPE_RECORDED))))
+        AdvanceRandom();
 
     UpdateWirelessStatusIndicatorSprite();
 
@@ -435,14 +447,19 @@ static void IntrDummy(void)
 
 static void WaitForVBlank(void)
 {
-#ifdef PORTABLE
-    VBlankIntrWait();
-#else
-    gMain.intrCheck &= ~INTR_FLAG_VBLANK;
-
-    while (!(gMain.intrCheck & INTR_FLAG_VBLANK))
-        ;
+#ifndef PORTABLE
+    if (gWirelessCommType != 0)
+    {
+        // Desynchronization may occur if wireless adapter is connected
+        // and we call VBlankIntrWait();
+        while (!(gMain.intrCheck & INTR_FLAG_VBLANK))
+            ;
+    }
+    else
 #endif
+    {
+        VBlankIntrWait();
+    }
 }
 
 void SetTrainerHillVBlankCounter(u32 *counter)

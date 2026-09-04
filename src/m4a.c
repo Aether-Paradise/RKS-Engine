@@ -1,5 +1,6 @@
 #include "global.h"
 #include "gba/m4a_internal.h"
+#include "global.h"
 
 #ifdef PORTABLE
 #include "cgb_audio.h"
@@ -7,12 +8,6 @@ void RunMixerFrame(void);
 #endif
 
 extern const u8 gCgb3Vol[];
-
-#ifndef PORTABLE
-#define BSS_CODE __attribute__((section(".bss.code")))
-
-BSS_CODE ALIGNED(4) char SoundMainRAM_Buffer[0x800] = {0};
-#endif
 
 #ifndef PORTABLE
 COMMON_DATA struct SoundInfo gSoundInfo = {0};
@@ -103,9 +98,6 @@ void MPlayFadeOut(struct MusicPlayerInfo *mplayInfo, u16 speed)
 void m4aSoundInit(void)
 {
     s32 i;
-#ifndef PORTABLE
-    CpuCopy32((void *)((s32)SoundMainRAM & ~1), SoundMainRAM_Buffer, sizeof(SoundMainRAM_Buffer));
-#endif
 
     SoundInit(&gSoundInfo);
     MPlayExtender(gCgbChans);
@@ -228,17 +220,6 @@ void m4aMPlayAllStop(void)
 void m4aMPlayContinue(struct MusicPlayerInfo *mplayInfo)
 {
     MPlayContinue(mplayInfo);
-}
-
-void m4aMPlayAllContinue(void)
-{
-    s32 i;
-
-    for (i = 0; i < NUM_MUSIC_PLAYERS; i++)
-        MPlayContinue(gMPlayTable[i].info);
-
-    for (i = 0; i < MAX_POKEMON_CRIES; i++)
-        MPlayContinue(&gPokemonCryMusicPlayers[i]);
 }
 
 void m4aMPlayFadeOut(struct MusicPlayerInfo *mplayInfo, u16 speed)
@@ -560,45 +541,6 @@ void m4aSoundMode(u32 mode)
     {
         m4aSoundVSyncOff();
         SampleFreqSet(temp);
-    }
-
-    soundInfo->ident = ID_NUMBER;
-}
-
-void SoundClear(void)
-{
-    struct SoundInfo *soundInfo = SOUND_INFO_PTR;
-    s32 i;
-    void *chan;
-
-    if (soundInfo->ident != ID_NUMBER)
-        return;
-
-    soundInfo->ident++;
-
-    i = MAX_DIRECTSOUND_CHANNELS;
-    chan = &soundInfo->chans[0];
-
-    while (i > 0)
-    {
-        ((struct SoundChannel *)chan)->statusFlags = 0;
-        i--;
-        chan = (void *)((uintptr_t)chan + sizeof(struct SoundChannel));
-    }
-
-    chan = soundInfo->cgbChans;
-
-    if (chan)
-    {
-        i = 1;
-
-        while (i <= 4)
-        {
-            soundInfo->CgbOscOff(i);
-            ((struct CgbChannel *)chan)->statusFlags = 0;
-            i++;
-            chan = (void *)((uintptr_t)chan + sizeof(struct CgbChannel));
-        }
     }
 
     soundInfo->ident = ID_NUMBER;
@@ -1457,78 +1399,6 @@ void ClearModM(struct MusicPlayerTrack *track)
         track->flags |= MPT_FLG_PITCHG;
     else
         track->flags |= MPT_FLG_VOLCHG;
-}
-
-void m4aMPlayModDepthSet(struct MusicPlayerInfo *mplayInfo, u16 trackBits, u8 modDepth)
-{
-    s32 i;
-    u32 bit;
-    struct MusicPlayerTrack *track;
-
-    if (mplayInfo->ident != ID_NUMBER)
-        return;
-
-    mplayInfo->ident++;
-
-    i = mplayInfo->trackCount;
-    track = mplayInfo->tracks;
-    bit = 1;
-
-    while (i > 0)
-    {
-        if (trackBits & bit)
-        {
-            if (track->flags & MPT_FLG_EXIST)
-            {
-                track->mod = modDepth;
-
-                if (!track->mod)
-                    ClearModM(track);
-            }
-        }
-
-        i--;
-        track++;
-        bit <<= 1;
-    }
-
-    mplayInfo->ident = ID_NUMBER;
-}
-
-void m4aMPlayLFOSpeedSet(struct MusicPlayerInfo *mplayInfo, u16 trackBits, u8 lfoSpeed)
-{
-    s32 i;
-    u32 bit;
-    struct MusicPlayerTrack *track;
-
-    if (mplayInfo->ident != ID_NUMBER)
-        return;
-
-    mplayInfo->ident++;
-
-    i = mplayInfo->trackCount;
-    track = mplayInfo->tracks;
-    bit = 1;
-
-    while (i > 0)
-    {
-        if (trackBits & bit)
-        {
-            if (track->flags & MPT_FLG_EXIST)
-            {
-                track->lfoSpeed = lfoSpeed;
-
-                if (!track->lfoSpeed)
-                    ClearModM(track);
-            }
-        }
-
-        i--;
-        track++;
-        bit <<= 1;
-    }
-
-    mplayInfo->ident = ID_NUMBER;
 }
 
 #define MEMACC_COND_JUMP(cond) \

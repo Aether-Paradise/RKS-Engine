@@ -1,3 +1,4 @@
+#include "constants/field_weather.h"
 @ The first .byte argument of each macro below is an index into gFieldEffectScriptFuncs
 
 	.macro field_eff_loadtiles address:req
@@ -5,9 +6,10 @@
 	ptrvalue \address
 	.endm
 
-	.macro field_eff_loadfadedpal address:req
+	.macro field_eff_loadfadedpal address:req, color_map_type=COLOR_MAP_DARK_CONTRAST
 	.byte 1
 	ptrvalue \address
+	.byte  \color_map_type
 	.endm
 
 	.macro field_eff_loadpal address:req
@@ -24,10 +26,11 @@
 	.byte 4
 	.endm
 
-	.macro field_eff_loadgfx_callnative tiles_address:req, palette_address:req, function_address:req
+	.macro field_eff_loadgfx_callnative tiles_address:req, palette_address:req, function_address:req, color_map_type=COLOR_MAP_DARK_CONTRAST
 	.byte 5
 	ptrvalue \tiles_address
 	ptrvalue \palette_address
+	.byte  \color_map_type
 	ptrvalue \function_address
 	.endm
 
@@ -37,8 +40,9 @@
 	ptrvalue \function_address
 	.endm
 
-	.macro field_eff_loadfadedpal_callnative palette_address:req, function_address:req
+	.macro field_eff_loadfadedpal_callnative palette_address:req, function_address:req, color_map_type=COLOR_MAP_DARK_CONTRAST
 	.byte 7
 	ptrvalue \palette_address
+	.byte  \color_map_type
 	ptrvalue \function_address
 	.endm

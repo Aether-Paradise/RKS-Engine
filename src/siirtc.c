@@ -4,6 +4,7 @@
 
 #include "gba/gba.h"
 #include "siirtc.h"
+#include "config/general.h"
 #include "global.h"
 #include "platform.h"
 
@@ -82,7 +83,6 @@ vu16 GPIOPortDirection;
 extern vu16 GPIOPortDirection;
 #endif
 
-static u16 sDummy; // unused variable
 static bool8 sLocked;
 
 static int WriteCommand(u8 value);
@@ -92,7 +92,7 @@ static u8 ReadData();
 static void EnableGpioPortRead();
 static void DisableGpioPortRead();
 
-static const char AgbLibRtcVersion[] = "SIIRTC_V001";
+KEEP_SECTION USED static const char AgbLibRtcVersion[] = "SIIRTC_V001";
 
 void SiiRtcUnprotect(void)
 {
@@ -289,35 +289,6 @@ bool8 SiiRtcGetDateTime(struct SiiRtcInfo *rtc)
     return TRUE;
 }
 
-bool8 SiiRtcSetDateTime(struct SiiRtcInfo *rtc)
-{
-    u8 i;
-
-    if (sLocked == TRUE)
-        return FALSE;
-
-    sLocked = TRUE;
-#ifdef PORTABLE
-    Platform_SetDateTime(rtc);
-#else
-    GPIO_PORT_DATA = SCK_HI;
-    GPIO_PORT_DATA = SCK_HI | CS_HI;
-
-    GPIO_PORT_DIRECTION = DIR_ALL_OUT;
-
-    WriteCommand(CMD_DATETIME | WR);
-
-    for (i = 0; i < DATETIME_BUF_LEN; i++)
-        WriteData(DATETIME_BUF(rtc, i));
-
-    GPIO_PORT_DATA = SCK_HI;
-    GPIO_PORT_DATA = SCK_HI;
-#endif
-    sLocked = FALSE;
-
-    return TRUE;
-}
-
 bool8 SiiRtcGetTime(struct SiiRtcInfo *rtc)
 {
     u8 i;
@@ -343,35 +314,6 @@ bool8 SiiRtcGetTime(struct SiiRtcInfo *rtc)
         TIME_BUF(rtc, i) = ReadData();
 
     INFO_BUF(rtc, OFFSET_HOUR) &= 0x7F;
-
-    GPIO_PORT_DATA = SCK_HI;
-    GPIO_PORT_DATA = SCK_HI;
-#endif
-    sLocked = FALSE;
-
-    return TRUE;
-}
-
-bool8 SiiRtcSetTime(struct SiiRtcInfo *rtc)
-{
-    u8 i;
-
-    if (sLocked == TRUE)
-        return FALSE;
-
-    sLocked = TRUE;
-#ifdef PORTABLE
-    Platform_SetTime(rtc);
-#else
-    GPIO_PORT_DATA = SCK_HI;
-    GPIO_PORT_DATA = SCK_HI | CS_HI;
-
-    GPIO_PORT_DIRECTION = DIR_ALL_OUT;
-
-    WriteCommand(CMD_TIME | WR);
-
-    for (i = 0; i < TIME_BUF_LEN; i++)
-        WriteData(TIME_BUF(rtc, i));
 
     GPIO_PORT_DATA = SCK_HI;
     GPIO_PORT_DATA = SCK_HI;

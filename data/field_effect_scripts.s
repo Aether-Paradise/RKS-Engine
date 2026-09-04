@@ -1,3 +1,4 @@
+#include "config/item.h"
 	.include "asm/macros.inc"
 	.include "constants/constants.inc"
 
@@ -24,9 +25,9 @@ gFieldEffectScriptPointers::
 	ptrvalue gFieldEffectScript_JumpSmallSplash           @ FLDEFF_JUMP_SMALL_SPLASH
 	ptrvalue gFieldEffectScript_LongGrass                 @ FLDEFF_LONG_GRASS
 	ptrvalue gFieldEffectScript_JumpLongGrass             @ FLDEFF_JUMP_LONG_GRASS
-	ptrvalue gFieldEffectScript_UnusedGrass               @ FLDEFF_UNUSED_GRASS
-	ptrvalue gFieldEffectScript_UnusedGrass2              @ FLDEFF_UNUSED_GRASS_2
-	ptrvalue gFieldEffectScript_UnusedSand                @ FLDEFF_UNUSED_SAND
+	ptrvalue gFieldEffectScript_ShakingGrass              @ FLDEFF_SHAKING_GRASS
+	ptrvalue gFieldEffectScript_ShakingGrass2             @ FLDEFF_SHAKING_LONG_GRASS
+	ptrvalue gFieldEffectScript_UnusedSand                @ FLDEFF_SAND_HOLE
 	ptrvalue gFieldEffectScript_WaterSurfacing            @ FLDEFF_WATER_SURFACING
 	ptrvalue gFieldEffectScript_BerryTreeGrowthSparkle    @ FLDEFF_BERRY_TREE_GROWTH_SPARKLE
 	ptrvalue gFieldEffectScript_DeepSandFootprints        @ FLDEFF_DEEP_SAND_FOOTPRINTS
@@ -72,6 +73,21 @@ gFieldEffectScriptPointers::
 	ptrvalue gFieldEffectScript_RayquazaSpotlight         @ FLDEFF_RAYQUAZA_SPOTLIGHT
 	ptrvalue gFieldEffectScript_DestroyDeoxysRock         @ FLDEFF_DESTROY_DEOXYS_ROCK
 	ptrvalue gFieldEffectScript_MoveDeoxysRock            @ FLDEFF_MOVE_DEOXYS_ROCK
+	ptrvalue gFldEffScript_UseVsSeeker                    @ FLDEFF_USE_VS_SEEKER
+	ptrvalue gFldEffScript_XIcon                          @ FLDEFF_X_ICON
+	ptrvalue gFldEffScript_DoubleExclMarkIcon             @ FLDEFF_DOUBLE_EXCL_MARK_ICON
+	ptrvalue gFieldEffectScript_TracksSlither             @ FLDEFF_TRACKS_SLITHER
+	ptrvalue gFieldEffectScript_TracksBug                 @ FLDEFF_TRACKS_BUG
+	ptrvalue gFieldEffectScript_TracksSpot                @ FLDEFF_TRACKS_SPOT
+	ptrvalue gFieldEffectScript_CaveDust                  @ FLDEFF_CAVE_DUST
+	ptrvalue gFieldEffectScript_Defog                     @ FLDEFF_DEFOG
+	ptrvalue gFieldEffectScript_UseRockClimb              @ FLDEFF_USE_ROCK_CLIMB
+	ptrvalue gFieldEffectScript_RockClimbDust             @ FLDEFF_ROCK_CLIMB_DUST
+	ptrvalue gFieldEffectScript_ORASDowse                 @ FLDEFF_ORAS_DOWSE
+	ptrvalue gFldEffScript_SmileyFaceIcon    		        @ FLDEFF_SMILEY_FACE_ICON
+	ptrvalue gFieldEffectScript_HallOfFameRecordFrlg      @ FLDEFF_HALL_OF_FAME_RECORD_FRLG
+	ptrvalue gFldEffScript_PhotoFlash      		        @ FLDEFF_PHOTO_FLASH
+	ptrvalue gFieldEffectScript_OWE_SpawnAnim				@ FLDEFF_OW_ENCOUNTER_SPAWN_ANIM
 
 gFieldEffectScript_ExclamationMarkIcon1::
 	field_eff_callnative FldEff_ExclamationMarkIcon
@@ -149,12 +165,12 @@ gFieldEffectScript_JumpLongGrass::
 	field_eff_loadfadedpal_callnative gSpritePalette_GeneralFieldEffect1, FldEff_JumpLongGrass
 	field_eff_end
 
-gFieldEffectScript_UnusedGrass::
-	field_eff_loadfadedpal_callnative gSpritePalette_GeneralFieldEffect1, FldEff_UnusedGrass
+gFieldEffectScript_ShakingGrass::
+	field_eff_loadfadedpal_callnative gSpritePalette_GeneralFieldEffect1, FldEff_ShakingGrass
 	field_eff_end
 
-gFieldEffectScript_UnusedGrass2::
-	field_eff_loadfadedpal_callnative gSpritePalette_GeneralFieldEffect1, FldEff_UnusedGrass2
+gFieldEffectScript_ShakingGrass2::
+	field_eff_loadfadedpal_callnative gSpritePalette_GeneralFieldEffect1, FldEff_ShakingGrass2
 	field_eff_end
 
 gFieldEffectScript_UnusedSand::
@@ -342,4 +358,65 @@ gFieldEffectScript_DestroyDeoxysRock::
 
 gFieldEffectScript_MoveDeoxysRock::
 	field_eff_callnative FldEff_MoveDeoxysRock
+	field_eff_end
+
+gFldEffScript_UseVsSeeker::
+	field_eff_callnative FldEff_UseVsSeeker
+	field_eff_end
+
+gFldEffScript_XIcon::
+	field_eff_callnative FldEff_XIcon
+	field_eff_end
+
+gFldEffScript_DoubleExclMarkIcon::
+	field_eff_callnative FldEff_DoubleExclMarkIcon
+	field_eff_end
+
+gFieldEffectScript_TracksBug::
+	field_eff_loadfadedpal_callnative gSpritePalette_GeneralFieldEffect0, FldEff_TracksBug
+	field_eff_end
+
+gFieldEffectScript_TracksSpot::
+	field_eff_loadfadedpal_callnative gSpritePalette_GeneralFieldEffect0, FldEff_TracksSpot
+	field_eff_end
+
+gFieldEffectScript_TracksSlither::
+	field_eff_loadfadedpal_callnative gSpritePalette_GeneralFieldEffect0, FldEff_TracksSlither
+	field_eff_end
+
+gFieldEffectScript_CaveDust::
+	field_eff_loadfadedpal_callnative gSpritePalette_CaveDust FldEff_CaveDust
+	field_eff_end
+
+gFieldEffectScript_Defog::
+	field_eff_callnative FldEff_Defog
+	field_eff_end
+
+gFieldEffectScript_UseRockClimb:: @ 82DBC3F
+	field_eff_callnative FldEff_UseRockClimb
+	field_eff_end
+
+gFieldEffectScript_RockClimbDust:: @ 82DBB28
+	field_eff_loadfadedpal_callnative gSpritePalette_BigDust, FldEff_RockClimbDust
+	field_eff_end
+
+gFieldEffectScript_ORASDowse::
+	field_eff_callnative FldEff_ORASDowsing
+	field_eff_end
+
+gFldEffScript_SmileyFaceIcon::
+	field_eff_callnative FldEff_SmileyFaceIcon
+	field_eff_end
+
+gFieldEffectScript_HallOfFameRecordFrlg::
+	field_eff_loadfadedpal gSpritePalette_PokeballGlow
+	field_eff_loadfadedpal_callnative gSpritePalette_HofMonitor_Frlg, FldEff_HallOfFameRecord
+	field_eff_end
+
+gFldEffScript_PhotoFlash::
+	field_eff_callnative FldEff_PhotoFlash
+	field_eff_end
+
+gFieldEffectScript_OWE_SpawnAnim::
+	field_eff_callnative FldEff_OWE_SpawnAnim
 	field_eff_end

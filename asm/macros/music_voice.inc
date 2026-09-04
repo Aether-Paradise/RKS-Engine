@@ -169,3 +169,15 @@
 	.byte 0xff, 0, 0xff, 0
 	space64 4
 	.endm
+
+	.macro cry_uncomp sample @ not compressed
+	.byte 0x0, 60, 0, 0
+	.4byte \sample
+	.byte 0xff, 0, 0xff, 0
+	.endm
+
+	.macro cry_reverse_uncomp sample @ not compressed
+	.byte 0x10, 60, 0, 0
+	.4byte \sample
+	.byte 0xff, 0, 0xff, 0
+	.endm

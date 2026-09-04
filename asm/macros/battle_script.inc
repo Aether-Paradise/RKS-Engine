@@ -3,38 +3,21 @@
 	.byte B_SCR_OP_ATTACKCANCELER
 	.endm
 
-	.macro accuracycheck failPtr:req, move:req
-	.byte B_SCR_OP_ACCURACYCHECK
-	ptrvalue \failPtr
-	.2byte \move
+	.macro printattackstring
+	.byte B_SCR_OP_PRINTATTACKSTRING
 	.endm
 
-	.macro attackstring
-	.byte B_SCR_OP_ATTACKSTRING
-	.endm
-
-	.macro ppreduce
-	.byte B_SCR_OP_PPREDUCE
-	.endm
-
-	.macro critcalc
-	.byte B_SCR_OP_CRITCALC
-	.endm
-
-	.macro damagecalc
-	.byte B_SCR_OP_DAMAGECALC
+	.macro printselectionstringfromtable ptr:req
+	.byte B_SCR_OP_PRINTSELECTIONSTRINGFROMTABLE
+	ptrvalue \ptr
 	.endm
 
 	.macro typecalc
 	.byte B_SCR_OP_TYPECALC
 	.endm
 
-	.macro adjustnormaldamage
-	.byte B_SCR_OP_ADJUSTNORMALDAMAGE
-	.endm
-
-	.macro adjustnormaldamage2
-	.byte B_SCR_OP_ADJUSTNORMALDAMAGE2
+	.macro multihitresultmessage
+	.byte B_SCR_OP_MULTIHITRESULTMESSAGE
 	.endm
 
 	.macro attackanimation
@@ -50,9 +33,10 @@
 	.byte \battler
 	.endm
 
-	.macro datahpupdate battler:req
+	.macro datahpupdate battler:req assuranceDouble:req
 	.byte B_SCR_OP_DATAHPUPDATE
 	.byte \battler
+    .byte \assuranceDouble
 	.endm
 
 	.macro critmessage
@@ -72,6 +56,10 @@
 	.2byte \id
 	.endm
 
+	.macro printsavedstring
+	printstring 0
+	.endm
+
 	.macro printselectionstring id:req
 	.byte B_SCR_OP_PRINTSELECTIONSTRING
 	.2byte \id
@@ -87,26 +75,23 @@
 	ptrvalue \ptr
 	.endm
 
-	.macro printselectionstringfromtable ptr:req
-	.byte B_SCR_OP_PRINTSELECTIONSTRINGFROMTABLE
-	ptrvalue \ptr
+	.macro setadditionaleffects
+	.byte B_SCR_OP_SETADDITIONALEFFECTS
 	.endm
 
-	.macro seteffectwithchance
-	.byte B_SCR_OP_SETEFFECTWITHCHANCE
-	.endm
-
-	.macro seteffectprimary
+	.macro seteffectprimary battler:req, effectBattler:req, moveEffect=0
+	.if \moveEffect != 0
+		setmoveeffect \moveEffect
+	.endif
 	.byte B_SCR_OP_SETEFFECTPRIMARY
-	.endm
-
-	.macro seteffectsecondary
-	.byte B_SCR_OP_SETEFFECTSECONDARY
-	.endm
-
-	.macro clearstatusfromeffect battler:req
-	.byte B_SCR_OP_CLEARSTATUSFROMEFFECT
 	.byte \battler
+	.byte \effectBattler
+	.endm
+
+	.macro clearvolatile battler:req, volatile:req
+	.byte B_SCR_OP_CLEARVOLATILE
+	.byte \battler
+	.byte \volatile
 	.endm
 
 	.macro tryfaintmon battler:req
@@ -116,11 +101,11 @@
 	ptrvalue NULL
 	.endm
 
-	.macro tryfaintmon_spikes battler:req, ptr:req
+	.macro tryfaintmon_spikes battler:req, instr:req
 	.byte B_SCR_OP_TRYFAINTMON
 	.byte \battler
 	.byte TRUE
-	ptrvalue \ptr
+	ptrvalue \instr
 	.endm
 
 	.macro dofaintanimation battler:req
@@ -133,56 +118,66 @@
 	.byte \battler
 	.endm
 
-	.macro jumpifstatus battler:req, status1:req, ptr:req
+	.macro jumpifstatus battler:req, flags:req, jumpInstr:req
 	.byte B_SCR_OP_JUMPIFSTATUS
 	.byte \battler
-	.4byte \status1
-	ptrvalue \ptr
+	.4byte \flags
+	ptrvalue \jumpInstr
 	.endm
 
-	.macro jumpifstatus2 battler:req, status2:req, ptr:req
-	.byte B_SCR_OP_JUMPIFSTATUS2
+	.macro jumpifvolatile battler:req, volatile:req, jumpInstr:req
+	.byte B_SCR_OP_JUMPIFVOLATILE
 	.byte \battler
-	.4byte \status2
-	ptrvalue \ptr
+	.byte \volatile
+	ptrvalue \jumpInstr
 	.endm
 
-	.macro jumpifability battler:req, ability:req, ptr:req
+	.macro jumpifability battler:req, ability:req, jumpInstr:req
 	.byte B_SCR_OP_JUMPIFABILITY
 	.byte \battler
-	.byte \ability
-	ptrvalue \ptr
+	.2byte \ability
+	ptrvalue \jumpInstr
 	.endm
 
-	.macro jumpifsideaffecting battler:req, sidestatus:req, ptr:req
+	.macro jumpifsideaffecting battler:req, flags:req, jumpInstr:req
 	.byte B_SCR_OP_JUMPIFSIDEAFFECTING
 	.byte \battler
-	.2byte \sidestatus
-	ptrvalue \ptr
+	.4byte \flags
+	ptrvalue \jumpInstr
 	.endm
 
-	.macro jumpifstat battler:req, ifflag:req, stat:req, value:req, ptr
+	.macro jumpifstat battler:req, comparison:req, stat:req, value:req, jumpInstr:req
 	.byte B_SCR_OP_JUMPIFSTAT
 	.byte \battler
-	.byte \ifflag
+	.byte \comparison
 	.byte \stat
 	.byte \value
-	ptrvalue \ptr
+	ptrvalue \jumpInstr
 	.endm
 
-	.macro jumpifstatus3condition battler:req, status3:req, condition:req, ptr:req
-	.byte B_SCR_OP_JUMPIFSTATUS3CONDITION
+	.macro jumpifstatignorecontrary battler:req, comparison:req, stat:req, value:req, jumpInstr:req
+	.byte B_SCR_OP_JUMPIFSTATIGNORECONTRARY
 	.byte \battler
-	.4byte \status3
-	.byte \condition
-	ptrvalue \ptr
+	.byte \comparison
+	.byte \stat
+	.byte \value
+	ptrvalue \jumpInstr
 	.endm
 
-	.macro jumpiftype battler:req, type:req, ptr:req
-	.byte B_SCR_OP_JUMPIFTYPE
+	.macro jumpbasedontype battler:req, type:req, jumpIfType:req, jumpInstr:req
+	.byte B_SCR_OP_JUMPBASEDONTYPE
 	.byte \battler
 	.byte \type
-	ptrvalue \ptr
+	.byte \jumpIfType
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro jumpiftype battler:req, type:req, jumpInstr:req
+	jumpbasedontype \battler, \type, TRUE, \jumpInstr
+	.endm
+
+	.macro jumpifnottype battler:req, type:req, jumpInstr:req
+	jumpbasedontype \battler, \type, FALSE, \jumpInstr
 	.endm
 
 	.macro getexp battler:req
@@ -190,86 +185,72 @@
 	.byte \battler
 	.endm
 
-	.macro checkteamslost ptr:req
+	.macro checkteamslost jumpInstr:req
 	.byte B_SCR_OP_CHECKTEAMSLOST
-	ptrvalue \ptr
+	ptrvalue \jumpInstr
 	.endm
 
-	.macro movevaluescleanup
-	.byte B_SCR_OP_MOVEVALUESCLEANUP
+	.macro goto instr:req
+	.byte B_SCR_OP_GOTO
+	ptrvalue \instr
 	.endm
 
-	.macro setmultihit value:req
-	.byte B_SCR_OP_SETMULTIHIT
+	.macro jumpifbyte comparison:req, bytePtr:req, value:req, jumpInstr:req
+	.byte B_SCR_OP_JUMPIFBYTE
+	.byte \comparison
+	ptrvalue \bytePtr
+	.byte \value
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro jumpifhalfword comparison:req, halfwordPtr:req, value:req, jumpInstr:req
+	.byte B_SCR_OP_JUMPIFHALFWORD
+	.byte \comparison
+	ptrvalue \halfwordPtr
+	.2byte \value
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro jumpifword comparison:req, wordPtr:req, value:req, jumpInstr:req
+	.byte B_SCR_OP_JUMPIFWORD
+	.byte \comparison
+	ptrvalue \wordPtr
+	.4byte \value
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro jumpifarrayequal array1:req, array2:req, size:req, jumpInstr:req
+	.byte B_SCR_OP_JUMPIFARRAYEQUAL
+	.4byte \array1
+	.4byte \array2
+	.byte \size
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro jumpifarraynotequal array1:req, array2:req, size:req, jumpInstr:req
+	.byte B_SCR_OP_JUMPIFARRAYNOTEQUAL
+	.4byte \array1
+	.4byte \array2
+	.byte \size
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro setbyte bytePtr:req, value:req
+	.byte B_SCR_OP_SETBYTE
+	ptrvalue \bytePtr
 	.byte \value
 	.endm
 
-	.macro decrementmultihit value:req
-	.byte B_SCR_OP_DECREMENTMULTIHIT
-	ptrvalue \value
-	.endm
-
-	.macro goto ptr:req
-	.byte B_SCR_OP_GOTO
-	ptrvalue \ptr
-	.endm
-
-	.macro jumpifbyte ifflag:req, val:req, byte:req, ptr:req
-	.byte B_SCR_OP_JUMPIFBYTE
-	.byte \ifflag
-	ptrvalue \val
-	.byte \byte
-	ptrvalue \ptr
-	.endm
-
-	.macro jumpifhalfword ifflag:req, val:req, hword:req, ptr:req
-	.byte B_SCR_OP_JUMPIFHALFWORD
-	.byte \ifflag
-	ptrvalue \val
-	.2byte \hword
-	ptrvalue \ptr
-	.endm
-
-	.macro jumpifword ifflag:req, val:req, word:req, ptr:req
-	.byte B_SCR_OP_JUMPIFWORD
-	.byte \ifflag
-	ptrvalue \val
-	.4byte \word
-	ptrvalue \ptr
-	.endm
-
-	.macro jumpifarrayequal val1:req, val2:req, size:req, ptr:req
-	.byte B_SCR_OP_JUMPIFARRAYEQUAL
-	ptrvalue \val1
-	ptrvalue \val2
-	.byte \size
-	ptrvalue \ptr
-	.endm
-
-	.macro jumpifarraynotequal val1:req, val2:req, size:req, ptr:req
-	.byte B_SCR_OP_JUMPIFARRAYNOTEQUAL
-	ptrvalue \val1
-	ptrvalue \val2
-	.byte \size
-	ptrvalue \ptr
-	.endm
-
-	.macro setbyte ptr:req, byte:req
-	.byte B_SCR_OP_SETBYTE
-	ptrvalue \ptr
-	.byte \byte
-	.endm
-
-	.macro addbyte ptr:req, byte:req
+	.macro addbyte bytePtr:req, value:req
 	.byte B_SCR_OP_ADDBYTE
-	ptrvalue \ptr
-	.byte \byte
+	ptrvalue \bytePtr
+	.byte \value
 	.endm
 
-	.macro subbyte ptr:req, byte:req
+	.macro subbyte bytePtr:req, value:req
 	.byte B_SCR_OP_SUBBYTE
-	ptrvalue \ptr
-	.byte \byte
+	ptrvalue \bytePtr
+	.byte \value
 	.endm
 
 	.macro copyarray dest:req, src:req, size:req
@@ -279,62 +260,65 @@
 	.byte \size
 	.endm
 
-	.macro copyarraywithindex dest:req, src:req, index:req, size:req
+	.macro copyarraywithindex dest:req, src:req, indexPtr:req, size:req
 	.byte B_SCR_OP_COPYARRAYWITHINDEX
 	ptrvalue \dest
 	ptrvalue \src
-	ptrvalue \index
+	ptrvalue \indexPtr
 	.byte \size
 	.endm
 
-	.macro orbyte ptr:req, byte:req
+	.macro orbyte bytePtr:req, value:req
 	.byte B_SCR_OP_ORBYTE
-	ptrvalue \ptr
-	.byte \byte
+	ptrvalue \bytePtr
+	.byte \value
 	.endm
 
-	.macro orhalfword ptr:req, hword:req
+	.macro orhalfword halfwordPtr:req, value:req
 	.byte B_SCR_OP_ORHALFWORD
-	ptrvalue \ptr
-	.2byte \hword
+	ptrvalue \halfwordPtr
+	.2byte \value
 	.endm
 
-	.macro orword ptr:req, word:req
+	.macro orword wordPtr:req, value:req
 	.byte B_SCR_OP_ORWORD
-	ptrvalue \ptr
-	.4byte \word
+	ptrvalue \wordPtr
+	.4byte \value
 	.endm
 
-	.macro bicbyte ptr:req, byte:req
+	.macro bicbyte bytePtr:req, value:req
 	.byte B_SCR_OP_BICBYTE
-	ptrvalue \ptr
-	.byte \byte
+	ptrvalue \bytePtr
+	.byte \value
 	.endm
 
-	.macro bichalfword ptr:req, hword:req
+	.macro bichalfword halfwordPtr:req, value:req
 	.byte B_SCR_OP_BICHALFWORD
-	ptrvalue \ptr
-	.2byte \hword
+	ptrvalue \halfwordPtr
+	.2byte \value
 	.endm
 
-	.macro bicword ptr:req, word:req
+	.macro bicword wordPtr:req, value:req
 	.byte B_SCR_OP_BICWORD
-	ptrvalue \ptr
-	.4byte \word
+	ptrvalue \wordPtr
+	.4byte \value
 	.endm
 
-	.macro pause time:req
+	.macro pause frames:req
 	.byte B_SCR_OP_PAUSE
-	.2byte \time
+	.2byte \frames
+	.endm
+
+	.macro setchargingturn
+	.byte B_SCR_OP_SETCHARGINGTURN
 	.endm
 
 	.macro waitstate
 	.byte B_SCR_OP_WAITSTATE
 	.endm
 
-	.macro healthbar_update battler:req
-	.byte B_SCR_OP_HEALTHBAR_UPDATE
-	.byte \battler
+	.macro tryselfconfusiondmgformchange
+	.byte B_SCR_OP_TRYSELFCONFUSIONDMGFORMCHANGE
 	.endm
 
 	.macro return
@@ -345,64 +329,53 @@
 	.byte B_SCR_OP_END
 	.endm
 
-	.macro end2
-	.byte B_SCR_OP_END2
-	.endm
-
 	.macro end3
 	.byte B_SCR_OP_END3
 	.endm
 
-	.macro jumpifaffectedbyprotect ptr:req
-	.byte B_SCR_OP_JUMPIFAFFECTEDBYPROTECT
-	ptrvalue \ptr
-	.endm
-
-	.macro call ptr:req
+	.macro call instr:req
 	.byte B_SCR_OP_CALL
-	ptrvalue \ptr
+	ptrvalue \instr
 	.endm
 
-	.macro jumpiftype2 battler:req, type:req, ptr:req
-	.byte B_SCR_OP_JUMPIFTYPE2
-	.byte \battler
-	.byte \type
-	ptrvalue \ptr
+	.macro setroost
+	.byte B_SCR_OP_SETROOST
 	.endm
 
-	.macro jumpifabilitypresent ability:req, ptr:req
+	.macro jumpifabilitypresent ability:req, jumpInstr:req
 	.byte B_SCR_OP_JUMPIFABILITYPRESENT
-	.byte \ability
-	ptrvalue \ptr
+	.2byte \ability
+	ptrvalue \jumpInstr
 	.endm
 
 	.macro endselectionscript
 	.byte B_SCR_OP_ENDSELECTIONSCRIPT
 	.endm
 
-	.macro playanimation battler:req, animType:req, arg=NULL
+	.macro playanimation battler:req, animId:req, argPtr=NULL
 	.byte B_SCR_OP_PLAYANIMATION
 	.byte \battler
-	.byte \animType
-	ptrvalue \arg
+	.byte \animId
+	ptrvalue \argPtr
 	.endm
 
-	.macro playanimation_var battler:req, animType:req, arg=NULL
+	.macro playanimation_var battler:req, animIdPtr:req, argPtr=NULL
 	.byte B_SCR_OP_PLAYANIMATION_VAR
 	.byte \battler
-	ptrvalue \animType
-	ptrvalue \arg
+	ptrvalue \animIdPtr
+	ptrvalue \argPtr
 	.endm
 
-	.macro setgraphicalstatchangevalues
-	.byte B_SCR_OP_SETGRAPHICALSTATCHANGEVALUES
-	.endm
-
-	.macro playstatchangeanimation battler:req, stats:req, statchange:req
-	.byte B_SCR_OP_PLAYSTATCHANGEANIMATION
+	.macro jumpfifsemiinvulnerable battler:req, state:req, jumpInstr:req
+	.byte B_SCR_OP_JUMPFIFSEMIINVULNERABLE
 	.byte \battler
-	.byte \stats
-	.byte \statchange
+	.byte \state
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro trainerslidein position:req
+	.byte B_SCR_OP_TRAINERSLIDEIN
+	.byte \position
 	.endm
 
 	.macro moveend endMode:req, endState:req
@@ -443,10 +416,6 @@
 	moveend 2, \to
 	.endm
 
-	.macro typecalc2
-	.byte B_SCR_OP_TYPECALC2
-	.endm
-
 	.macro returnatktoball
 	.byte B_SCR_OP_RETURNATKTOBALL
 	.endm
@@ -461,22 +430,23 @@
 	.byte \battler
 	.endm
 
-	.macro switchinanim battler:req, dontclearsubstitutebit:req
+	.macro switchinanim battler:req, dontClearTransform:req, dontClearSubstitute:req
 	.byte B_SCR_OP_SWITCHINANIM
 	.byte \battler
-	.byte \dontclearsubstitutebit
+	.byte \dontClearTransform
+	.byte \dontClearSubstitute
 	.endm
 
-	.macro jumpifcantswitch battler:req, ptr:req
+	.macro jumpifcantswitch battler:req, jumpInstr:req
 	.byte B_SCR_OP_JUMPIFCANTSWITCH
 	.byte \battler
-	ptrvalue \ptr
+	ptrvalue \jumpInstr
 	.endm
 
-	.macro openpartyscreen battler:req, ptr:req
+	.macro openpartyscreen battler:req, failInstr:req
 	.byte B_SCR_OP_OPENPARTYSCREEN
 	.byte \battler
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
 	.macro switchhandleorder battler:req, state:req
@@ -490,9 +460,8 @@
 	.byte \battler
 	.endm
 
-	.macro trainerslidein battler:req
-	.byte B_SCR_OP_TRAINERSLIDEIN
-	.byte \battler
+	.macro switchinevents
+	.byte B_SCR_OP_SWITCHINEVENTS
 	.endm
 
 	.macro playse song:req
@@ -514,26 +483,27 @@
 	.byte B_SCR_OP_ENDLINKBATTLE
 	.endm
 
-	.macro returntoball battler:req
+	.macro returntoball battler:req, changingForm:req
 	.byte B_SCR_OP_RETURNTOBALL
 	.byte \battler
+	.byte \changingForm
 	.endm
 
-	.macro handlelearnnewmove learnedMovePtr:req, nothingToLearnPtr:req, isFirstMove:req
+	.macro handlelearnnewmove learnedMoveInstr:req, nothingToLearnInstr:req, isFirstMove:req
 	.byte B_SCR_OP_HANDLELEARNNEWMOVE
-	ptrvalue \learnedMovePtr
-	ptrvalue \nothingToLearnPtr
+	ptrvalue \learnedMoveInstr
+	ptrvalue \nothingToLearnInstr
 	.byte \isFirstMove
 	.endm
 
-	.macro yesnoboxlearnmove forgotMovePtr:req
+	.macro yesnoboxlearnmove forgotMoveInstr:req
 	.byte B_SCR_OP_YESNOBOXLEARNMOVE
-	ptrvalue \forgotMovePtr
+	ptrvalue \forgotMoveInstr
 	.endm
 
-	.macro yesnoboxstoplearningmove noPtr:req
+	.macro yesnoboxstoplearningmove noInstr:req
 	.byte B_SCR_OP_YESNOBOXSTOPLEARNINGMOVE
-	ptrvalue \noPtr
+	ptrvalue \noInstr
 	.endm
 
 	.macro hitanimation battler:req
@@ -574,22 +544,25 @@
 	.byte \notChosenMove
 	.endm
 
-	.macro statusanimation battler:req
+	.macro statusanimation battler:req, status=0, isVolatile=FALSE
 	.byte B_SCR_OP_STATUSANIMATION
 	.byte \battler
-	.endm
-
-	.macro status2animation battler:req, status2:req
-	.byte B_SCR_OP_STATUS2ANIMATION
-	.byte \battler
-	.4byte \status2
-	.endm
-
-	.macro chosenstatusanimation battler:req, isStatus2:req, status:req
-	.byte B_SCR_OP_CHOSENSTATUSANIMATION
-	.byte \battler
-	.byte \isStatus2
 	.4byte \status
+	.byte \isVolatile
+	.endm
+
+	.macro volatileanimation battler:req, volatile:req
+	statusanimation \battler, \volatile, TRUE
+	.endm
+
+	.macro futuresighttargetfailure failInstr:req
+	.byte B_SCR_OP_FUTURESIGHTTARGETFAILURE
+	ptrvalue \failInstr
+	.endm
+
+	.macro getpossiblenexttarget jumpInstr:req
+	.byte B_SCR_OP_GETPOSSIBLENEXTTARGET
+	ptrvalue \jumpInstr
 	.endm
 
 	.macro yesnobox
@@ -600,8 +573,9 @@
 	.byte B_SCR_OP_CANCELALLACTIONS
 	.endm
 
-	.macro adjustsetdamage
-	.byte B_SCR_OP_ADJUSTSETDAMAGE
+	.macro setgravity failInstr:req
+	.byte B_SCR_OP_SETGRAVITY
+	ptrvalue \failInstr
 	.endm
 
 	.macro removeitem battler:req
@@ -630,8 +604,8 @@
 	.byte \battler
 	.endm
 
-	.macro recordlastability battler:req
-	.byte B_SCR_OP_RECORDLASTABILITY
+	.macro recordability battler:req
+	.byte B_SCR_OP_RECORDABILITY
 	.byte \battler
 	.endm
 
@@ -639,9 +613,9 @@
 	.byte B_SCR_OP_BUFFERMOVETOLEARN
 	.endm
 
-	.macro jumpifplayerran ptr:req
+	.macro jumpifplayerran jumpInstr:req
 	.byte B_SCR_OP_JUMPIFPLAYERRAN
-	ptrvalue \ptr
+	ptrvalue \jumpInstr
 	.endm
 
 	.macro hpthresholds battler:req
@@ -658,12 +632,6 @@
 	.byte B_SCR_OP_USEITEMONOPPONENT
 	.endm
 
-	.macro various battler:req, id:req
-	.byte B_SCR_OP_VARIOUS
-	.byte \battler
-	.byte \id
-	.endm
-
 	.macro setprotectlike
 	.byte B_SCR_OP_SETPROTECTLIKE
 	.endm
@@ -676,23 +644,19 @@
 	.byte B_SCR_OP_SETATKHPTOZERO
 	.endm
 
-	.macro jumpifnexttargetvalid ptr:req
+	.macro jumpifnexttargetvalid jumpInstr:req
 	.byte B_SCR_OP_JUMPIFNEXTTARGETVALID
-	ptrvalue \ptr
+	ptrvalue \jumpInstr
 	.endm
 
-	.macro tryhealhalfhealth ptr:req, battler:req
+	.macro tryhealhalfhealth battler:req, failInstr:req
 	.byte B_SCR_OP_TRYHEALHALFHEALTH
-	ptrvalue \ptr
 	.byte \battler
+	ptrvalue \failInstr
 	.endm
 
-	.macro trymirrormove
-	.byte B_SCR_OP_TRYMIRRORMOVE
-	.endm
-
-	.macro setrain
-	.byte B_SCR_OP_SETRAIN
+	.macro setfieldweather
+	.byte B_SCR_OP_SETFIELDWEATHER
 	.endm
 
 	.macro setreflect
@@ -708,78 +672,57 @@
 	.byte \mode
 	.endm
 
-	.macro trysetrest ptr:req
+	.macro trysetrest
 	.byte B_SCR_OP_TRYSETREST
-	ptrvalue \ptr
 	.endm
 
-	.macro jumpifnotfirstturn ptr:req
-	.byte B_SCR_OP_JUMPIFNOTFIRSTTURN
-	ptrvalue \ptr
+	.macro jumpifuproarwakes jumpInstr:req
+	.byte B_SCR_OP_JUMPIFUPROARWAKES
+	ptrvalue \jumpInstr
 	.endm
 
-	.macro nop
-	.byte B_SCR_OP_NOP
-	.endm
-
-	.macro jumpifcantmakeasleep ptr:req
-	.byte B_SCR_OP_JUMPIFCANTMAKEASLEEP
-	ptrvalue \ptr
-	.endm
-
-	.macro stockpile
-	.byte B_SCR_OP_STOCKPILE
-	.endm
-
-	.macro stockpiletobasedamage ptr:req
-	.byte B_SCR_OP_STOCKPILETOBASEDAMAGE
-	ptrvalue \ptr
-	.endm
-
-	.macro stockpiletohpheal ptr:req
+	.macro stockpiletohpheal failInstr:req
 	.byte B_SCR_OP_STOCKPILETOHPHEAL
-	ptrvalue \ptr
-	.endm
-
-	.macro negativedamage
-	.byte B_SCR_OP_NEGATIVEDAMAGE
-	.endm
-
-	.macro statbuffchange flags:req, jumpptr:req
-	.byte B_SCR_OP_STATBUFFCHANGE
-	.byte \flags
-	ptrvalue \jumpptr
+	ptrvalue \failInstr
 	.endm
 
 	.macro normalisebuffs
 	.byte B_SCR_OP_NORMALISEBUFFS
 	.endm
 
-	.macro setbide
-	.byte B_SCR_OP_SETBIDE
+	.macro twoturnmoveschargestringandanimation
+	.byte B_SCR_OP_TWOTURNMOVESCHARGESTRINGANDANIMATION
+	.4byte 1f @animation then attack string
+	@default - attack string then animation
+	printsavedstring
+	waitmessage B_WAIT_TIME_LONG
+	attackanimation
+	waitanimation
+	goto 2f
+	1:
+	attackanimation
+	waitanimation
+	printsavedstring
+	waitmessage B_WAIT_TIME_LONG
+	2:
 	.endm
 
-	.macro confuseifrepeatingattackends
-	.byte B_SCR_OP_CONFUSEIFREPEATINGATTACKENDS
-	.endm
-
-	.macro setmultihitcounter val:req
-	.byte B_SCR_OP_SETMULTIHITCOUNTER
-	.byte \val
+	.macro trynonvolatilestatus
+	.byte B_SCR_OP_TRYNONVOLATILESTATUS
 	.endm
 
 	.macro initmultihitstring
 	.byte B_SCR_OP_INITMULTIHITSTRING
 	.endm
 
-	.macro forcerandomswitch ptr:req
+	.macro forcerandomswitch failInstr:req
 	.byte B_SCR_OP_FORCERANDOMSWITCH
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro tryconversiontypechange ptr:req
+	.macro tryconversiontypechange failInstr:req
 	.byte B_SCR_OP_TRYCONVERSIONTYPECHANGE
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
 	.macro givepaydaymoney
@@ -790,26 +733,25 @@
 	.byte B_SCR_OP_SETLIGHTSCREEN
 	.endm
 
-	.macro tryKO ptr:req
+	.macro tryKO failInstr:req
 	.byte B_SCR_OP_TRYKO
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro damagetohalftargethp
-	.byte B_SCR_OP_DAMAGETOHALFTARGETHP
+	.macro checknonvolatiletrigger nonVolatile:req, failInstr:req
+	.byte B_SCR_OP_CHECKNONVOLATILETRIGGER
+	.2byte \nonVolatile
+	ptrvalue \failInstr
 	.endm
 
-	.macro setsandstorm
-	.byte B_SCR_OP_SETSANDSTORM
+	.macro animatewildpokemonafterfailedpokeball battler:req
+	.byte B_SCR_OP_ANIMATEWILDPOKEMONAFTERFAILEDPOKEBALL
+	.byte \battler
 	.endm
 
-	.macro weatherdamage
-	.byte B_SCR_OP_WEATHERDAMAGE
-	.endm
-
-	.macro tryinfatuating ptr:req
+	.macro tryinfatuating failInstr:req
 	.byte B_SCR_OP_TRYINFATUATING
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
 	.macro updatestatusicon battler:req
@@ -821,8 +763,9 @@
 	.byte B_SCR_OP_SETMIST
 	.endm
 
-	.macro setfocusenergy
+	.macro setfocusenergy battler:req
 	.byte B_SCR_OP_SETFOCUSENERGY
+	.byte \battler
 	.endm
 
 	.macro transformdataexecution
@@ -833,322 +776,231 @@
 	.byte B_SCR_OP_SETSUBSTITUTE
 	.endm
 
-	.macro mimicattackcopy ptr:req
+	.macro mimicattackcopy failInstr:req
 	.byte B_SCR_OP_MIMICATTACKCOPY
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro metronome
-	.byte B_SCR_OP_METRONOME
+	.macro setcalledmove
+	.byte B_SCR_OP_SETCALLEDMOVE
 	.endm
 
-	.macro dmgtolevel
-	.byte B_SCR_OP_DMGTOLEVEL
-	.endm
-
-	.macro psywavedamageeffect
-	.byte B_SCR_OP_PSYWAVEDAMAGEEFFECT
-	.endm
-
-	.macro counterdamagecalculator ptr:req
-	.byte B_SCR_OP_COUNTERDAMAGECALCULATOR
-	ptrvalue \ptr
-	.endm
-
-	.macro mirrorcoatdamagecalculator ptr:req
-	.byte B_SCR_OP_MIRRORCOATDAMAGECALCULATOR
-	ptrvalue \ptr
-	.endm
-
-	.macro disablelastusedattack ptr:req
+	.macro disablelastusedattack failInstr:req
 	.byte B_SCR_OP_DISABLELASTUSEDATTACK
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro trysetencore ptr:req
+	.macro trysetencore failInstr:req
 	.byte B_SCR_OP_TRYSETENCORE
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro painsplitdmgcalc ptr:req
+	.macro painsplitdmgcalc failInstr:req
 	.byte B_SCR_OP_PAINSPLITDMGCALC
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro settypetorandomresistance ptr:req
+	.macro settypetorandomresistance failInstr:req
 	.byte B_SCR_OP_SETTYPETORANDOMRESISTANCE
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
 	.macro setalwayshitflag
 	.byte B_SCR_OP_SETALWAYSHITFLAG
 	.endm
 
-	.macro copymovepermanently ptr:req
+	.macro copymovepermanently failInstr:req
 	.byte B_SCR_OP_COPYMOVEPERMANENTLY
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro trychoosesleeptalkmove ptr:req
-	.byte B_SCR_OP_TRYCHOOSESLEEPTALKMOVE
-	ptrvalue \ptr
+	.macro settailwind failInstr:req
+	.byte B_SCR_OP_SETTAILWIND
+	ptrvalue \failInstr
 	.endm
 
-	.macro setdestinybond
-	.byte B_SCR_OP_SETDESTINYBOND
-	.endm
-
-	.macro trysetdestinybondtohappen
-	.byte B_SCR_OP_TRYSETDESTINYBONDTOHAPPEN
-	.endm
-
-	.macro remaininghptopower
-	.byte B_SCR_OP_REMAININGHPTOPOWER
-	.endm
-
-	.macro tryspiteppreduce ptr:req
+	.macro tryspiteppreduce failInstr:req
 	.byte B_SCR_OP_TRYSPITEPPREDUCE
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
 	.macro healpartystatus
 	.byte B_SCR_OP_HEALPARTYSTATUS
 	.endm
 
-	.macro cursetarget ptr:req
+	.macro cursetarget failInstr:req
 	.byte B_SCR_OP_CURSETARGET
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro trysetspikes ptr:req
+	.macro trysetspikes failInstr:req
 	.byte B_SCR_OP_TRYSETSPIKES
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro setforesight
-	.byte B_SCR_OP_SETFORESIGHT
+	.macro setvolatile battler:req, volatile:req, value=TRUE
+	.byte B_SCR_OP_SETVOLATILE
+	.byte \battler
+	.byte \volatile
+	.byte \value
 	.endm
 
-	.macro trysetperishsong ptr:req
+	.macro trysetperishsong failInstr:req
 	.byte B_SCR_OP_TRYSETPERISHSONG
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro rolloutdamagecalculation
-	.byte B_SCR_OP_ROLLOUTDAMAGECALCULATION
-	.endm
-
-	.macro jumpifconfusedandstatmaxed stat:req, ptr:req
+	.macro jumpifconfusedandstatmaxed stat:req, jumpInstr:req
 	.byte B_SCR_OP_JUMPIFCONFUSEDANDSTATMAXED
 	.byte \stat
-	ptrvalue \ptr
+	ptrvalue \jumpInstr
 	.endm
 
-	.macro furycuttercalc
-	.byte B_SCR_OP_FURYCUTTERCALC
-	.endm
-
-	.macro friendshiptodamagecalculation
-	.byte B_SCR_OP_FRIENDSHIPTODAMAGECALCULATION
-	.endm
-
-	.macro presentdamagecalculation
-	.byte B_SCR_OP_PRESENTDAMAGECALCULATION
+	.macro setembargo failInstr:req
+	.byte B_SCR_OP_SETEMBARGO
+	ptrvalue \failInstr
 	.endm
 
 	.macro setsafeguard
 	.byte B_SCR_OP_SETSAFEGUARD
 	.endm
 
-	.macro magnitudedamagecalculation
-	.byte B_SCR_OP_MAGNITUDEDAMAGECALCULATION
-	.endm
-
-	.macro jumpifnopursuitswitchdmg ptr:req
+	.macro jumpifnopursuitswitchdmg jumpInstr:req
 	.byte B_SCR_OP_JUMPIFNOPURSUITSWITCHDMG
-	ptrvalue \ptr
+	ptrvalue \jumpInstr
 	.endm
 
-	.macro setsunny
-	.byte B_SCR_OP_SETSUNNY
+	.macro tryactivateitem battler:req, flag:req
+	.byte B_SCR_OP_TRYACTIVATEITEM
+	.byte \battler
+	.byte \flag
 	.endm
 
-	.macro maxattackhalvehp ptr:req
-	.byte B_SCR_OP_MAXATTACKHALVEHP
-	ptrvalue \ptr
-	.endm
-
-	.macro copyfoestats ptr:req
+	.macro copyfoestats
 	.byte B_SCR_OP_COPYFOESTATS
-	ptrvalue \ptr
 	.endm
 
 	.macro rapidspinfree
 	.byte B_SCR_OP_RAPIDSPINFREE
 	.endm
 
-	.macro setdefensecurlbit
-	.byte B_SCR_OP_SETDEFENSECURLBIT
-	.endm
-
-	.macro recoverbasedonsunlight ptr:req
+	.macro recoverbasedonsunlight failInstr:req
 	.byte B_SCR_OP_RECOVERBASEDONSUNLIGHT
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro hiddenpowercalc
-	.byte B_SCR_OP_HIDDENPOWERCALC
+	.macro setstickyweb failInstr:req
+	.byte B_SCR_OP_SETSTICKYWEB
+	ptrvalue \failInstr
 	.endm
 
 	.macro selectfirstvalidtarget
 	.byte B_SCR_OP_SELECTFIRSTVALIDTARGET
 	.endm
 
-	.macro trysetfutureattack ptr:req
-	.byte B_SCR_OP_TRYSETFUTUREATTACK
-	ptrvalue \ptr
-	.endm
-
-	.macro trydobeatup endPtr:req, failPtr:req
-	.byte B_SCR_OP_TRYDOBEATUP
-	ptrvalue \endPtr
-	ptrvalue \failPtr
-	.endm
-
-	.macro setsemiinvulnerablebit
+	.macro setsemiinvulnerablebit clear=FALSE
 	.byte B_SCR_OP_SETSEMIINVULNERABLEBIT
+	.byte \clear
 	.endm
 
 	.macro clearsemiinvulnerablebit
-	.byte B_SCR_OP_CLEARSEMIINVULNERABLEBIT
+	setsemiinvulnerablebit TRUE
 	.endm
 
-	.macro setminimize
-	.byte B_SCR_OP_SETMINIMIZE
-	.endm
-
-	.macro sethail
-	.byte B_SCR_OP_SETHAIL
-	.endm
-
-	.macro trymemento ptr:req
+	.macro trymemento failInstr:req
 	.byte B_SCR_OP_TRYMEMENTO
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
 	.macro setforcedtarget
 	.byte B_SCR_OP_SETFORCEDTARGET
 	.endm
 
-	.macro setcharge
-	.byte B_SCR_OP_SETCHARGE
+	.macro curestatuswithmove failInstr:req
+	.byte B_SCR_OP_CURESTATUSWITHMOVE
+	ptrvalue \failInstr
 	.endm
 
-	.macro callenvironmentattack
-	.byte B_SCR_OP_CALLENVIRONMENTATTACK
-	.endm
-
-	.macro cureifburnedparalyzedorpoisoned ptr:req
-	.byte B_SCR_OP_CUREIFBURNEDPARALYZEDORPOISONED
-	ptrvalue \ptr
-	.endm
-
-	.macro settorment ptr:req
+	.macro settorment failInstr:req
 	.byte B_SCR_OP_SETTORMENT
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro jumpifnodamage ptr:req
-	.byte B_SCR_OP_JUMPIFNODAMAGE
-	ptrvalue \ptr
-	.endm
-
-	.macro settaunt ptr:req
+	.macro settaunt failInstr:req
 	.byte B_SCR_OP_SETTAUNT
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro trysethelpinghand ptr:req
+	.macro trysethelpinghand failInstr:req
 	.byte B_SCR_OP_TRYSETHELPINGHAND
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro tryswapitems ptr:req
+	.macro tryswapitems failInstr:req
 	.byte B_SCR_OP_TRYSWAPITEMS
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro trycopyability ptr:req
+	.macro trycopyability battler:req, failInstr:req
 	.byte B_SCR_OP_TRYCOPYABILITY
-	ptrvalue \ptr
+	.byte \battler
+	ptrvalue \failInstr
 	.endm
 
-	.macro trywish turnNumber:req, ptr:req
+	.macro trywish failInstr:req
 	.byte B_SCR_OP_TRYWISH
-	.byte \turnNumber
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro trysetroots ptr:req
-	.byte B_SCR_OP_TRYSETROOTS
-	ptrvalue \ptr
+	.macro settoxicspikes failInstr:req
+	.byte B_SCR_OP_SETTOXICSPIKES
+	ptrvalue \failInstr
 	.endm
 
-	.macro doubledamagedealtifdamaged
-	.byte B_SCR_OP_DOUBLEDAMAGEDEALTIFDAMAGED
+	.macro setgastroacid failInstr:req
+	.byte B_SCR_OP_SETGASTROACID
+	ptrvalue \failInstr
 	.endm
 
-	.macro setyawn ptr:req
+	.macro setyawn failInstr:req
 	.byte B_SCR_OP_SETYAWN
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro setdamagetohealthdifference ptr:req
-	.byte B_SCR_OP_SETDAMAGETOHEALTHDIFFERENCE
-	ptrvalue \ptr
+	.macro setroom
+	.byte B_SCR_OP_SETROOM
 	.endm
 
-	.macro scaledamagebyhealthratio
-	.byte B_SCR_OP_SCALEDAMAGEBYHEALTHRATIO
-	.endm
-
-	.macro tryswapabilities ptr:req
+	.macro tryswapabilities failInstr:req
 	.byte B_SCR_OP_TRYSWAPABILITIES
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro tryimprison ptr:req
+	.macro tryimprison failInstr:req
 	.byte B_SCR_OP_TRYIMPRISON
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro trysetgrudge ptr:req
-	.byte B_SCR_OP_TRYSETGRUDGE
-	ptrvalue \ptr
+	.macro setstealthrock failInstr:req
+	.byte B_SCR_OP_SETSTEALTHROCK
+	ptrvalue \failInstr
 	.endm
 
-	.macro weightdamagecalculation
-	.byte B_SCR_OP_WEIGHTDAMAGECALCULATION
+	.macro trysetvolatile battler:req, _volatile:req, failInstr:req
+	.byte B_SCR_OP_TRYSETVOLATILE
+	.byte \battler
+	.byte \_volatile
+	ptrvalue \failInstr
 	.endm
 
-	.macro assistattackselect ptr:req
-	.byte B_SCR_OP_ASSISTATTACKSELECT
-	ptrvalue \ptr
-	.endm
-
-	.macro trysetmagiccoat ptr:req
+	.macro trysetmagiccoat failInstr:req
 	.byte B_SCR_OP_TRYSETMAGICCOAT
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro trysetsnatch ptr:req
+	.macro trysetsnatch failInstr:req
 	.byte B_SCR_OP_TRYSETSNATCH
-	ptrvalue \ptr
-	.endm
-
-	.macro trygetintimidatetarget ptr:req
-	.byte B_SCR_OP_TRYGETINTIMIDATETARGET
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
 	.macro switchoutabilities battler:req
@@ -1156,84 +1008,59 @@
 	.byte \battler
 	.endm
 
-	.macro jumpifhasnohp battler:req, ptr:req
+	.macro jumpifhasnohp battler:req, jumpInstr:req
 	.byte B_SCR_OP_JUMPIFHASNOHP
 	.byte \battler
-	ptrvalue \ptr
-	.endm
-
-	.macro getsecretpowereffect
-	.byte B_SCR_OP_GETSECRETPOWEREFFECT
+	ptrvalue \jumpInstr
 	.endm
 
 	.macro pickup
 	.byte B_SCR_OP_PICKUP
 	.endm
 
-	.macro docastformchangeanimation
-	.byte B_SCR_OP_DOCASTFORMCHANGEANIMATION
-	.endm
-
-	.macro trycastformdatachange
-	.byte B_SCR_OP_TRYCASTFORMDATACHANGE
-	.endm
-
-	.macro settypebasedhalvers ptr:req
+	.macro settypebasedhalvers failInstr:req
 	.byte B_SCR_OP_SETTYPEBASEDHALVERS
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro setweatherballtype
-	.byte B_SCR_OP_SETWEATHERBALLTYPE
-	.endm
-
-	.macro tryrecycleitem ptr:req
+	.macro tryrecycleitem failInstr:req
 	.byte B_SCR_OP_TRYRECYCLEITEM
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
-	.macro settypetoenvironment ptr:req
+	.macro settypetoenvironment failInstr:req
 	.byte B_SCR_OP_SETTYPETOENVIRONMENT
-	ptrvalue \ptr
-	.endm
-
-	.macro pursuitdoubles ptr:req
-	.byte B_SCR_OP_PURSUITDOUBLES
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
 	.macro snatchsetbattlers
 	.byte B_SCR_OP_SNATCHSETBATTLERS
 	.endm
 
-	.macro removelightscreenreflect
-	.byte B_SCR_OP_REMOVELIGHTSCREENREFLECT
-	.endm
-
 	.macro handleballthrow
 	.byte B_SCR_OP_HANDLEBALLTHROW
 	.endm
 
-	.macro givecaughtmon
+	.macro givecaughtmon passInstr:req
 	.byte B_SCR_OP_GIVECAUGHTMON
+	ptrvalue  \passInstr
 	.endm
 
-	.macro trysetcaughtmondexflags ptr:req
+	.macro trysetcaughtmondexflags failInstr:req
 	.byte B_SCR_OP_TRYSETCAUGHTMONDEXFLAGS
-	ptrvalue \ptr
+	ptrvalue \failInstr
 	.endm
 
 	.macro displaydexinfo
 	.byte B_SCR_OP_DISPLAYDEXINFO
 	.endm
 
-	.macro trygivecaughtmonnick ptr:req
+	.macro trygivecaughtmonnick
 	.byte B_SCR_OP_TRYGIVECAUGHTMONNICK
-	ptrvalue \ptr
 	.endm
 
-	.macro subattackerhpbydmg
-	.byte B_SCR_OP_SUBATTACKERHPBYDMG
+	.macro sortbattlers
+	.byte B_SCR_OP_SORTBATTLERS
 	.endm
 
 	.macro removeattackerstatus1
@@ -1253,130 +1080,429 @@
 	.byte \position
 	.endm
 
-@ various command changed to more readable macros
-	.macro cancelmultiturnmoves battler:req
-	various \battler, VARIOUS_CANCEL_MULTI_TURN_MOVES
+	.macro settelekinesis failInstr:req
+	.byte B_SCR_OP_SETTELEKINESIS
+	ptrvalue \failInstr
 	.endm
 
-	.macro setmagiccoattarget battler:req
-	various \battler, VARIOUS_SET_MAGIC_COAT_TARGET
+	.macro swapstatstages stat:req
+	.byte B_SCR_OP_SWAPSTATSTAGES
+	.byte \stat
 	.endm
 
-	.macro getifcantrunfrombattle battler:req
-	various \battler, VARIOUS_IS_RUNNING_IMPOSSIBLE
+	.macro averagestats stat:req
+	.byte B_SCR_OP_AVERAGESTATS
+	.byte \stat
 	.endm
 
-	.macro getmovetarget battler:req
-	various \battler, VARIOUS_GET_MOVE_TARGET
+	.macro setnonvolatilestatus trigger:req
+	.byte B_SCR_OP_SETNONVOLATILESTATUS
+	.byte \trigger
 	.endm
 
-	.macro getbattlerfainted battler:req
-	various \battler, VARIOUS_GET_BATTLER_FAINTED
+	.macro tryoverwriteability failInstr:req
+	.byte B_SCR_OP_TRYOVERWRITEABILITY
+	ptrvalue \failInstr
 	.endm
 
-	.macro resetintimidatetracebits battler:req
-	various \battler, VARIOUS_RESET_INTIMIDATE_TRACE_BITS
+	.macro trysynchronize
+	.byte B_SCR_OP_TRY_SYNCHRONIZE
 	.endm
 
-	.macro updatechoicemoveonlvlup battler:req
-	various \battler, VARIOUS_UPDATE_CHOICE_MOVE_ON_LVL_UP
+	.macro tryconfusionafterskydrop battler:req
+	.byte B_SCR_OP_TRY_CONFUSION_AFTER_SKY_DROP
+    .byte \battler
 	.endm
 
-	.macro resetplayerfainted
-	various BS_ATTACKER, VARIOUS_RESET_PLAYER_FAINTED
+    .macro trymovestatchanges
+    .byte B_SCR_OP_TRYMOVESTATCHANGES
+    .endm
+
+    .macro trystatchanges battler:req statChangeFlags:req
+    .byte B_SCR_OP_TRYSTATCHANGES
+    .byte \battler
+    .2byte \statChangeFlags
+    .endm
+
+    .macro trybattlerstatchange battler:req statChangeFlags:req
+    .byte B_SCR_OP_TRYBATTLERSTATCHANGE
+    .byte \battler
+    .2byte \statChangeFlags
+    .endm
+
+	.macro callnative func:req
+	.byte B_SCR_OP_CALLNATIVE
+	.4byte \func
 	.endm
 
-	.macro palaceflavortext battler:req
-	various \battler, VARIOUS_PALACE_FLAVOR_TEXT
+	.macro savetarget
+	callnative BS_SaveTarget
 	.endm
 
-	.macro arenajudgmentwindow
-	various BS_ATTACKER, VARIOUS_ARENA_JUDGMENT_WINDOW
+	.macro restoretarget
+	callnative BS_RestoreTarget
 	.endm
 
-	.macro arenaopponentmonlost
-	various BS_ATTACKER, VARIOUS_ARENA_OPPONENT_MON_LOST
+	.macro saveattacker
+	callnative BS_SaveAttacker
 	.endm
 
-	.macro arenaplayermonlost
-	various BS_ATTACKER, VARIOUS_ARENA_PLAYER_MON_LOST
+	.macro restoreattacker
+	callnative BS_RestoreAttacker
 	.endm
 
-	.macro arenabothmonlost
-	various BS_ATTACKER, VARIOUS_ARENA_BOTH_MONS_LOST
+	.macro allyswitchswapbattlers
+	callnative BS_AllySwitchSwapBattler
 	.endm
 
-	.macro forfeityesnobox battler:req
-	various \battler, VARIOUS_EMIT_YESNOBOX
+	.macro tryallyswitch jumpInstr:req
+	callnative BS_TryAllySwitch
+	ptrvalue \jumpInstr
 	.endm
 
-	.macro arenadrawreftextbox
-	various BS_ATTACKER, VARIOUS_DRAW_ARENA_REF_TEXT_BOX
+	.macro jumpifmorethanhalfHP battler:req, jumpInstr:req
+	callnative BS_JumpIfMoreThanHalfHP
+	.byte \battler
+	ptrvalue \jumpInstr
 	.endm
 
-	.macro arenaerasereftextbox
-	various BS_ATTACKER, VARIOUS_ERASE_ARENA_REF_TEXT_BOX
+	.macro itemrestorehp jumpInstr:req, restoreBattlerInstr:req
+	callnative BS_ItemRestoreHP
+	ptrvalue \jumpInstr
+	ptrvalue \restoreBattlerInstr
 	.endm
 
-	.macro arenajudgmentstring id:req
-	various \id, VARIOUS_ARENA_JUDGMENT_STRING
+	.macro itemcurestatus jumpInstr:req, restoreBattlerInstr:req
+	callnative BS_ItemCureStatus
+	ptrvalue \jumpInstr
+	ptrvalue \restoreBattlerInstr
 	.endm
 
-	.macro arenawaitmessage id:req
-	various \id, VARIOUS_ARENA_WAIT_STRING
+	.macro itemincreasestat
+	callnative BS_ItemIncreaseStat
 	.endm
 
-	.macro waitcry battler:req
-	various \battler, VARIOUS_WAIT_CRY
+	.macro itemrestorepp
+	callnative BS_ItemRestorePP
 	.endm
 
-	.macro returnopponentmon1toball battler:req
-	various \battler, VARIOUS_RETURN_OPPONENT_MON1
+	.macro tryrevertweatherform
+	callnative BS_TryRevertWeatherForm
 	.endm
 
-	.macro returnopponentmon2toball battler:req
-	various \battler, VARIOUS_RETURN_OPPONENT_MON2
+	.macro trysetoctolock failInstr:req
+	callnative BS_TrySetOctolock
+	ptrvalue \failInstr
 	.endm
 
-	.macro volumedown
-	various BS_ATTACKER, VARIOUS_VOLUME_DOWN
+	.macro setzeffect
+	callnative BS_SetZEffect
 	.endm
 
-	.macro volumeup
-	various BS_ATTACKER, VARIOUS_VOLUME_UP
+	@ Used by effects that may proc Symbiosis but do not call removeitem.
+	.macro trysymbiosis battler:req
+	callnative BS_TrySymbiosis
+	.byte \battler
 	.endm
 
-	.macro setalreadystatusedmoveattempt battler:req
-	various \battler, VARIOUS_SET_ALREADY_STATUS_MOVE_ATTEMPT
+	@ returns B_SIDE_x to gBattleCommunication[0]
+	.macro getbattlerside battler:req
+	callnative BS_GetBattlerSide
+	.byte \battler
 	.endm
 
-	.macro palacetryescapestatus battler:req
-	various \battler, VARIOUS_PALACE_TRY_ESCAPE_STATUS
+	.macro checkparentalbondcounter counter:req, ptr:req
+	callnative BS_CheckParentalBondCounter
+	.byte \counter
+	ptrvalue \ptr
 	.endm
 
-	.macro setoutcomeonteleport battler:req
-	various \battler, VARIOUS_SET_TELEPORT_OUTCOME
+	.macro jumpifcantloseitem ptr:req
+	callnative BS_JumpIfCantLoseItem
+	ptrvalue \ptr
 	.endm
 
-	.macro playtrainerdefeatbgm battler:req
-	various \battler, VARIOUS_PLAY_TRAINER_DEFEATED_MUSIC
+	.macro setterrain failInstr:req
+	callnative BS_SetTerrain
+	ptrvalue \failInstr
 	.endm
+
+	.macro jumpifterrainaffected battler:req, terrainFlags:req, jumpInstr:req
+	callnative BS_JumpIfTerrainAffected
+	.byte \battler
+	.byte \terrainFlags
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro tryreflecttype failInstr:req
+	callnative BS_TryReflectType
+	ptrvalue \failInstr
+	.endm
+
+	@ Used to active a different Max Move effects.
+	.macro setmaxmoveeffect
+	callnative BS_SetMaxMoveEffect
+	.endm
+
+	.macro setsteelsurge, failInstr:req
+	callnative BS_SetSteelsurge
+	ptrvalue \failInstr
+	.endm
+
+	.macro trysetparalysis, ptr:req
+	callnative BS_TrySetParalysis
+	ptrvalue \ptr
+	.endm
+
+	.macro trysetpoison, ptr:req
+	callnative BS_TrySetPoison
+	ptrvalue \ptr
+	.endm
+
+	.macro trysetpoisonparalysis, ptr:req
+	callnative BS_TrySetPoisonParalyzis
+	ptrvalue \ptr
+	.endm
+
+	.macro tryseteffectspore, ptr:req
+	callnative BS_TrySetEffectSpore
+	ptrvalue \ptr
+	.endm
+
+	.macro trysetconfusion, ptr:req
+	callnative BS_TrySetConfusion
+	ptrvalue \ptr
+	.endm
+
+	.macro trysetinfatuation, ptr:req
+	callnative BS_TrySetInfatuation
+	ptrvalue \ptr
+	.endm
+
+	.macro trysetescapeprevention, ptr:req
+	callnative BS_TrySetEscapePrevention
+	ptrvalue \ptr
+	.endm
+
+	.macro trysettorment, ptr:req
+	callnative BS_TrySetTorment
+	ptrvalue \ptr
+	.endm
+
+	.macro tryhealsixthhealth, ptr:req
+	callnative BS_HealOneSixth
+	ptrvalue \ptr
+	.endm
+
+	.macro tryrecycleberry, ptr:req
+	callnative BS_TryRecycleBerry
+	ptrvalue \ptr
+	.endm
+
+	.macro updatedynamax
+	callnative BS_UpdateDynamax
+	.endm
+
+	.macro jumpiftargetdynamaxed, ptr:req
+	callnative BS_JumpIfDynamaxed
+	ptrvalue \ptr
+	.endm
+
+	.macro undodynamax battler:req
+	callnative BS_UndoDynamax
+	.byte \battler
+	.endm
+
+	.macro trytrainerslidezmovemsg
+	callnative BS_TryTrainerSlideZMoveMsg
+	.endm
+
+	.macro trytrainerslidemegaevolutionmsg
+	callnative BS_TryTrainerSlideMegaEvolutionMsg
+	.endm
+
+	.macro trytrainerslidedynamaxmsg
+	callnative BS_TryTrainerSlideDynamaxMsg
+	.endm
+
+	.macro trytrainerslideteramsg
+	callnative BS_TryTrainerSlideTeraMsg
+	.endm
+
+	.macro tryhealpulse failInstr:req
+	callnative BS_TryHealPulse
+	ptrvalue \failInstr
+	.endm
+
+	.macro trydefog clear:req, failInstr:req
+	callnative BS_TryDefog
+	.byte \clear
+	ptrvalue \failInstr
+	.endm
+
+	.macro trytriggerstatusform
+	callnative BS_TryTriggerStatusForm
+	.endm
+
+	.macro tryupperhand failInstr:req
+	callnative BS_TryUpperHand
+	ptrvalue \failInstr
+	.endm
+
+	.macro trytidyup clear:req, jumpInstr:req
+	callnative BS_TryTidyUp
+	.byte \clear
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro tryquash failInstr:req
+	callnative BS_TryQuash
+	ptrvalue \failInstr
+	.endm
+
+	.macro removeweather
+	callnative BS_RemoveWeather
+	.endm
+
+	.macro applyterastallization
+	callnative BS_ApplyTerastallization
+	.endm
+
+	.macro jumpifsleepclause jumpInstr:req
+	callnative BS_JumpIfSleepClause
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro jumpifnoberry battler:req, jumpInstr:req
+	callnative BS_JumpIfNoBerry
+	.byte \battler
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro checkteatimetargets failInstr:req
+	callnative BS_CheckTeaTimeTargets
+	ptrvalue \failInstr
+	.endm
+
+	.macro trywindriderpower battler:req, failInstr:req
+	callnative BS_TryWindRiderPower
+	.byte \battler
+	ptrvalue \failInstr
+	.endm
+
+	.macro activateweatherchangeabilities battler:req
+	callnative BS_ActivateWeatherChangeAbilities
+	.byte \battler
+	.endm
+
+	.macro activateterrainchangeabilities battler:req
+	callnative BS_ActivateTerrainChangeAbilities
+	.byte \battler
+	.endm
+
+	.macro resetterrainabilityflags
+	callnative BS_ResetTerrainAbilityFlags
+	.endm
+
+	@ Stores Healing Wish effect.
+	.macro storehealingwish battler:req
+	callnative BS_StoreHealingWish
+	.byte \battler
+	.endm
+
+	.macro tryrevivalblessing, failInstr:req
+	callnative BS_TryRevivalBlessing
+	ptrvalue \failInstr
+	.endm
+
+	.macro jumpifblockedbysoundproof battler:req, failInstr:req
+	callnative BS_JumpIfBlockedBySoundproof
+	.byte \battler
+	ptrvalue \failInstr
+	.endm
+
+	.macro jumpifcommanderactive battler:req, jumpInstr:req
+	callnative BS_JumpIfCommanderActive
+	.byte \battler
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro checkpokeflute
+	callnative BS_CheckPokeFlute
+	.endm
+
+	.macro waitfanfare
+	callnative BS_WaitFanfare
+	.endm
+
+	.macro removeterrain
+	callnative BS_RemoveTerrain
+	.endm
+
+	.macro setmoveresultflags flags:req
+	callnative BS_SetMoveResultFlags
+	.4byte \flags
+	.endm
+
+	.macro clearspecialstatuses
+	callnative BS_ClearSpecialStatuses
+	.endm
+
+	.macro clearmoveresultflags flags:req
+	callnative BS_ClearMoveResultFlags
+	.4byte \flags
+	.endm
+
+	.macro jumpifmoveresultflags flags:req failInstr:req
+	callnative BS_JumpIfMoveResultFlags
+	.4byte \flags
+	ptrvalue \failInstr
+	.endm
+
+	.macro jumpifnotcriticalhit failInstr:req
+	callnative BS_JumpIfNotCriticalHit
+	ptrvalue \failInstr
+	.endm
+
+	.macro jumpifcangigantamax battler:req, jumpInstr:req
+	callnative BS_JumpIfCanGigantamax
+	.byte \battler
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro swapsidestatuses
+	callnative BS_CourtChangeSwapSideStatuses
+	.endm
+
+	.macro swapstats stat:req
+	callnative BS_SwapStats
+	.byte \stat
+	.endm
+
+	.macro restoresavedmove
+	callnative BS_RestoreSavedMove
+	.endm
+
+    .macro trydefiantrattled
+    callnative BS_TryDefiantRattled
+    .endm
+
+    .macro tryadrenalineorb
+    callnative BS_TryAdrenalineOrb
+    .endm
+
+    .macro raisecritstatchangeanim battler:req
+    callnative BS_RaiseCritStatChangeAnim
+    .byte \battler
+    .endm
+
+    .macro restorestatchangequeue
+    callnative BS_RestoreStatChangeQueue
+    .endm
 
 @ helpful macros
-	.macro setstatchanger stat:req, stages:req, down:req
-	setbyte sSTATCHANGER, \stat | \stages << 4 | \down << 7
-	.endm
-
 	.macro setmoveeffect effect:req
-	setbyte cEFFECT_CHOOSER, \effect
-	.endm
-
-	.macro chosenstatus1animation battler:req, status:req
-	chosenstatusanimation \battler, 0x0, \status
-	.endm
-
-	.macro chosenstatus2animation battler:req, status:req
-	chosenstatusanimation \battler, 0x1, \status
+	sethword sMOVE_EFFECT, \effect
 	.endm
 
 	.macro sethword dst:req, value:req
@@ -1403,38 +1529,596 @@
 	copyarray \dst, \src, 0x4
 	.endm
 
-	.macro jumpifbytenotequal byte1:req, byte2:req, jumpptr:req
-	jumpifarraynotequal \byte1, \byte2, 0x1, \jumpptr
+	.macro jumpifbytenotequal byte1:req, byte2:req, jumpInstr:req
+	jumpifarraynotequal \byte1, \byte2, 0x1, \jumpInstr
 	.endm
 
-	.macro jumpifbyteequal byte1:req, byte2:req, jumpptr:req
-	jumpifarrayequal \byte1, \byte2, 0x1, \jumpptr
+	.macro jumpifbyteequal byte1:req, byte2:req, jumpInstr:req
+	jumpifarrayequal \byte1, \byte2, 0x1, \jumpInstr
 	.endm
 
-	.macro jumpifmove move:req, jumpptr:req
-	jumpifhalfword CMP_EQUAL, gCurrentMove, \move, \jumpptr
+	.macro jumpifmove move:req, jumpInstr:req
+	jumpifhalfword CMP_EQUAL, gCurrentMove, \move, \jumpInstr
 	.endm
 
-	.macro jumpifnotmove move:req, jumpptr:req
-	jumpifhalfword CMP_NOT_EQUAL, gCurrentMove, \move, \jumpptr
+	.macro jumpifnotmove move:req, jumpInstr:req
+	jumpifhalfword CMP_NOT_EQUAL, gCurrentMove, \move, \jumpInstr
 	.endm
 
-	.macro jumpifstatus3 battler:req, status:req, jumpptr:req
-	jumpifstatus3condition \battler, \status, FALSE, \jumpptr
+	.macro jumpifnotchosenmove move:req, jumpInstr:req
+	jumpifhalfword CMP_NOT_EQUAL, gChosenMove, \move, \jumpInstr
 	.endm
 
-	.macro jumpifnostatus3 battler:req, status:req, jumpptr:req
-	jumpifstatus3condition \battler, \status, TRUE, \jumpptr
+	.macro jumpifmovehadnoeffect jumpInstr:req
+	jumpifmoveresultflags MOVE_RESULT_NO_EFFECT, \jumpInstr
 	.endm
 
-	.macro jumpifmovehadnoeffect jumpptr:req
-	jumpifbyte CMP_COMMON_BITS, gMoveResultFlags, MOVE_RESULT_NO_EFFECT, \jumpptr
+	.macro jumpifside battler:req, side:req, equalJumpInstr:req
+	getbattlerside \battler
+	jumpifbyte CMP_EQUAL, gBattleCommunication, \side, \equalJumpInstr
 	.endm
 
-	.macro jumpifbattletype flags:req, jumpptr:req
-	jumpifword CMP_COMMON_BITS, gBattleTypeFlags, \flags, \jumpptr
+	.macro jumpifbattletype flags:req, jumpInstr:req
+	jumpifword CMP_COMMON_BITS, gBattleTypeFlags, \flags, \jumpInstr
 	.endm
 
-	.macro jumpifnotbattletype flags:req, jumpptr:req
-	jumpifword CMP_NO_COMMON_BITS, gBattleTypeFlags, \flags, \jumpptr
+	.macro jumpifnotbattletype flags:req, jumpInstr:req
+	jumpifword CMP_NO_COMMON_BITS, gBattleTypeFlags, \flags, \jumpInstr
+	.endm
+
+	.macro dmg_1_8_targethp
+	manipulatedamage DMG_1_8_TARGET_HP
+	.endm
+
+	.macro jumpifflowerveil jumpInstr:req
+	jumpifnottype BS_TARGET, TYPE_GRASS, 1f
+	jumpifability BS_TARGET_SIDE, ABILITY_FLOWER_VEIL, \jumpInstr
+	1:
+	.endm
+
+	.macro jumpifflowerveilattacker jumpInstr:req
+	jumpifnottype BS_ATTACKER, TYPE_GRASS, 1f
+	jumpifability BS_ATTACKER_SIDE, ABILITY_FLOWER_VEIL, \jumpInstr
+	1:
+	.endm
+
+	.macro jumpifabilitycantbereactivated battler:req, jumpInstr:req
+	callnative BS_JumpIfAbilityCantBeReactivated
+	.byte \battler
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro tryactivateabilityshield battler:req
+	callnative BS_TryActivateAbilityShield
+	.byte \battler
+	.endm
+
+	.macro jumpifroarfails jumpInstr:req
+	callnative BS_JumpIfRoarFails
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro jumpifabsent battler:req, jumpInstr:req
+	callnative BS_JumpIfAbsent
+	.byte \battler
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro jumpifnoholdeffect battler:req, holdEffect:req, jumpInstr:req
+	jumpifholdeffect \battler, \holdEffect, \jumpInstr, FALSE
+	.endm
+
+	.macro jumpifholdeffect battler:req, holdEffect:req, jumpInstr:req, equal:req
+	callnative BS_JumpIfHoldEffect
+	.byte \battler
+	.byte \holdEffect
+	ptrvalue \jumpInstr
+	.byte \equal
+	.endm
+
+	.macro jumpifnoally battler:req, jumpInstr:req
+	callnative BS_JumpIfNoAlly
+	.byte \battler
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro setlastuseditem battler:req
+	callnative BS_SetLastUsedItem
+	.byte \battler
+	.endm
+
+	.macro trysetfairylock failInstr:req
+	callnative BS_TrySetFairyLock
+	ptrvalue \failInstr
+	.endm
+
+	.macro jumpiffullhp battler:req, jumpInstr:req
+	callnative BS_JumpIfFullHp
+	.byte \battler
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro tryfriskmessage
+	callnative BS_TryFriskMessage
+	.endm
+
+	.macro settracedability battler:req
+	callnative BS_SetTracedAbility
+	.byte \battler
+	.endm
+
+	.macro tryillusionoff battler:req
+	callnative BS_TryIllusionOff
+	.byte \battler
+	.endm
+
+	.macro updatenick
+	callnative BS_UpdateNick
+	.endm
+
+	.macro gravityonairbornemons
+	callnative BS_GravityOnAirborneMons
+	.endm
+
+	.macro cancelmultiturnmoves
+	callnative BS_CancelMultiTurnMoves
+	.endm
+
+	.macro isrunningimpossible
+	callnative BS_IsRunningImpossible
+	.endm
+
+	.macro getmovetarget
+	callnative BS_GetMoveTarget
+	.endm
+
+	@ Will jump to script pointer if the specified battler has or has not fainted.
+	.macro jumpiffainted battler:req, value:req, ptr:req
+	getbattlerfainted \battler
+	jumpifbyte CMP_EQUAL, gBattleCommunication, \value, \ptr
+	.endm
+
+	.macro getbattlerfainted battler:req
+	callnative BS_GetBattlerFainted
+	.byte \battler
+	.endm
+
+	.macro resetswitchinabilitybits
+	callnative BS_ResetSwitchInAbilityBits
+	.endm
+
+	.macro updatechoicemoveonlvlup
+	callnative BS_UpdateChoiceMoveOnLvlUp
+	.endm
+
+	.macro resetplayerfainted
+	callnative BS_ResetPlayerFainted
+	.endm
+
+	.macro palaceflavortext
+	callnative BS_PalaceFlavorText
+	.endm
+
+	.macro arenajudgmentwindow
+	callnative BS_ArenaJudgmentWindow
+	.endm
+
+	.macro arenaopponentmonlost
+	callnative BS_ArenaOpponentMonLost
+	.endm
+
+	.macro arenaplayermonlost
+	callnative BS_ArenaPlayerMonLost
+	.endm
+
+	.macro arenabothmonslost
+	callnative BS_ArenaBothMonsLost
+	.endm
+
+	.macro forfeityesnobox
+	callnative BS_ForfeitYesNoBox
+	.endm
+
+	.macro drawarenareftextbox
+	callnative BS_DrawArenaRefTextBox
+	.endm
+
+	.macro erasearenareftextbox
+	callnative BS_EraseArenaRefTextBox
+	.endm
+
+	.macro arenajudgmentstring id:req
+	callnative BS_ArenaJudgmentString
+	.byte \id
+	.endm
+
+	.macro arenawaitmessage
+	callnative BS_ArenaWaitMessage
+	.endm
+
+	.macro waitcry
+	callnative BS_WaitCry
+	.endm
+
+	.macro returnopponentmon1toball
+	callnative BS_ReturnOpponentMon1ToBall
+	.endm
+
+	.macro returnopponentmon2toball
+	callnative BS_ReturnOpponentMon2ToBall
+	.endm
+
+	.macro volumedown
+	callnative BS_VolumeDown
+	.endm
+
+	.macro volumeup
+	callnative BS_VolumeUp
+	.endm
+
+	.macro setalreadystatusedmoveattempt
+	callnative BS_SetAlreadyStatusedMoveAttempt
+	.endm
+
+	.macro palacetryescapestatus
+	callnative BS_PalaceTryEscapeStatus
+	.endm
+
+	.macro setteleportoutcome battler:req
+	callnative BS_SetTeleportOutcome
+	.byte \battler
+	.endm
+
+	.macro playtrainerdefeatedmusic
+	callnative BS_PlayTrainerDefeatedMusic
+	.endm
+
+	.macro stattextbuffer
+	callnative BS_StatTextBuffer
+	.endm
+
+	.macro switchinabilities battler:req
+	callnative BS_SwitchinAbilities
+	.byte \battler
+	.endm
+
+	.macro effectsafterformchange
+	callnative BS_EffectsAfterFormChange
+	.endm
+
+	.macro abilityonformchange battler:req
+	callnative BS_AbilityOnFormChange
+	.byte \battler
+	.endm
+
+	.macro instanthpdrop
+	callnative BS_InstantHpDrop
+	.endm
+
+	.macro clearstatus battler:req
+	callnative BS_ClearStatus
+	.byte \battler
+	.endm
+
+	.macro restoremovepp battler:req
+	callnative BS_RestoreMovePp
+	.byte \battler
+	.endm
+
+	.macro tryactivatereceiver battler:req
+	callnative BS_TryActivateReceiver
+	.byte \battler
+	.endm
+
+	.macro tryactivatesoulheart
+	callnative BS_TryActivateSoulheart
+	.endm
+
+	.macro playmoveanimation move:req
+	callnative BS_PlayMoveAnimation
+	.2byte \move
+	.endm
+
+	.macro setluckychant failInstr:req
+	callnative BS_SetLuckyChant
+	ptrvalue \failInstr
+	.endm
+
+	.macro tryentrainment failInstr:req
+	callnative BS_TryEntrainment
+	ptrvalue \failInstr
+	.endm
+
+	.macro setlastusedability
+	callnative BS_SetLastUsedAbility
+	.endm
+
+	.macro invertstatstages
+	callnative BS_InvertStatStages
+	.endm
+
+	.macro tryelectrify failInstr:req
+	callnative BS_TryElectrify
+	ptrvalue \failInstr
+	.endm
+
+	.macro trysoak failInstr:req
+	callnative BS_TrySoak
+	ptrvalue \failInstr
+	.endm
+
+	.macro handleformchange battler:req, caseId:req, bufferSpeciesName=TRUE
+	callnative BS_HandleFormChange
+	.byte \battler
+	.byte \caseId
+	.byte \bufferSpeciesName
+	.endm
+
+	.macro tryinstruct failInstr:req
+	callnative BS_TryInstruct
+	ptrvalue \failInstr
+	.endm
+
+	.macro showabilitypopup
+	callnative BS_ShowAbilityPopup
+	.endm
+
+	.macro updateabilitypopup
+	callnative BS_UpdateAbilityPopup
+	.endm
+
+	.macro waitabilitypopup
+	callnative BS_WaitAbilityPopup
+	.endm
+
+	.macro jumpiftargetally jumpInstr:req
+	callnative BS_JumpIfTargetAlly
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro trypsychoshift failInstr:req sleepClauseFailInstr:req
+	callnative BS_TryPsychoShift
+	ptrvalue \failInstr
+	ptrvalue \sleepClauseFailInstr
+	.endm
+
+	.macro curestatus battler:req
+	callnative BS_CureStatus
+	.byte \battler
+	.endm
+
+	.macro powertrick
+	callnative BS_PowerTrick
+	.endm
+
+	.macro tryafteryou failInstr:req
+	callnative BS_TryAfterYou
+	ptrvalue \failInstr
+	.endm
+
+	.macro trybestow failInstr:req
+	callnative BS_TryBestow
+	ptrvalue \failInstr
+	.endm
+
+	.macro handletrainerslidemsg battler:req, case_:req
+	callnative BS_HandleTrainerSlideMsg
+	.byte \battler
+	.byte \case_
+	.endm
+
+	.macro trytrainerslidemsgfirstoff battler:req
+	callnative BS_TryTrainerSlideMsgFirstOff
+	.byte \battler
+	.endm
+
+	.macro trytrainerslidemsglaston battler:req
+	callnative BS_TryTrainerSlideMsgLastOn
+	.byte \battler
+	.endm
+
+	.macro setauroraveil
+	callnative BS_SetAuroraVeil
+	.endm
+
+	.macro trythirdtype failInstr:req
+	callnative BS_TryThirdType
+	ptrvalue \failInstr
+	.endm
+
+	.macro destroyabilitypopup
+	callnative BS_DestroyAbilityPopup
+	.endm
+
+	.macro activateitemeffects
+	callnative BS_ActivateItemEffects
+	.endm
+
+	.macro tryroomservice battler:req, failInstr:req
+	callnative BS_TryRoomService
+	.byte \battler
+	ptrvalue \failInstr
+	.endm
+
+	.macro tryterrainseed battler:req, failInstr:req
+	callnative BS_TryTerrainSeed
+	.byte \battler
+	ptrvalue \failInstr
+	.endm
+
+	.macro makeinvisible battler:req
+	callnative BS_MakeInvisible
+	.byte \battler
+	.endm
+
+	.macro jumpifteamhealthy jumpInstr:req
+	callnative BS_JumpIfTeamHealthy
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro tryhealquarterhealth battler:req, failInstr:req
+	callnative BS_TryHealQuarterHealth
+	.byte \battler
+	ptrvalue \failInstr
+	.endm
+
+	.macro jumpifpranksterblocked jumpInstr:req
+	callnative BS_JumpIfPranksterBlocked
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro trytoclearprimalweather
+	callnative BS_TryToClearPrimalWeather
+	.endm
+
+	.macro tryendneutralizinggas
+	callnative BS_TryEndNeutralizingGas
+	.endm
+
+	.macro consumeberry battler:req, fromBattler:req
+	callnative BS_ConsumeBerry
+	.byte \battler
+	.byte \fromBattler
+	.endm
+
+	.macro jumpifweatheraffected flags:req, jumpInstr:req
+	callnative BS_JumpIfWeatherAffected
+	.2byte \flags
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro jumpifspecies species:req, jumpInstr:req
+	callnative BS_JumpIfSpecies
+	.2byte \species
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro jumpifabilitypreventsrest battler:req, jumpInstr:req
+	callnative BS_JumpIfAbilityPreventsRest
+	.byte \battler
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro cutonethirdhpandraisestats failInstr:req
+	callnative BS_CutOneThirdHpAndRaiseStats
+	ptrvalue \failInstr
+	.endm
+
+	.macro tryresetnegativestatstages
+	callnative BS_TryResetNegativeStatStages
+	.endm
+
+	.macro savebattleritem
+	callnative BS_SaveBattlerItem
+	.endm
+
+	.macro restorebattleritem
+	callnative BS_RestoreBattlerItem
+	.endm
+
+	.macro battleritemtolastuseditem
+	callnative BS_BattlerItemToLastUsedItem
+	.endm
+
+	.macro setallytonexttarget jumpInstr:req
+	jumpifbyte CMP_GREATER_THAN, gBattlerTarget, 0x1, 1f
+	addbyte gBattlerTarget, 0x2
+	goto \jumpInstr
+	1:
+	subbyte gBattlerTarget, 0x2
+	goto \jumpInstr
+	.endm
+
+	.macro setallytonextattacker jumpInstr:req
+	jumpifbyte CMP_GREATER_THAN, gBattlerAttacker, 0x1, 1f
+	addbyte gBattlerAttacker, 0x2
+	goto \jumpInstr
+	1:
+	subbyte gBattlerAttacker, 0x2
+	goto \jumpInstr
+	.endm
+
+	.macro jumpifsafeguard jumpInstr:req
+	jumpiftargetally 2f
+	jumpifability BS_ATTACKER, ABILITY_INFILTRATOR, 1f
+	2:
+	jumpifsideaffecting BS_TARGET, SIDE_STATUS_SAFEGUARD, \jumpInstr
+	1:
+	.endm
+
+	.macro flushtextbox
+	printstring STRINGID_EMPTYSTRING3
+	waitmessage 1
+	.endm
+
+	.macro jumpifnowhiteout jumpInstr:req
+	callnative BS_JumpIfNoWhiteOut
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro tryboosterenergy onFieldStatus:req
+	callnative BS_TryBoosterEnergy
+	.byte \onFieldStatus
+	.endm
+
+	.macro jumpifgenconfiglowerthan tag:req, gen:req, jumpInstr:req
+	callnative BS_JumpIfGenConfigLowerThan
+	.2byte \tag
+	.byte \gen
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro tryactivateabilitywithabilityshield battler:req, switchedItems=FALSE
+	callnative BS_TryActivateAbilityWithAbilityShield
+	.byte \battler
+	.byte \switchedItems
+	.endm
+
+	.macro endturnevents
+	callnative BS_EndTurnEvents
+	.endm
+
+	.macro trywakebattlersuproar
+	callnative BS_TryWakeBattlersUproar
+	.endm
+
+	.macro catchaftervictory
+	callnative BS_CatchAfterVictory
+	.endm
+
+	.macro jumpifnoballs jumpInstr:req
+	callnative BS_JumpIfNoBalls
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro handlefailedvictorycatch
+	callnative BS_HandleFailedVictoryCatch
+	.endm
+
+	.macro catchornot
+	callnative BS_CatchOrNot
+	.endm
+
+	.macro showitempopup battler:req
+	callnative BS_ShowItemPopup
+	.byte \battler
+	.endm
+
+	.macro destroyitempopup
+	callnative BS_DestroyItemPopup
+	.endm
+
+	.macro multihitplurality
+	callnative BS_MultiHitPlurality
+	.endm
+
+	.macro jumpifterrain comparison:req, terrain:req, jumpInstr:req
+	.byte B_SCR_OP_JUMPIFTERRAIN
+	.byte \comparison
+	.byte \terrain
+	ptrvalue \jumpInstr
+	.endm
+
+	.macro trydomoveeffectsbeforemoves
+	callnative BS_TryDoMoveEffectsBeforeMoves
 	.endm

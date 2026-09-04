@@ -3,19 +3,32 @@
 
 #include <stddef.h>
 
-#define TRUE  1
-#define FALSE 0
+#define TRUE   1
+#define FALSE  0
 
 #ifdef PORTABLE
 #define IWRAM_DATA
 #define EWRAM_DATA
+#define IWRAM_INIT
+#define EWRAM_INIT
 #define COMMON_DATA
 #else
-#define IWRAM_DATA __attribute__((section("iwram_data")))
-#define EWRAM_DATA __attribute__((section("ewram_data")))
+#define IWRAM_DATA __attribute__((section(".bss")))
+#define EWRAM_DATA __attribute__((section(".sbss")))
+#define IWRAM_INIT __attribute__((section(".iwram")))
+#define EWRAM_INIT __attribute__((section(".ewram")))
 #define COMMON_DATA __attribute__((section("common_data")))
 #endif
 #define UNUSED __attribute__((unused))
+#define USED __attribute__((used))
+#define KEEP_SECTION __attribute__((section(".text.consts")))
+#define DEPRECATED(msg) __attribute__((deprecated(msg)))
+
+#ifdef PORTABLE
+#define ARM_FUNC
+#else
+#define ARM_FUNC __attribute__((target("arm")))
+#endif
 
 #if MODERN
 #define NOINLINE __attribute__((noinline))
@@ -24,6 +37,10 @@
 #endif
 
 #define ALIGNED(n) __attribute__((aligned(n)))
+#define PACKED __attribute__((packed))
+#define TRANSPARENT __attribute__ ((__transparent_union__))
+#define ALWAYS_INLINE inline __attribute__((always_inline))
+#define NONNULL __attribute__((__nonnull__))
 
 #define BG_PLTT_SIZE  0x200
 #define OBJ_PLTT      (PLTT + BG_PLTT_SIZE)
@@ -35,6 +52,9 @@
 #define INTR_CHECK     (*(u16 *)0x3007FF8)
 #define INTR_VECTOR    (*(void **)0x3007FFC)
 
+#define ROM_START 0x8000000
+#define ROM_END 0xA000000
+
 #define EWRAM_START 0x02000000
 #define EWRAM_END   (EWRAM_START + 0x40000)
 #define IWRAM_START 0x03000000
@@ -42,6 +62,10 @@
 
 #define PLTT      0x5000000
 #else
+
+#define ROM_START 0x8000000
+#define ROM_END 0xA000000
+
 extern struct SoundInfo * SOUND_INFO_PTR;
 extern unsigned short INTR_CHECK;
 extern void * INTR_VECTOR;
