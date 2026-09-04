@@ -4,35 +4,55 @@ GAME_CODE    ?= BPGE
 BUILD_NAME   ?= leafgreen
 MAP_VERSION  ?= firered
 
-GAME_VERSION 	:= EMERALD
-TITLE       	:= POKEMON EMER
-GAME_CODE   	:= BPEE
-BUILD_NAME  	:= emerald
-MAP_VERSION 	:= emerald
-MAKER_CODE   := 01
-REVISION     := 0
-MODERN       ?= 0
-KEEP_TEMPS   ?= 0
+ifeq (firered, $(or $(BUILD), $(MAKECMDGOALS)))
+  	GAME_VERSION 	:= FIRERED
+	TITLE       	:= POKEMON FIRE
+	GAME_CODE   	:= BPRE
+	BUILD_NAME  	:= firered
+	MAP_VERSION 	:= firered
+else
+ifeq (emerald, $(or $(BUILD), $(MAKECMDGOALS)))
+	GAME_VERSION 	:= EMERALD
+	TITLE       	:= POKEMON EMER
+	GAME_CODE   	:= BPEE
+	BUILD_NAME  	:= emerald
+	MAP_VERSION 	:= emerald
+endif
+endif
+
+# GBA rom header
+MAKER_CODE  := 01
+REVISION    := 0
+KEEP_TEMPS  ?= 0
 PORTABLE     ?= 0
 IS64BIT      ?= 1
 TARGET_PLATFORM ?= PLATFORM_SDL2
 TARGET_OS       ?= NONE
 TILE_RENDERER   ?= RENDERER_EASY_DRAW
 
-# `File name`.gba ('_modern' will be appended to the modern builds)
-FILE_NAME := pokeemerald
+# `File name`.gba
+FILE_PREFIX := poke
+FILE_NAME := $(FILE_PREFIX)$(BUILD_NAME)
 BUILD_DIR := build
 
-# Builds the ROM using a modern compiler
-MODERN      ?= 0
 # Compares the ROM to a checksum of the original - only makes sense using when non-modern
 COMPARE     ?= 0
 # Executes the Test Runner System that checks that all mechanics work as expected
 TEST         ?= 0
+# Enables -fanalyzer C flag to analyze in depth potential UBs
+ANALYZE      ?= 0
+# Count unused warnings as errors. Used by RKS-Engine's repo
+UNUSED_ERROR ?= 1
+# Count deprecated warnings as errors. Used by RKS-Engine's repo
+DEPRECATED_ERROR ?= 0
+# Adds -Og and -g flags, which optimize the build for debugging and include debug info respectively
+DEBUG        ?= 0
+# Adds -flto flag, which increases link time but results in a more efficient binary (especially in audio processing)
+LTO          ?= 0
+# Makes an optimized build for release, also enabling NDEBUG macro and disabling other debugging features
+# Enables LTO by default, but can be changed in the config.mk file
+RELEASE      ?= 0
 
-ifeq (modern,$(MAKECMDGOALS))
-  MODERN := 1
-endif
 ifeq (compare,$(MAKECMDGOALS))
   COMPARE := 1
 endif
@@ -44,11 +64,17 @@ ifeq (linux,$(MAKECMDGOALS))
   PORTABLE := 1
   TARGET_OS := LINUX
 endif
-
-#Enable MODERN if compiling portable version
-ifeq ($(PORTABLE), 1)
-  MODERN := 1
+ifeq (check,$(MAKECMDGOALS))
+  TEST := 1
 endif
+ifeq (debug,$(MAKECMDGOALS))
+  DEBUG := 1
+endif
+ifneq (,$(filter release tidyrelease,$(MAKECMDGOALS)))
+  RELEASE := 1
+endif
+
+include config.mk
 
 # Default make rule
 all: rom
@@ -164,29 +190,17 @@ else
   ASM_PSEUDO_OP_CONV := cat
   FIX_UNDERSCORE := $(OBJCOPY)
 endif
+CPP := $(PREFIX)cpp
 
-# use arm-none-eabi-cpp for macOS
-# as macOS's default compiler is clang
-# and clang's preprocessor will warn on \u
-# when preprocessing asm files, expecting a unicode literal
-# we can't unconditionally use arm-none-eabi-cpp
-# as installations which install binutils-arm-none-eabi
-# don't come with it
-ifneq ($(MODERN),1)
-  ifeq ($(shell uname -s),Darwin)
-    CPP := $(PREFIX)cpp
-  else
-    CPP := $(CC) -E
-  endif
-else
-  CPP := $(PREFIX)cpp
+ifeq ($(RELEASE),1)
+	FILE_NAME := $(FILE_NAME)-release
 endif
 
 ROM_NAME := $(FILE_NAME).gba
-
-OBJ_DIR_NAME := $(BUILD_DIR)/emerald
-MODERN_ROM_NAME := $(FILE_NAME)_modern.gba
-MODERN_OBJ_DIR_NAME := $(BUILD_DIR)/modern
+OBJ_DIR_NAME := $(BUILD_DIR)/$(BUILD_NAME)
+OBJ_DIR_NAME_TEST := $(BUILD_DIR)/$(BUILD_NAME)-test
+OBJ_DIR_NAME_DEBUG := $(BUILD_DIR)/$(BUILD_NAME)-debug
+OBJ_DIR_NAME_RELEASE := $(BUILD_DIR)/$(BUILD_NAME)-release
 PORTABLE_ROM_NAME := $(FILE_NAME)$(BIT_WIDTH)$(BUILD_FEXTENSION)
 PORTABLE_OBJ_DIR_NAME := $(BUILD_DIR)/pc$(BIT_WIDTH)
 PORTABLE_ROM_NAME_OTHER := $(FILE_NAME)$(OTHER_BIT_WIDTH)$(BUILD_FEXTENSION)
@@ -195,21 +209,29 @@ ASSETS_DIR_NAME := $(BUILD_DIR)/assets
 
 ELF_NAME := $(ROM_NAME:.gba=.elf)
 MAP_NAME := $(ROM_NAME:.gba=.map)
-MODERN_ELF_NAME := $(MODERN_ROM_NAME:.gba=.elf)
-MODERN_MAP_NAME := $(MODERN_ROM_NAME:.gba=.map)
 TESTELF := $(ROM_NAME:.gba=-test.elf)
 HEADLESSELF := $(ROM_NAME:.gba=-test-headless.elf)
 
 # Pick our active variables
-ifeq ($(MODERN),0)
-  ROM := $(ROM_NAME)
-  OBJ_DIR := $(OBJ_DIR_NAME)
-else ifeq ($(PORTABLE),1)
+ifeq ($(PORTABLE),1)
   ROM := $(PORTABLE_ROM_NAME)
   OBJ_DIR := $(PORTABLE_OBJ_DIR_NAME)
 else
-  ROM := $(MODERN_ROM_NAME)
-  OBJ_DIR := $(MODERN_OBJ_DIR_NAME)
+ROM := $(ROM_NAME)
+ifeq ($(TESTELF),$(MAKECMDGOALS))
+  TEST := 1
+endif
+ifeq ($(TEST), 0)
+  OBJ_DIR := $(OBJ_DIR_NAME)
+else
+  OBJ_DIR := $(OBJ_DIR_NAME_TEST)
+endif
+ifeq ($(DEBUG),1)
+  OBJ_DIR := $(OBJ_DIR_NAME_DEBUG)
+endif
+ifeq ($(RELEASE),1)
+  OBJ_DIR := $(OBJ_DIR_NAME_RELEASE)
+endif
 endif
 ELF := $(ROM:.gba=.elf)
 MAP := $(ROM:.gba=.map)
@@ -221,17 +243,19 @@ ASM_SUBDIR = asm
 DATA_SRC_SUBDIR = src/data
 DATA_ASM_SUBDIR = data
 MID_SUBDIR = sound/songs/midi
+TEST_SUBDIR = test
 
 C_BUILDDIR = $(OBJ_DIR)/$(C_SUBDIR)
 ASM_BUILDDIR = $(OBJ_DIR)/$(ASM_SUBDIR)
 DATA_ASM_BUILDDIR = $(OBJ_DIR)/$(DATA_ASM_SUBDIR)
 MID_BUILDDIR = $(OBJ_DIR)/$(MID_SUBDIR)
+TEST_BUILDDIR = $(OBJ_DIR)/$(TEST_SUBDIR)
 
 SHELL := bash -o pipefail
 
 # Set flags for tools
 ifeq ($(PORTABLE),1)
-  ASFLAGS := --$(BIT_WIDTH) $(ASFLAGS64) --defsym VER_64BIT=$(IS64BIT) --defsym MODERN=$(MODERN) --defsym PORTABLE=1 --defsym $(GAME_VERSION)=1
+  ASFLAGS := --$(BIT_WIDTH) $(ASFLAGS64) --defsym VER_64BIT=$(IS64BIT) --defsym MODERN=1 --defsym PORTABLE=1 --defsym $(GAME_VERSION)=1
 else
   ASFLAGS := -mcpu=arm7tdmi -march=armv4t -meabi=5 --defsym MODERN=1 --defsym $(GAME_VERSION)=1
 endif
@@ -240,34 +264,63 @@ INCLUDE_DIRS := include
 INCLUDE_CPP_ARGS := $(INCLUDE_DIRS:%=-iquote %)
 INCLUDE_SCANINC_ARGS := $(INCLUDE_DIRS:%=-I %)
 
+ifeq ($(DEBUG),1)
+O_LEVEL ?= g
+else
 O_LEVEL ?= 2
-CPPFLAGS := $(INCLUDE_CPP_ARGS) -Wno-trigraphs -DMODERN=1 -DTESTING=$(TEST) -std=gnu17
-ifeq ($(MODERN),0)
-  CPPFLAGS += -I tools/agbcc/include -I tools/agbcc -nostdinc -undef -std=gnu89
-  CC1 := tools/agbcc/bin/agbcc$(EXE)
-  override CFLAGS += -mthumb-interwork -Wimplicit -Wparentheses -Werror -O$(O_LEVEL) -fhex-asm -g
-  LIBPATH := -L ../../tools/agbcc/lib
-  LIB := $(LIBPATH) -lgcc -lc -L../../libagbsyscall -lagbsyscall
-else ifeq ($(PORTABLE),1)
+endif
+CPPFLAGS := $(INCLUDE_CPP_ARGS) -Wno-trigraphs -DMODERN=1 -DTESTING=$(TEST) -D$(GAME_VERSION) -std=gnu17
+ifeq ($(PORTABLE),1)
   CPPFLAGS += -D NONMATCHING -D PORTABLE -D $(TARGET_PLATFORM) -D $(TILE_RENDERER) -D UBFIX $(CPPFLAGS64) $(PLATFORM_INCLUDES) -I$(SDL_DIR)/include -L$(SDL_DIR)/lib
-  MODERNCC := $(PREFIX)gcc
-  PATH_MODERNCC := PATH="$(PATH)" $(MODERNCC)
+  ARMCC := $(PREFIX)gcc
+  PATH_ARMCC := PATH="$(PATH)" $(ARMCC)
   CC1 	:= $(shell $(PREFIX)gcc --print-prog-name=cc1) -quiet
-  override CFLAGS += $(OS_CFLAGS) $(PLATFORM_CFLAGS) -Werror=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -Wno-trigraphs -Wimplicit -Wparentheses -Wunused -m$(BIT_WIDTH) -std=gnu99 $(LEADING_UNDERSCORE_FLAG) -fno-dce -fno-builtin -Wno-unused-function -DPORTABLE -DNONMATCHING -D UBFIX -DMODERN=$(MODERN)
+  override CFLAGS += $(OS_CFLAGS) $(PLATFORM_CFLAGS) -Werror=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -Wno-trigraphs -Wimplicit -Wparentheses -Wunused -m$(BIT_WIDTH) -std=gnu17 $(LEADING_UNDERSCORE_FLAG) -fno-dce -fno-builtin -Wno-unused-function -DPORTABLE -DNONMATCHING -D UBFIX -DMODERN=1
   LIB := $(LIBPATH) -lgcc -lc
 else
-  # Note: The makefile must be set up to not call these if modern == 0
-  MODERNCC := $(PREFIX)gcc
-  PATH_MODERNCC := PATH="$(PATH)" $(MODERNCC)
-  CC1 := $(shell $(PATH_MODERNCC) --print-prog-name=cc1) -quiet
-  override CFLAGS += -mthumb -mthumb-interwork -O$(O_LEVEL) -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -fno-toplevel-reorder -Wno-pointer-to-int-cast
-  LIBPATH := -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libgcc.a))" -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libnosys.a))" -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libc.a))"
-  LIB := $(LIBPATH) -lc -lnosys -lgcc -L../../libagbsyscall -lagbsyscall
+ifeq ($(RELEASE),1)
+	override CPPFLAGS += -DRELEASE
+	ifeq ($(USE_LTO_ON_RELEASE),1)
+		LTO := 1
+	endif
+endif
+ARMCC := $(PREFIX)gcc
+PATH_ARMCC := PATH="$(PATH)" $(ARMCC)
+CC1 := $(shell $(PATH_ARMCC) --print-prog-name=cc1) -quiet
+override CFLAGS += -mthumb -mthumb-interwork -O$(O_LEVEL) -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -fno-toplevel-reorder -Wno-pointer-to-int-cast -std=gnu17
+ifneq ($(LTO),0)
+  ifneq ($(TEST),1)
+    override CFLAGS += -flto=auto -fno-fat-lto-objects -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections
+  endif
+endif
+
+ifeq ($(ANALYZE),1)
+  override CFLAGS += -fanalyzer
+endif
+# Only throw an error for unused elements if its RH-Hideout's repo
+ifeq ($(UNUSED_ERROR),0)
+  ifneq ($(GITHUB_REPOSITORY_OWNER),rh-hideout)
+    override CFLAGS += -Wno-error=unused-variable -Wno-error=unused-const-variable -Wno-error=unused-parameter -Wno-error=unused-function -Wno-error=unused-but-set-parameter -Wno-error=unused-but-set-variable -Wno-error=unused-value -Wno-error=unused-local-typedefs
+  endif
+endif
+
+ifeq ($(DEPRECATED_ERROR),0)
+  ifneq ($(GITHUB_REPOSITORY_OWNER),rh-hideout)
+    override CFLAGS += -Wno-error=deprecated-declarations
+  endif
+endif
+
+LIBPATH := -L "$(dir $(shell $(PATH_ARMCC) -mthumb -print-file-name=libgcc.a))" -L "$(dir $(shell $(PATH_ARMCC) -mthumb -print-file-name=libnosys.a))" -L "$(dir $(shell $(PATH_ARMCC) -mthumb -print-file-name=libc.a))"
+LIB := $(LIBPATH) -lc -lnosys -lgcc -L../../libagbsyscall -lagbsyscall
 endif
 
 # Enable debug info if set
 ifeq ($(DINFO),1)
   override CFLAGS += -g
+else
+  ifeq ($(DEBUG),1)
+    override CFLAGS += -g
+  endif
 endif
 
 ifeq ($(PORTABLE),1)
@@ -294,6 +347,17 @@ FIX          := $(TOOLS_DIR)/gbafix/gbafix$(EXE)
 MAPJSON      := $(TOOLS_DIR)/mapjson/mapjson$(EXE)
 JSONPROC     := $(TOOLS_DIR)/jsonproc/jsonproc$(EXE)
 TRAINERPROC  := $(TOOLS_DIR)/trainerproc/trainerproc$(EXE)
+PATCHELF     := $(TOOLS_DIR)/patchelf/patchelf$(EXE)
+ifeq ($(shell uname),Darwin)
+    ROMTEST ?= $(shell command -v mgba-rom-test-mac 2>/dev/null || echo $(TOOLS_DIR)/mgba/mgba-rom-test-mac)
+    ROMTESTHYDRA := $(shell command -v mgba-rom-test-hydra 2>/dev/null || echo $(TOOLS_DIR)/mgba-rom-test-hydra/mgba-rom-test-hydra)
+else ifeq ($(shell uname),Linux)
+    ROMTEST ?= $(shell command -v mgba-rom-test 2>/dev/null || echo $(TOOLS_DIR)/mgba/mgba-rom-test)
+    ROMTESTHYDRA := $(shell command -v mgba-rom-test-hydra 2>/dev/null || echo $(TOOLS_DIR)/mgba-rom-test-hydra/mgba-rom-test-hydra)
+else
+    ROMTEST ?= $(TOOLS_DIR)/mgba/mgba-rom-test$(EXE)
+    ROMTESTHYDRA := $(TOOLS_DIR)/mgba-rom-test-hydra/mgba-rom-test-hydra$(EXE)
+endif
 
 # Learnset helper is a Python script
 LEARNSET_HELPERS_DIR := $(TOOLS_DIR)/learnset_helpers
@@ -303,8 +367,15 @@ ALL_LEARNABLES_JSON := $(DATA_SRC_SUBDIR)/pokemon/all_learnables.json
 ALL_TUTORS_JSON := $(LEARNSET_HELPERS_BUILD_DIR)/all_tutors.json
 ALL_TEACHING_TYPES_JSON := $(LEARNSET_HELPERS_BUILD_DIR)/all_teaching_types.json
 
+# wild_encounters.h is generated by a Python script
+WILD_ENCOUNTERS_TOOL_DIR := $(TOOLS_DIR)/wild_encounters
+AUTO_GEN_TARGETS += $(DATA_SRC_SUBDIR)/wild_encounters.h
+
 MISC_TOOL_DIR := $(TOOLS_DIR)/misc
 AUTO_GEN_TARGETS +=  $(INCLUDE_DIRS)/constants/script_commands.h
+
+$(DATA_SRC_SUBDIR)/wild_encounters.h: $(DATA_SRC_SUBDIR)/wild_encounters.json $(WILD_ENCOUNTERS_TOOL_DIR)/wild_encounters_to_header.py $(INCLUDE_DIRS)/config/overworld.h $(INCLUDE_DIRS)/config/dexnav.h
+	python3 $(WILD_ENCOUNTERS_TOOL_DIR)/wild_encounters_to_header.py
 
 $(INCLUDE_DIRS)/constants/script_commands.h: $(MISC_TOOL_DIR)/make_scr_cmd_constants.py $(DATA_ASM_SUBDIR)/script_cmd_table.inc
 	python3  $(MISC_TOOL_DIR)/make_scr_cmd_constants.py
@@ -321,8 +392,8 @@ MAKEFLAGS += --no-print-directory
 # Delete files that weren't built properly
 .DELETE_ON_ERROR:
 
-RULES_NO_SCAN += libagbsyscall clean clean-assets tidy tidymodern generated clean-generated clean-teachables clean-teachables_intermediates
-.PHONY: all rom modern compare winwsl linux
+RULES_NO_SCAN += libagbsyscall clean clean-assets tidy tidymodern tidycheck tidyrelease generated clean-generated clean-teachables clean-teachables_intermediates
+.PHONY: all rom modern compare check debug release winwsl linux
 .PHONY: $(RULES_NO_SCAN)
 
 infoshell = $(foreach line, $(shell $1 | sed "s/ /__SPACE__/g"), $(info $(subst __SPACE__, ,$(line))))
@@ -360,6 +431,11 @@ C_SRCS_IN := $(wildcard $(C_SUBDIR)/*.c $(C_SUBDIR)/*/*.c $(C_SUBDIR)/*/*/*.c)
 C_SRCS := $(foreach src,$(C_SRCS_IN),$(if $(findstring .inc.c,$(src)),,$(src)))
 C_OBJS := $(patsubst $(C_SUBDIR)/%.c,$(C_BUILDDIR)/%.o,$(C_SRCS))
 
+TEST_SRCS_IN := $(wildcard $(TEST_SUBDIR)/*.c $(TEST_SUBDIR)/*/*.c $(TEST_SUBDIR)/*/*/*.c)
+TEST_SRCS := $(foreach src,$(TEST_SRCS_IN),$(if $(findstring .inc.c,$(src)),,$(src)))
+TEST_OBJS := $(patsubst $(TEST_SUBDIR)/%.c,$(TEST_BUILDDIR)/%.o,$(TEST_SRCS))
+TEST_OBJS_REL := $(patsubst $(OBJ_DIR)/%,%,$(TEST_OBJS))
+
 C_ASM_SRCS := $(wildcard $(C_SUBDIR)/*.s $(C_SUBDIR)/*/*.s $(C_SUBDIR)/*/*/*.s)
 C_ASM_OBJS := $(patsubst $(C_SUBDIR)/%.s,$(C_BUILDDIR)/%.o,$(C_ASM_SRCS))
 
@@ -384,14 +460,40 @@ endif
 
 OBJS_REL := $(patsubst $(OBJ_DIR)/%,%,$(OBJS))
 
-SUBDIRS  := $(sort $(dir $(OBJS)))
+SUBDIRS  := $(sort $(dir $(OBJS) $(dir $(TEST_OBJS))))
 $(shell mkdir -p $(SUBDIRS))
 
 # Pretend rules that are actually flags defer to `make all`
 modern: all
 compare: all
+debug: all
+release: all
 winwsl: all
 linux: all
+# Uncomment the next line, and then comment the 4 lines after it to reenable agbcc.
+#agbcc: all
+
+LD_SCRIPT_TEST := ld_script_test.ld
+
+$(OBJ_DIR)/ld_script_test.ld: $(LD_SCRIPT_TEST)
+	cd $(OBJ_DIR) && sed "s#tools/#../../tools/#g" ../../$(LD_SCRIPT_TEST) > ld_script_test.ld
+
+$(TESTELF): $(OBJ_DIR)/ld_script_test.ld $(OBJS) $(TEST_OBJS) libagbsyscall tools check-tools
+	@echo "cd $(OBJ_DIR) && $(LD) -T ld_script_test.ld -o ../../$@ <objects> <test-objects> <lib>"
+	@cd $(OBJ_DIR) && $(LD) $(TESTLDFLAGS) -T ld_script_test.ld -o ../../$@ $(OBJS_REL) $(TEST_OBJS_REL) $(LIB)
+	$(FIX) $@ -t"$(TITLE)" -c$(GAME_CODE) -m$(MAKER_CODE) -r$(REVISION) -d0 --silent
+	$(PATCHELF) $(TESTELF) gTestRunnerArgv "$(TESTS:%*=%)\0"
+
+ifeq ($(GITHUB_REPOSITORY_OWNER),rh-hideout)
+TEST_SKIP_IS_FAIL := \x01
+else
+TEST_SKIP_IS_FAIL := \x00
+endif
+
+check: $(TESTELF)
+	@cp $< $(HEADLESSELF)
+	$(PATCHELF) $(HEADLESSELF) gTestRunnerHeadless '\x01' gTestRunnerSkipIsFail "$(TEST_SKIP_IS_FAIL)"
+	$(ROMTESTHYDRA) $(ROMTEST) $(OBJCOPY) $(HEADLESSELF)
 
 # Other rules
 rom: $(ROM)
@@ -401,7 +503,7 @@ endif
 
 syms: $(SYM)
 
-clean: tidy clean-tools clean-generated clean-assets
+clean: tidy clean-tools clean-check-tools clean-generated clean-assets
 	@$(MAKE) clean -C libagbsyscall
 
 clean-assets:
@@ -414,11 +516,26 @@ clean-assets:
 	find . \( -iname '*.1bpp' -o -iname '*.4bpp' -o -iname '*.8bpp' -o -iname '*.gbapal' -o -iname '*.lz' -o -iname '*.smol' -o -iname '*.fastSmol' -o -iname '*.smolTM' -o -iname '*.rl' -o -iname '*.latfont' -o -iname '*.hwjpnfont' -o -iname '*.fwjpnfont' \) -exec rm {} +
 	find $(DATA_ASM_SUBDIR)/maps \( -iname 'connections.inc' -o -iname 'events.inc' -o -iname 'header.inc' \) -exec rm {} +
 
-tidy: tidymodern tidyportable
+tidy: tidymodern tidycheck tidydebug tidyrelease tidyportable
 
 tidymodern:
-	rm -f $(MODERN_ROM_NAME) $(MODERN_ELF_NAME) $(MODERN_MAP_NAME)
-	rm -rf $(MODERN_OBJ_DIR_NAME)
+	rm -f $(FILE_PREFIX)*.gba $(FILE_PREFIX)*.elf $(FILE_PREFIX)*.map
+	rm -rf $(OBJ_DIR_NAME)
+
+tidycheck:
+	rm -f $(TESTELF) $(HEADLESSELF)
+	rm -rf $(OBJ_DIR_NAME_TEST)
+
+tidydebug:
+	rm -rf $(OBJ_DIR_NAME_DEBUG)
+
+tidyrelease:
+ifeq ($(RELEASE),1)
+	rm -f $(ROM_NAME) $(ELF_NAME) $(MAP_NAME)
+else # Manually remove the release files on clean/tidy
+	rm -f $(FILE_NAME)-release.gba $(FILE_NAME)-release.elf $(FILE_NAME)-release.map
+endif
+	rm -rf $(OBJ_DIR_NAME_RELEASE)
 
 tidyportable:
 	rm -f $(PORTABLE_ROM_NAME)
@@ -435,6 +552,7 @@ clean-platform:
 # Other rules
 include graphics_file_rules.mk
 include map_data_rules.mk
+include spritesheet_rules.mk
 include json_data_rules.mk
 include audio_rules.mk
 include trainer_rules.mk
@@ -475,21 +593,17 @@ clean-teachables: clean-teachables_intermediates
 	rm -f $(ALL_LEARNABLES_JSON)
 	@touch $(C_SUBDIR)/pokemon.c
 
-ifeq ($(MODERN),0)
-$(C_BUILDDIR)/libc.o: CC1 := $(TOOLS_DIR)/agbcc/bin/old_agbcc$(EXE)
-$(C_BUILDDIR)/libc.o: CFLAGS := -O2
-$(C_BUILDDIR)/siirtc.o: CFLAGS := -mthumb-interwork
-$(C_BUILDDIR)/agb_flash.o: CFLAGS := -O -mthumb-interwork
-$(C_BUILDDIR)/agb_flash_1m.o: CFLAGS := -O -mthumb-interwork
-$(C_BUILDDIR)/agb_flash_mx.o: CFLAGS := -O -mthumb-interwork
-$(C_BUILDDIR)/m4a.o: CC1 := tools/agbcc/bin/old_agbcc$(EXE)
-$(C_BUILDDIR)/record_mixing.o: CFLAGS += -ffreestanding
-$(C_BUILDDIR)/librfu_intr.o: CC1 := $(TOOLS_DIR)/agbcc/bin/agbcc_arm$(EXE)
-$(C_BUILDDIR)/librfu_intr.o: CFLAGS := -O2 -mthumb-interwork -quiet
-else ifneq ($(PORTABLE),1)
+ifneq ($(PORTABLE),1)
 $(C_BUILDDIR)/librfu_intr.o: CFLAGS := -mthumb-interwork -O2 -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -fno-toplevel-reorder -Wno-pointer-to-int-cast
 $(C_BUILDDIR)/berry_crush.o: override CFLAGS += -Wno-address-of-packed-member
+$(C_BUILDDIR)/pokedex_plus_hgss.o: CFLAGS := -mthumb -mthumb-interwork -O2 -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -Wno-pointer-to-int-cast -std=gnu17 -Werror -Wall -Wno-strict-aliasing -Wno-attribute-alias -Woverride-init
 endif
+$(C_BUILDDIR)/agb_flash.o: override CFLAGS += -fno-toplevel-reorder
+# Annoyingly we can't turn this on just for src/data/trainers.h
+$(C_BUILDDIR)/data.o: CFLAGS += -fno-show-column -fno-diagnostics-show-caret
+
+# Needed for parity with pret
+$(C_BUILDDIR)/graphics.o: override CFLAGS += -Wno-missing-braces
 
 # Dependency rules (for the *.c & *.s sources to .o files)
 # Have to be explicit or else missing files won't be reported.
@@ -514,7 +628,21 @@ $(C_BUILDDIR)/%.d: $(C_SUBDIR)/%.c
 	$(SCANINC) -M $@ -g $(ASSETS_DIR_NAME) $(INCLUDE_SCANINC_ARGS) -I tools/agbcc/include $<
 
 ifneq ($(NODEP),1)
+-include $(ALL_TUTORS_JSON), $(ALL_TEACHING_TYPES_JSON),
 -include $(addprefix $(OBJ_DIR)/,$(C_SRCS:.c=.d))
+endif
+
+ifeq ($(TEST),1)
+$(TEST_BUILDDIR)/%.o: $(TEST_SUBDIR)/%.c
+	@echo "$(CC1) <flags> -o $@ $<"
+	@$(CPP) $(CPPFLAGS) $< | $(PREPROC) -i -g $(ASSETS_DIR_NAME) $< charmap.txt | $(CC1) $(CFLAGS) -o - - | cat - <(echo -e ".text\n\t.align\t2, 0") | $(AS) $(ASFLAGS) -o $@ -
+
+$(TEST_BUILDDIR)/%.d: $(TEST_SUBDIR)/%.c
+	$(SCANINC) -M $@ -g $(ASSETS_DIR_NAME) $(INCLUDE_SCANINC_ARGS) -I tools/agbcc/include $<
+
+ifneq ($(NODEP),1)
+-include $(addprefix $(OBJ_DIR)/,$(TEST_SRCS:.c=.d))
+endif
 endif
 
 $(ASM_BUILDDIR)/%.o: $(ASM_SUBDIR)/%.s
@@ -529,7 +657,7 @@ ifneq ($(NODEP),1)
 endif
 
 $(C_BUILDDIR)/%.o: $(C_SUBDIR)/%.s
-	$(PREPROC) $< charmap.txt | $(CPP) $(INCLUDE_SCANINC_ARGS) - | $(PREPROC) -ie $< charmap.txt | $(AS) $(ASFLAGS) -o $@
+	$(PREPROC) $< charmap.txt | $(CPP) $(CPPFLAGS) $(INCLUDE_SCANINC_ARGS) - | $(PREPROC) -ie $< charmap.txt | $(AS) $(ASFLAGS) -o $@
 
 $(C_BUILDDIR)/%.d: $(C_SUBDIR)/%.s
 	$(SCANINC) -M $@ -g $(ASSETS_DIR_NAME) $(INCLUDE_SCANINC_ARGS) -I "" $<
@@ -539,7 +667,7 @@ ifneq ($(NODEP),1)
 endif
 
 $(DATA_ASM_BUILDDIR)/%.o: $(DATA_ASM_SUBDIR)/%.s
-	$(PREPROC) $< charmap.txt | $(CPP) $(INCLUDE_SCANINC_ARGS) - | $(PREPROC) -ie $< charmap.txt | $(ASM_PSEUDO_OP_CONV) | $(AS) $(ASFLAGS) -o $@
+	$(PREPROC) -s $< charmap.txt | $(CPP) $(CPPFLAGS) $(INCLUDE_SCANINC_ARGS) - | $(PREPROC) -ie $< charmap.txt | $(ASM_PSEUDO_OP_CONV) | $(AS) $(ASFLAGS) -o $@
 	$(FIX_UNDERSCORE) $@
 
 $(DATA_ASM_BUILDDIR)/%.d: $(DATA_ASM_SUBDIR)/%.s
@@ -582,36 +710,36 @@ $(DATA_SRC_SUBDIR)/tutor_moves.h: $(DATA_SRC_SUBDIR)/pokemon/special_movesets.js
 	python3 $(LEARNSET_HELPERS_DIR)/make_teachables.py  --tutors $(LEARNSET_HELPERS_BUILD_DIR)
 
 # Linker script
-ifeq ($(MODERN),0)
-LD_SCRIPT := ld_script.ld
-LD_SCRIPT_DEPS := $(OBJ_DIR)/sym_bss.ld $(OBJ_DIR)/sym_common.ld $(OBJ_DIR)/sym_ewram.ld
-else
 LD_SCRIPT := ld_script_modern.ld
-LD_SCRIPT_DEPS :=
-endif
 
 # Final rules
 
 libagbsyscall:
-	@$(MAKE) -C libagbsyscall TOOLCHAIN=$(TOOLCHAIN) MODERN=$(MODERN)
+	@$(MAKE) -C libagbsyscall TOOLCHAIN=$(TOOLCHAIN) MODERN=1
 
 ifneq ($(PORTABLE),1)
 # Elf from object files
-LDFLAGS = -Map ../../$(MAP)
-$(ELF): $(LD_SCRIPT) $(LD_SCRIPT_DEPS) $(OBJS) libagbsyscall
-	@cd $(OBJ_DIR) && $(LD) $(LDFLAGS) -T ../../$< --print-memory-usage -o ../../$@ $(OBJS_REL) $(LIB) | cat
-	@echo "cd $(OBJ_DIR) && $(LD) $(LDFLAGS) -T ../../$< --print-memory-usage -o ../../$@ <objs> <libs> | cat"
+ifneq ($(LTO),0)
+else
+LDFLAGS = -Map ../../$(MAP) --print-memory-usage --gc-sections
+$(ELF): $(LD_SCRIPT) $(OBJS) libagbsyscall
+	@cd $(OBJ_DIR) && $(LD) $(LDFLAGS) -T ../../$<  -o ../../$@ $(OBJS_REL) $(LIB) | cat
+	@echo "cd $(OBJ_DIR) && $(LD) $(LDFLAGS) -T ../../$< -o ../../$@ <objs> <libs> | cat"
 	$(FIX) $@ -t"$(TITLE)" -c$(GAME_CODE) -m$(MAKER_CODE) -r$(REVISION) --silent
+endif
 
 # Builds the rom from the elf file
 $(ROM): $(ELF)
 	$(OBJCOPY) -O binary $< $@
 	$(FIX) $@ -p --silent
 
+emerald: all
+firered: all
+leafgreen: all
 # Symbol file (`make syms`)
 $(SYM): $(ELF)
 	$(OBJDUMP) -t $< | sort -u | grep -E "^0[2389]" | $(PERL) -p -e 's/^(\w{8}) (\w).{6} \S+\t(\w{8}) (\S+)$$/\1 \2 \3 \4/g' > $@
 else
 $(ROM): $(OBJS)
-	$(MODERNCC) $(CFLAGS) -Wl,--demangle $^ -static-libgcc -L$(SDL_DIR)/lib $(PLATFORM_LFLAGS) $(OS_LFLAGS) -o $@
+	$(ARMCC) $(CFLAGS) -Wl,--demangle $^ -static-libgcc -L$(SDL_DIR)/lib $(PLATFORM_LFLAGS) $(OS_LFLAGS) -o $@
 endif
