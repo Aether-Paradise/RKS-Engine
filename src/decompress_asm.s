@@ -1,7 +1,7 @@
 	.syntax unified
 
 	.arm
-	.section .iwram.code, "ax", %progbits
+	.section .iwram.code, "ax"
 	.align 2
 
 .global FastUnsafeCopy32

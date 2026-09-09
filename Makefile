@@ -257,7 +257,7 @@ SHELL := bash -o pipefail
 ifeq ($(PORTABLE),1)
   ASFLAGS := --$(BIT_WIDTH) $(ASFLAGS64) --defsym VER_64BIT=$(IS64BIT) --defsym MODERN=1 --defsym PORTABLE=1 --defsym $(GAME_VERSION)=1
 else
-  ASFLAGS := -mcpu=arm7tdmi -march=armv4t -meabi=5 --defsym MODERN=1 --defsym $(GAME_VERSION)=1
+  ASFLAGS := -mcpu=arm7tdmi -march=armv4t -meabi=5 --defsym MODERN=1 --defsym PORTABLE=0 --defsym $(GAME_VERSION)=1
 endif
 
 INCLUDE_DIRS := include

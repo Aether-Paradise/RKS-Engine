@@ -7,7 +7,7 @@
 	.bss
 	.align 2
 
-.ifndef PORTABLE
+.if PORTABLE == 0
 gMPlayTrack_BGM::
 	.space TRACK_SIZE * NUM_TRACKS_BGM
 	.size gMPlayTrack_BGM, .-gMPlayTrack_BGM

@@ -337,6 +337,7 @@ struct Backup
  * hijacks the main loop until the start button is pressed. */
 static void CrashScreen(enum Mode mode, const void *return1, const void *return0, const char *fmt, va_list va)
 {
+#ifndef PORTABLE
     // Backup and override hardware state.
     struct Backup *backup = NULL;
 
@@ -443,6 +444,7 @@ static void CrashScreen(enum Mode mode, const void *return1, const void *return0
 
     if (backup->onHeap)
         Free(backup);
+#endif
 }
 
 void AssertfCrashScreen(const void *return1, const char *fmt, ...)

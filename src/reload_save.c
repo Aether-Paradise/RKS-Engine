@@ -17,7 +17,9 @@ void ReloadSave(void)
     u16 imeBackup = REG_IME;
     REG_IME = 0;
     RegisterRamReset(RESET_EWRAM);
+#ifndef PORTABLE
     ReInitializeEWRAM();
+#endif
     ClearGpuRegBits(REG_OFFSET_DISPCNT, DISPCNT_FORCED_BLANK);
     REG_IME = imeBackup;
     gMain.inBattle = FALSE;
