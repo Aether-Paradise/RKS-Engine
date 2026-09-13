@@ -299,10 +299,17 @@ enum RandomTag
         *(typeof((array)[0]) *)RandomElementArray(tag, array, sizeof((array)[0]), ARRAY_COUNT(array)); \
     })
 
+#ifndef PORTABLE
 u32 RandomUniform(enum RandomTag, u32 lo, u32 hi);
 u32 RandomUniformExcept(enum RandomTag, u32 lo, u32 hi, bool32 (*reject)(u32));
 u32 RandomWeightedArray(enum RandomTag, u32 sum, u32 n, const u16 *weights);
 const void *RandomElementArray(enum RandomTag, const void *array, size_t size, size_t count);
+#else
+#define RandomUniform RandomUniformDefault
+#define RandomUniformExcept RandomUniformExceptDefault
+#define RandomWeightedArray RandomWeightedArrayDefault
+#define RandomElementArray RandomElementArrayDefault
+#endif
 
 u32 RandomUniformDefault(enum RandomTag, u32 lo, u32 hi);
 u32 RandomUniformExceptDefault(enum RandomTag, u32 lo, u32 hi, bool32 (*reject)(u32));

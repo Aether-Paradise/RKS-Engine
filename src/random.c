@@ -164,6 +164,7 @@ void ShuffleN(void *data, size_t n, size_t size)
     LOOP_RANDOM_END;
 }
 
+#ifndef PORTABLE
 __attribute__((weak, alias("RandomUniformDefault")))
 u32 RandomUniform(enum RandomTag tag, u32 lo, u32 hi);
 
@@ -175,6 +176,7 @@ u32 RandomWeightedArray(enum RandomTag tag, u32 sum, u32 n, const u16 *weights);
 
 __attribute__((weak, alias("RandomElementArrayDefault")))
 const void *RandomElementArray(enum RandomTag tag, const void *array, size_t size, size_t count);
+#endif
 
 u32 RandomUniformDefault(enum RandomTag tag, u32 lo, u32 hi)
 {
