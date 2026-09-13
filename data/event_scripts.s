@@ -75,6 +75,7 @@
 #include "constants/vars.h"
 #include "constants/weather.h"
 #include "constants/speaker_names.h"
+#include "constants/bxpy.h" 
 	.include "asm/macros.inc"
 	.include "asm/macros/event.inc"
 	.include "constants/constants.inc"
@@ -1722,6 +1723,7 @@ EventScript_DemoTown_StartHouse_2F_TurnOnPC::
 	.include "data/scripts/battle_frontier.inc"
 	.include "data/scripts/apricorn_tree.inc"
 	.include "data/scripts/wild_encounter.inc"
+	.include "data/scripts/bxpy.inc" 
 
 	.include "data/maps/DemoTown/scripts.inc"
 	.include "data/maps/DemoTown/text.inc"

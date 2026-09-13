@@ -2113,7 +2113,7 @@ static u8 AddDecorationIconObjectFromIconTable(u16 tilesTag, u16 paletteTag, u8 
     *template = gItemIconSpriteTemplate;
     template->tileTag = tilesTag;
     template->paletteTag = paletteTag;
-    spriteId = CreateSprite(template, 0, 0, 0);
+    spriteId = CreateSpriteUnchecked(template, 0, 0, 0);
     FreeItemIconTemporaryBuffers();
     Free(template);
     return spriteId;
@@ -2161,7 +2161,7 @@ static u8 AddDecorationIconObjectFromObjectEvent(u16 tilesTag, u16 paletteTag, u
         *template = sDecorWhilePlacingSpriteTemplate;
         template->tileTag = tilesTag;
         template->paletteTag = paletteTag;
-        spriteId = CreateSprite(template, 0, 0, 0);
+        spriteId = CreateSpriteUnchecked(template, 0, 0, 0);
         Free(template);
     }
     else
