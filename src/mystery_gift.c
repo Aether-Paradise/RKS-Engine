@@ -419,7 +419,7 @@ bool32 MysteryGift_TrySaveStamp(const u16 *stamp)
 
 void MysteryGift_LoadLinkGameData(struct MysteryGiftLinkGameData *data, bool32 isWonderNews)
 {
-#if FREE_MYSTERY_GIFT == FALSE || !defined(PORTABLE)
+#if FREE_MYSTERY_GIFT == FALSE && !defined(PORTABLE)
     int i;
     CpuFill32(0, data, sizeof(*data));
     data->validationVar = GAME_DATA_VALID_VAR;

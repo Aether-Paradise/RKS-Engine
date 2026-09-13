@@ -401,7 +401,14 @@ static IWRAM_DATA u32 sCurrState = 0;
 // 33 because of FastUnsafeCopy32, we divide by 4 because the buffer is an array of u32
 #define FUNC_BUFFER_SIZE(funcStart, funcEnd)(((u32)(funcEnd) - (u32)(funcStart) + 33) / 4)
 
+#ifndef PORTABLE
 extern void FastUnsafeCopy32(void *, const void *, u32 size);
+#else
+static void FastUnsafeCopy32(void *, const void *, u32 size)
+{
+    // Do nothing
+}
+#endif
 
 //  Dark Egg magic
 static inline void CopyFuncToIwram(void *funcBuffer, const void *funcStartAddress, const void *funcEndAdress)
@@ -1388,8 +1395,10 @@ bool8 LoadCompressedSpriteSheetUsingHeap(const struct CompressedSpriteSheet *src
     return FALSE;
 }
 
+#ifndef PORTABLE
 extern const u32 LZ77UnCompWRAMOptimized[];
 extern const u32 LZ77UnCompWRAMOptimized_end[];
+#endif
 
 ARM_FUNC static void SwitchToArmCallFastLZ77(const u32 *src, void *dest, void (*funcPtr)(const u32 *src, void *dest))
 {
@@ -1398,8 +1407,12 @@ ARM_FUNC static void SwitchToArmCallFastLZ77(const u32 *src, void *dest, void (*
 
 void FastLZ77UnCompWram(const u32 *src, void *dest)
 {
+#ifdef PORTABLE
+    LZ77UnCompWram(src, dest);
+#else
     u32 funcBuffer[200];
 
     CopyFuncToIwram(funcBuffer, LZ77UnCompWRAMOptimized, LZ77UnCompWRAMOptimized_end);
     SwitchToArmCallFastLZ77(src, dest, (void *) funcBuffer);
+#endif
 }
